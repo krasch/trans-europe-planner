@@ -25,8 +25,104 @@
   const map = new maplibregl.Map({
     container: 'map',
     style: "style/outdoors-modified.json",
-    center: [12, 53],
+    center: [13.408333, 52.518611],
     zoom: 4
+  });
+
+  const coordinates = {
+    "Berlin": [13.408333, 52.518611],
+    "München": [11.574444, 48.139722],
+    "Verona": [10.99338, 45.43869],
+    "Livorno": [10.314722, 43.55],
+    "Bastia": [9.449722, 42.7]
+  }
+
+  map.on('load', () => {
+    map.addSource('route', {
+      'type': 'geojson',
+      'data': {
+        'type': 'Feature',
+        'properties': {},
+        'geometry': {
+          'type': 'LineString',
+          'coordinates': [
+            coordinates["Berlin"],
+            coordinates["München"],
+            coordinates["Verona"],
+            coordinates["Livorno"],
+            coordinates["Bastia"],
+          ]
+        }
+      }
+    });
+    map.addSource('stations', {
+      'type': 'geojson',
+      'data': {
+        'type': 'FeatureCollection',
+        'features': [
+          {
+            'type': 'Feature',
+            'geometry': {
+              'type': 'Point',
+              'coordinates': coordinates["Berlin"]
+            }
+          },
+          {
+            'type': 'Feature',
+            'geometry': {
+              'type': 'Point',
+              'coordinates': coordinates["München"]
+            }
+          },
+          {
+            'type': 'Feature',
+            'geometry': {
+              'type': 'Point',
+              'coordinates': coordinates["Verona"]
+            }
+          },
+          {
+            'type': 'Feature',
+            'geometry': {
+              'type': 'Point',
+              'coordinates': coordinates["Livorno"]
+            }
+          },
+          {
+            'type': 'Feature',
+            'geometry': {
+              'type': 'Point',
+              'coordinates': coordinates["Bastia"]
+            }
+          },
+        ]
+      }
+    });
+
+    map.addLayer({
+      'id': 'route',
+      'type': 'line',
+      'source': 'route',
+      'layout': {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      'paint': {
+        'line-color': 'red',
+        'line-opacity': 0.5,
+        'line-width': 4
+      }
+    });
+    map.addLayer({
+      'id': 'stations',
+      'type': 'circle',
+      'source': 'stations',
+      'paint': {
+        'circle-color': 'green',
+        'circle-radius': 5,
+        'circle-opacity': 0.5,
+      }
+    });
   });
 
 </script>
