@@ -4,10 +4,32 @@
 <head>
   <meta name="description" content="Leichter komplexe Bahnreisen quer durch Europa planen" />
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.css" />
+  <link rel="stylesheet" href="style/style.css">
+
+  <script src="https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.js"></script>
+
+
+
   <title>Trans-Europe-Planner</title>
+
 </head>
 
 <body>
-Hello world
+
+<div id="map"></div>
+
+<script>
+  const map = new maplibregl.Map({
+    container: 'map',
+    style: "style/outdoors-modified.json",
+    center: [12, 53],
+    zoom: 4
+  });
+
+</script>
+
 </body>
 </html>
