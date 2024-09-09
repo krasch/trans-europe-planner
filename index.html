@@ -43,6 +43,8 @@
 
   map.on('load', () => {
 
+    map.getCanvas().style.cursor = 'default';
+
     map.setLayoutProperty('place-city-capital', 'text-field', ['get', `name:de`]);
     map.setLayoutProperty('place-city', 'text-field', ['get', `name:de`]);
 
@@ -61,7 +63,7 @@
             coordinates["Bastia"],
           ]
         },
-        "id": 1
+        "id": 1 // must be numeric
       }
     });
     map.addSource('stations', {
@@ -155,6 +157,21 @@
         );
       }
     });
+
+    const popup = new maplibregl.Popup({
+      closeButton: true,
+      closeOnClick: true
+    });
+
+    map.on('mouseenter', 'route-layer', (e) => {
+      popup.setLngLat(e.lngLat).setHTML("test").addTo(map);
+    });
+
+    /*map.on('mouseleave', 'route-layer', () => {
+      popup.remove();
+    });*/
+
+
   });
 
 </script>
