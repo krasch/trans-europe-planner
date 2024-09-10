@@ -1,15 +1,42 @@
-function initGrid(container){
-    const days = [1, 2, 3];
-    const hours =  [...Array(24).keys()];  // [0, 1, ..., 23]
+function instantiateHourlyGridTemplate(hour){
+    const template = document.getElementById('template-hourly-grid');
 
-    for (let hour in hours){
-        for (let day in days){
-            const cell = createElementWithId("div", `day${day}-hour${hour}`);
-            container.appendChild(cell)
-        }
+    // create new element by cloning template
+    const element = template.content.firstElementChild.cloneNode(true);
+
+    // fill element attributes
+    element.innerText = `${hour}`.padStart(2, '0');
+
+    return element;
+}
+
+function instantiateConnectionGridTemplate(connection){
+    const template = document.getElementById('template-connection-grid');
+
+    // create new element by cloning template
+    const element = template.content.firstElementChild.cloneNode(true);
+
+    const resolution = 2;
+    const rowStart = Math.round(connection.start * resolution)
+    const rowEnd =  Math.round(connection.end * resolution)
+
+    // fill element attributes
+    element.innerText = connection.title;
+    element.style.setProperty('grid-row-start', rowStart + 1);
+    element.style.setProperty('grid-row-end', rowEnd + 1);
+
+    return element
+
+}
+
+function initHourlyGrid(container){
+    for (let hour = 0; hour < 24; hour++) {
+        container.appendChild(instantiateHourlyGridTemplate(hour));
     }
 }
 
-function addRoute(container){
-
+function displayConnections(container, connections){
+    for (let i in connections){
+        container.appendChild(instantiateConnectionGridTemplate(connections[i]))
+    }
 }

@@ -2,45 +2,97 @@
 <html lang="de">
 
 <head>
-  <meta name="description" content="Ohne Flugzeug quer durch Europa" />
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Ohne Flugzeug quer durch Europa"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- maplibre -->
-  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.css" />
-  <script src="https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.js"></script>
+    <!-- maplibre -->
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.css"/>
+    <script src="https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.js"></script>
 
-  <!-- styles -->
-  <link rel="stylesheet" href="style/style.css">
+    <!-- styles -->
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/calender.css">
 
-  <!-- scripts -->
-  <script src="script/calender.js"></script>
-  <script src="script/map.js"></script>
-  <script src="script/util.js"></script>
+    <!-- scripts -->
+    <script src="script/calender.js"></script>
+    <script src="script/map.js"></script>
+    <script src="script/util.js"></script>
 
-  <title>Trans-Europe-Planner</title>
+    <title>Trans-Europe-Planner</title>
 
 </head>
 
 <body>
 
 <div id="map"></div>
-<div id="calender"></div>
+<div id="calendar">
+
+    <!-- hourly grid as background -->
+    <div id="hourly-grid">
+        <template id="template-hourly-grid">
+            <div class="label"></div>
+        </template>
+    </div>
+
+    <!-- fine-grained grid to display train connections-->
+    <div id="connection-grid">
+        <template id="template-connection-grid">
+            <div class="label"></div>
+        </template>
+    </div>
+
+    <!--div class="calendar__events">
+        <div class="calender-event">
+            <p class="label">Test</p>
+        </div>
+        <div class="calender-event">
+            <p class="label">Test</p>
+        </div>
+        <div class="calender-event">
+            <p class="label">Test</p>
+        </div>
+        <template id="template-event">
+            <div class="calendar__event">
+                <p class="label"></p>
+            </div>
+        </template>
+    </div-->
+
+</div>
 
 
 <script>
-  const map = new maplibregl.Map({
-    container: 'map',
-    style: "style/outdoors-modified.json",
-    center: [13.408333, 52.518611],
-    zoom: 4
-  });
+    const map = new maplibregl.Map({
+      container: 'map',
+      style: "style/outdoors-modified.json",
+      center: [13.408333, 52.518611],
+      zoom: 4
+    });
 
-  map.on('load', () => initMap(map));
+    map.on('load', () => initMap(map));
 
-  const calender = document.getElementById("calender");
-  initGrid(calender);
-  addRoute(calender);
+    const hourlyGrid = document.getElementById("hourly-grid");
+    initHourlyGrid(hourlyGrid);
+
+    const connections = [
+        {
+            start: 8.5,
+            end: 13,
+            title: 'Berlin -> München'
+        },
+        {
+            start: 13.5,
+            end: 19,
+            title: 'München -> Innsbruck',
+        }
+    ];
+
+
+
+    const connectionGrid = document.getElementById("connection-grid");
+    displayConnections(connectionGrid, connections);
+
 
 </script>
 
