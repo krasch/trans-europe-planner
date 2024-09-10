@@ -16,6 +16,7 @@
   <!-- scripts -->
   <script src="script/calender.js"></script>
   <script src="script/map.js"></script>
+  <script src="script/util.js"></script>
 
   <title>Trans-Europe-Planner</title>
 
@@ -24,7 +25,10 @@
 <body>
 
 <div id="map"></div>
-<div id="calender">Test</div>
+<!--canvas id="calender"></canvas-->
+
+<div id="calender"></div>
+
 
 <script>
   const map = new maplibregl.Map({
@@ -35,6 +39,18 @@
   });
 
   map.on('load', () => initMap(map));
+
+  const calender = document.getElementById("calender");
+  initGrid(calender);
+  addRoute(calender);
+
+  /*const canvas = document.getElementById("calender");
+
+  // https://stackoverflow.com/a/49986324
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+
+  drawBoard(canvas);*/
 
 </script>
 

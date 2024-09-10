@@ -13,6 +13,20 @@ html, body, #map {
     left: 20px;
     top: 20px;
     width: 300px;
+    height: 300px;
     border: 3px solid #73AD21;
     background: white;
+}
+
+#calender {
+    display: grid;
+    overflow: hidden;
+    grid-template-columns: repeat(3, 1fr);  /* 3 days */
+
+    gap: 1px;
+    background-color: lightgrey; /* this will be the color of the grid lines */
+}
+
+#calender > div {
+    background-color: white; /* because background of grid is grey for grid lines */
 }
