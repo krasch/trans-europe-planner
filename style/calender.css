@@ -48,6 +48,7 @@
 #calendar > #connection-grid {
     display: grid;
     grid-template-rows: repeat(48, 0.75rem);
+    grid-template-columns: 1fr;
 }
 
 #calendar > #connection-grid > div {

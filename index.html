@@ -38,26 +38,9 @@
     <!-- fine-grained grid to display train connections-->
     <div id="connection-grid">
         <template id="template-connection-grid">
-            <div class="label"></div>
+            <div class="label" draggable="true"></div>
         </template>
     </div>
-
-    <!--div class="calendar__events">
-        <div class="calender-event">
-            <p class="label">Test</p>
-        </div>
-        <div class="calender-event">
-            <p class="label">Test</p>
-        </div>
-        <div class="calender-event">
-            <p class="label">Test</p>
-        </div>
-        <template id="template-event">
-            <div class="calendar__event">
-                <p class="label"></p>
-            </div>
-        </template>
-    </div-->
 
 </div>
 
@@ -89,9 +72,29 @@
     ];
 
 
-
     const connectionGrid = document.getElementById("connection-grid");
     displayConnections(connectionGrid, connections);
+
+    /*connectionGrid.addEventListener("dragstart", e => {
+        console.log("start");
+        e.dataTransfer.dropEffect = "move";
+        e.dataTransfer.setData("connectionId", e.target.id);
+    });
+
+    connectionGrid.addEventListener("drop", e => {
+        e.preventDefault();
+        console.log("drop");
+        const connectionId = e.dataTransfer.getData("connectionId");
+        const connectionDiv = document.getElementById(connectionId);
+
+        console.log(`${connectionDiv.style.gridRowStart}->${window.getComputedStyle(connectionDiv).gridRowStart}`);
+        console.log(window.getComputedStyle(connectionDiv));
+    });
+
+    connectionGrid.addEventListener("dragover", e => {
+        e.preventDefault();
+    });*/
+
 
 
 </script>
