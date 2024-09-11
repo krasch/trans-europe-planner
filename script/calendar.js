@@ -1,15 +1,3 @@
-function instantiateHourlyGridTemplate(hour) {
-    const template = document.getElementById('template-hourly-grid');
-
-    // create new element by cloning template
-    const element = template.content.firstElementChild.cloneNode(true);
-
-    // fill element attributes
-    element.innerText = `${hour}`.padStart(2, '0');
-
-    return element;
-}
-
 function instantiateConnectionGridTemplate(id, connection) {
     const template = document.getElementById('template-connection-grid');
 
@@ -27,7 +15,7 @@ function instantiateConnectionGridTemplate(id, connection) {
     element.style.setProperty('grid-row-end', rowEnd + 1);
     element.style.setProperty('grid-column', 1);
 
-    if (id === "1"){
+    if (id === "1") {
         element.style.setProperty('background-color', "blue");
     }
 
@@ -57,14 +45,51 @@ function instantiateConnectionGridTemplate(id, connection) {
 
 }
 
-function initHourlyGrid(container) {
+function initCalendarGrid(container) {
+    const style = getComputedStyle(container);
+    const resolution = Number(style.getPropertyValue('--resolution'));
+    const numDays = Number(style.getPropertyValue('--num-days'));
+
+    /* hour label on left side of calendar */
     for (let hour = 0; hour < 24; hour++) {
-        container.appendChild(instantiateHourlyGridTemplate(hour));
+        const e = createElementFromTemplate("template-calendar-grid-label");
+
+        e.style.gridRowStart = hour * resolution + 1;
+        e.style.gridRowEnd =  (hour + 1) * resolution + 1;
+        //e.style.background = "blue";
+
+        e.innerText = `${hour}`.padStart(2, '0');
+
+        container.appendChild(e);
+    }
+
+    /* empty calender cells */
+    for (let i = 0; i < 24 * resolution * numDays; i++) {
+        const e = createElementFromTemplate("template-calendar-grid-cell");
+        //e.style.background = "green";
+
+        container.appendChild(e);
     }
 }
 
 function displayConnections(container, connections) {
+    const style = getComputedStyle(container);
+    const resolution = Number(style.getPropertyValue('--resolution'));
+
     for (let i in connections) {
-        container.appendChild(instantiateConnectionGridTemplate(i, connections[i]))
+        const connection = connections[i];
+
+        const rowStart = Math.round(connection.start * resolution)
+        const rowEnd = Math.round(connection.end * resolution)
+
+        const e = createElementFromTemplate("template-calendar-connection");
+        e.id = i;
+        e.innerText = connection.title;
+        e.style.gridRowStart = rowStart + 1;
+        e.style.gridRowEnd = rowEnd + 1;
+        e.style.gridColumn = 2;
+        e.style.background = "red";
+
+        container.appendChild(e);
     }
 }

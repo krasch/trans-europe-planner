@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="style/calender.css">
 
     <!-- scripts -->
-    <script src="script/calender.js"></script>
+    <script src="script/calendar.js"></script>
     <script src="script/map.js"></script>
     <script src="script/util.js"></script>
 
@@ -28,35 +28,35 @@
 <div id="map"></div>
 <div id="calendar">
 
-    <!-- hourly grid as background -->
-    <div id="hourly-grid">
-        <template id="template-hourly-grid">
-            <div class="label"></div>
-        </template>
-    </div>
+    <!-- hour label at the left side of calendar -->
+    <template id="template-calendar-grid-label">
+        <div class="calendar-grid-label"></div>
+    </template>
 
-    <!-- fine-grained grid to display train connections-->
-    <div id="connection-grid">
-        <template id="template-connection-grid">
-            <div class="label" draggable="true"></div>
-        </template>
-    </div>
+    <!-- the cells of the calendar -->
+    <template id="template-calendar-grid-cell">
+        <div class="calendar-grid-cell"></div>
+    </template>
+
+    <!-- the connections to be displayed in the calendar -->
+    <template id="template-calendar-connection">
+        <div class="calendar-connection" draggable="true"></div>
+    </template>
+
+    <div id="calendar-grid"></div>
 
 </div>
 
 
 <script>
-    const map = new maplibregl.Map({
+    /*const map = new maplibregl.Map({
       container: 'map',
       style: "style/outdoors-modified.json",
       center: [13.408333, 52.518611],
       zoom: 4
     });
 
-    map.on('load', () => initMap(map));
-
-    const hourlyGrid = document.getElementById("hourly-grid");
-    initHourlyGrid(hourlyGrid);
+    map.on('load', () => initMap(map));*/
 
     const connections = [
         {
@@ -71,9 +71,9 @@
         }
     ];
 
-
-    const connectionGrid = document.getElementById("connection-grid");
-    displayConnections(connectionGrid, connections);
+    const calendar = document.getElementById("calendar-grid");
+    initCalendarGrid(calendar);
+    displayConnections(calendar, connections);
 
     /*connectionGrid.addEventListener("dragstart", e => {
         console.log("start");

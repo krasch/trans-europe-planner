@@ -1,5 +1,9 @@
-function createElementWithId(tagName, id){
-    const element = document.createElement(tagName);
-    element.id = id;
+function createElementFromTemplate(templateId){
+
+    const template = document.getElementById(templateId);
+
+    // create new element by cloning template
+    const element = template.content.firstElementChild.cloneNode(true);
+
     return element;
 }

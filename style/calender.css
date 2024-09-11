@@ -4,41 +4,56 @@
     top: 30px;
 }
 
-#calendar > #hourly-grid, #calendar > #connection-grid {
+#calendar > #calendar-grid {
     position: absolute;
-    width: 300px;
-
-    /*max-height: 500px;*/
+    width: 300px; /* todo */
 }
 
-/********************************************************
-* hourly grid as background
-*********************************************************/
-
-#calendar > #hourly-grid {
+#calendar > #calendar-grid {
     display: grid;
+
+    --resolution: 2; /* must also change n-th child below */
+    --num-days: 2;
+    --num-rows: calc(24*var(--resolution));
+
     /*grid-template-rows: repeat(24, 1fr);*/
-    grid-template-rows: repeat(24, 1.5rem);
+    grid-auto-flow: column;
+    grid-template-rows: repeat(var(--num-rows), 1fr);
+    grid-template-columns: 3rem repeat(var(--num-days), 1fr);
 
     border: 1px solid lightgrey;
     border-radius: 10px;
     background-color: white;
 }
 
-/* grid lines */
-#calendar > #hourly-grid > div {
-    border-top: 1px dashed lightgrey;
-}
-/*#calendar > #hourly-grid > div:last-child {
-    border-bottom: 1px dashed lightgrey;
-}*/
-#calendar > #hourly-grid > div:first-child {
-    border-top: 0;
+/* grid lines - IMPORTANT change here when resolution changes */
+#calendar > #calendar-grid {
+    /* line to the left of each day */
+    .calendar-grid-cell {
+        border-left: 1px dashed lightgrey;
+    }
+
+    /* line on top of each hour */
+    .calendar-grid-label,
+    .calendar-grid-cell:nth-child(2n+1) /* first number in () is resolution */{
+        border-top: 1px dashed lightgrey;
+    }
+
+    /* except for the first hour */
+    .calendar-grid-label:first-child,
+    .calendar-grid-cell:nth-child(0) { /* todo does not work */
+        border-top: 0;
+    }
 }
 
-#calendar > #hourly-grid > div {
+
+#calendar > #calendar-grid > .calendar-grid-label {
     font-size: 0.8rem;
+    min-height: 1.2rem;
+
     color: darkgrey;
+    text-align: center; /* horizontally center hour label */
+    align-content: center; /* vertically center hour label */
 }
 
 /********************************************************
