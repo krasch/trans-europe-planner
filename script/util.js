@@ -15,3 +15,9 @@ function timeStringToFloat(time) {
     const minutes = hoursMinutes[1] ? parseInt(hoursMinutes[1], 10) : 0;
     return hours + minutes / 60;
 }
+
+function differenceInDays(earlierDate, laterDate){
+    const diffMilliseconds = laterDate - earlierDate;
+    const diffDays = diffMilliseconds / 1000.0 / 60.0 / 60.0 / 24.0;
+    return diffDays; // todo rounding or assert that no hours
+}

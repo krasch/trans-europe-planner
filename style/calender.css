@@ -6,7 +6,7 @@
 
 #calendar > #calendar-grid {
     position: absolute;
-    width: 300px; /* todo */
+    width: 400px; /* todo */
 
     font-size: 0.8rem;
 }
@@ -15,7 +15,7 @@
     display: grid;
 
     --resolution: 2; /* must also change n-th child below */
-    --num-days: 2;
+    --num-days: 3;
     --num-rows: calc(24*var(--resolution));
 
     /*grid-template-rows: repeat(24, 1fr);*/
@@ -36,19 +36,24 @@
     }
 
     /* line on top of each hour */
-    > .calendar-grid-label,
+    > .calendar-grid-hour,
     > .calendar-grid-cell:nth-child(2n+1) /* first number in () is resolution */{
         border-top: 1px dashed lightgrey;
     }
 
+    /* line on top of fine-grained cells, only activated during drag&drop */
+    > .calendar-grid-cell:nth-child(2n) /* first number in () is resolution */{
+        border-top: 1px dashed white;
+    }
+
     /* except for the first hour */
-    > .calendar-grid-label:first-child,
+    > .calendar-grid-hour:first-child,
     > .calendar-grid-cell:nth-child(0) { /* todo does not work */
         border-top: 0;
     }
 }
 
-#calendar > #calendar-grid > .calendar-grid-label {
+#calendar > #calendar-grid > .calendar-grid-hour{
     min-height: 1.2rem;
 
     color: darkgrey;
@@ -92,6 +97,7 @@
     border: 1px solid darkgrey;
     border-radius: 10px;
     padding: 5px;
+    margin: 0 5px 0 5px;
 
     &:hover {
         cursor: move;

@@ -28,9 +28,14 @@
 <div id="map"></div>
 <div id="calendar">
 
+    <!-- date label at the top of calendar -->
+    <template id="template-calendar-grid-date">
+        <div class="calendar-grid-date"></div>
+    </template>
+
     <!-- hour label at the left side of calendar -->
-    <template id="template-calendar-grid-label">
-        <div class="calendar-grid-label"></div>
+    <template id="template-calendar-grid-hour">
+        <div class="calendar-grid-hour"></div>
     </template>
 
     <!-- the cells of the calendar -->
@@ -41,7 +46,7 @@
     <!-- the connections to be displayed in the calendar -->
     <template id="template-calendar-connection">
         <div class="calendar-connection" draggable="true">
-            <img class="connection-icon" src="images/train.svg" alt="icon of train"/>
+            <img class="connection-icon" alt="icon of the connection TODO"/>
             <span class="connection-number"></span>
             <span class="connection-start-time"></span>
             <span class="connection-start-station"></span>
@@ -50,6 +55,7 @@
         </div>
     </template>
 
+    <!-- All calendar elements will be added into the container below dynamically -->
     <div id="calendar-grid"></div>
 
 </div>
@@ -67,19 +73,40 @@
 
     const connections = [
         {
+            icon: "images/train.svg",
             trainNumber: "ICE505",
+            startDate: new Date("2023-10-16"),
             startTime: "8:29",
             startStation: "Berlin Hbf",
             endTime: "13:02",
             endStation: "München Hbf",
         },
         {
+            icon: "images/train.svg",
             trainNumber: "EC87",
+            startDate: new Date("2023-10-16"),
             startTime: "13:34",
             startStation: "München Hbf",
             endTime: "18:58",
             endStation: "Verona PN",
-        }
+        },
+        /*{
+            trainNumber: "FR  8503",
+            startDate: new Date("2023-10-17"),
+            startTime: "09:37",
+            startStation: "Verona PN",
+            endTime: "11:24",
+            endStation: "Firenze SMN",
+        }*/
+        {
+            icon: "images/ferry.svg",
+            trainNumber: "",
+            startDate: new Date("2023-10-18"),
+            startTime: "07:00",
+            startStation: "Livorno",
+            endTime: "11:30",
+            endStation: "Bastia",
+        },
     ];
 
     const calendar = document.getElementById("calendar-grid");

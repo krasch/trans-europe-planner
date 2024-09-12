@@ -1,5 +1,7 @@
 let constHoverLine = null;
 
+const calenderStartDate = new Date("2023-10-16");
+
 function initCalendarGrid(container) {
     const style = getComputedStyle(container);
     const resolution = Number(style.getPropertyValue('--resolution'));
@@ -7,7 +9,7 @@ function initCalendarGrid(container) {
 
     /* hour label on left side of calendar */
     for (let hour = 0; hour < 24; hour++) {
-        const element = createElementFromTemplate("template-calendar-grid-label");
+        const element = createElementFromTemplate("template-calendar-grid-hour");
 
         element.style.gridRowStart = hour * resolution + 1;
         element.style.gridRowEnd =  (hour + 1) * resolution + 1;
@@ -34,13 +36,30 @@ function initCalendarGrid(container) {
 
             element.addEventListener("dragover", e => {
                 e.preventDefault(); // todo check for event type
+
+                if (constHoverLine){
+                    const hover = document.getElementById(constHoverLine);
+                    if (hover.style.gridRowStart % 2 === 0){
+                        hover.style.borderTopColor = "white";
+                    }
+                    else {
+                        hover.style.borderTopColor = "lightgrey";
+                    }
+                    constHoverLine = null;
+                }
             });
 
             element.addEventListener("dragend", e => {
                 e.preventDefault(); // todo check for event type
 
                 if (constHoverLine){
-                    document.getElementById(constHoverLine).style.borderTopColor = "lightgrey";
+                    const hover = document.getElementById(constHoverLine);
+                    if (hover.style.gridRowStart % 2 === 0){
+                        hover.style.borderTopColor = "white";
+                    }
+                    else {
+                        hover.style.borderTopColor = "lightgrey";
+                    }
                     constHoverLine = null;
                 }
             });
@@ -57,17 +76,27 @@ function initCalendarGrid(container) {
                 connectionDiv.style.gridColumn = e.target.style.gridColumn;
 
                 if (constHoverLine){
-                    document.getElementById(constHoverLine).style.borderTopColor = "lightgrey";
+                    const hover = document.getElementById(constHoverLine);
+                    if (hover.style.gridRowStart % 2 === 0){
+                        hover.style.borderTopColor = "white";
+                    }
+                    else {
+                        hover.style.borderTopColor = "lightgrey";
+                    }
                     constHoverLine = null;
                 }
 
             });
 
             element.addEventListener("dragover", e => {
-                console.log(constHoverLine, e.target.id);
-
                 if (constHoverLine && (constHoverLine !== e.target.id)){
-                    document.getElementById(constHoverLine).style.borderTopColor = "lightgrey";
+                    const hover = document.getElementById(constHoverLine);
+                    if (hover.style.gridRowStart % 2 === 0){
+                        hover.style.borderTopColor = "white";
+                    }
+                    else {
+                        hover.style.borderTopColor = "lightgrey";
+                    }
                 }
 
                 constHoverLine = e.target.id;
@@ -89,14 +118,16 @@ function displayConnections(container, connections) {
 
         const rowStart = Math.round(timeStringToFloat(connection.startTime) * resolution);
         const rowEnd = Math.round(timeStringToFloat(connection.endTime) * resolution);
+        const column = differenceInDays(calenderStartDate, connection.startDate);
 
         const element = createElementFromTemplate("template-calendar-connection");
         element.id = i;
         //element.innerText = connection.title;
         element.style.gridRowStart = rowStart + 1;
         element.style.gridRowEnd = rowEnd + 1;
-        element.style.gridColumn = 2;
+        element.style.gridColumn = column + 2;
 
+        element.getElementsByClassName("connection-icon")[0].src = connection.icon;
         element.getElementsByClassName("connection-number")[0].innerText = connection.trainNumber;
         element.getElementsByClassName("connection-start-time")[0].innerText = connection.startTime;
         element.getElementsByClassName("connection-start-station")[0].innerText = connection.startStation;
