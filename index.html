@@ -12,10 +12,10 @@
 
     <!-- styles -->
     <link rel="stylesheet" href="style/style.css">
-    <link rel="stylesheet" href="style/calender.css">
+    <link rel="stylesheet" href="style/calendar.css">
 
     <!-- scripts -->
-    <script src="script/calender.js"></script>
+    <script src="script/calendar.js"></script>
     <script src="script/map.js"></script>
     <script src="script/util.js"></script>
 
@@ -28,19 +28,35 @@
 <div id="map"></div>
 <div id="calendar">
 
-    <!-- hourly grid as background -->
-    <div id="hourly-grid">
-        <template id="template-hourly-grid">
-            <div class="label"></div>
-        </template>
-    </div>
+    <!-- date label at the top of calendar -->
+    <template id="template-calendar-grid-date">
+        <div class="calendar-grid-date"></div>
+    </template>
 
-    <!-- fine-grained grid to display train connections-->
-    <div id="connection-grid">
-        <template id="template-connection-grid">
-            <div class="label" draggable="true"></div>
-        </template>
-    </div>
+    <!-- hour label at the left side of calendar -->
+    <template id="template-calendar-grid-hour">
+        <div class="calendar-grid-hour"></div>
+    </template>
+
+    <!-- the cells of the calendar -->
+    <template id="template-calendar-grid-cell">
+        <div class="calendar-grid-cell"></div>
+    </template>
+
+    <!-- the connections to be displayed in the calendar -->
+    <template id="template-calendar-connection">
+        <div class="calendar-connection" draggable="true">
+            <img class="connection-icon" alt="icon of the connection TODO"/>
+            <span class="connection-number"></span>
+            <span class="connection-start-time"></span>
+            <span class="connection-start-station"></span>
+            <span class="connection-end-time"></span>
+            <span class="connection-end-station"></span>
+        </div>
+    </template>
+
+    <!-- All calendar elements will be added into the container below dynamically -->
+    <div id="calendar-grid"></div>
 
 </div>
 
@@ -55,47 +71,47 @@
 
     map.on('load', () => initMap(map));
 
-    const hourlyGrid = document.getElementById("hourly-grid");
-    initHourlyGrid(hourlyGrid);
-
     const connections = [
         {
-            start: 8.5,
-            end: 13,
-            title: 'Berlin -> München'
+            icon: "images/train.svg",
+            trainNumber: "ICE505",
+            startDate: new Date("2023-10-16"),
+            startTime: "8:29",
+            startStation: "Berlin Hbf",
+            endTime: "13:02",
+            endStation: "München Hbf",
         },
         {
-            start: 13.5,
-            end: 19,
-            title: 'München -> Innsbruck',
-        }
+            icon: "images/train.svg",
+            trainNumber: "EC87",
+            startDate: new Date("2023-10-16"),
+            startTime: "13:34",
+            startStation: "München Hbf",
+            endTime: "18:58",
+            endStation: "Verona PN",
+        },
+        /*{
+            trainNumber: "FR  8503",
+            startDate: new Date("2023-10-17"),
+            startTime: "09:37",
+            startStation: "Verona PN",
+            endTime: "11:24",
+            endStation: "Firenze SMN",
+        }*/
+        {
+            icon: "images/ferry.svg",
+            trainNumber: "",
+            startDate: new Date("2023-10-18"),
+            startTime: "07:00",
+            startStation: "Livorno",
+            endTime: "11:30",
+            endStation: "Bastia",
+        },
     ];
 
-
-    const connectionGrid = document.getElementById("connection-grid");
-    displayConnections(connectionGrid, connections);
-
-    /*connectionGrid.addEventListener("dragstart", e => {
-        console.log("start");
-        e.dataTransfer.dropEffect = "move";
-        e.dataTransfer.setData("connectionId", e.target.id);
-    });
-
-    connectionGrid.addEventListener("drop", e => {
-        e.preventDefault();
-        console.log("drop");
-        const connectionId = e.dataTransfer.getData("connectionId");
-        const connectionDiv = document.getElementById(connectionId);
-
-        console.log(`${connectionDiv.style.gridRowStart}->${window.getComputedStyle(connectionDiv).gridRowStart}`);
-        console.log(window.getComputedStyle(connectionDiv));
-    });
-
-    connectionGrid.addEventListener("dragover", e => {
-        e.preventDefault();
-    });*/
-
-
+    const calendar = document.getElementById("calendar-grid");
+    initCalendarGrid(calendar);
+    displayConnections(calendar, connections);
 
 </script>
 
