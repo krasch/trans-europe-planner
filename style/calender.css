@@ -31,23 +31,22 @@
 /* grid lines - IMPORTANT change here when resolution changes */
 #calendar > #calendar-grid {
     /* line to the left of each day */
-    .calendar-grid-cell {
+    > .calendar-grid-cell {
         border-left: 1px dashed lightgrey;
     }
 
     /* line on top of each hour */
-    .calendar-grid-label,
-    .calendar-grid-cell:nth-child(2n+1) /* first number in () is resolution */{
+    > .calendar-grid-label,
+    > .calendar-grid-cell:nth-child(2n+1) /* first number in () is resolution */{
         border-top: 1px dashed lightgrey;
     }
 
     /* except for the first hour */
-    .calendar-grid-label:first-child,
-    .calendar-grid-cell:nth-child(0) { /* todo does not work */
+    > .calendar-grid-label:first-child,
+    > .calendar-grid-cell:nth-child(0) { /* todo does not work */
         border-top: 0;
     }
 }
-
 
 #calendar > #calendar-grid > .calendar-grid-label {
     min-height: 1.2rem;
@@ -93,6 +92,10 @@
     border: 1px solid darkgrey;
     border-radius: 10px;
     padding: 5px;
+
+    &:hover {
+        cursor: move;
+    }
 
     .connection-icon {
         height: 1rem;

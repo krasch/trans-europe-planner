@@ -1,3 +1,5 @@
+let constHoverLine = null;
+
 function initCalendarGrid(container) {
     const style = getComputedStyle(container);
     const resolution = Number(style.getPropertyValue('--resolution'));
@@ -23,6 +25,7 @@ function initCalendarGrid(container) {
         for (let i = 0; i < 24 * resolution; i++) {
 
             const element = createElementFromTemplate("template-calendar-grid-cell");
+            element.id = `calender-cell-${day}-${i}`;
             element.style.gridRowStart = i+1;
             element.style.gridRowEnd = i+1+1;
             element.style.gridColumn = day+2; // column1 = hour labels
@@ -31,6 +34,15 @@ function initCalendarGrid(container) {
 
             element.addEventListener("dragover", e => {
                 e.preventDefault(); // todo check for event type
+            });
+
+            element.addEventListener("dragend", e => {
+                e.preventDefault(); // todo check for event type
+
+                if (constHoverLine){
+                    document.getElementById(constHoverLine).style.borderTopColor = "lightgrey";
+                    constHoverLine = null;
+                }
             });
 
             element.addEventListener("drop", e => {
@@ -44,7 +56,23 @@ function initCalendarGrid(container) {
                 connectionDiv.style.gridRowEnd = Number(e.target.style.gridRowStart) + connectionLength;
                 connectionDiv.style.gridColumn = e.target.style.gridColumn;
 
+                if (constHoverLine){
+                    document.getElementById(constHoverLine).style.borderTopColor = "lightgrey";
+                    constHoverLine = null;
+                }
+
             });
+
+            element.addEventListener("dragover", e => {
+                console.log(constHoverLine, e.target.id);
+
+                if (constHoverLine && (constHoverLine !== e.target.id)){
+                    document.getElementById(constHoverLine).style.borderTopColor = "lightgrey";
+                }
+
+                constHoverLine = e.target.id;
+                e.target.style.borderTopColor = "red";
+            })
 
             container.appendChild(element);
         }

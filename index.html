@@ -41,7 +41,7 @@
     <!-- the connections to be displayed in the calendar -->
     <template id="template-calendar-connection">
         <div class="calendar-connection" draggable="true">
-            <img class="connection-icon" src="images/train-1045.svg" alt="icon of train"/>
+            <img class="connection-icon" src="images/train.svg" alt="icon of train"/>
             <span class="connection-number"></span>
             <span class="connection-start-time"></span>
             <span class="connection-start-station"></span>
@@ -85,28 +85,6 @@
     const calendar = document.getElementById("calendar-grid");
     initCalendarGrid(calendar);
     displayConnections(calendar, connections);
-
-    /*connectionGrid.addEventListener("dragstart", e => {
-        console.log("start");
-        e.dataTransfer.dropEffect = "move";
-        e.dataTransfer.setData("connectionId", e.target.id);
-    });
-
-    connectionGrid.addEventListener("drop", e => {
-        e.preventDefault();
-        console.log("drop");
-        const connectionId = e.dataTransfer.getData("connectionId");
-        const connectionDiv = document.getElementById(connectionId);
-
-        console.log(`${connectionDiv.style.gridRowStart}->${window.getComputedStyle(connectionDiv).gridRowStart}`);
-        console.log(window.getComputedStyle(connectionDiv));
-    });
-
-    connectionGrid.addEventListener("dragover", e => {
-        e.preventDefault();
-    });*/
-
-
 
 </script>
 
