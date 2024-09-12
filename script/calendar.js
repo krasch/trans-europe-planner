@@ -59,16 +59,21 @@ function displayConnections(container, connections) {
     for (let i in connections) {
         const connection = connections[i];
 
-        const rowStart = Math.round(connection.start * resolution);
-        const rowEnd = Math.round(connection.end * resolution);
+        const rowStart = Math.round(timeStringToFloat(connection.startTime) * resolution);
+        const rowEnd = Math.round(timeStringToFloat(connection.endTime) * resolution);
 
         const element = createElementFromTemplate("template-calendar-connection");
         element.id = i;
-        element.innerText = connection.title;
+        //element.innerText = connection.title;
         element.style.gridRowStart = rowStart + 1;
         element.style.gridRowEnd = rowEnd + 1;
         element.style.gridColumn = 2;
-        element.style.background = "red";
+
+        element.getElementsByClassName("connection-number")[0].innerText = connection.trainNumber;
+        element.getElementsByClassName("connection-start-time")[0].innerText = connection.startTime;
+        element.getElementsByClassName("connection-start-station")[0].innerText = connection.startStation;
+        element.getElementsByClassName("connection-end-time")[0].innerText = connection.endTime;
+        element.getElementsByClassName("connection-end-station")[0].innerText = connection.endStation;
 
         element.addEventListener("dragstart", e => {
             e.dataTransfer.dropEffect = "move";

@@ -7,6 +7,8 @@
 #calendar > #calendar-grid {
     position: absolute;
     width: 300px; /* todo */
+
+    font-size: 0.8rem;
 }
 
 #calendar > #calendar-grid {
@@ -48,7 +50,6 @@
 
 
 #calendar > #calendar-grid > .calendar-grid-label {
-    font-size: 0.8rem;
     min-height: 1.2rem;
 
     color: darkgrey;
@@ -56,21 +57,44 @@
     align-content: center; /* vertically center hour label */
 }
 
-/********************************************************
-* fine-grained grid to display train connections
-*********************************************************/
-
-#calendar > #connection-grid {
+#calendar > #calendar-grid > .calendar-connection {
     display: grid;
-    grid-template-rows: repeat(48, 0.75rem);
-    grid-template-columns: 1fr;
-}
 
-#calendar > #connection-grid > div {
-    margin-left: 3rem;
-    color: lightgrey;
-    background-color: darkgreen;
-    width: 100px;
-    text-align: center;
+    grid-template-areas:
+    "icon number"
+    "start-time start-station"
+    "end-time end-station";
+
+    .connection-icon {
+        grid-area: icon;
+    }
+
+    .connection-number {
+        grid-area: number;
+    }
+
+    .connection-start-time {
+        grid-area: start-time;
+    }
+
+    .connection-start-station {
+        grid-area: start-station;
+    }
+
+    .connection-end-time {
+        grid-area: end-time;
+    }
+
+    .connection-end-station {
+        grid-area: end-station;
+    }
+
+    background-color: rgba(255, 0, 0, 0.4);
+    border: 1px solid darkgrey;
     border-radius: 10px;
+    padding: 5px;
+
+    .connection-icon {
+        height: 1rem;
+    }
 }

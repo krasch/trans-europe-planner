@@ -40,7 +40,14 @@
 
     <!-- the connections to be displayed in the calendar -->
     <template id="template-calendar-connection">
-        <div class="calendar-connection" draggable="true"></div>
+        <div class="calendar-connection" draggable="true">
+            <img class="connection-icon" src="images/train-1045.svg" alt="icon of train"/>
+            <span class="connection-number"></span>
+            <span class="connection-start-time"></span>
+            <span class="connection-start-station"></span>
+            <span class="connection-end-time"></span>
+            <span class="connection-end-station"></span>
+        </div>
     </template>
 
     <div id="calendar-grid"></div>
@@ -60,14 +67,18 @@
 
     const connections = [
         {
-            start: 8.5,
-            end: 13,
-            title: 'Berlin -> München'
+            trainNumber: "ICE505",
+            startTime: "8:29",
+            startStation: "Berlin Hbf",
+            endTime: "13:02",
+            endStation: "München Hbf",
         },
         {
-            start: 13.5,
-            end: 19,
-            title: 'München -> Innsbruck',
+            trainNumber: "EC87",
+            startTime: "13:34",
+            startStation: "München Hbf",
+            endTime: "18:58",
+            endStation: "Verona PN",
         }
     ];
 
