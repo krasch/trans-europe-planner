@@ -14,7 +14,7 @@
 #calendar > #calendar-grid {
     display: grid;
 
-    --resolution: 2; /* must also change n-th child below */
+    --resolution: 4; /* must also change n-th child below */
     --num-days: 3;
     --num-rows: calc(24*var(--resolution));
 
@@ -37,12 +37,12 @@
 
     /* line on top of each hour */
     > .calendar-grid-hour,
-    > .calendar-grid-cell:nth-child(2n+1) /* first number in () is resolution */{
+    > .calendar-grid-cell:nth-child(4n+1) /* first number in () is resolution */{
         border-top: 1px dashed lightgrey;
     }
 
     /* line on top of fine-grained cells, only activated during drag&drop */
-    > .calendar-grid-cell:nth-child(2n) /* first number in () is resolution */{
+    > .calendar-grid-cell /* first number in () is resolution */{
         border-top: 1px dashed white;
     }
 

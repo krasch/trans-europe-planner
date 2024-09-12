@@ -34,16 +34,17 @@ function initCalendarGrid(container) {
 
             //element.style.background = "green";
 
+            /* todo why do I have two dragover event listeners */
             element.addEventListener("dragover", e => {
                 e.preventDefault(); // todo check for event type
 
                 if (constHoverLine){
                     const hover = document.getElementById(constHoverLine);
-                    if (hover.style.gridRowStart % 2 === 0){
-                        hover.style.borderTopColor = "white";
+                    if (hover.style.gridRowStart % resolution === 1){
+                        hover.style.borderTopColor = "lightgrey";
                     }
                     else {
-                        hover.style.borderTopColor = "lightgrey";
+                        hover.style.borderTopColor = "white";
                     }
                     constHoverLine = null;
                 }
@@ -54,11 +55,11 @@ function initCalendarGrid(container) {
 
                 if (constHoverLine){
                     const hover = document.getElementById(constHoverLine);
-                    if (hover.style.gridRowStart % 2 === 0){
-                        hover.style.borderTopColor = "white";
+                    if (hover.style.gridRowStart % resolution === 1){
+                        hover.style.borderTopColor = "lightgrey";
                     }
                     else {
-                        hover.style.borderTopColor = "lightgrey";
+                        hover.style.borderTopColor = "white";
                     }
                     constHoverLine = null;
                 }
@@ -77,11 +78,11 @@ function initCalendarGrid(container) {
 
                 if (constHoverLine){
                     const hover = document.getElementById(constHoverLine);
-                    if (hover.style.gridRowStart % 2 === 0){
-                        hover.style.borderTopColor = "white";
+                    if (hover.style.gridRowStart % resolution === 1){
+                        hover.style.borderTopColor = "lightgrey";
                     }
                     else {
-                        hover.style.borderTopColor = "lightgrey";
+                        hover.style.borderTopColor = "white";
                     }
                     constHoverLine = null;
                 }
@@ -101,7 +102,7 @@ function initCalendarGrid(container) {
 
                 constHoverLine = e.target.id;
                 e.target.style.borderTopColor = "red";
-            })
+            });
 
             container.appendChild(element);
         }
