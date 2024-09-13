@@ -1,4 +1,4 @@
-name: Run linter, unit tests, etc
+name: Check code formatting, run unit tests, etc
 on: push
 
 jobs:
@@ -10,6 +10,9 @@ jobs:
 
       - name: Install javascript modules
         run: npm install
+
+      - name: Check code formatting
+        run: npm check-pretty
 
       - name: Run tests
         run: npm test
