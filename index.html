@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="style/calendar.css">
 
     <!-- scripts -->
+    <script src="script/data.js"></script>
     <script src="script/calendar.js"></script>
     <script src="script/map.js"></script>
     <script src="script/util.js"></script>
@@ -70,44 +71,6 @@
     });
 
     map.on('load', () => initMap(map));
-
-    const connections = [
-        {
-            icon: "images/train.svg",
-            trainNumber: "ICE505",
-            startDate: new Date("2023-10-16"),
-            startTime: "8:29",
-            startStation: "Berlin Hbf",
-            endTime: "13:02",
-            endStation: "München Hbf",
-        },
-        {
-            icon: "images/train.svg",
-            trainNumber: "EC87",
-            startDate: new Date("2023-10-16"),
-            startTime: "13:34",
-            startStation: "München Hbf",
-            endTime: "18:58",
-            endStation: "Verona PN",
-        },
-        /*{
-            trainNumber: "FR  8503",
-            startDate: new Date("2023-10-17"),
-            startTime: "09:37",
-            startStation: "Verona PN",
-            endTime: "11:24",
-            endStation: "Firenze SMN",
-        }*/
-        {
-            icon: "images/ferry.svg",
-            trainNumber: "",
-            startDate: new Date("2023-10-18"),
-            startTime: "07:00",
-            startStation: "Livorno",
-            endTime: "11:30",
-            endStation: "Bastia",
-        },
-    ];
 
     const calendar = document.getElementById("calendar-grid");
     initCalendarGrid(calendar);

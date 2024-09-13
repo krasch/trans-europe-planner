@@ -1,4 +1,4 @@
-let constHoverLine = null;
+let currentHoverLine = null;
 
 const calenderStartDate = new Date("2023-10-16");
 
@@ -34,39 +34,9 @@ function initCalendarGrid(container) {
 
             //element.style.background = "green";
 
-            /* todo why do I have two dragover event listeners */
-            element.addEventListener("dragover", e => {
-                e.preventDefault(); // todo check for event type
-
-                if (constHoverLine){
-                    const hover = document.getElementById(constHoverLine);
-                    if (hover.style.gridRowStart % resolution === 1){
-                        hover.style.borderTopColor = "lightgrey";
-                    }
-                    else {
-                        hover.style.borderTopColor = "white";
-                    }
-                    constHoverLine = null;
-                }
-            });
-
-            element.addEventListener("dragend", e => {
-                e.preventDefault(); // todo check for event type
-
-                if (constHoverLine){
-                    const hover = document.getElementById(constHoverLine);
-                    if (hover.style.gridRowStart % resolution === 1){
-                        hover.style.borderTopColor = "lightgrey";
-                    }
-                    else {
-                        hover.style.borderTopColor = "white";
-                    }
-                    constHoverLine = null;
-                }
-            });
-
             element.addEventListener("drop", e => {
                 e.preventDefault(); // todo check for event type
+
                 const connectionId = e.dataTransfer.getData("connectionId");
                 const connectionDiv = document.getElementById(connectionId);
 
@@ -76,32 +46,22 @@ function initCalendarGrid(container) {
                 connectionDiv.style.gridRowEnd = Number(e.target.style.gridRowStart) + connectionLength;
                 connectionDiv.style.gridColumn = e.target.style.gridColumn;
 
-                if (constHoverLine){
-                    const hover = document.getElementById(constHoverLine);
-                    if (hover.style.gridRowStart % resolution === 1){
-                        hover.style.borderTopColor = "lightgrey";
-                    }
-                    else {
-                        hover.style.borderTopColor = "white";
-                    }
-                    constHoverLine = null;
+                if (currentHoverLine){
+                    currentHoverLine.classList.remove("possibleDropTarget");
+                    currentHoverLine = null;
                 }
 
             });
 
             element.addEventListener("dragover", e => {
-                if (constHoverLine && (constHoverLine !== e.target.id)){
-                    const hover = document.getElementById(constHoverLine);
-                    if (hover.style.gridRowStart % 2 === 0){
-                        hover.style.borderTopColor = "white";
-                    }
-                    else {
-                        hover.style.borderTopColor = "lightgrey";
-                    }
+                e.preventDefault(); // todo check for event type
+
+                if (currentHoverLine){
+                    currentHoverLine.classList.remove("possibleDropTarget");
                 }
 
-                constHoverLine = e.target.id;
-                e.target.style.borderTopColor = "red";
+                currentHoverLine = e.target;
+                currentHoverLine.classList.add('possibleDropTarget');
             });
 
             container.appendChild(element);
@@ -122,7 +82,7 @@ function displayConnections(container, connections) {
         const column = differenceInDays(calenderStartDate, connection.startDate);
 
         const element = createElementFromTemplate("template-calendar-connection");
-        element.id = i;
+        element.id = `route${connection.routeId}`;
         //element.innerText = connection.title;
         element.style.gridRowStart = rowStart + 1;
         element.style.gridRowEnd = rowEnd + 1;
@@ -137,7 +97,25 @@ function displayConnections(container, connections) {
 
         element.addEventListener("dragstart", e => {
             e.dataTransfer.dropEffect = "move";
-            e.dataTransfer.setData("connectionId", i);
+            e.dataTransfer.setData("connectionId", element.id);
+        });
+
+        element.addEventListener("mouseover", e => {
+            element.classList.add('routeSelected');
+
+            map.setFeatureState(
+                {source: 'route', id: connection.routeId},
+                {hover: true}
+            );
+        });
+
+        element.addEventListener("mouseout", e => {
+            element.classList.remove('routeSelected');
+
+            map.setFeatureState(
+                {source: 'route', id: connection.routeId},
+                {hover: false}
+            );
         });
 
         container.appendChild(element);

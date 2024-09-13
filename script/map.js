@@ -1,11 +1,3 @@
-const coordinates = {
-    "Berlin": [13.408333, 52.518611],
-    "München": [11.574444, 48.139722],
-    "Verona": [10.99338, 45.43869],
-    "Livorno": [10.314722, 43.55],
-    "Bastia": [9.449722, 42.7]
-}
-
 let hoveredRouteId = null;
 
 function initMap(map){
@@ -16,64 +8,11 @@ function initMap(map){
 
     map.addSource('route', {
         'type': 'geojson',
-        'data': {
-            'type': 'Feature',
-            'properties': {},
-            'geometry': {
-                'type': 'LineString',
-                'coordinates': [
-                    coordinates["Berlin"],
-                    coordinates["München"],
-                    coordinates["Verona"],
-                    coordinates["Livorno"],
-                    coordinates["Bastia"],
-                ]
-            },
-            "id": 1 // must be numeric
-        }
+        'data': route,
     });
     map.addSource('stations', {
         'type': 'geojson',
-        'data': {
-            'type': 'FeatureCollection',
-            'features': [
-                {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': coordinates["Berlin"]
-                    }
-                },
-                {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': coordinates["München"]
-                    }
-                },
-                {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': coordinates["Verona"]
-                    }
-                },
-                {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': coordinates["Livorno"]
-                    }
-                },
-                {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': coordinates["Bastia"]
-                    }
-                },
-            ]
-        }
+        'data': stations
     });
 
     map.addLayer({
@@ -89,8 +28,8 @@ function initMap(map){
             'line-opacity': [
                 'case',
                 ['boolean', ['feature-state', 'hover'], false],
-                1,
-                0.5
+                0.8,
+                0.4
             ],
             'line-width': 4
         }
@@ -108,11 +47,15 @@ function initMap(map){
 
     map.on('mousemove', 'route-layer', (e) => {
         if (e.features.length > 0) {
-            hoveredRouteId = e.features[0].id
+            hoveredRouteId = e.features[0].id;
             map.setFeatureState(
                 {source: 'route', id: hoveredRouteId},
                 {hover: true}
             );
+
+            const calenderRoute = document.getElementById(`route${hoveredRouteId}`);
+            if (calenderRoute)
+                calenderRoute.classList.add('routeSelected');
         }
     });
     map.on('mouseleave', 'route-layer', (e) => {
@@ -121,17 +64,21 @@ function initMap(map){
                 {source: 'route', id: hoveredRouteId},
                 {hover: false}
             );
+
+            const calenderRoute = document.getElementById(`route${hoveredRouteId}`);
+            if (calenderRoute)
+                calenderRoute.classList.remove('routeSelected');
         }
     });
 
-    const popup = new maplibregl.Popup({
+    /*const popup = new maplibregl.Popup({
         closeButton: true,
         closeOnClick: true
     });
 
     map.on('mouseenter', 'route-layer', (e) => {
         popup.setLngLat(e.lngLat).setHTML("test").addTo(map);
-    });
+    });*/
 
     /*map.on('mouseleave', 'route-layer', () => {
       popup.remove();
