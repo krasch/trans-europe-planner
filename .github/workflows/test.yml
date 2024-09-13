@@ -1,0 +1,15 @@
+name: Run linter, unit tests, etc
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: Install javascript modules
+        run: npm install
+
+      - name: Run tests
+        run: npm test
