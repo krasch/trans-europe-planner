@@ -23,5 +23,5 @@ function differenceInDays(earlierDate, laterDate) {
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
-  module.exports.differenceInDays = differenceInDays;
+       module.exports.differenceInDays = differenceInDays;
 }
