@@ -1,11 +1,3 @@
-const coordinates = {
-    "Berlin": [13.408333, 52.518611],
-    "München": [11.574444, 48.139722],
-    "Verona": [10.99338, 45.43869],
-    "Livorno": [10.314722, 43.55],
-    "Bastia": [9.449722, 42.7]
-}
-
 let hoveredRouteId = null;
 
 function initMap(map){
@@ -16,64 +8,11 @@ function initMap(map){
 
     map.addSource('route', {
         'type': 'geojson',
-        'data': {
-            'type': 'Feature',
-            'properties': {},
-            'geometry': {
-                'type': 'LineString',
-                'coordinates': [
-                    coordinates["Berlin"],
-                    coordinates["München"],
-                    coordinates["Verona"],
-                    coordinates["Livorno"],
-                    coordinates["Bastia"],
-                ]
-            },
-            "id": 1 // must be numeric
-        }
+        'data': route,
     });
     map.addSource('stations', {
         'type': 'geojson',
-        'data': {
-            'type': 'FeatureCollection',
-            'features': [
-                {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': coordinates["Berlin"]
-                    }
-                },
-                {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': coordinates["München"]
-                    }
-                },
-                {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': coordinates["Verona"]
-                    }
-                },
-                {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': coordinates["Livorno"]
-                    }
-                },
-                {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': coordinates["Bastia"]
-                    }
-                },
-            ]
-        }
+        'data': stations
     });
 
     map.addLayer({
