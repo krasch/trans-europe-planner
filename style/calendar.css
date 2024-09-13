@@ -41,7 +41,7 @@
         border-top: 1px dashed lightgrey;
     }
 
-    /* line on top of fine-grained cells, only activated during drag&drop */
+    /* line on other cells should usually not be visible */
     > .calendar-grid-cell {
         border-top: 1px dashed white;
     }
@@ -50,6 +50,10 @@
     > .calendar-grid-hour:first-child,
     > .calendar-grid-cell:nth-child(0) { /* todo does not work */
         border-top: 0;
+    }
+
+    > .possibleDropTarget {
+        border-top-color: red;
     }
 }
 
