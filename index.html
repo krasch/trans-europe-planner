@@ -112,16 +112,6 @@
     const calendar = document.getElementById("calendar-grid");
     initCalendarGrid(calendar);
     displayConnections(calendar, connections);
-
-    // total hack to make sure that automatic screenshot to document progress
-    // is only taken after giving the website ample time to render
-    setTimeout(() => {
-        const element = document.createElement("div");
-        element.id = "readyForScreenshot"; // screenshot CI action will wait for this id
-        document.getElementsByTagName("body")[0].appendChild(element);
-    }, 10000);
-
-
 </script>
 
 </body>
