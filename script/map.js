@@ -53,7 +53,9 @@ function initMap(map){
                 {hover: true}
             );
 
-            document.getElementById(`route${hoveredRouteId}`).classList.add('routeSelected');
+            const calenderRoute = document.getElementById(`route${hoveredRouteId}`);
+            if (calenderRoute)
+                calenderRoute.classList.add('routeSelected');
         }
     });
     map.on('mouseleave', 'route-layer', (e) => {
@@ -62,7 +64,10 @@ function initMap(map){
                 {source: 'route', id: hoveredRouteId},
                 {hover: false}
             );
-            document.getElementById(`route${hoveredRouteId}`).classList.remove('routeSelected');
+
+            const calenderRoute = document.getElementById(`route${hoveredRouteId}`);
+            if (calenderRoute)
+                calenderRoute.classList.remove('routeSelected');
         }
     });
 

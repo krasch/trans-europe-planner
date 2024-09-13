@@ -140,6 +140,24 @@ function displayConnections(container, connections) {
             e.dataTransfer.setData("connectionId", element.id);
         });
 
+        element.addEventListener("mouseover", e => {
+            element.classList.add('routeSelected');
+
+            map.setFeatureState(
+                {source: 'route', id: connection.routeId},
+                {hover: true}
+            );
+        });
+
+        element.addEventListener("mouseout", e => {
+            element.classList.remove('routeSelected');
+
+            map.setFeatureState(
+                {source: 'route', id: connection.routeId},
+                {hover: false}
+            );
+        });
+
         container.appendChild(element);
     }
 }
