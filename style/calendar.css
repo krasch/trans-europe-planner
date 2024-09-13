@@ -75,6 +75,7 @@
 
     .connection-icon {
         grid-area: icon;
+        max-height: 15px;
     }
 
     .connection-number {
