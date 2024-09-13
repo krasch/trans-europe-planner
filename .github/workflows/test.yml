@@ -12,7 +12,7 @@ jobs:
         run: npm install
 
       - name: Check code formatting
-        run: npm check-pretty
+        run: npm run check-pretty
 
       - name: Run tests
-        run: npm test
+        run: npm run test
