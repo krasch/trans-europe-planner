@@ -1,0 +1,13 @@
+{
+  "comment": "only using this for running tests, not necessary for building the project",
+  "name": "trans-europe-planner",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "test": "node node_modules/.bin/jest"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
