@@ -28,8 +28,8 @@ function initMap(map){
             'line-opacity': [
                 'case',
                 ['boolean', ['feature-state', 'hover'], false],
-                1,
-                0.5
+                0.8,
+                0.4
             ],
             'line-width': 4
         }
@@ -47,11 +47,13 @@ function initMap(map){
 
     map.on('mousemove', 'route-layer', (e) => {
         if (e.features.length > 0) {
-            hoveredRouteId = e.features[0].id
+            hoveredRouteId = e.features[0].id;
             map.setFeatureState(
                 {source: 'route', id: hoveredRouteId},
                 {hover: true}
             );
+
+            document.getElementById(`route${hoveredRouteId}`).classList.add('routeSelected');
         }
     });
     map.on('mouseleave', 'route-layer', (e) => {
@@ -60,17 +62,18 @@ function initMap(map){
                 {source: 'route', id: hoveredRouteId},
                 {hover: false}
             );
+            document.getElementById(`route${hoveredRouteId}`).classList.remove('routeSelected');
         }
     });
 
-    const popup = new maplibregl.Popup({
+    /*const popup = new maplibregl.Popup({
         closeButton: true,
         closeOnClick: true
     });
 
     map.on('mouseenter', 'route-layer', (e) => {
         popup.setLngLat(e.lngLat).setHTML("test").addTo(map);
-    });
+    });*/
 
     /*map.on('mouseleave', 'route-layer', () => {
       popup.remove();

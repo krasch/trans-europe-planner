@@ -101,7 +101,7 @@ function initCalendarGrid(container) {
                 }
 
                 constHoverLine = e.target.id;
-                e.target.style.borderTopColor = "red";
+                e.target.classList.add('dropTarget');
             });
 
             container.appendChild(element);
@@ -122,7 +122,7 @@ function displayConnections(container, connections) {
         const column = differenceInDays(calenderStartDate, connection.startDate);
 
         const element = createElementFromTemplate("template-calendar-connection");
-        element.id = i;
+        element.id = `route${connection.routeId}`;
         //element.innerText = connection.title;
         element.style.gridRowStart = rowStart + 1;
         element.style.gridRowEnd = rowEnd + 1;
@@ -137,7 +137,7 @@ function displayConnections(container, connections) {
 
         element.addEventListener("dragstart", e => {
             e.dataTransfer.dropEffect = "move";
-            e.dataTransfer.setData("connectionId", i);
+            e.dataTransfer.setData("connectionId", element.id);
         });
 
         container.appendChild(element);
