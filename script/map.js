@@ -30,7 +30,7 @@ function initMap(map) {
     STATIONS[8300120],
     STATIONS[8300151],
     STATIONS[8300157],
-    STATIONS[8300157]
+    STATIONS[8300157],
   ];
 
   map.addSource("transfers", {
