@@ -15,7 +15,8 @@
     <link rel="stylesheet" href="style/calendar.css">
 
     <!-- scripts -->
-    <script src="script/data.js"></script>
+    <script src="style/map.js"></script> <!-- only contains css styles for map in js -->
+    <script src="script/data/stations.js"></script>
     <script src="script/calendar.js"></script>
     <script src="script/map.js"></script>
     <script src="script/util.js"></script>
@@ -72,9 +73,9 @@
 
     map.on('load', () => initMap(map));
 
-    const calendar = document.getElementById("calendar-grid");
+    /*const calendar = document.getElementById("calendar-grid");
     initCalendarGrid(calendar);
-    displayConnections(calendar, connections);
+    displayConnections(calendar, connections);*/
 
 </script>
 

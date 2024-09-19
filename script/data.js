@@ -29,13 +29,13 @@ const connections = [
     endStation: "Verona PN",
   },
   /*{
-        trainNumber: "FR  8503",
-        startDate: new Date("2023-10-17"),
-        startTime: "09:37",
-        startStation: "Verona PN",
-        endTime: "11:24",
-        endStation: "Firenze SMN",
-    }*/
+          trainNumber: "FR  8503",
+          startDate: new Date("2023-10-17"),
+          startTime: "09:37",
+          startStation: "Verona PN",
+          endTime: "11:24",
+          endStation: "Firenze SMN",
+      }*/
   {
     routeId: 5,
     icon: "images/ferry.svg",
@@ -95,54 +95,6 @@ const route = {
         coordinates: [coordinates["Livorno"], coordinates["Bastia"]],
       },
       id: 5,
-    },
-  ],
-};
-
-const stations = {
-  type: "FeatureCollection",
-  features: [
-    {
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: coordinates["Berlin"],
-      },
-    },
-    {
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: coordinates["München"],
-      },
-    },
-    {
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: coordinates["Verona"],
-      },
-    },
-    {
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: coordinates["Florenz"],
-      },
-    },
-    {
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: coordinates["Livorno"],
-      },
-    },
-    {
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: coordinates["Bastia"],
-      },
     },
   ],
 };
