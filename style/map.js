@@ -1,5 +1,5 @@
 const mapStyles = {
-  transferCities: {
+  cityMarkers: {
     type: "symbol",
     layout: {
       "text-font": ["Stadia Semibold"],
@@ -25,11 +25,21 @@ const mapStyles = {
       "text-halo-color": "rgba(255,255,255,0.8)",
     },
   },
+  trains: {
+    type: "line",
+    layout: {
+      "line-join": "round",
+      "line-cap": "round",
+    },
+    paint: {
+      "line-color": "red",
+      "line-opacity": [
+        "case",
+        ["boolean", ["feature-state", "hover"], false],
+        0.8,
+        0.4,
+      ],
+      "line-width": 4,
+    },
+  },
 };
-
-function getMapLayerStyle(styleName, layerId, source) {
-  const style = structuredClone(mapStyles[styleName]);
-  style["id"] = layerId;
-  style["source"] = source;
-  return style;
-}
