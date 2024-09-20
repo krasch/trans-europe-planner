@@ -35,7 +35,7 @@ function initCalendarGrid(container) {
       element.addEventListener("drop", (e) => {
         e.preventDefault(); // todo check for event type
 
-        const connectionId = e.dataTransfer.getData("connectionId");
+        const connectionId = e.dataTransfer.getData("trainId");
         const connectionDiv = document.getElementById(connectionId);
 
         const connectionLength =
@@ -68,61 +68,52 @@ function initCalendarGrid(container) {
   }
 }
 
-function displayConnections(container, connections) {
+function displayRouteOnCalender(container, route) {
   const style = getComputedStyle(container);
   const resolution = Number(style.getPropertyValue("--resolution"));
 
-  for (let i in connections) {
-    const connection = connections[i];
-
+  for (let train of route.trains) {
     const rowStart = Math.round(
-      timeStringToFloat(connection.startTime) * resolution,
+      timeStringToFloat(train.startTime) * resolution,
     );
-    const rowEnd = Math.round(
-      timeStringToFloat(connection.endTime) * resolution,
-    );
-    const column = differenceInDays(calenderStartDate, connection.startDate);
+    const rowEnd = Math.round(timeStringToFloat(train.endTime) * resolution);
+    const column = differenceInDays(calenderStartDate, train.date);
 
     const element = createElementFromTemplate("template-calendar-connection");
-    element.id = `route${connection.routeId}`;
-    //element.innerText = connection.title;
+    element.id = `route${train.id}`;
     element.style.gridRowStart = rowStart + 1;
     element.style.gridRowEnd = rowEnd + 1;
     element.style.gridColumn = column + 2;
 
-    element.getElementsByClassName("connection-icon")[0].src = connection.icon;
+    element.getElementsByClassName("connection-icon")[0].src =
+      `images/${train.type}.svg`;
     element.getElementsByClassName("connection-number")[0].innerText =
-      connection.trainNumber;
-    element.getElementsByClassName("connection-start-time")[0].innerText =
-      connection.startTime;
-    element.getElementsByClassName("connection-start-station")[0].innerText =
-      connection.startStation;
-    element.getElementsByClassName("connection-end-time")[0].innerText =
-      connection.endTime;
-    element.getElementsByClassName("connection-end-station")[0].innerText =
-      connection.endStation;
+      train.name;
+
+    if (train.id !== 40008503 && train.id !== 500018289) {
+      element.getElementsByClassName("connection-start-time")[0].innerText =
+        train.startTime;
+      element.getElementsByClassName("connection-start-station")[0].innerText =
+        train.startStation.name;
+      element.getElementsByClassName("connection-end-time")[0].innerText =
+        train.endTime;
+      element.getElementsByClassName("connection-end-station")[0].innerText =
+        train.endStation.name;
+    }
 
     element.addEventListener("dragstart", (e) => {
       e.dataTransfer.dropEffect = "move";
-      e.dataTransfer.setData("connectionId", element.id);
+      e.dataTransfer.setData("trainId", element.id);
     });
 
     element.addEventListener("mouseover", (e) => {
       element.classList.add("routeSelected");
-
-      map.setFeatureState(
-        { source: "route", id: connection.routeId },
-        { hover: true },
-      );
+      setHover(map, train.id); // todo uses global map variable
     });
 
     element.addEventListener("mouseout", (e) => {
       element.classList.remove("routeSelected");
-
-      map.setFeatureState(
-        { source: "route", id: connection.routeId },
-        { hover: false },
-      );
+      setNoHover(map, train.id); // todo uses global map variable
     });
 
     container.appendChild(element);

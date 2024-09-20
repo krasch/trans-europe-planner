@@ -1,73 +1,42 @@
-let hoveredRouteId = null;
+let hoveredTrainId = null;
+
+// todo this is actually city to json
+function stationToGeojson(station) {
+  return {
+    type: "Feature",
+    geometry: {
+      type: "Point",
+      coordinates: [station.city_longitude, station.city_latitude],
+    },
+    properties: { name: station.city },
+  };
+}
+
+function trainToGeojson(train) {
+  return {
+    type: "Feature",
+    geometry: {
+      type: "LineString",
+      coordinates: [
+        [train.startStation.longitude, train.startStation.latitude],
+        [train.endStation.longitude, train.endStation.latitude],
+      ],
+    },
+    properties: { name: train.name },
+    id: train.id,
+  };
+}
+
+function asGeojsonFeatureCollection(features) {
+  return {
+    type: "FeatureCollection",
+    features: features,
+  };
+}
 
 function initMap(map) {
   map.getCanvas().style.cursor = "default";
-
-  map.setLayoutProperty("place-city-capital", "text-field", ["get", `name:de`]);
   map.setLayoutProperty("place-city", "text-field", ["get", `name:de`]);
-
-  map.addSource("route", {
-    type: "geojson",
-    data: route,
-  });
-  map.addSource("stations", {
-    type: "geojson",
-    data: stations,
-  });
-
-  map.addLayer({
-    id: "route-layer",
-    type: "line",
-    source: "route",
-    layout: {
-      "line-join": "round",
-      "line-cap": "round",
-    },
-    paint: {
-      "line-color": "red",
-      "line-opacity": [
-        "case",
-        ["boolean", ["feature-state", "hover"], false],
-        0.8,
-        0.4,
-      ],
-      "line-width": 4,
-    },
-  });
-  map.addLayer({
-    id: "stations-layer",
-    type: "circle",
-    source: "stations",
-    paint: {
-      "circle-color": "green",
-      "circle-radius": 5,
-      "circle-opacity": 0.5,
-    },
-  });
-
-  map.on("mousemove", "route-layer", (e) => {
-    if (e.features.length > 0) {
-      hoveredRouteId = e.features[0].id;
-      map.setFeatureState(
-        { source: "route", id: hoveredRouteId },
-        { hover: true },
-      );
-
-      const calenderRoute = document.getElementById(`route${hoveredRouteId}`);
-      if (calenderRoute) calenderRoute.classList.add("routeSelected");
-    }
-  });
-  map.on("mouseleave", "route-layer", (e) => {
-    if (hoveredRouteId) {
-      map.setFeatureState(
-        { source: "route", id: hoveredRouteId },
-        { hover: false },
-      );
-
-      const calenderRoute = document.getElementById(`route${hoveredRouteId}`);
-      if (calenderRoute) calenderRoute.classList.remove("routeSelected");
-    }
-  });
 
   /*const popup = new maplibregl.Popup({
         closeButton: true,
@@ -81,4 +50,57 @@ function initMap(map) {
   /*map.on('mouseleave', 'route-layer', () => {
       popup.remove();
     });*/
+}
+
+function setHover(map, trainId) {
+  map.setFeatureState({ source: "trains", id: trainId }, { hover: true });
+}
+
+function setNoHover(map, trainId) {
+  map.setFeatureState({ source: "trains", id: trainId }, { hover: false });
+}
+
+function addToMap(map, styleName, geojsonData) {
+  const sourceName = styleName;
+  const layerName = styleName;
+
+  map.addSource(sourceName, {
+    type: "geojson",
+    data: geojsonData,
+  });
+
+  const style = structuredClone(mapStyles[styleName]);
+  style["id"] = layerName;
+  style["source"] = sourceName;
+  map.addLayer(style);
+}
+
+function displayRouteOnMap(map, route) {
+  const cityMarkers = route.connectingStations.map(stationToGeojson);
+  addToMap(map, "cityMarkers", asGeojsonFeatureCollection(cityMarkers));
+
+  const trains = route.trains.map(trainToGeojson);
+  addToMap(map, "trains", asGeojsonFeatureCollection(trains));
+
+  map.on("mousemove", "trains", (e) => {
+    if (e.features.length > 0) {
+      const newHoveredTrainId = e.features[0].id;
+
+      if (hoveredTrainId && hoveredTrainId !== newHoveredTrainId)
+        setNoHover(map, hoveredTrainId);
+
+      hoveredTrainId = newHoveredTrainId;
+      setHover(map, hoveredTrainId);
+
+      const calenderRoute = document.getElementById(`route${hoveredTrainId}`);
+      if (calenderRoute) calenderRoute.classList.add("routeSelected");
+    }
+  });
+
+  map.on("mouseleave", "trains", (e) => {
+    if (hoveredTrainId) setNoHover(map, hoveredTrainId);
+
+    const calenderRoute = document.getElementById(`route${hoveredTrainId}`);
+    if (calenderRoute) calenderRoute.classList.remove("routeSelected");
+  });
 }
