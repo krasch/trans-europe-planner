@@ -41,6 +41,10 @@ function initCalendarGrid(container) {
 
       element.addEventListener("drop", (e) => {
         e.preventDefault(); // todo check for event type
+        console.log("HALLO");
+
+        //const alternatives = JSON.parse(e.dataTransfer.getData("alternatives"));
+        //console.log(alternatives);
 
         const connectionId = e.dataTransfer.getData("trainId");
         const connectionDiv = document.getElementById(connectionId);
@@ -75,46 +79,57 @@ function initCalendarGrid(container) {
   }
 }
 
-function displayTrainInfo(calendarElement, train) {
+function createCalenderElement(train) {
   const resolution = getResolution();
   const rowStart = Math.round(timeStringToFloat(train.startTime) * resolution);
 
   const rowEnd = Math.round(timeStringToFloat(train.endTime) * resolution);
   const column = differenceInDays(calenderStartDate, train.date);
 
-  calendarElement.id = `route${train.id}`;
-  calendarElement.style.gridRowStart = rowStart + 1;
-  calendarElement.style.gridRowEnd = rowEnd + 1;
-  calendarElement.style.gridColumn = column + 2;
+  const element = createElementFromTemplate("template-calendar-connection");
+  element.id = `route${train.id}`;
+  element.style.gridRowStart = rowStart + 1;
+  element.style.gridRowEnd = rowEnd + 1;
+  element.style.gridColumn = column + 2;
 
-  calendarElement.getElementsByClassName("connection-icon")[0].src =
+  return element;
+}
+
+function fillInTrainInfo(element, train) {
+  element.getElementsByClassName("connection-icon")[0].src =
     `images/${train.type}.svg`;
-  calendarElement.getElementsByClassName("connection-number")[0].innerText =
-    train.name;
+  element.getElementsByClassName("connection-number")[0].innerText = train.name;
 
   if (train.id !== 40008503 && train.id !== 500018289) {
-    calendarElement.getElementsByClassName(
-      "connection-start-time",
-    )[0].innerText = train.startTime;
-    calendarElement.getElementsByClassName(
-      "connection-start-station",
-    )[0].innerText = train.startStation.name;
-    calendarElement.getElementsByClassName("connection-end-time")[0].innerText =
+    element.getElementsByClassName("connection-start-time")[0].innerText =
+      train.startTime;
+    element.getElementsByClassName("connection-start-station")[0].innerText =
+      train.startStation.name;
+    element.getElementsByClassName("connection-end-time")[0].innerText =
       train.endTime;
-    calendarElement.getElementsByClassName(
-      "connection-end-station",
-    )[0].innerText = train.endStation.name;
+    element.getElementsByClassName("connection-end-station")[0].innerText =
+      train.endStation.name;
   }
 }
 
 function displayRouteOnCalender(container, route) {
   for (let train of route.trains) {
-    const element = createElementFromTemplate("template-calendar-connection");
-    displayTrainInfo(element, train);
+    const element = createCalenderElement(train);
+    fillInTrainInfo(element, train);
+
+    //console.log(train);
+    //const alternatives = route.getAlternatives(train);
+    //console.log(alternatives);
 
     element.addEventListener("dragstart", (e) => {
       e.dataTransfer.dropEffect = "move";
       e.dataTransfer.setData("trainId", element.id);
+
+      /*const alternatives = route.getAlternatives(train);
+      e.dataTransfer.setData("alternatives", alternatives);
+
+      const alternative = createCalenderElement(alternatives[200081]);
+      console.log(alternative);*/
     });
 
     element.addEventListener("mouseover", (e) => {

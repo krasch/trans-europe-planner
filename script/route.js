@@ -18,22 +18,38 @@ class Route {
     return stationIds.map((id) => STATIONS[id]);
   }
 
+  _getTrainInfo(train, date){
+    const start = train.stops[0];
+    const end = train.stops.at(-1);
+
+    return {
+        id: train.id,
+        name: train.displayId,
+        type: train.type,
+        date: date,
+        start: start.station,
+        startStation: STATIONS[start.station],
+        startTime: start.time,
+        end: end.station,
+        endStation: STATIONS[end.station],
+        endTime: end.time,
+      };
+
+  }
+
   get trains() {
     const trains = [];
+
     for (const item of this.route) {
       const train = CONNECTIONS[`${item.start} -> ${item.end}`][item.id];
-      trains.push({
-        id: item.id,
-        name: train.displayId,
-        type: item.type,
-        date: item.date,
-        startStation: STATIONS[item.start],
-        startTime: train.stops[0].time,
-        endStation: STATIONS[item.end],
-        endTime: train.stops.at(-1).time,
-      });
+      trains.push(this._getTrainInfo(train, item.date));
     }
 
     return trains;
+  }
+
+  getAlternatives(train){
+    const key = `${train.start} -> ${train.end}`;
+    //for (let trainId in )
   }
 }
