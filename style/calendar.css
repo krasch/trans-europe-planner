@@ -98,21 +98,36 @@
         grid-area: end-station;
     }
 
-    background-color: rgba(255, 0, 0, 0.4);
-    border: 1px solid darkgrey;
     border-radius: 10px;
     padding: 5px;
     margin: 0 5px 0 5px;
 
-    &:hover {
-        cursor: move;
+    &.part-of-trip {
+        border: 1px solid darkgrey;
+        background-color: rgba(255, 0, 0, 0.4);
+
+        &:hover {
+            cursor: move;
+        }
+
+        &.routeSelected {
+            background-color: rgba(255, 0, 0, 0.8);
+        }
     }
 
-    .connection-icon {
-        height: 1rem;
+    &.alternative {
+
+        /*.connection-icon {
+            visibility: hidden;
+        }
+
+        > span {
+            visibility: hidden;
+        }*/
+
+        visibility: hidden;
+        border: 1px solid darkgrey;
     }
 
-    &.routeSelected {
-        background-color: rgba(255, 0, 0, 0.8);
-    }
+
 }

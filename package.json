@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "node node_modules/.bin/jest",
-    "check-pretty": "node node_modules/.bin/prettier script/**/*.js style/**/*.js --check",
-    "make-pretty": "node node_modules/.bin/prettier script/**/*.js style/**/*.js --write"
+    "check-pretty": "node node_modules/.bin/prettier script/ style/*.js --check",
+    "make-pretty": "node node_modules/.bin/prettier script/ style/*.js --write"
   },
   "devDependencies": {
     "jest": "^29.7.0",

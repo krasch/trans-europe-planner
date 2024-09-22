@@ -87,15 +87,11 @@ function createCalenderElement(train) {
   const column = differenceInDays(calenderStartDate, train.date);
 
   const element = createElementFromTemplate("template-calendar-connection");
-  element.id = `route${train.id}`;
+  element.classList.add(`route${train.id}`);
   element.style.gridRowStart = rowStart + 1;
   element.style.gridRowEnd = rowEnd + 1;
   element.style.gridColumn = column + 2;
 
-  return element;
-}
-
-function fillInTrainInfo(element, train) {
   element.getElementsByClassName("connection-icon")[0].src =
     `images/${train.type}.svg`;
   element.getElementsByClassName("connection-number")[0].innerText = train.name;
@@ -110,16 +106,22 @@ function fillInTrainInfo(element, train) {
     element.getElementsByClassName("connection-end-station")[0].innerText =
       train.endStation.name;
   }
+
+  return element;
 }
 
 function displayRouteOnCalender(container, route) {
   for (let train of route.trains) {
     const element = createCalenderElement(train);
-    fillInTrainInfo(element, train);
+    element.classList.add("part-of-trip");
 
     //console.log(train);
-    //const alternatives = route.getAlternatives(train);
-    //console.log(alternatives);
+    const alternatives = Array.from(route.getAlternatives(train));
+    for (let alternative of alternatives) {
+      const alternativeElement = createCalenderElement(alternative);
+      alternativeElement.classList.add("alternative");
+      container.appendChild(alternativeElement);
+    }
 
     element.addEventListener("dragstart", (e) => {
       e.dataTransfer.dropEffect = "move";

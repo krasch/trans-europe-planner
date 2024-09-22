@@ -92,15 +92,19 @@ function displayRouteOnMap(map, route) {
       hoveredTrainId = newHoveredTrainId;
       setHover(map, hoveredTrainId);
 
-      const calenderRoute = document.getElementById(`route${hoveredTrainId}`);
-      if (calenderRoute) calenderRoute.classList.add("routeSelected");
+      for (let leg of document.getElementsByClassName(
+        `route${hoveredTrainId}`,
+      )) {
+        leg.classList.add("routeSelected");
+      }
     }
   });
 
   map.on("mouseleave", "trains", (e) => {
     if (hoveredTrainId) setNoHover(map, hoveredTrainId);
 
-    const calenderRoute = document.getElementById(`route${hoveredTrainId}`);
-    if (calenderRoute) calenderRoute.classList.remove("routeSelected");
+    for (let leg of document.getElementsByClassName(`route${hoveredTrainId}`)) {
+      leg.classList.remove("routeSelected");
+    }
   });
 }
