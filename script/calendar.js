@@ -2,9 +2,16 @@ let currentHoverLine = null;
 
 const calenderStartDate = new Date("2023-10-16");
 
+// todo it would be nice if this was a constant instead of constantly being called
+function getResolution() {
+  const style = getComputedStyle(document.getElementById("calendar-grid"));
+  const resolution = Number(style.getPropertyValue("--resolution"));
+  return resolution;
+}
+
 function initCalendarGrid(container) {
   const style = getComputedStyle(container);
-  const resolution = Number(style.getPropertyValue("--resolution"));
+  const resolution = getResolution();
   const numDays = Number(style.getPropertyValue("--num-days"));
 
   /* hour label on left side of calendar */
@@ -68,38 +75,42 @@ function initCalendarGrid(container) {
   }
 }
 
+function displayTrainInfo(calendarElement, train) {
+  const resolution = getResolution();
+  const rowStart = Math.round(timeStringToFloat(train.startTime) * resolution);
+
+  const rowEnd = Math.round(timeStringToFloat(train.endTime) * resolution);
+  const column = differenceInDays(calenderStartDate, train.date);
+
+  calendarElement.id = `route${train.id}`;
+  calendarElement.style.gridRowStart = rowStart + 1;
+  calendarElement.style.gridRowEnd = rowEnd + 1;
+  calendarElement.style.gridColumn = column + 2;
+
+  calendarElement.getElementsByClassName("connection-icon")[0].src =
+    `images/${train.type}.svg`;
+  calendarElement.getElementsByClassName("connection-number")[0].innerText =
+    train.name;
+
+  if (train.id !== 40008503 && train.id !== 500018289) {
+    calendarElement.getElementsByClassName(
+      "connection-start-time",
+    )[0].innerText = train.startTime;
+    calendarElement.getElementsByClassName(
+      "connection-start-station",
+    )[0].innerText = train.startStation.name;
+    calendarElement.getElementsByClassName("connection-end-time")[0].innerText =
+      train.endTime;
+    calendarElement.getElementsByClassName(
+      "connection-end-station",
+    )[0].innerText = train.endStation.name;
+  }
+}
+
 function displayRouteOnCalender(container, route) {
-  const style = getComputedStyle(container);
-  const resolution = Number(style.getPropertyValue("--resolution"));
-
   for (let train of route.trains) {
-    const rowStart = Math.round(
-      timeStringToFloat(train.startTime) * resolution,
-    );
-    const rowEnd = Math.round(timeStringToFloat(train.endTime) * resolution);
-    const column = differenceInDays(calenderStartDate, train.date);
-
     const element = createElementFromTemplate("template-calendar-connection");
-    element.id = `route${train.id}`;
-    element.style.gridRowStart = rowStart + 1;
-    element.style.gridRowEnd = rowEnd + 1;
-    element.style.gridColumn = column + 2;
-
-    element.getElementsByClassName("connection-icon")[0].src =
-      `images/${train.type}.svg`;
-    element.getElementsByClassName("connection-number")[0].innerText =
-      train.name;
-
-    if (train.id !== 40008503 && train.id !== 500018289) {
-      element.getElementsByClassName("connection-start-time")[0].innerText =
-        train.startTime;
-      element.getElementsByClassName("connection-start-station")[0].innerText =
-        train.startStation.name;
-      element.getElementsByClassName("connection-end-time")[0].innerText =
-        train.endTime;
-      element.getElementsByClassName("connection-end-station")[0].innerText =
-        train.endStation.name;
-    }
+    displayTrainInfo(element, train);
 
     element.addEventListener("dragstart", (e) => {
       e.dataTransfer.dropEffect = "move";
