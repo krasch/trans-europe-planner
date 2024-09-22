@@ -51,9 +51,11 @@ function createCalenderElement(train) {
   const month = train.date.getMonth();
   const day = train.date.getDate();
 
+  const route = `${train.start}->${train.end}`;
+
   const element = createElementFromTemplate("template-calendar-connection");
   element.id = `${year}${month}${day}${train.id}`;
-  element.classList.add(`route${train.id}`);
+  element.classList.add(route);
   element.style.gridRowStart = rowStart + 1;
   element.style.gridRowEnd = rowEnd + 1;
   element.style.gridColumn = column + 2;
@@ -76,25 +78,43 @@ function createCalenderElement(train) {
   element.addEventListener("dragstart", (e) => {
     e.dataTransfer.dropEffect = "move";
     e.dataTransfer.setData("calenderItemId", element.id);
+    e.dataTransfer.setData("route", route);
+
+    for (let alt of document.getElementsByClassName(route)) {
+      alt.classList.add("possibleDropTarget");
+      alt.style.zIndex = 3;
+    }
   });
 
   element.addEventListener("dragenter", (e) => {
-    e.preventDefault(); // todo check for event type
-    e.target.classList.add("possibleDropTarget");
+    const sourceRoute = e.dataTransfer.getData("route");
+    if (!e.target.classList.contains(sourceRoute)) return;
+
+    e.preventDefault();
+    e.target.classList.add("selectedDropTarget");
   });
 
   element.addEventListener("dragleave", (e) => {
-    e.preventDefault(); // todo check for event type
-    e.target.classList.remove("possibleDropTarget");
+    const sourceRoute = e.dataTransfer.getData("route");
+    if (!e.target.classList.contains(sourceRoute)) return;
+
+    e.preventDefault();
+    e.target.classList.remove("selectedDropTarget");
   });
 
   element.addEventListener("dragover", (e) => {
+    const sourceRoute = e.dataTransfer.getData("route");
+    if (!e.target.classList.contains(sourceRoute)) return;
+
     e.preventDefault(); // must do preventDefault so that drop event is fired todo check for event type
   });
 
   element.addEventListener("drop", (e) => {
-    e.preventDefault(); // todo check for event type
-    e.target.classList.remove("possibleDropTarget");
+    const sourceRoute = e.dataTransfer.getData("route");
+    if (!e.target.classList.contains(sourceRoute)) return;
+
+    e.preventDefault();
+    e.target.classList.remove("selectedDropTarget");
 
     // hide original item from calendar
     const originalCalenderItemId = e.dataTransfer.getData("calenderItemId");
@@ -104,6 +124,11 @@ function createCalenderElement(train) {
     originalCalenderItem.classList.remove("part-of-trip");
     originalCalenderItem.classList.add("alternative");
     originalCalenderItem.draggable = false;
+
+    for (let alt of document.getElementsByClassName(route)) {
+      alt.classList.remove("possibleDropTarget");
+      alt.style.zIndex = 1;
+    }
 
     // make new one visible
     e.target.classList.add("part-of-trip");

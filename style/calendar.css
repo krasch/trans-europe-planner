@@ -114,6 +114,8 @@
             cursor: move;
             background-color: rgba(255, 0, 0, 0.8);
         }
+
+        z-index: 2;
     }
 
     &.alternative {
@@ -123,14 +125,17 @@
             visibility: hidden;
         }
 
-        /*visibility: hidden;*/
-        border-top: 1px dashed red;
-        border-radius: 0;
-
         &.possibleDropTarget {
+            border-top: 1px dashed red;
+            border-radius: 0;
+        }
+
+        &.selectedDropTarget {
             background-color: rgba(255, 0, 0, 0.4);
             border-radius: 10px;
         }
+
+        z-index: 1;
     }
 
 
