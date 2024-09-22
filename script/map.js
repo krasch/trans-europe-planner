@@ -1,4 +1,7 @@
-let hoveredTrainId = null;
+let currentHovered = {
+  id: null,
+  route: null,
+};
 
 // todo this is actually city to json
 function stationToGeojson(station) {
@@ -22,7 +25,7 @@ function trainToGeojson(train) {
         [train.endStation.longitude, train.endStation.latitude],
       ],
     },
-    properties: { name: train.name },
+    properties: { name: train.name, route: `${train.start}->${train.end}` },
     id: train.id,
   };
 }
@@ -84,23 +87,28 @@ function displayRouteOnMap(map, route) {
 
   map.on("mousemove", "trains", (e) => {
     if (e.features.length > 0) {
-      const newHoveredTrainId = e.features[0].id;
+      const newHovered = {
+        id: e.features[0].id,
+        route: e.features[0].properties.route,
+      };
 
-      if (hoveredTrainId && hoveredTrainId !== newHoveredTrainId)
-        setNoHover(map, hoveredTrainId);
+      if (currentHovered.id && currentHovered.id !== newHovered.id)
+        setNoHover(map, newHovered.id);
 
-      hoveredTrainId = newHoveredTrainId;
-      setHover(map, hoveredTrainId);
+      currentHovered = newHovered;
+      setHover(map, newHovered.id);
 
-      const calenderRoute = document.getElementById(`route${hoveredTrainId}`);
-      if (calenderRoute) calenderRoute.classList.add("routeSelected");
+      for (let leg of document.getElementsByClassName(newHovered.route)) {
+        leg.classList.add("routeSelected");
+      }
     }
   });
 
   map.on("mouseleave", "trains", (e) => {
-    if (hoveredTrainId) setNoHover(map, hoveredTrainId);
+    if (currentHovered.id) setNoHover(map, currentHovered.id);
 
-    const calenderRoute = document.getElementById(`route${hoveredTrainId}`);
-    if (calenderRoute) calenderRoute.classList.remove("routeSelected");
+    for (let leg of document.getElementsByClassName(currentHovered.route)) {
+      leg.classList.remove("routeSelected");
+    }
   });
 }

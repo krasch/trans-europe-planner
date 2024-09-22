@@ -1,7 +1,9 @@
 const CONNECTIONS = {
   "8098160 -> 8000261": {
     10001101: {
+      id: 10001101,
       displayId: "ICE 1101",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -30,7 +32,9 @@ const CONNECTIONS = {
       ],
     },
     10001001: {
+      id: 10001001,
       displayId: "ICE 1001",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -59,7 +63,9 @@ const CONNECTIONS = {
       ],
     },
     1000503: {
+      id: 1000503,
       displayId: "ICE 503",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -100,7 +106,9 @@ const CONNECTIONS = {
       ],
     },
     10001103: {
+      id: 10001103,
       displayId: "ICE 1103",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -129,7 +137,9 @@ const CONNECTIONS = {
       ],
     },
     10001003: {
+      id: 10001003,
       displayId: "ICE 1003",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -150,7 +160,9 @@ const CONNECTIONS = {
       ],
     },
     1000505: {
+      id: 1000505,
       displayId: "ICE 505",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -191,7 +203,9 @@ const CONNECTIONS = {
       ],
     },
     10001105: {
+      id: 10001105,
       displayId: "ICE 1105",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -220,7 +234,9 @@ const CONNECTIONS = {
       ],
     },
     1000703: {
+      id: 1000703,
       displayId: "ICE 703",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -261,7 +277,9 @@ const CONNECTIONS = {
       ],
     },
     1000507: {
+      id: 1000507,
       displayId: "ICE 507",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -302,7 +320,9 @@ const CONNECTIONS = {
       ],
     },
     10001107: {
+      id: 10001107,
       displayId: "ICE 1107",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -331,7 +351,9 @@ const CONNECTIONS = {
       ],
     },
     1000705: {
+      id: 1000705,
       displayId: "ICE 705",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -380,7 +402,9 @@ const CONNECTIONS = {
       ],
     },
     10001005: {
+      id: 10001005,
       displayId: "ICE 1005",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -409,7 +433,9 @@ const CONNECTIONS = {
       ],
     },
     1000509: {
+      id: 1000509,
       displayId: "ICE 509",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -450,7 +476,9 @@ const CONNECTIONS = {
       ],
     },
     10001109: {
+      id: 10001109,
       displayId: "ICE 1109",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -479,7 +507,9 @@ const CONNECTIONS = {
       ],
     },
     1000707: {
+      id: 1000707,
       displayId: "ICE 707",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -520,7 +550,9 @@ const CONNECTIONS = {
       ],
     },
     10001601: {
+      id: 10001601,
       displayId: "ICE 1601",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -557,7 +589,9 @@ const CONNECTIONS = {
       ],
     },
     10001111: {
+      id: 10001111,
       displayId: "ICE 1111",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -586,7 +620,9 @@ const CONNECTIONS = {
       ],
     },
     10001007: {
+      id: 10001007,
       displayId: "ICE 1007",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -607,7 +643,9 @@ const CONNECTIONS = {
       ],
     },
     1000603: {
+      id: 1000603,
       displayId: "ICE 603",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -648,7 +686,9 @@ const CONNECTIONS = {
       ],
     },
     10001113: {
+      id: 10001113,
       displayId: "ICE 1113",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -677,7 +717,9 @@ const CONNECTIONS = {
       ],
     },
     10001009: {
+      id: 10001009,
       displayId: "ICE 1009",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -698,7 +740,9 @@ const CONNECTIONS = {
       ],
     },
     10001605: {
+      id: 10001605,
       displayId: "ICE 1605",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -735,7 +779,9 @@ const CONNECTIONS = {
       ],
     },
     10001115: {
+      id: 10001115,
       displayId: "ICE 1115",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -764,7 +810,9 @@ const CONNECTIONS = {
       ],
     },
     10001119: {
+      id: 10001119,
       displayId: "ICE 1119",
+      type: "train",
       stops: [
         {
           station: 8098160,
@@ -792,79 +840,12 @@ const CONNECTIONS = {
         },
       ],
     },
-    1000699: {
-      displayId: "ICE 699",
-      stops: [
-        {
-          station: 8098160,
-          time: "21:27",
-        },
-        {
-          station: 8011113,
-          time: "21:33",
-        },
-        {
-          station: 8010222,
-          time: "22:12",
-        },
-        {
-          station: 8010050,
-          time: "22:29",
-        },
-        {
-          station: 8010205,
-          time: "22:55",
-        },
-        {
-          station: 8010101,
-          time: "23:41",
-        },
-        {
-          station: 8010097,
-          time: "00:12",
-        },
-        {
-          station: 8000105,
-          time: "02:25",
-        },
-        {
-          station: 8000068,
-          time: "02:50",
-        },
-        {
-          station: 8000156,
-          time: "03:40",
-        },
-        {
-          station: 8000096,
-          time: "05:25",
-        },
-        {
-          station: 8000170,
-          time: "06:21",
-        },
-        {
-          station: 8000139,
-          time: "06:36",
-        },
-        {
-          station: 8000013,
-          time: "07:08",
-        },
-        {
-          station: 8004158,
-          time: "07:32",
-        },
-        {
-          station: 8000261,
-          time: "07:41",
-        },
-      ],
-    },
   },
   "8000261 -> 8300120": {
     200081: {
+      id: 200081,
       displayId: "RJ 81",
+      type: "train",
       stops: [
         {
           station: 8000261,
@@ -925,7 +906,9 @@ const CONNECTIONS = {
       ],
     },
     200083: {
+      id: 200083,
       displayId: "RJ 83",
+      type: "train",
       stops: [
         {
           station: 8000261,
@@ -986,7 +969,9 @@ const CONNECTIONS = {
       ],
     },
     300087: {
+      id: 300087,
       displayId: "EC 87",
+      type: "train",
       stops: [
         {
           station: 8000261,
@@ -1047,7 +1032,9 @@ const CONNECTIONS = {
       ],
     },
     300089: {
+      id: 300089,
       displayId: "EC 89",
+      type: "train",
       stops: [
         {
           station: 8000261,
@@ -1110,7 +1097,9 @@ const CONNECTIONS = {
   },
   "8300120 -> 8300151": {
     40008503: {
+      id: 40008503,
       displayId: "FR 8503",
+      type: "train",
       stops: [
         {
           station: 8300120,
@@ -1129,7 +1118,9 @@ const CONNECTIONS = {
   },
   "8300151 -> 8300157": {
     500018289: {
+      id: 500018289,
       displayId: "R 18289",
+      type: "train",
       stops: [
         {
           station: 8300151,
@@ -1192,7 +1183,9 @@ const CONNECTIONS = {
   },
   "8300157 -> bastia": {
     1234567: {
+      id: 1234567,
       displayId: "CF",
+      type: "ferry",
       stops: [
         {
           station: 8300157,

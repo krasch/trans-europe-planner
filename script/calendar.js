@@ -1,10 +1,15 @@
-let currentHoverLine = null;
-
 const calenderStartDate = new Date("2023-10-16");
+
+// todo it would be nice if this was a constant instead of constantly being called
+function getResolution() {
+  const style = getComputedStyle(document.getElementById("calendar-grid"));
+  const resolution = Number(style.getPropertyValue("--resolution"));
+  return resolution;
+}
 
 function initCalendarGrid(container) {
   const style = getComputedStyle(container);
-  const resolution = Number(style.getPropertyValue("--resolution"));
+  const resolution = getResolution();
   const numDays = Number(style.getPropertyValue("--num-days"));
 
   /* hour label on left side of calendar */
@@ -30,92 +35,133 @@ function initCalendarGrid(container) {
       element.style.gridRowEnd = i + 1 + 1;
       element.style.gridColumn = day + 2; // column1 = hour labels
 
-      //element.style.background = "green";
-
-      element.addEventListener("drop", (e) => {
-        e.preventDefault(); // todo check for event type
-
-        const connectionId = e.dataTransfer.getData("trainId");
-        const connectionDiv = document.getElementById(connectionId);
-
-        const connectionLength =
-          connectionDiv.style.gridRowEnd - connectionDiv.style.gridRowStart;
-
-        connectionDiv.style.gridRowStart = e.target.style.gridRowStart;
-        connectionDiv.style.gridRowEnd =
-          Number(e.target.style.gridRowStart) + connectionLength;
-        connectionDiv.style.gridColumn = e.target.style.gridColumn;
-
-        if (currentHoverLine) {
-          currentHoverLine.classList.remove("possibleDropTarget");
-          currentHoverLine = null;
-        }
-      });
-
-      element.addEventListener("dragover", (e) => {
-        e.preventDefault(); // todo check for event type
-
-        if (currentHoverLine) {
-          currentHoverLine.classList.remove("possibleDropTarget");
-        }
-
-        currentHoverLine = e.target;
-        currentHoverLine.classList.add("possibleDropTarget");
-      });
-
       container.appendChild(element);
     }
   }
 }
 
-function displayRouteOnCalender(container, route) {
-  const style = getComputedStyle(container);
-  const resolution = Number(style.getPropertyValue("--resolution"));
+function createCalenderElement(train) {
+  const resolution = getResolution();
+  const rowStart = Math.round(timeStringToFloat(train.startTime) * resolution);
 
-  for (let train of route.trains) {
-    const rowStart = Math.round(
-      timeStringToFloat(train.startTime) * resolution,
+  const rowEnd = Math.round(timeStringToFloat(train.endTime) * resolution);
+  const column = differenceInDays(calenderStartDate, train.date);
+
+  const year = train.date.getFullYear();
+  const month = train.date.getMonth();
+  const day = train.date.getDate();
+
+  const route = `${train.start}->${train.end}`;
+
+  const element = createElementFromTemplate("template-calendar-connection");
+  element.id = `${year}${month}${day}${train.id}`;
+  element.classList.add(route);
+  element.style.gridRowStart = rowStart + 1;
+  element.style.gridRowEnd = rowEnd + 1;
+  element.style.gridColumn = column + 2;
+
+  element.getElementsByClassName("connection-icon")[0].src =
+    `images/${train.type}.svg`;
+  element.getElementsByClassName("connection-number")[0].innerText = train.name;
+
+  if (train.id !== 40008503 && train.id !== 500018289) {
+    element.getElementsByClassName("connection-start-time")[0].innerText =
+      train.startTime;
+    element.getElementsByClassName("connection-start-station")[0].innerText =
+      train.startStation.name;
+    element.getElementsByClassName("connection-end-time")[0].innerText =
+      train.endTime;
+    element.getElementsByClassName("connection-end-station")[0].innerText =
+      train.endStation.name;
+  }
+
+  element.addEventListener("dragstart", (e) => {
+    e.dataTransfer.dropEffect = "move";
+    e.dataTransfer.setData("calenderItemId", element.id);
+    e.dataTransfer.setData("route", route);
+
+    for (let alt of document.getElementsByClassName(route)) {
+      alt.classList.add("possibleDropTarget");
+      alt.style.zIndex = 3;
+    }
+  });
+
+  element.addEventListener("dragenter", (e) => {
+    const sourceRoute = e.dataTransfer.getData("route");
+    if (!e.target.classList.contains(sourceRoute)) return;
+
+    e.preventDefault();
+    e.target.classList.add("selectedDropTarget");
+  });
+
+  element.addEventListener("dragleave", (e) => {
+    const sourceRoute = e.dataTransfer.getData("route");
+    if (!e.target.classList.contains(sourceRoute)) return;
+
+    e.preventDefault();
+    e.target.classList.remove("selectedDropTarget");
+  });
+
+  element.addEventListener("dragover", (e) => {
+    const sourceRoute = e.dataTransfer.getData("route");
+    if (!e.target.classList.contains(sourceRoute)) return;
+
+    e.preventDefault(); // must do preventDefault so that drop event is fired todo check for event type
+  });
+
+  element.addEventListener("drop", (e) => {
+    const sourceRoute = e.dataTransfer.getData("route");
+    if (!e.target.classList.contains(sourceRoute)) return;
+
+    e.preventDefault();
+    e.target.classList.remove("selectedDropTarget");
+
+    // hide original item from calendar
+    const originalCalenderItemId = e.dataTransfer.getData("calenderItemId");
+    const originalCalenderItem = document.getElementById(
+      originalCalenderItemId,
     );
-    const rowEnd = Math.round(timeStringToFloat(train.endTime) * resolution);
-    const column = differenceInDays(calenderStartDate, train.date);
+    originalCalenderItem.classList.remove("part-of-trip");
+    originalCalenderItem.classList.add("alternative");
+    originalCalenderItem.draggable = false;
 
-    const element = createElementFromTemplate("template-calendar-connection");
-    element.id = `route${train.id}`;
-    element.style.gridRowStart = rowStart + 1;
-    element.style.gridRowEnd = rowEnd + 1;
-    element.style.gridColumn = column + 2;
-
-    element.getElementsByClassName("connection-icon")[0].src =
-      `images/${train.type}.svg`;
-    element.getElementsByClassName("connection-number")[0].innerText =
-      train.name;
-
-    if (train.id !== 40008503 && train.id !== 500018289) {
-      element.getElementsByClassName("connection-start-time")[0].innerText =
-        train.startTime;
-      element.getElementsByClassName("connection-start-station")[0].innerText =
-        train.startStation.name;
-      element.getElementsByClassName("connection-end-time")[0].innerText =
-        train.endTime;
-      element.getElementsByClassName("connection-end-station")[0].innerText =
-        train.endStation.name;
+    for (let alt of document.getElementsByClassName(route)) {
+      alt.classList.remove("possibleDropTarget");
+      alt.style.zIndex = 1;
     }
 
-    element.addEventListener("dragstart", (e) => {
-      e.dataTransfer.dropEffect = "move";
-      e.dataTransfer.setData("trainId", element.id);
-    });
+    // make new one visible
+    e.target.classList.add("part-of-trip");
+    e.target.classList.remove("alternative");
+    e.target.draggable = true;
+  });
 
-    element.addEventListener("mouseover", (e) => {
-      element.classList.add("routeSelected");
-      setHover(map, train.id); // todo uses global map variable
-    });
+  element.addEventListener("mouseover", (e) => {
+    element.classList.add("routeSelected");
+    setHover(map, train.id); // todo uses global map variable
+  });
 
-    element.addEventListener("mouseout", (e) => {
-      element.classList.remove("routeSelected");
-      setNoHover(map, train.id); // todo uses global map variable
-    });
+  element.addEventListener("mouseout", (e) => {
+    element.classList.remove("routeSelected");
+    setNoHover(map, train.id); // todo uses global map variable
+  });
 
+  return element;
+}
+
+function displayRouteOnCalender(container, route) {
+  for (let train of route.trains) {
+    const element = createCalenderElement(train);
+    element.classList.add("part-of-trip");
+    element.draggable = true;
     container.appendChild(element);
+
+    const alternatives = Array.from(route.getAlternatives(train));
+    for (let alternative of alternatives) {
+      const alternativeElement = createCalenderElement(alternative);
+      alternativeElement.classList.add("alternative");
+      alternativeElement.draggable = false;
+      container.appendChild(alternativeElement);
+    }
   }
 }

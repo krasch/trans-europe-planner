@@ -98,21 +98,45 @@
         grid-area: end-station;
     }
 
-    background-color: rgba(255, 0, 0, 0.4);
-    border: 1px solid darkgrey;
     border-radius: 10px;
     padding: 5px;
     margin: 0 5px 0 5px;
 
-    &:hover {
-        cursor: move;
+    &.part-of-trip {
+        border: 1px solid darkgrey;
+        background-color: rgba(255, 0, 0, 0.4);
+
+        &.routeSelected {
+            background-color: rgba(255, 0, 0, 0.8);
+        }
+
+        &:hover {
+            cursor: move;
+            background-color: rgba(255, 0, 0, 0.8);
+        }
+
+        z-index: 2;
     }
 
-    .connection-icon {
-        height: 1rem;
+    &.alternative {
+
+        /* do not want to display info about the alternative -> all children always hidden */
+        > * {
+            visibility: hidden;
+        }
+
+        &.possibleDropTarget {
+            border-top: 1px dashed red;
+            border-radius: 0;
+        }
+
+        &.selectedDropTarget {
+            background-color: rgba(255, 0, 0, 0.4);
+            border-radius: 10px;
+        }
+
+        z-index: 1;
     }
 
-    &.routeSelected {
-        background-color: rgba(255, 0, 0, 0.8);
-    }
+
 }

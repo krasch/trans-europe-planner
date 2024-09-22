@@ -50,7 +50,7 @@
     <!-- the connections to be displayed in the calendar -->
     <template id="template-calendar-connection">
         <div class="calendar-connection" draggable="true">
-            <img class="connection-icon" alt="icon of the connection TODO"/>
+            <img class="connection-icon">
             <span class="connection-number"></span>
             <span class="connection-start-time"></span>
             <span class="connection-start-station"></span>
@@ -67,12 +67,14 @@
 
 <script>
 
+    "use strict";
+
     const route = new Route();
-    route.add({"date": new Date("2023-10-16"), "type": "train", "start": 8098160, "end": 8000261, "id": 1000505});
-    route.add({"date": new Date("2023-10-16"), "type": "train", "start": 8000261, "end": 8300120, "id": 300087});
-    route.add({"date": new Date("2023-10-17"), "type": "train", "start": 8300120, "end": 8300151, "id": 40008503});
-    route.add({"date": new Date("2023-10-17"), "type": "train", "start": 8300151, "end": 8300157, "id": 500018289});
-    route.add({"date": new Date("2023-10-18"), "type": "ferry", "start": 8300157, "end": "bastia", "id": 1234567});
+    route.add({"date": new Date("2023-10-16"), "start": 8098160, "end": 8000261, "id": 1000505});
+    route.add({"date": new Date("2023-10-16"), "start": 8000261, "end": 8300120, "id": 300087});
+    route.add({"date": new Date("2023-10-17"), "start": 8300120, "end": 8300151, "id": 40008503});
+    route.add({"date": new Date("2023-10-17"), "start": 8300151, "end": 8300157, "id": 500018289});
+    route.add({"date": new Date("2023-10-18"), "start": 8300157, "end": "bastia", "id": 1234567});
 
     const map = new maplibregl.Map({
       container: 'map',
