@@ -106,27 +106,31 @@
         border: 1px solid darkgrey;
         background-color: rgba(255, 0, 0, 0.4);
 
-        &:hover {
-            cursor: move;
+        &.routeSelected {
+            background-color: rgba(255, 0, 0, 0.8);
         }
 
-        &.routeSelected {
+        &:hover {
+            cursor: move;
             background-color: rgba(255, 0, 0, 0.8);
         }
     }
 
     &.alternative {
 
-        /*.connection-icon {
+        /* do not want to display info about the alternative -> all children always hidden */
+        > * {
             visibility: hidden;
         }
 
-        > span {
-            visibility: hidden;
-        }*/
+        /*visibility: hidden;*/
+        border-top: 1px dashed red;
+        border-radius: 0;
 
-        visibility: hidden;
-        border: 1px solid darkgrey;
+        &.possibleDropTarget {
+            background-color: rgba(255, 0, 0, 0.4);
+            border-radius: 10px;
+        }
     }
 
 

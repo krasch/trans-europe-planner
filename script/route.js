@@ -49,9 +49,13 @@ class Route {
 
   *getAlternatives(train) {
     const key = `${train.start} -> ${train.end}`;
-    for (let trainId in CONNECTIONS[key]) {
-      const alternative = CONNECTIONS[key][trainId];
-      yield this._getTrainInfo(alternative, new Date("2023-10-17"));
+    for (let date of [new Date("2023-10-16"), new Date("2023-10-17"), new Date("2023-10-18")]){
+          for (let trainId in CONNECTIONS[key]) {
+            // todo sic the types do not match todo this only tests for day of month
+            if ((trainId == train.id) && (date.getDate()==train.date.getDate())) continue;
+            const alternative = CONNECTIONS[key][trainId];
+            yield this._getTrainInfo(alternative, date);
+    }
     }
   }
 }

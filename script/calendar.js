@@ -1,5 +1,3 @@
-let currentHoverLine = null;
-
 const calenderStartDate = new Date("2023-10-16");
 
 // todo it would be nice if this was a constant instead of constantly being called
@@ -37,43 +35,6 @@ function initCalendarGrid(container) {
       element.style.gridRowEnd = i + 1 + 1;
       element.style.gridColumn = day + 2; // column1 = hour labels
 
-      //element.style.background = "green";
-
-      element.addEventListener("drop", (e) => {
-        e.preventDefault(); // todo check for event type
-        console.log("HALLO");
-
-        //const alternatives = JSON.parse(e.dataTransfer.getData("alternatives"));
-        //console.log(alternatives);
-
-        const connectionId = e.dataTransfer.getData("trainId");
-        const connectionDiv = document.getElementById(connectionId);
-
-        const connectionLength =
-          connectionDiv.style.gridRowEnd - connectionDiv.style.gridRowStart;
-
-        connectionDiv.style.gridRowStart = e.target.style.gridRowStart;
-        connectionDiv.style.gridRowEnd =
-          Number(e.target.style.gridRowStart) + connectionLength;
-        connectionDiv.style.gridColumn = e.target.style.gridColumn;
-
-        if (currentHoverLine) {
-          currentHoverLine.classList.remove("possibleDropTarget");
-          currentHoverLine = null;
-        }
-      });
-
-      element.addEventListener("dragover", (e) => {
-        e.preventDefault(); // todo check for event type
-
-        if (currentHoverLine) {
-          currentHoverLine.classList.remove("possibleDropTarget");
-        }
-
-        currentHoverLine = e.target;
-        currentHoverLine.classList.add("possibleDropTarget");
-      });
-
       container.appendChild(element);
     }
   }
@@ -86,7 +47,12 @@ function createCalenderElement(train) {
   const rowEnd = Math.round(timeStringToFloat(train.endTime) * resolution);
   const column = differenceInDays(calenderStartDate, train.date);
 
+  const year = train.date.getFullYear();
+  const month = train.date.getMonth();
+  const day = train.date.getDate();
+
   const element = createElementFromTemplate("template-calendar-connection");
+  element.id = `${year}${month}${day}${train.id}`;
   element.classList.add(`route${train.id}`);
   element.style.gridRowStart = rowStart + 1;
   element.style.gridRowEnd = rowEnd + 1;
@@ -107,6 +73,54 @@ function createCalenderElement(train) {
       train.endStation.name;
   }
 
+  element.addEventListener("dragstart", (e) => {
+    e.dataTransfer.dropEffect = "move";
+    e.dataTransfer.setData("calenderItemId", element.id);
+  });
+
+  element.addEventListener("dragenter", (e) => {
+    e.preventDefault(); // todo check for event type
+    e.target.classList.add("possibleDropTarget");
+  });
+
+  element.addEventListener("dragleave", (e) => {
+    e.preventDefault(); // todo check for event type
+    e.target.classList.remove("possibleDropTarget");
+  });
+
+  element.addEventListener("dragover", (e) => {
+    e.preventDefault(); // must do preventDefault so that drop event is fired todo check for event type
+  });
+
+  element.addEventListener("drop", (e) => {
+    e.preventDefault(); // todo check for event type
+    e.target.classList.remove("possibleDropTarget");
+
+    // hide original item from calendar
+    const originalCalenderItemId = e.dataTransfer.getData("calenderItemId");
+    const originalCalenderItem = document.getElementById(
+      originalCalenderItemId,
+    );
+    originalCalenderItem.classList.remove("part-of-trip");
+    originalCalenderItem.classList.add("alternative");
+    originalCalenderItem.draggable = false;
+
+    // make new one visible
+    e.target.classList.add("part-of-trip");
+    e.target.classList.remove("alternative");
+    e.target.draggable = true;
+  });
+
+  element.addEventListener("mouseover", (e) => {
+    element.classList.add("routeSelected");
+    setHover(map, train.id); // todo uses global map variable
+  });
+
+  element.addEventListener("mouseout", (e) => {
+    element.classList.remove("routeSelected");
+    setNoHover(map, train.id); // todo uses global map variable
+  });
+
   return element;
 }
 
@@ -114,36 +128,15 @@ function displayRouteOnCalender(container, route) {
   for (let train of route.trains) {
     const element = createCalenderElement(train);
     element.classList.add("part-of-trip");
+    element.draggable = true;
+    container.appendChild(element);
 
-    //console.log(train);
     const alternatives = Array.from(route.getAlternatives(train));
     for (let alternative of alternatives) {
       const alternativeElement = createCalenderElement(alternative);
       alternativeElement.classList.add("alternative");
+      alternativeElement.draggable = false;
       container.appendChild(alternativeElement);
     }
-
-    element.addEventListener("dragstart", (e) => {
-      e.dataTransfer.dropEffect = "move";
-      e.dataTransfer.setData("trainId", element.id);
-
-      /*const alternatives = route.getAlternatives(train);
-      e.dataTransfer.setData("alternatives", alternatives);
-
-      const alternative = createCalenderElement(alternatives[200081]);
-      console.log(alternative);*/
-    });
-
-    element.addEventListener("mouseover", (e) => {
-      element.classList.add("routeSelected");
-      setHover(map, train.id); // todo uses global map variable
-    });
-
-    element.addEventListener("mouseout", (e) => {
-      element.classList.remove("routeSelected");
-      setNoHover(map, train.id); // todo uses global map variable
-    });
-
-    container.appendChild(element);
   }
 }
