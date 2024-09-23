@@ -16,7 +16,7 @@ const mapStyles = {
       "icon-image": "star_11",
       "text-offset": [0.4, 0],
       "icon-size": 0.8,
-      "text-anchor": "left",
+      "text-variable-anchor": ["left", "right"],
       visibility: "visible",
     },
     paint: {
