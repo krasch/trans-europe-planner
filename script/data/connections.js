@@ -809,37 +809,6 @@ const CONNECTIONS = {
         },
       ],
     },
-    10001119: {
-      id: 10001119,
-      displayId: "ICE 1119",
-      type: "train",
-      stops: [
-        {
-          station: 8098160,
-          time: "20:04",
-        },
-        {
-          station: 8011113,
-          time: "20:11",
-        },
-        {
-          station: 8010159,
-          time: "21:18",
-        },
-        {
-          station: 8010101,
-          time: "21:47",
-        },
-        {
-          station: 8000284,
-          time: "22:59",
-        },
-        {
-          station: 8000261,
-          time: "00:01",
-        },
-      ],
-    },
   },
   "8000261 -> 8300120": {
     200081: {
