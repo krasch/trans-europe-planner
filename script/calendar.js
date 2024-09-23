@@ -1,3 +1,7 @@
+const zIndexHiddenAlternative = 1;
+const zIndexConnection = 2;
+const zIndexAvailableAlternative = 3;
+
 const calenderStartDate = new Date("2023-10-16");
 
 // todo it would be nice if this was a constant instead of constantly being called
@@ -82,7 +86,7 @@ function createCalenderElement(train) {
 
     for (let alt of document.getElementsByClassName(route)) {
       alt.classList.add("possibleDropTarget");
-      alt.style.zIndex = 3;
+      alt.style.zIndex = zIndexAvailableAlternative;
     }
   });
 
@@ -127,13 +131,14 @@ function createCalenderElement(train) {
 
     for (let alt of document.getElementsByClassName(route)) {
       alt.classList.remove("possibleDropTarget");
-      alt.style.zIndex = 1;
+      alt.style.zIndex = zIndexHiddenAlternative;
     }
 
     // make new one visible
     e.target.classList.add("part-of-trip");
     e.target.classList.remove("alternative");
     e.target.draggable = true;
+    e.target.style.zIndex = zIndexConnection;
   });
 
   element.addEventListener("mouseover", (e) => {
@@ -154,6 +159,7 @@ function displayRouteOnCalender(container, route) {
     const element = createCalenderElement(train);
     element.classList.add("part-of-trip");
     element.draggable = true;
+    element.style.zIndex = zIndexConnection;
     container.appendChild(element);
 
     const alternatives = Array.from(route.getAlternatives(train));
@@ -161,6 +167,7 @@ function displayRouteOnCalender(container, route) {
       const alternativeElement = createCalenderElement(alternative);
       alternativeElement.classList.add("alternative");
       alternativeElement.draggable = false;
+      alternativeElement.style.zIndex = zIndexHiddenAlternative;
       container.appendChild(alternativeElement);
     }
   }
