@@ -146,12 +146,12 @@ function createCalenderElement(connection) {
 
   element.addEventListener("mouseover", (e) => {
     element.classList.add("legSelected");
-    setHover(map, connection.leg.numericId); // todo uses global map variable
+    map.setHover(connection.leg.numericId); // todo uses global map variable
   });
 
   element.addEventListener("mouseout", (e) => {
     element.classList.remove("legSelected");
-    setNoHover(map, connection.leg.numericId); // todo uses global map variable
+    map.setNoHover(connection.leg.numericId); // todo uses global map variable
   });
 
   return element;

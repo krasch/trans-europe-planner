@@ -82,18 +82,18 @@
         database.getConnection("2024-10-18X1234567")
     ]);
 
-    const map = new maplibregl.Map({
+    const map = new MapWrapper(new maplibregl.Map({
       container: 'map',
       style: "style/outdoors-modified.json",
       center: [13.408333, 52.518611],
       zoom: 4
-    });
+    }));
 
     const calendar = document.getElementById("calendar-grid");
 
-    map.on('load', () => {
-        initMap(map);
-        displayJourneyOnMap(map, journey);
+    map.map.on('load', () => {
+        map.init();
+        map.displayJourney(journey);
         initCalendarGrid(calendar);
         displayJourneyOnCalendar(calendar, journey);
     });

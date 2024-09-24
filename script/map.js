@@ -1,5 +1,3 @@
-let currentHovered = null;
-
 function cityToGeojson(city) {
   return {
     type: "Feature",
@@ -36,77 +34,83 @@ function asGeojsonFeatureCollection(features) {
   };
 }
 
-function initMap(map) {
-  map.getCanvas().style.cursor = "default";
-  map.setLayoutProperty("place-city", "text-field", ["get", `name:de`]);
+class MapWrapper {
+  #currentHover = null;
 
-  /*const popup = new maplibregl.Popup({
-        closeButton: true,
-        closeOnClick: true
+  constructor(map) {
+    this.map = map;
+  }
+
+  init() {
+    this.map.getCanvas().style.cursor = "default";
+    this.map.setLayoutProperty("place-city", "text-field", ["get", `name:de`]);
+  }
+
+  setHover(legId) {
+    this.map.setFeatureState({ source: "legs", id: legId }, { hover: true });
+  }
+
+  setNoHover(legId) {
+    this.map.setFeatureState({ source: "legs", id: legId }, { hover: false });
+  }
+
+  #updateHover(legId) {
+    this.#hoverOff();
+    this.#currentHover = legId;
+    this.setHover(legId);
+  }
+
+  #hoverOff() {
+    if (this.#currentHover) this.setNoHover(this.#currentHover);
+    this.#currentHover = null;
+  }
+
+  displayJourney() {
+    // add one marker per stopover
+    const cities = journey.stopovers;
+    const markers = asGeojsonFeatureCollection(cities.map(cityToGeojson));
+    this.#addLayerToMap("cities", "cities", "cities", markers);
+
+    // add one line per leg
+    const legs = journey.legs;
+    const lines = asGeojsonFeatureCollection(legs.map(legToGeojson));
+    this.#addLayerToMap("legs", "legs", "legs", lines);
+
+    // when mouse hovers over a leg
+    this.map.on("mouseenter", "legs", (e) => {
+      if (e.features.length > 0) {
+        const legId = e.features[0].id;
+        this.#updateHover(legId);
+
+        // todo this should be in calender
+        for (let connection of document.getElementsByClassName(legId)) {
+          connection.classList.add("legSelected");
+        }
+      }
     });
 
-    map.on('mouseenter', 'route-layer', (e) => {
-        popup.setLngLat(e.lngLat).setHTML("test").addTo(map);
-    });*/
-
-  /*map.on('mouseleave', 'route-layer', () => {
-      popup.remove();
-    });*/
-}
-
-function setHover(map, legId) {
-  map.setFeatureState({ source: "legs", id: legId }, { hover: true });
-}
-
-function setNoHover(map, legId) {
-  map.setFeatureState({ source: "legs", id: legId }, { hover: false });
-}
-
-function addToMap(map, styleName, geojsonData) {
-  const sourceName = styleName;
-  const layerName = styleName;
-
-  map.addSource(sourceName, {
-    type: "geojson",
-    data: geojsonData,
-  });
-
-  const style = structuredClone(mapStyles[styleName]);
-  style["id"] = layerName;
-  style["source"] = sourceName;
-  map.addLayer(style);
-}
-
-function displayJourneyOnMap(map, journey) {
-  const cityMarkers = journey.stopovers.map(cityToGeojson);
-  addToMap(map, "cityMarkers", asGeojsonFeatureCollection(cityMarkers));
-
-  const legs = journey.legs.map(legToGeojson);
-  addToMap(map, "legs", asGeojsonFeatureCollection(legs));
-
-  map.on("mouseenter", "legs", (e) => {
-    if (e.features.length > 0) {
-      const newHovered = e.features[0].id;
-
-      if (currentHovered && currentHovered !== newHovered)
-        setNoHover(map, newHovered);
-
-      currentHovered = newHovered;
-      setHover(map, newHovered);
-
-      for (let connection of document.getElementsByClassName(newHovered)) {
-        connection.classList.add("legSelected");
+    // when mouse stops hovering over a leg
+    this.map.on("mouseout", "legs", (e) => {
+      const legId = this.#currentHover;
+      // todo this should be in calender
+      for (let connection of document.getElementsByClassName(legId)) {
+        connection.classList.remove("legSelected");
       }
-    }
-  });
+      this.#hoverOff();
+    });
+  }
 
-  map.on("mouseout", "legs", (e) => {
-    if (currentHovered) setNoHover(map, currentHovered);
+  #addLayerToMap(sourceName, layerName, styleName, data) {
+    this.map.addSource(sourceName, {
+      type: "geojson",
+      data: data,
+    });
 
-    for (let connection of document.getElementsByClassName(currentHovered)) {
-      connection.classList.remove("legSelected");
-    }
-  });
+    const style = structuredClone(mapStyles[styleName]);
+    style["id"] = layerName;
+    style["source"] = sourceName;
+    this.map.addLayer(style);
+  }
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
