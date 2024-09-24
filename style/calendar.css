@@ -106,7 +106,7 @@
         border: 1px solid darkgrey;
         background-color: rgba(255, 0, 0, 0.4);
 
-        &.routeSelected {
+        &.legSelected {
             background-color: rgba(255, 0, 0, 0.8);
         }
 

@@ -1,32 +1,31 @@
-let currentHovered = {
-  id: null,
-  route: null,
-};
+let currentHovered = null;
 
-// todo this is actually city to json
-function stationToGeojson(station) {
+function cityToGeojson(city) {
   return {
     type: "Feature",
     geometry: {
       type: "Point",
-      coordinates: [station.city_longitude, station.city_latitude],
+      coordinates: [city.coordinates.longitude, city.coordinates.latitude],
     },
-    properties: { name: station.city },
+    properties: { name: city.name },
   };
 }
 
-function trainToGeojson(train) {
+function legToGeojson(leg) {
   return {
     type: "Feature",
     geometry: {
       type: "LineString",
       coordinates: [
-        [train.startStation.longitude, train.startStation.latitude],
-        [train.endStation.longitude, train.endStation.latitude],
+        [
+          leg.startCity.coordinates.longitude,
+          leg.startCity.coordinates.latitude,
+        ],
+        [leg.endCity.coordinates.longitude, leg.endCity.coordinates.latitude],
       ],
     },
-    properties: { name: train.name, route: `${train.start}->${train.end}` },
-    id: train.id,
+    properties: { name: leg.name },
+    id: leg.numericId,
   };
 }
 
@@ -55,12 +54,12 @@ function initMap(map) {
     });*/
 }
 
-function setHover(map, trainId) {
-  map.setFeatureState({ source: "trains", id: trainId }, { hover: true });
+function setHover(map, legId) {
+  map.setFeatureState({ source: "legs", id: legId }, { hover: true });
 }
 
-function setNoHover(map, trainId) {
-  map.setFeatureState({ source: "trains", id: trainId }, { hover: false });
+function setNoHover(map, legId) {
+  map.setFeatureState({ source: "legs", id: legId }, { hover: false });
 }
 
 function addToMap(map, styleName, geojsonData) {
@@ -78,37 +77,40 @@ function addToMap(map, styleName, geojsonData) {
   map.addLayer(style);
 }
 
-function displayRouteOnMap(map, route) {
-  const cityMarkers = route.connectingStations.map(stationToGeojson);
+function displayJourneyOnMap(map, journey) {
+  const cityMarkers = journey.stopovers.map(cityToGeojson);
   addToMap(map, "cityMarkers", asGeojsonFeatureCollection(cityMarkers));
 
-  const trains = route.trains.map(trainToGeojson);
-  addToMap(map, "trains", asGeojsonFeatureCollection(trains));
+  const legs = journey.legs.map(legToGeojson);
+  addToMap(map, "legs", asGeojsonFeatureCollection(legs));
 
-  map.on("mousemove", "trains", (e) => {
+  map.on("mouseenter", "legs", (e) => {
     if (e.features.length > 0) {
-      const newHovered = {
-        id: e.features[0].id,
-        route: e.features[0].properties.route,
-      };
+      const newHovered = e.features[0].id;
 
-      if (currentHovered.id && currentHovered.id !== newHovered.id)
-        setNoHover(map, newHovered.id);
+      if (currentHovered && currentHovered !== newHovered)
+        setNoHover(map, newHovered);
 
       currentHovered = newHovered;
-      setHover(map, newHovered.id);
+      setHover(map, newHovered);
 
-      for (let leg of document.getElementsByClassName(newHovered.route)) {
-        leg.classList.add("routeSelected");
+      for (let connection of document.getElementsByClassName(newHovered)) {
+        connection.classList.add("legSelected");
       }
     }
   });
 
-  map.on("mouseleave", "trains", (e) => {
-    if (currentHovered.id) setNoHover(map, currentHovered.id);
+  map.on("mouseout", "legs", (e) => {
+    if (currentHovered) setNoHover(map, currentHovered);
 
-    for (let leg of document.getElementsByClassName(currentHovered.route)) {
-      leg.classList.remove("routeSelected");
+    for (let connection of document.getElementsByClassName(currentHovered)) {
+      connection.classList.remove("legSelected");
     }
   });
+}
+
+// exports for testing only (NODE_ENV='test' is automatically set by jest)
+if (typeof process === "object" && process.env.NODE_ENV === "test") {
+  module.exports.cityToGeojson = cityToGeojson;
+  module.exports.legToGeojson = legToGeojson;
 }
