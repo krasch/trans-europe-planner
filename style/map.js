@@ -1,5 +1,5 @@
 const mapStyles = {
-  cityMarkers: {
+  cities: {
     type: "symbol",
     layout: {
       "text-font": ["Stadia Semibold"],
