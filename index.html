@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="style/calendar.css">
 
     <!-- scripts -->
+    <script src="script/util.js"></script>
+
     <script src="style/map.js"></script> <!-- only contains css styles for map in js -->
 
     <script src="script/data/stations.js"></script>
@@ -25,7 +27,6 @@
     <script src="script/route.js"></script>
     <script src="script/calendar.js"></script>
     <script src="script/map.js"></script>
-    <script src="script/util.js"></script>
 
     <title>Trans-Europe-Planner</title>
 
@@ -80,12 +81,15 @@
     route.add({"date": new Date("2023-10-17"), "start": 8300151, "end": 8300157, "id": 500018289});
     route.add({"date": new Date("2023-10-18"), "start": 8300157, "end": "bastia", "id": 1234567});
 
-    const journey = [
+    const database = new Database();
 
-    ];
-
-    const DATABASE = new Database();
-    console.log(DATABASE.connections);
+    const journey = new Journey([
+        database.getConnection("2024-10-16X1000505"),
+        database.getConnection("2024-10-16X300087"),
+        database.getConnection("2024-10-17X40008503"),
+        database.getConnection("2024-10-17X500018289"),
+        database.getConnection("2024-10-18X1234567")
+    ]);
 
     const map = new maplibregl.Map({
       container: 'map',
@@ -98,9 +102,9 @@
 
     map.on('load', () => {
         initMap(map);
-        displayRouteOnMap(map, route);
+        displayJourneyOnMap(map, journey);
         initCalendarGrid(calendar);
-        displayRouteOnCalender(calendar, route);
+        displayJourneyOnCalendar(calendar, journey);
     });
 
     /*const calendar = document.getElementById("calendar-grid");

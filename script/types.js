@@ -1,7 +1,25 @@
+// would prefer to have this in util.js, but then getting import issues
+function autoincrementer() {
+  let counter = 0;
+  return () => {
+    counter += 1;
+    return counter;
+  };
+}
+
+let _cityAutoincrementer = autoincrementer();
+
 class IllegalCoordinateError extends Error {
   constructor(message) {
     super(message);
     this.name = "IllegalCoordinate";
+  }
+}
+
+class NotImplementedError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "NotImplementedError";
   }
 }
 
@@ -19,71 +37,50 @@ class Coordinates {
       throw new IllegalCoordinateError(
         `Longitude is ${this.longitude}, should be in [-180, 180]`,
       );
-
-    // todo formatting won't work with 0
-    if (this.latitude === 0 || this.longitude === 0)
-      throw new Error("Not supported");
-  }
-
-  get #idPrefix() {
-    if (this.latitude >= 0 && this.longitude >= 0) return 1;
-    if (this.latitude >= 0 && this.longitude < 0) return 2;
-    if (this.latitude < 0 && this.longitude >= 0) return 3;
-    if (this.latitude < 0 && this.longitude < 0) return 4;
-  }
-
-  get id() {
-    const latitudeAsInt = Math.floor(Math.abs(this.latitude) * 10000);
-    const longitudeAsInt = Math.floor(Math.abs(this.longitude) * 10000);
-    return `${this.#idPrefix}${latitudeAsInt}${longitudeAsInt}`;
   }
 }
 
 class City {
   constructor(name, coordinates) {
+    this.numericId = _cityAutoincrementer();
     this.name = name;
     this.coordinates = coordinates;
-  }
-  get id() {
-    return "city" + this.coordinates.id;
   }
 }
 
 class Station {
-  constructor(name, coordinates, city) {
+  constructor(externalId, name, coordinates, city) {
+    this.id = externalId;
     this.name = name;
     this.coordinates = coordinates;
     this.city = city;
   }
-
-  get id() {
-    return "station" + this.coordinates.id;
-  }
 }
 
 class Leg {
-  constructor(startStation, endStation) {
-    this.startStation = startStation;
-    this.endStation = endStation;
+  constructor(startCity, endCity) {
+    this.startCity = startCity;
+    this.endCity = endCity;
   }
 
-  get id() {
-    return `leg${this.startStation.id}->${this.endStation.id}`;
+  get numericId() {
+    if (this.endCity.numericId >= 1000) throw new NotImplementedError();
+    return this.startCity.numericId * 1000 + this.endCity.numericId;
+  }
+
+  get name() {
+    return `${this.startCity.name} -> ${this.endCity.name}`;
   }
 }
 
 class Connection {
   constructor(id, displayId, type, date, stops) {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const day = date.getDate();
-    this.id = `${year}${month}${day}X${id}`;
+    this.id = `${date.toISOString().slice(0, 10)}X${id}`;
 
     this.displayId = displayId;
     this.type = type;
     this.stops = stops;
     this.date = date;
-    this.leg = new Leg(this.startStation, this.endStation);
   }
 
   get startStation() {
@@ -101,6 +98,10 @@ class Connection {
   get endTime() {
     return this.stops.at(-1).time; // todo date
   }
+
+  get leg() {
+    return new Leg(this.startStation.city, this.endStation.city); // todo producing too many objects?
+  }
 }
 
 class Journey {
@@ -116,10 +117,15 @@ class Journey {
     cities.push(this.connections.at(-1).endStation.city);
     return cities;
   }
+
+  get legs() {
+    return this.connections.map((c) => c.leg);
+  }
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
+  module.exports.autoincrementer = autoincrementer;
   module.exports.IllegalCoordinateError = IllegalCoordinateError;
   module.exports.Coordinates = Coordinates;
   module.exports.City = City;

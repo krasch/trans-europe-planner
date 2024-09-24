@@ -1,24 +1,30 @@
+class UnknownConnectionError extends Error {
+  constructor(connectionId) {
+    super(`Unknown connection: ${connectionId}`);
+    this.name = "UnknownConnectionError";
+  }
+}
+
 function parseStations() {
   const stations = new Map();
   const cities = new Map();
 
-  for (let key in STATIONS) {
-    const data = STATIONS[key];
+  for (let externalId in STATIONS) {
+    const data = STATIONS[externalId];
 
-    let city = new City(
-      data.city,
-      new Coordinates(data.city_latitude, data.city_longitude),
-    );
+    if (!cities.has(data.city)) {
+      cities[data.city] = new City(
+        data.city,
+        new Coordinates(data.city_latitude, data.city_longitude),
+      );
+    }
 
-    if (!cities.has(city.id)) cities[city.id] = city;
-    city = cities[city.id];
-
-    let station = new Station(
+    stations[externalId] = new Station(
+      externalId,
       data.name,
       new Coordinates(data.latitude, data.longitude),
-      city,
+      cities[data.city],
     );
-    stations[key] = station;
   }
 
   return stations;
@@ -29,14 +35,14 @@ function parseConnections(stations) {
 
   for (let outer in CONNECTIONS) {
     for (let inner in CONNECTIONS[outer]) {
-      const connection = CONNECTIONS[outer][inner];
+      const connection = structuredClone(CONNECTIONS[outer][inner]);
 
       // lookup station objects todo do not have all stations in our list
       for (let i in connection.stops) {
         connection.stops[i].station = stations[connection.stops[i].station];
       }
 
-      for (let date of ["2023-10-16", "2023-10-17", "2023-10-18"]) {
+      for (let date of ["2024-10-16", "2024-10-17", "2024-10-18"]) {
         const datedConnection = new Connection(
           connection.id,
           connection.displayId,
@@ -57,5 +63,24 @@ class Database {
   constructor() {
     this.stations = parseStations();
     this.connections = parseConnections(this.stations);
+  }
+
+  getConnection(connectionId) {
+    const connection = this.connections[connectionId];
+    if (!connection) throw new UnknownConnectionError(connectionId);
+    return connection;
+  }
+
+  *getAlternatives(connectionId) {
+    const connection = this.getConnection(connectionId);
+    for (let candidateId in this.connections) {
+      const candidate = this.getConnection(candidateId);
+
+      // connection can not be an alternative to itself
+      if (connectionId === candidateId) continue;
+
+      // this candidate is an alternative because it covers the same leg
+      if (connection.leg.numericId === candidate.leg.numericId) yield candidate;
+    }
   }
 }
