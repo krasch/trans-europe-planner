@@ -1,25 +1,7 @@
-// would prefer to have this in util.js, but then getting import issues
-function autoincrementer() {
-  let counter = 0;
-  return () => {
-    counter += 1;
-    return counter;
-  };
-}
-
-let _cityAutoincrementer = autoincrementer();
-
 class IllegalCoordinateError extends Error {
   constructor(message) {
     super(message);
     this.name = "IllegalCoordinate";
-  }
-}
-
-class NotImplementedError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "NotImplementedError";
   }
 }
 
@@ -42,8 +24,7 @@ class Coordinates {
 
 class City {
   constructor(name, coordinates) {
-    this.numericId = _cityAutoincrementer();
-    this.name = name;
+    this.name = name; // todo name is not unique, need some id
     this.coordinates = coordinates;
   }
 }
@@ -54,22 +35,6 @@ class Station {
     this.name = name;
     this.coordinates = coordinates;
     this.city = city;
-  }
-}
-
-class Leg {
-  constructor(startCity, endCity) {
-    this.startCity = startCity;
-    this.endCity = endCity;
-  }
-
-  get numericId() {
-    if (this.endCity.numericId >= 1000) throw new NotImplementedError();
-    return this.startCity.numericId * 1000 + this.endCity.numericId;
-  }
-
-  get name() {
-    return `${this.startCity.name} -> ${this.endCity.name}`;
   }
 }
 
@@ -100,7 +65,7 @@ class Connection {
   }
 
   get leg() {
-    return new Leg(this.startStation.city, this.endStation.city); // todo producing too many objects?
+    return `${this.startStation.city.name}-${this.endStation.city.name}`;
   }
 }
 
@@ -125,12 +90,10 @@ class Journey {
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
-  module.exports.autoincrementer = autoincrementer;
   module.exports.IllegalCoordinateError = IllegalCoordinateError;
   module.exports.Coordinates = Coordinates;
   module.exports.City = City;
   module.exports.Station = Station;
-  module.exports.Leg = Leg;
   module.exports.Connection = Connection;
   module.exports.Journey = Journey;
 }

@@ -1,5 +1,6 @@
-const { Leg, City, Coordinates } = require("../script/types.js");
-const { cityToGeojson, legToGeojson } = require("../script/map.js");
+const { Station, City, Coordinates } = require("../script/types.js");
+const { createConnection } = require("../tests/util.js");
+const { cityToGeojson, connectionToGeojson } = require("../script/map.js");
 
 test("cityToGeojson", function () {
   const coordinates = new Coordinates(10, 20);
@@ -9,35 +10,44 @@ test("cityToGeojson", function () {
     type: "Feature",
     geometry: {
       type: "Point",
-      coordinates: [20, 10],
+      coordinates: [coordinates.longitude, coordinates.latitude],
     },
-    properties: { name: "mycity" },
+    properties: { name: city.name },
   };
 
   expect(JSON.stringify(cityToGeojson(city))).toBe(JSON.stringify(expected));
 });
 
 test("legToGeojson", function () {
-  const coordinatesA = new Coordinates(10, 20);
-  const coordinatesB = new Coordinates(-30, -40);
+  const coordinatesCityA = new Coordinates(10, 20);
+  const coordinatesCityB = new Coordinates(-30, -40);
 
-  const cityA = new City("A", coordinatesA);
-  const cityB = new City("B", coordinatesB);
+  const cityA = new City("A", coordinatesCityA);
+  const cityB = new City("B", coordinatesCityB);
 
-  const leg = new Leg(cityA, cityB);
+  const coordinatesStationA = new Coordinates(0, 0);
+  const coordinatesStationB = new Coordinates(10, 10);
+
+  const stationA = new Station(1, "A Hbf", coordinatesStationA, cityA);
+  const stationB = new Station(2, "A Hbf", coordinatesStationB, cityB);
+
+  const connection = createConnection(1, stationA, stationB);
 
   const expected = {
     type: "Feature",
     geometry: {
       type: "LineString",
       coordinates: [
-        [20, 10],
-        [-40, -30],
+        // should be coordinates of city, not of station
+        [coordinatesCityA.longitude, coordinatesCityA.latitude],
+        [coordinatesCityB.longitude, coordinatesCityB.latitude],
       ],
     },
-    properties: { name: "A -> B" },
-    id: leg.numericId,
+    // should be referencing city, not station
+    properties: { id: `${cityA.name}-${cityB.name}` },
   };
 
-  expect(JSON.stringify(legToGeojson(leg))).toBe(JSON.stringify(expected));
+  expect(JSON.stringify(connectionToGeojson(connection))).toBe(
+    JSON.stringify(expected),
+  );
 });

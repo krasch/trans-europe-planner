@@ -54,7 +54,7 @@ function createCalenderElement(connection) {
 
   const element = createElementFromTemplate("template-calendar-connection");
   element.id = connection.id;
-  element.classList.add(connection.leg.numericId);
+  element.classList.add(connection.leg);
   element.style.gridRowStart = rowStart + 1;
   element.style.gridRowEnd = rowEnd + 1;
   element.style.gridColumn = column + 2;
@@ -81,11 +81,9 @@ function createCalenderElement(connection) {
   element.addEventListener("dragstart", (e) => {
     e.dataTransfer.dropEffect = "move";
     e.dataTransfer.setData("calenderItemId", element.id);
-    e.dataTransfer.setData("leg", connection.leg.numericId.toString());
+    e.dataTransfer.setData("leg", connection.leg);
 
-    for (let alt of document.getElementsByClassName(
-      connection.leg.numericId.toString(),
-    )) {
+    for (let alt of document.getElementsByClassName(connection.leg)) {
       alt.classList.add("possibleDropTarget");
       alt.style.zIndex = zIndexAvailableAlternative;
     }
@@ -130,9 +128,7 @@ function createCalenderElement(connection) {
     originalCalenderItem.classList.add("alternative");
     originalCalenderItem.draggable = false;
 
-    for (let alt of document.getElementsByClassName(
-      connection.leg.numericId.toString(),
-    )) {
+    for (let alt of document.getElementsByClassName(connection.leg)) {
       alt.classList.remove("possibleDropTarget");
       alt.style.zIndex = zIndexHiddenAlternative;
     }
@@ -146,12 +142,12 @@ function createCalenderElement(connection) {
 
   element.addEventListener("mouseover", (e) => {
     element.classList.add("legSelected");
-    map.setHover(connection.leg.numericId); // todo uses global map variable
+    map.setHover(connection.leg); // todo uses global map variable
   });
 
   element.addEventListener("mouseout", (e) => {
     element.classList.remove("legSelected");
-    map.setNoHover(connection.leg.numericId); // todo uses global map variable
+    map.setNoHover(connection.leg); // todo uses global map variable
   });
 
   return element;

@@ -1,4 +1,4 @@
-const { Leg, Connection } = require("../script/types.js");
+const { Connection } = require("../script/types.js");
 const { createCity, createStation } = require("../tests/util.js");
 
 test("connectionGetters", function () {
@@ -30,5 +30,5 @@ test("connectionGetters", function () {
   expect(connection.endStation).toStrictEqual(stationD);
   expect(connection.startTime).toBe("10:00");
   expect(connection.endTime).toBe("13:00");
-  expect(connection.leg.numericId).toBe(new Leg(cityA, cityD).numericId);
+  expect(connection.leg).toBe("A-D");
 });

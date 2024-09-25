@@ -1,4 +1,4 @@
-const { Journey, Leg } = require("../script/types.js");
+const { Journey } = require("../script/types.js");
 const {
   createCity,
   createStation,
@@ -16,12 +16,10 @@ test("journeyWithOneConnection", function () {
   const journey = new Journey([connection]);
 
   const expectedStopovers = [stationA.city, stationB.city];
-  const expectedLegs = [new Leg(cityA, cityB)];
+  const expectedLegs = [connection.leg];
 
   expect(journey.stopovers).toStrictEqual(expectedStopovers);
-  expect(journey.legs.map((l) => l.numericId)).toStrictEqual(
-    expectedLegs.map((l) => l.numericId),
-  );
+  expect(journey.legs).toStrictEqual(expectedLegs);
 });
 
 test("journeyWithMultipleConnections", function () {
@@ -47,14 +45,8 @@ test("journeyWithMultipleConnections", function () {
     stationC.city,
     stationD.city,
   ];
-  const expectedLegs = [
-    new Leg(cityA, cityB),
-    new Leg(cityB, cityC),
-    new Leg(cityC, cityD),
-  ];
+  const expectedLegs = [connection1.leg, connection2.leg, connection3.leg];
 
   expect(journey.stopovers).toStrictEqual(expectedStopovers);
-  expect(journey.legs.map((l) => l.numericId)).toStrictEqual(
-    expectedLegs.map((l) => l.numericId),
-  );
+  expect(journey.legs).toStrictEqual(expectedLegs);
 });

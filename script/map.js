@@ -9,21 +9,24 @@ function cityToGeojson(city) {
   };
 }
 
-function legToGeojson(leg) {
+function connectionToGeojson(connection) {
   return {
     type: "Feature",
     geometry: {
       type: "LineString",
       coordinates: [
         [
-          leg.startCity.coordinates.longitude,
-          leg.startCity.coordinates.latitude,
+          connection.startStation.city.coordinates.longitude,
+          connection.startStation.city.coordinates.latitude,
         ],
-        [leg.endCity.coordinates.longitude, leg.endCity.coordinates.latitude],
+        [
+          connection.endStation.city.coordinates.longitude,
+          connection.endStation.city.coordinates.latitude,
+        ],
       ],
     },
-    properties: { name: leg.name },
-    id: leg.numericId,
+    // use this instead of outer-level 'id' field because those ids must be numeric
+    properties: { id: connection.leg },
   };
 }
 
@@ -72,14 +75,14 @@ class MapWrapper {
     this.#addLayerToMap("cities", "cities", "cities", markers);
 
     // add one line per leg
-    const legs = journey.legs;
-    const lines = asGeojsonFeatureCollection(legs.map(legToGeojson));
+    const legs = journey.connections;
+    const lines = asGeojsonFeatureCollection(legs.map(connectionToGeojson));
     this.#addLayerToMap("legs", "legs", "legs", lines);
 
     // when mouse hovers over a leg
     this.map.on("mouseenter", "legs", (e) => {
       if (e.features.length > 0) {
-        const legId = e.features[0].id;
+        const legId = e.features[0].properties["id"];
         this.#updateHover(legId);
 
         // todo this should be in calender
@@ -104,6 +107,7 @@ class MapWrapper {
     this.map.addSource(sourceName, {
       type: "geojson",
       data: data,
+      promoteId: "id", // otherwise can not use non-numeric ids
     });
 
     const style = structuredClone(mapStyles[styleName]);
@@ -116,5 +120,5 @@ class MapWrapper {
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.cityToGeojson = cityToGeojson;
-  module.exports.legToGeojson = legToGeojson;
+  module.exports.connectionToGeojson = connectionToGeojson;
 }
