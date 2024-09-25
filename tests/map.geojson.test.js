@@ -12,7 +12,7 @@ test("cityToGeojson", function () {
       type: "Point",
       coordinates: [coordinates.longitude, coordinates.latitude],
     },
-    properties: { name: city.name },
+    properties: { name: city.name, id: city.name },
   };
 
   expect(JSON.stringify(cityToGeojson(city))).toBe(JSON.stringify(expected));

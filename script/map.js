@@ -5,7 +5,8 @@ function cityToGeojson(city) {
       type: "Point",
       coordinates: [city.coordinates.longitude, city.coordinates.latitude],
     },
-    properties: { name: city.name },
+    // use this instead of outer-level 'id' field because those ids must be numeric
+    properties: { name: city.name, id: city.name },
   };
 }
 
@@ -68,18 +69,40 @@ class MapWrapper {
     this.#currentHover = null;
   }
 
-  displayJourney() {
-    // add one marker per stopover
-    const cities = journey.stopovers;
+  displayJourney(journey) {
+    this.#initCitiesLayer(journey.stopovers);
+    this.#initLegsLayer(journey.connections);
+  }
+
+  #initCitiesLayer(cities) {
     const markers = asGeojsonFeatureCollection(cities.map(cityToGeojson));
-    this.#addLayerToMap("cities", "cities", "cities", markers);
 
-    // add one line per leg
-    const legs = journey.connections;
-    const lines = asGeojsonFeatureCollection(legs.map(connectionToGeojson));
-    this.#addLayerToMap("legs", "legs", "legs", lines);
+    this.map.addSource("cities", {
+      type: "geojson",
+      data: markers,
+      promoteId: "id", // otherwise can not use non-numeric ids
+    });
+    this.map.addLayer(mapStyles["cities"]);
+  }
 
-    // when mouse hovers over a leg
+  #updateCitiesLayer(cities) {
+    const markers = asGeojsonFeatureCollection(cities.map(cityToGeojson));
+    this.map.getSource("cities").setData(markers);
+  }
+
+  #initLegsLayer(connections) {
+    const lines = asGeojsonFeatureCollection(
+      connections.map(connectionToGeojson),
+    );
+
+    this.map.addSource("legs", {
+      type: "geojson",
+      data: lines,
+      promoteId: "id", // otherwise can not use non-numeric ids
+    });
+    this.map.addLayer(mapStyles["legs"]);
+
+    // when mouse starts hovering over a leg
     this.map.on("mouseenter", "legs", (e) => {
       if (e.features.length > 0) {
         const legId = e.features[0].properties["id"];
@@ -103,17 +126,11 @@ class MapWrapper {
     });
   }
 
-  #addLayerToMap(sourceName, layerName, styleName, data) {
-    this.map.addSource(sourceName, {
-      type: "geojson",
-      data: data,
-      promoteId: "id", // otherwise can not use non-numeric ids
-    });
-
-    const style = structuredClone(mapStyles[styleName]);
-    style["id"] = layerName;
-    style["source"] = sourceName;
-    this.map.addLayer(style);
+  #updateLegsLayer(connections) {
+    const lines = asGeojsonFeatureCollection(
+      connections.map(connectionToGeojson),
+    );
+    this.map.getSource("legs").setData(lines);
   }
 }
 

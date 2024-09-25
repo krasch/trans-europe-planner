@@ -1,5 +1,7 @@
 const mapStyles = {
   cities: {
+    id: "cities",
+    source: "cities",
     type: "symbol",
     layout: {
       "text-font": ["Stadia Semibold"],
@@ -26,6 +28,8 @@ const mapStyles = {
     },
   },
   legs: {
+    id: "legs",
+    source: "legs",
     type: "line",
     layout: {
       "line-join": "round",
