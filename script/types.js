@@ -5,6 +5,26 @@ class IllegalCoordinateError extends Error {
   }
 }
 
+class LegHoverEvent {
+  constructor(leg) {
+    this.event = new CustomEvent("legHover", { detail: { leg: leg } });
+  }
+
+  dispatch(host) {
+    host.dispatchEvent(this.event);
+  }
+}
+
+class LegNoHoverEvent {
+  constructor(leg) {
+    this.event = new CustomEvent("legNoHover", { detail: { leg: leg } });
+  }
+
+  dispatch(host) {
+    host.dispatchEvent(this.event);
+  }
+}
+
 class Coordinates {
   constructor(latitude, longitude) {
     this.latitude = latitude;

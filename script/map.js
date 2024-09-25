@@ -48,25 +48,21 @@ class MapWrapper {
   init() {
     this.map.getCanvas().style.cursor = "default";
     this.map.setLayoutProperty("place-city", "text-field", ["get", `name:de`]);
+
+    document.addEventListener("legHover", (e) => this.setHover(e.detail.leg));
+    document.addEventListener("legNoHover", (e) =>
+      this.setNoHover(e.detail.leg),
+    );
   }
 
   setHover(legId) {
+    this.#currentHover = legId;
     this.map.setFeatureState({ source: "legs", id: legId }, { hover: true });
   }
 
   setNoHover(legId) {
-    this.map.setFeatureState({ source: "legs", id: legId }, { hover: false });
-  }
-
-  #updateHover(legId) {
-    this.#hoverOff();
-    this.#currentHover = legId;
-    this.setHover(legId);
-  }
-
-  #hoverOff() {
-    if (this.#currentHover) this.setNoHover(this.#currentHover);
     this.#currentHover = null;
+    this.map.setFeatureState({ source: "legs", id: legId }, { hover: false });
   }
 
   displayJourney(journey) {
@@ -105,24 +101,15 @@ class MapWrapper {
     // when mouse starts hovering over a leg
     this.map.on("mouseenter", "legs", (e) => {
       if (e.features.length > 0) {
-        const legId = e.features[0].properties["id"];
-        this.#updateHover(legId);
-
-        // todo this should be in calender
-        for (let connection of document.getElementsByClassName(legId)) {
-          connection.classList.add("legSelected");
-        }
+        const leg = e.features[0].properties["id"];
+        new LegHoverEvent(leg).dispatch(document);
       }
     });
 
     // when mouse stops hovering over a leg
     this.map.on("mouseout", "legs", (e) => {
-      const legId = this.#currentHover;
-      // todo this should be in calender
-      for (let connection of document.getElementsByClassName(legId)) {
-        connection.classList.remove("legSelected");
-      }
-      this.#hoverOff();
+      const leg = this.#currentHover;
+      if (leg) new LegNoHoverEvent(leg).dispatch(document);
     });
   }
 
