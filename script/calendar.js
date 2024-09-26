@@ -141,11 +141,11 @@ function createCalenderElement(connection) {
   });
 
   element.addEventListener("mouseover", (e) => {
-    new LegHoverEvent(connection.leg.id).dispatch(document);
+    new LegHoverEvent(connection.leg.id, "calendar").dispatch(document);
   });
 
   element.addEventListener("mouseout", (e) => {
-    new LegNoHoverEvent(connection.leg.id).dispatch(document);
+    new LegNoHoverEvent(connection.leg.id, "calendar").dispatch(document);
   });
 
   return element;

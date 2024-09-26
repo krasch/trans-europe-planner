@@ -6,8 +6,10 @@ class IllegalCoordinateError extends Error {
 }
 
 class LegHoverEvent {
-  constructor(leg) {
-    this.event = new CustomEvent("legHover", { detail: { leg: leg } });
+  constructor(leg, source) {
+    this.event = new CustomEvent("legHover", {
+      detail: { leg: leg, source: source },
+    });
   }
 
   dispatch(host) {
@@ -107,6 +109,12 @@ class Journey {
 
   addConnection(connection) {
     this.connections.push(connection);
+  }
+
+  removeConnection(leg) {
+    this.connections = this.connections.filter((c) => {
+      return leg !== c.leg.id;
+    });
   }
 
   get stopovers() {

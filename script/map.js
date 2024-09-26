@@ -35,11 +35,62 @@ function asGeojsonFeatureCollection(features) {
   };
 }
 
+// todo should this really be extra class
+// should hover callbacks be added here?
+class HoverStateManager {
+  #currentHover = null;
+
+  constructor(map, sourceName) {
+    this.map = map;
+    this.sourceName = sourceName;
+  }
+
+  get current() {
+    return this.#currentHover;
+  }
+
+  setHover(id) {
+    this.#currentHover = id;
+    this.map.setFeatureState(
+      { source: this.sourceName, id: id },
+      { hover: true },
+    );
+  }
+
+  setNoHover(id) {
+    this.#currentHover = null;
+    this.map.setFeatureState(
+      { source: this.sourceName, id: id },
+      { hover: false },
+    );
+  }
+}
+
 class MapLayer {
-  constructor(map, sourceName, styleName) {
+  #callbacks = {};
+
+  constructor(map, sourceName, styleName, enableHover = false) {
     this.map = map;
     this.sourceName = sourceName;
     this.styleName = styleName;
+
+    if (enableHover) {
+      this.hover = new HoverStateManager(this.map, this.sourceName);
+
+      this.map.on("mouseenter", this.sourceName, (e) => {
+        const id = this.#getIdFromEvent(e);
+        this.hover.setHover(id);
+        this.#makeCallback("hover", id);
+      });
+
+      this.map.on("mouseleave", this.sourceName, (e) => {
+        const id = this.hover.current;
+        if (id) {
+          this.hover.setNoHover(id);
+          this.#makeCallback("hoverEnd", id);
+        }
+      });
+    }
   }
 
   update(geojsonData) {
@@ -56,8 +107,18 @@ class MapLayer {
     }
   }
 
-  on(eventName, callback) {
-    this.map.on(eventName, this.sourceName, callback);
+  onClick(callback) {
+    this.map.on("click", this.sourceName, (e) => {
+      callback(this.#getIdFromEvent(e));
+    });
+  }
+
+  onHover(callback) {
+    this.#callbacks["hover"] = callback; // todo check if hovering is enabled
+  }
+
+  onHoverEnd(callback) {
+    this.#callbacks["hoverEnd"] = callback; // todo check if hovering is enabled
   }
 
   #init(geojsonData) {
@@ -77,62 +138,72 @@ class MapLayer {
     this.map.removeLayer(this.styleName);
     this.map.removeSource(this.sourceName);
   }
+
+  #getIdFromEvent(e) {
+    if (e.features.length !== 1)
+      throw new Error(`Unexpected event data: ${e.toString()}`);
+    return e.features[0].id;
+  }
+
+  #makeCallback(eventName, data) {
+    if (this.#callbacks[eventName]) this.#callbacks[eventName](data);
+  }
 }
 
 class MapWrapper {
   #callbacks = {};
-  #currentHover = null;
-  #citiesLayer = null;
-  #connectionsLayer = null;
-  #legLayer = null;
-
-  #layers = null;
+  #legs = null;
+  #connections = null;
+  #cities = null;
 
   constructor(map) {
     this.map = map;
 
-    this.#legLayer = new MapLayer(this.map, "legs", "legs");
-    this.#connectionsLayer = new MapLayer(
+    this.#legs = new MapLayer(this.map, "legs", "legs", true);
+    this.#connections = new MapLayer(
       this.map,
       "connections",
       "connections",
+      true,
     );
-    this.#citiesLayer = new MapLayer(this.map, "cities", "cities");
+    this.#cities = new MapLayer(this.map, "cities", "cities");
   }
 
   init() {
     this.map.getCanvas().style.cursor = "default";
     this.map.setLayoutProperty("place-city", "text-field", ["get", `name:de`]);
 
-    document.addEventListener("legHover", (e) => this.#setHover(e.detail.leg));
-    document.addEventListener("legNoHover", (e) =>
-      this.#setNoHover(e.detail.leg),
-    );
+    // when the user clicks on a leg, it should be added to the journey
+    this.#legs.onClick((id) => this.#makeCallback("legAdded", id));
+    // when the user clicks on a connection, it should be removed from the journey
+    this.#connections.onClick((id) => this.#makeCallback("legRemoved", id));
 
-    // when mouse starts hovering over a leg
-    this.#connectionsLayer.on("mouseenter", (e) => {
-      if (e.features.length > 0) {
-        const leg = e.features[0].properties["id"];
-        new LegHoverEvent(leg).dispatch(document);
-      }
+    // when mouse starts/stops hovering over a connection, the calendar should be informed
+    this.#connections.onHover((id) => {
+      new LegHoverEvent(id, "map").dispatch(document);
+    });
+    this.#connections.onHoverEnd((id) => {
+      new LegNoHoverEvent(id, "map").dispatch(document);
     });
 
-    // when mouse stops hovering over a leg
-    this.#connectionsLayer.on("mouseout", (e) => {
-      const leg = this.#currentHover;
-      if (leg) new LegNoHoverEvent(leg).dispatch(document);
+    // when we get informed us that the user is hovering over a connection (e.g. in the calendar)
+    // we also want to hover (but not when that information originally came from us)
+    document.addEventListener("legHover", (e) => {
+      if (e.detail.source !== "map")
+        this.#connections.hover.setHover(e.detail.leg);
     });
-
-    this.#legLayer.on("click", (e) => {
-      if (e.features.length > 0) {
-        const leg = e.features[0].properties["id"];
-        this.#makeCallback("legAdded", leg);
-      }
+    document.addEventListener("legNoHover", (e) => {
+      if (e.detail.source !== "map")
+        this.#connections.hover.setNoHover(e.detail.leg);
     });
   }
 
   on(event, callback) {
     this.#callbacks[event] = callback;
+  }
+
+  #makeCallback(event, data) {
+    if (this.#callbacks[event]) this.#callbacks[event](data);
   }
 
   updateView(availableLegs, journey) {
@@ -146,35 +217,15 @@ class MapWrapper {
 
     // actual cities we have on our route
     const markers = journey.stopovers.map(cityToGeojson);
-    this.#citiesLayer.update(asGeojsonFeatureCollection(markers));
+    this.#cities.update(asGeojsonFeatureCollection(markers));
 
     // legs we have on our route
     const redLines = legsInJourney.map(legToGeojson);
-    this.#connectionsLayer.update(asGeojsonFeatureCollection(redLines));
+    this.#connections.update(asGeojsonFeatureCollection(redLines));
 
     // legs currently not in use
     const lines = additionalLegs.map(legToGeojson);
-    this.#legLayer.update(asGeojsonFeatureCollection(lines));
-  }
-
-  #setHover(legId) {
-    this.#currentHover = legId;
-    this.map.setFeatureState(
-      { source: "connections", id: legId },
-      { hover: true },
-    );
-  }
-
-  #setNoHover(legId) {
-    this.#currentHover = null;
-    this.map.setFeatureState(
-      { source: "connections", id: legId },
-      { hover: false },
-    );
-  }
-
-  #makeCallback(event, data) {
-    if (this.#callbacks[event]) this.#callbacks[event](data);
+    this.#legs.update(asGeojsonFeatureCollection(lines));
   }
 }
 
