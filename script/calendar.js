@@ -141,13 +141,11 @@ function createCalenderElement(connection) {
   });
 
   element.addEventListener("mouseover", (e) => {
-    element.classList.add("legSelected");
-    map.setHover(connection.leg); // todo uses global map variable
+    new LegHoverEvent(connection.leg).dispatch(document);
   });
 
   element.addEventListener("mouseout", (e) => {
-    element.classList.remove("legSelected");
-    map.setNoHover(connection.leg); // todo uses global map variable
+    new LegNoHoverEvent(connection.leg).dispatch(document);
   });
 
   return element;
@@ -170,4 +168,20 @@ function displayJourneyOnCalendar(container, journey) {
       container.appendChild(alternativeElement);
     }
   }
+
+  // todo should move somewhere else
+  document.addEventListener("legHover", (e) => {
+    const leg = e.detail.leg;
+    for (let connection of document.getElementsByClassName(leg)) {
+      connection.classList.add("legSelected");
+    }
+  });
+
+  // todo should move somewhere else
+  document.addEventListener("legNoHover", (e) => {
+    const leg = e.detail.leg;
+    for (let connection of document.getElementsByClassName(leg)) {
+      connection.classList.remove("legSelected");
+    }
+  });
 }

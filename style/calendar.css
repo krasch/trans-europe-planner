@@ -120,14 +120,17 @@
 
     &.alternative {
 
-        /* do not want to display info about the alternative -> all children always hidden */
-        > * {
-            visibility: hidden;
-        }
+        visibility: hidden;
 
         &.possibleDropTarget {
+            visibility: visible;
             border-top: 1px dashed red;
             border-radius: 0;
+
+            /* do not want to display info about the alternative -> all children always hidden */
+            > * {
+                visibility: hidden;
+            }
         }
 
         &.selectedDropTarget {
