@@ -46,12 +46,25 @@ class MapLayer {
   }
 
   update(geojsonData) {
-    if (!this.map.getSource(this.sourceName)) this.#init(geojsonData);
-    else this.#redraw(geojsonData);
+    const dataIsEmpty = geojsonData.features.length === 0;
+    const layerAlreadyAdded = this.map.getSource(this.sourceName) !== undefined;
+
+    if (layerAlreadyAdded) {
+      if (dataIsEmpty) this.#remove();
+      else this.#redraw(geojsonData);
+    }
+    // layer not added
+    else {
+      if (!dataIsEmpty) this.#init(geojsonData);
+    }
   }
 
   on(eventName, callback) {
     this.map.on(eventName, this.sourceName, callback);
+  }
+
+  setFeatureState(id, state) {
+    this.map.setFeatureState({ source: this.sourceName, id: id }, state);
   }
 
   #init(geojsonData) {
@@ -65,6 +78,11 @@ class MapLayer {
 
   #redraw(geojsonData) {
     this.map.getSource(this.sourceName).setData(geojsonData);
+  }
+
+  #remove() {
+    this.map.removeLayer(this.styleName);
+    this.map.removeSource(this.sourceName);
   }
 }
 
@@ -110,16 +128,23 @@ class MapWrapper {
 
     const lines = journey.connections.map(connectionToGeojson);
     this.#connectionsLayer.update(asGeojsonFeatureCollection(lines));
+
+    // todo this is not nice
+    /*for (let connection of journey.connections) {
+      this.#connectionsLayer.setFeatureState(connection.leg, {
+        addedToJourney: true,
+      });
+    }*/
   }
 
   #setHover(legId) {
     this.#currentHover = legId;
-    this.map.setFeatureState({ source: "legs", id: legId }, { hover: true });
+    this.#connectionsLayer.setFeatureState(legId, { hover: true });
   }
 
   #setNoHover(legId) {
     this.#currentHover = null;
-    this.map.setFeatureState({ source: "legs", id: legId }, { hover: false });
+    this.#connectionsLayer.setFeatureState(legId, { hover: false });
   }
 }
 

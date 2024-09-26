@@ -81,6 +81,7 @@
         database.getConnection("2024-10-17X500018289"),
         database.getConnection("2024-10-18X1234567")
     ])
+    const emptyJourney = new Journey([]);
 
     const map = new MapWrapper(new maplibregl.Map({
       container: 'map',
@@ -93,6 +94,9 @@
 
     map.map.on('load', () => {
         map.init();
+        map.updateView(emptyJourney);
+        map.updateView(journey);
+        map.updateView(emptyJourney);
         map.updateView(journey);
         initCalendarGrid(calendar);
         displayJourneyOnCalendar(calendar, journey);

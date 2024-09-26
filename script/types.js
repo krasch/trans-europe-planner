@@ -96,6 +96,9 @@ class Journey {
 
   get stopovers() {
     const cities = [];
+
+    if (this.connections.length === 0) return cities;
+
     for (let connection of this.connections) {
       cities.push(connection.startStation.city);
     }

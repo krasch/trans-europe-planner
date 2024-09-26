@@ -36,7 +36,12 @@ const mapStyles = {
       "line-cap": "round",
     },
     paint: {
-      "line-color": "red",
+      "line-color": [
+        "case",
+        ["boolean", ["feature-state", "addedToJourney"], false],
+        "red",
+        "grey",
+      ],
       "line-opacity": [
         "case",
         ["boolean", ["feature-state", "hover"], false],

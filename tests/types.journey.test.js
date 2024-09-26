@@ -5,6 +5,12 @@ const {
   createConnection,
 } = require("../tests/util.js");
 
+test("emptyJourney", function () {
+  const journey = new Journey([]);
+  expect(journey.stopovers).toStrictEqual([]);
+  expect(journey.legs).toStrictEqual([]);
+});
+
 test("journeyWithOneConnection", function () {
   const cityA = createCity("A");
   const cityB = createCity("B");
