@@ -2830,6 +2830,7 @@
         ],
         "text-max-width": 8,
         "text-line-height": 1.55,
+        "text-variable-anchor": ["left", "right"],
         "visibility": "visible"
       },
       "paint": {
