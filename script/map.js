@@ -35,62 +35,32 @@ function asGeojsonFeatureCollection(features) {
   };
 }
 
-// todo should this really be extra class
-// should hover callbacks be added here?
-class HoverStateManager {
-  #currentHover = null;
-
-  constructor(map, sourceName) {
-    this.map = map;
-    this.sourceName = sourceName;
-  }
-
-  get current() {
-    return this.#currentHover;
-  }
-
-  setHover(id) {
-    this.#currentHover = id;
-    this.map.setFeatureState(
-      { source: this.sourceName, id: id },
-      { hover: true },
-    );
-  }
-
-  setNoHover(id) {
-    this.#currentHover = null;
-    this.map.setFeatureState(
-      { source: this.sourceName, id: id },
-      { hover: false },
-    );
-  }
-}
-
 class MapLayer {
   #callbacks = {};
 
-  constructor(map, sourceName, styleName, enableHover = false) {
+  constructor(map, sourceName, styleName) {
     this.map = map;
     this.sourceName = sourceName;
     this.styleName = styleName;
 
-    if (enableHover) {
-      this.hover = new HoverStateManager(this.map, this.sourceName);
+    // maplibre mouseout/mouseleave do not give us the id of the item we just left
+    // -> we need to some explicit state management
+    // to make things extra convenient, we define two new events hover and hoverEnd
+    // that already do all the necessary stuff for us
+    let hoverState = null;
 
-      this.map.on("mouseenter", this.sourceName, (e) => {
-        const id = this.#getIdFromEvent(e);
-        this.hover.setHover(id);
-        this.#makeCallback("hover", id);
-      });
+    this.map.on("mouseenter", this.sourceName, (e) => {
+      const id = this.#getIdFromEvent(e);
+      hoverState = id;
+      this.#makeCallback("hover", id);
+    });
 
-      this.map.on("mouseleave", this.sourceName, (e) => {
-        const id = this.hover.current;
-        if (id) {
-          this.hover.setNoHover(id);
-          this.#makeCallback("hoverEnd", id);
-        }
-      });
-    }
+    this.map.on("mouseleave", this.sourceName, (e) => {
+      if (hoverState) {
+        this.#makeCallback("hoverEnd", hoverState);
+        hoverState = null;
+      }
+    });
   }
 
   update(geojsonData) {
@@ -119,6 +89,10 @@ class MapLayer {
 
   onHoverEnd(callback) {
     this.#callbacks["hoverEnd"] = callback; // todo check if hovering is enabled
+  }
+
+  setFeatureState(id, state) {
+    this.map.setFeatureState({ source: this.sourceName, id: id }, state);
   }
 
   #init(geojsonData) {
@@ -159,13 +133,8 @@ class MapWrapper {
   constructor(map) {
     this.map = map;
 
-    this.#legs = new MapLayer(this.map, "legs", "legs", true);
-    this.#connections = new MapLayer(
-      this.map,
-      "connections",
-      "connections",
-      true,
-    );
+    this.#legs = new MapLayer(this.map, "legs", "legs");
+    this.#connections = new MapLayer(this.map, "connections", "connections");
     this.#cities = new MapLayer(this.map, "cities", "cities");
   }
 
@@ -178,7 +147,15 @@ class MapWrapper {
     // when the user clicks on a connection, it should be removed from the journey
     this.#connections.onClick((id) => this.#makeCallback("legRemoved", id));
 
-    // when mouse starts/stops hovering over a connection, the calendar should be informed
+    // when mouse starts/stops hovering over a leg, it should get highlighted
+    this.#legs.onHover((id) => {
+      this.#legs.setFeatureState(id, { hover: true });
+    });
+    this.#legs.onHoverEnd((id) => {
+      this.#legs.setFeatureState(id, { hover: false });
+    });
+
+    // when mouse starts/stops hovering over a connection, we should send an event (to ourselves and calendar)
     this.#connections.onHover((id) => {
       new LegHoverEvent(id, "map").dispatch(document);
     });
@@ -186,15 +163,14 @@ class MapWrapper {
       new LegNoHoverEvent(id, "map").dispatch(document);
     });
 
-    // when we get informed us that the user is hovering over a connection (e.g. in the calendar)
+    // when we get informed us that the user is hovering over a connection (in map or calendar)
+    // then that connection should get highlighted
     // we also want to hover (but not when that information originally came from us)
     document.addEventListener("legHover", (e) => {
-      if (e.detail.source !== "map")
-        this.#connections.hover.setHover(e.detail.leg);
+      this.#connections.setFeatureState(e.detail.leg, { hover: true });
     });
     document.addEventListener("legNoHover", (e) => {
-      if (e.detail.source !== "map")
-        this.#connections.hover.setNoHover(e.detail.leg);
+      this.#connections.setFeatureState(e.detail.leg, { hover: false });
     });
   }
 
