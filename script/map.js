@@ -38,8 +38,40 @@ function asGeojsonFeatureCollection(features) {
   };
 }
 
+class MapLayer {
+  constructor(map, sourceName, styleName) {
+    this.map = map;
+    this.sourceName = sourceName;
+    this.styleName = styleName;
+  }
+
+  update(geojsonData) {
+    if (!this.map.getSource(this.sourceName)) this.#init(geojsonData);
+    else this.#redraw(geojsonData);
+  }
+
+  on(eventName, callback) {
+    this.map.on(eventName, this.sourceName, callback);
+  }
+
+  #init(geojsonData) {
+    this.map.addSource(this.sourceName, {
+      type: "geojson",
+      data: geojsonData,
+      promoteId: "id", // otherwise can not use non-numeric ids
+    });
+    this.map.addLayer(mapStyles[this.styleName]);
+  }
+
+  #redraw(geojsonData) {
+    this.map.getSource(this.sourceName).setData(geojsonData);
+  }
+}
+
 class MapWrapper {
   #currentHover = null;
+  #citiesLayer = null;
+  #connectionsLayer = null;
 
   constructor(map) {
     this.map = map;
@@ -49,57 +81,16 @@ class MapWrapper {
     this.map.getCanvas().style.cursor = "default";
     this.map.setLayoutProperty("place-city", "text-field", ["get", `name:de`]);
 
-    document.addEventListener("legHover", (e) => this.setHover(e.detail.leg));
+    this.#citiesLayer = new MapLayer(this.map, "cities", "cities");
+    this.#connectionsLayer = new MapLayer(this.map, "legs", "legs");
+
+    document.addEventListener("legHover", (e) => this.#setHover(e.detail.leg));
     document.addEventListener("legNoHover", (e) =>
-      this.setNoHover(e.detail.leg),
+      this.#setNoHover(e.detail.leg),
     );
-  }
-
-  setHover(legId) {
-    this.#currentHover = legId;
-    this.map.setFeatureState({ source: "legs", id: legId }, { hover: true });
-  }
-
-  setNoHover(legId) {
-    this.#currentHover = null;
-    this.map.setFeatureState({ source: "legs", id: legId }, { hover: false });
-  }
-
-  displayJourney(journey) {
-    this.#initCitiesLayer(journey.stopovers);
-    this.#initLegsLayer(journey.connections);
-  }
-
-  #initCitiesLayer(cities) {
-    const markers = asGeojsonFeatureCollection(cities.map(cityToGeojson));
-
-    this.map.addSource("cities", {
-      type: "geojson",
-      data: markers,
-      promoteId: "id", // otherwise can not use non-numeric ids
-    });
-    this.map.addLayer(mapStyles["cities"]);
-  }
-
-  #updateCitiesLayer(cities) {
-    const markers = asGeojsonFeatureCollection(cities.map(cityToGeojson));
-    this.map.getSource("cities").setData(markers);
-  }
-
-  #initLegsLayer(connections) {
-    const lines = asGeojsonFeatureCollection(
-      connections.map(connectionToGeojson),
-    );
-
-    this.map.addSource("legs", {
-      type: "geojson",
-      data: lines,
-      promoteId: "id", // otherwise can not use non-numeric ids
-    });
-    this.map.addLayer(mapStyles["legs"]);
 
     // when mouse starts hovering over a leg
-    this.map.on("mouseenter", "legs", (e) => {
+    this.#connectionsLayer.on("mouseenter", (e) => {
       if (e.features.length > 0) {
         const leg = e.features[0].properties["id"];
         new LegHoverEvent(leg).dispatch(document);
@@ -107,17 +98,28 @@ class MapWrapper {
     });
 
     // when mouse stops hovering over a leg
-    this.map.on("mouseout", "legs", (e) => {
+    this.#connectionsLayer.on("mouseout", (e) => {
       const leg = this.#currentHover;
       if (leg) new LegNoHoverEvent(leg).dispatch(document);
     });
   }
 
-  #updateLegsLayer(connections) {
-    const lines = asGeojsonFeatureCollection(
-      connections.map(connectionToGeojson),
-    );
-    this.map.getSource("legs").setData(lines);
+  updateView(journey) {
+    const markers = journey.stopovers.map(cityToGeojson);
+    this.#citiesLayer.update(asGeojsonFeatureCollection(markers));
+
+    const lines = journey.connections.map(connectionToGeojson);
+    this.#connectionsLayer.update(asGeojsonFeatureCollection(lines));
+  }
+
+  #setHover(legId) {
+    this.#currentHover = legId;
+    this.map.setFeatureState({ source: "legs", id: legId }, { hover: true });
+  }
+
+  #setNoHover(legId) {
+    this.#currentHover = null;
+    this.map.setFeatureState({ source: "legs", id: legId }, { hover: false });
   }
 }
 

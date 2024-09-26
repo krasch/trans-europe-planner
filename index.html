@@ -80,7 +80,7 @@
         database.getConnection("2024-10-17X40008503"),
         database.getConnection("2024-10-17X500018289"),
         database.getConnection("2024-10-18X1234567")
-    ]);
+    ])
 
     const map = new MapWrapper(new maplibregl.Map({
       container: 'map',
@@ -93,12 +93,10 @@
 
     map.map.on('load', () => {
         map.init();
-        map.displayJourney(journey);
+        map.updateView(journey);
         initCalendarGrid(calendar);
         displayJourneyOnCalendar(calendar, journey);
     });
-
-    document.addEventListener("LegHovered", (e) => console.log("AAA"));
 </script>
 
 </body>
