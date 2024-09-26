@@ -79,15 +79,16 @@
 
         // temporary
         const defaultConnections = {
+            "Berlin-München": database.getConnection("2024-10-16X1000505"),
+            "München-Verona": database.getConnection("2024-10-16X300087"),
             "Verona-Firenze": database.getConnection("2024-10-17X40008503"),
             "Firenze-Livorno": database.getConnection("2024-10-17X500018289"),
             "Livorno-Bastia": database.getConnection("2024-10-18X1234567")
         }
 
-        const journey = new Journey([
-            database.getConnection("2024-10-16X1000505"),
-            database.getConnection("2024-10-16X300087"),
-        ])
+        const journey = new Journey([]);
+        journey.addConnection(defaultConnections["Berlin-München"]);
+        journey.addConnection(defaultConnections["München-Verona"]);
 
         const calendar = document.getElementById("calendar-grid");
 
