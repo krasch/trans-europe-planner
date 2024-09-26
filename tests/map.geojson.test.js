@@ -1,6 +1,5 @@
-const { Station, City, Coordinates } = require("../script/types.js");
-const { createConnection } = require("../tests/util.js");
-const { cityToGeojson, connectionToGeojson } = require("../script/map.js");
+const { Leg, City, Coordinates } = require("../script/types.js");
+const { cityToGeojson, legToGeojson } = require("../script/map.js");
 
 test("cityToGeojson", function () {
   const coordinates = new Coordinates(10, 20);
@@ -25,29 +24,19 @@ test("legToGeojson", function () {
   const cityA = new City("A", coordinatesCityA);
   const cityB = new City("B", coordinatesCityB);
 
-  const coordinatesStationA = new Coordinates(0, 0);
-  const coordinatesStationB = new Coordinates(10, 10);
-
-  const stationA = new Station(1, "A Hbf", coordinatesStationA, cityA);
-  const stationB = new Station(2, "A Hbf", coordinatesStationB, cityB);
-
-  const connection = createConnection(1, stationA, stationB);
+  const leg = new Leg(cityA, cityB);
 
   const expected = {
     type: "Feature",
     geometry: {
       type: "LineString",
       coordinates: [
-        // should be coordinates of city, not of station
         [coordinatesCityA.longitude, coordinatesCityA.latitude],
         [coordinatesCityB.longitude, coordinatesCityB.latitude],
       ],
     },
-    // should be referencing city, not station
     properties: { id: `${cityA.name}-${cityB.name}` },
   };
 
-  expect(JSON.stringify(connectionToGeojson(connection))).toBe(
-    JSON.stringify(expected),
-  );
+  expect(JSON.stringify(legToGeojson(leg))).toBe(JSON.stringify(expected));
 });

@@ -73,15 +73,37 @@
 
     "use strict";
     const database = new Database();
+    console.log(database.connections);
 
-    const journey = new Journey([
-        database.getConnection("2024-10-16X1000505"),
-        database.getConnection("2024-10-16X300087"),
-        database.getConnection("2024-10-17X40008503"),
-        database.getConnection("2024-10-17X500018289"),
-        database.getConnection("2024-10-18X1234567")
-    ])
-    const emptyJourney = new Journey([]);
+    function main(){
+        const availableLegs = Array.from(database.getAllLegs());
+
+        // temporary
+        const defaultConnections = {
+            "Verona-Firenze": database.getConnection("2024-10-17X40008503"),
+            "Firenze-Livorno": database.getConnection("2024-10-17X500018289"),
+            "Livorno-Bastia": database.getConnection("2024-10-18X1234567")
+        }
+
+        const journey = new Journey([
+            database.getConnection("2024-10-16X1000505"),
+            database.getConnection("2024-10-16X300087"),
+        ])
+
+        const calendar = document.getElementById("calendar-grid");
+
+        map.init();
+        map.updateView(availableLegs,journey);
+
+        map.on("legAdded", leg => {
+            journey.addConnection(defaultConnections[leg]);
+            map.updateView(availableLegs,journey);
+        });
+
+        initCalendarGrid(calendar);
+        displayJourneyOnCalendar(calendar, journey);
+    }
+
 
     const map = new MapWrapper(new maplibregl.Map({
       container: 'map',
@@ -90,16 +112,8 @@
       zoom: 4
     }));
 
-    const calendar = document.getElementById("calendar-grid");
-
     map.map.on('load', () => {
-        map.init();
-        map.updateView(emptyJourney);
-        map.updateView(journey);
-        map.updateView(emptyJourney);
-        map.updateView(journey);
-        initCalendarGrid(calendar);
-        displayJourneyOnCalendar(calendar, journey);
+        main();
     });
 </script>
 

@@ -10,24 +10,21 @@ function cityToGeojson(city) {
   };
 }
 
-function connectionToGeojson(connection) {
+function legToGeojson(leg) {
   return {
     type: "Feature",
     geometry: {
       type: "LineString",
       coordinates: [
         [
-          connection.startStation.city.coordinates.longitude,
-          connection.startStation.city.coordinates.latitude,
+          leg.startCity.coordinates.longitude,
+          leg.startCity.coordinates.latitude,
         ],
-        [
-          connection.endStation.city.coordinates.longitude,
-          connection.endStation.city.coordinates.latitude,
-        ],
+        [leg.endCity.coordinates.longitude, leg.endCity.coordinates.latitude],
       ],
     },
     // use this instead of outer-level 'id' field because those ids must be numeric
-    properties: { id: connection.leg },
+    properties: { id: leg.id },
   };
 }
 
@@ -63,10 +60,6 @@ class MapLayer {
     this.map.on(eventName, this.sourceName, callback);
   }
 
-  setFeatureState(id, state) {
-    this.map.setFeatureState({ source: this.sourceName, id: id }, state);
-  }
-
   #init(geojsonData) {
     this.map.addSource(this.sourceName, {
       type: "geojson",
@@ -87,20 +80,29 @@ class MapLayer {
 }
 
 class MapWrapper {
+  #callbacks = {};
   #currentHover = null;
   #citiesLayer = null;
   #connectionsLayer = null;
+  #legLayer = null;
+
+  #layers = null;
 
   constructor(map) {
     this.map = map;
+
+    this.#legLayer = new MapLayer(this.map, "legs", "legs");
+    this.#connectionsLayer = new MapLayer(
+      this.map,
+      "connections",
+      "connections",
+    );
+    this.#citiesLayer = new MapLayer(this.map, "cities", "cities");
   }
 
   init() {
     this.map.getCanvas().style.cursor = "default";
     this.map.setLayoutProperty("place-city", "text-field", ["get", `name:de`]);
-
-    this.#citiesLayer = new MapLayer(this.map, "cities", "cities");
-    this.#connectionsLayer = new MapLayer(this.map, "legs", "legs");
 
     document.addEventListener("legHover", (e) => this.#setHover(e.detail.leg));
     document.addEventListener("legNoHover", (e) =>
@@ -120,36 +122,64 @@ class MapWrapper {
       const leg = this.#currentHover;
       if (leg) new LegNoHoverEvent(leg).dispatch(document);
     });
+
+    this.#legLayer.on("click", (e) => {
+      if (e.features.length > 0) {
+        const leg = e.features[0].properties["id"];
+        this.#makeCallback("legAdded", leg);
+      }
+    });
   }
 
-  updateView(journey) {
+  on(event, callback) {
+    this.#callbacks[event] = callback;
+  }
+
+  updateView(availableLegs, journey) {
+    const legsInJourney = [];
+    const additionalLegs = [];
+
+    for (let leg of availableLegs) {
+      if (journey.hasLeg(leg)) legsInJourney.push(leg);
+      else additionalLegs.push(leg);
+    }
+
+    // actual cities we have on our route
     const markers = journey.stopovers.map(cityToGeojson);
     this.#citiesLayer.update(asGeojsonFeatureCollection(markers));
 
-    const lines = journey.connections.map(connectionToGeojson);
-    this.#connectionsLayer.update(asGeojsonFeatureCollection(lines));
+    // legs we have on our route
+    const redLines = legsInJourney.map(legToGeojson);
+    this.#connectionsLayer.update(asGeojsonFeatureCollection(redLines));
 
-    // todo this is not nice
-    /*for (let connection of journey.connections) {
-      this.#connectionsLayer.setFeatureState(connection.leg, {
-        addedToJourney: true,
-      });
-    }*/
+    // legs currently not in use
+    const lines = additionalLegs.map(legToGeojson);
+    this.#legLayer.update(asGeojsonFeatureCollection(lines));
   }
 
   #setHover(legId) {
     this.#currentHover = legId;
-    this.#connectionsLayer.setFeatureState(legId, { hover: true });
+    this.map.setFeatureState(
+      { source: "connections", id: legId },
+      { hover: true },
+    );
   }
 
   #setNoHover(legId) {
     this.#currentHover = null;
-    this.#connectionsLayer.setFeatureState(legId, { hover: false });
+    this.map.setFeatureState(
+      { source: "connections", id: legId },
+      { hover: false },
+    );
+  }
+
+  #makeCallback(event, data) {
+    if (this.#callbacks[event]) this.#callbacks[event](data);
   }
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.cityToGeojson = cityToGeojson;
-  module.exports.connectionToGeojson = connectionToGeojson;
+  module.exports.legToGeojson = legToGeojson;
 }

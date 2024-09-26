@@ -65,6 +65,18 @@ class Database {
     this.connections = parseConnections(this.stations);
   }
 
+  *getAllLegs() {
+    const yielded = [];
+
+    for (let connectionId in this.connections) {
+      const leg = this.connections[connectionId].leg;
+      if (yielded.includes(leg.id)) continue;
+
+      yield leg;
+      yielded.push(leg.id);
+    }
+  }
+
   getConnection(connectionId) {
     const connection = this.connections[connectionId];
     if (!connection) throw new UnknownConnectionError(connectionId);
