@@ -54,7 +54,7 @@ function createCalenderElement(connection) {
 
   const element = createElementFromTemplate("template-calendar-connection");
   element.id = connection.id;
-  element.classList.add(connection.leg);
+  element.classList.add(connection.leg.id);
   element.style.gridRowStart = rowStart + 1;
   element.style.gridRowEnd = rowEnd + 1;
   element.style.gridColumn = column + 2;
@@ -81,9 +81,9 @@ function createCalenderElement(connection) {
   element.addEventListener("dragstart", (e) => {
     e.dataTransfer.dropEffect = "move";
     e.dataTransfer.setData("calenderItemId", element.id);
-    e.dataTransfer.setData("leg", connection.leg);
+    e.dataTransfer.setData("leg", connection.leg.id);
 
-    for (let alt of document.getElementsByClassName(connection.leg)) {
+    for (let alt of document.getElementsByClassName(connection.leg.id)) {
       alt.classList.add("possibleDropTarget");
       alt.style.zIndex = zIndexAvailableAlternative;
     }
@@ -128,7 +128,7 @@ function createCalenderElement(connection) {
     originalCalenderItem.classList.add("alternative");
     originalCalenderItem.draggable = false;
 
-    for (let alt of document.getElementsByClassName(connection.leg)) {
+    for (let alt of document.getElementsByClassName(connection.leg.id)) {
       alt.classList.remove("possibleDropTarget");
       alt.style.zIndex = zIndexHiddenAlternative;
     }
@@ -141,11 +141,11 @@ function createCalenderElement(connection) {
   });
 
   element.addEventListener("mouseover", (e) => {
-    new LegHoverEvent(connection.leg).dispatch(document);
+    new LegHoverEvent(connection.leg.id, "calendar").dispatch(document);
   });
 
   element.addEventListener("mouseout", (e) => {
-    new LegNoHoverEvent(connection.leg).dispatch(document);
+    new LegNoHoverEvent(connection.leg.id, "calendar").dispatch(document);
   });
 
   return element;

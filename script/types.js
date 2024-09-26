@@ -6,8 +6,10 @@ class IllegalCoordinateError extends Error {
 }
 
 class LegHoverEvent {
-  constructor(leg) {
-    this.event = new CustomEvent("legHover", { detail: { leg: leg } });
+  constructor(leg, source) {
+    this.event = new CustomEvent("legHover", {
+      detail: { leg: leg, source: source },
+    });
   }
 
   dispatch(host) {
@@ -58,6 +60,17 @@ class Station {
   }
 }
 
+class Leg {
+  constructor(startCity, endCity) {
+    this.startCity = startCity;
+    this.endCity = endCity;
+  }
+
+  get id() {
+    return `${this.startCity.name}-${this.endCity.name}`;
+  }
+}
+
 class Connection {
   constructor(id, displayId, type, date, stops) {
     this.id = `${date.toISOString().slice(0, 10)}X${id}`;
@@ -85,7 +98,7 @@ class Connection {
   }
 
   get leg() {
-    return `${this.startStation.city.name}-${this.endStation.city.name}`;
+    return new Leg(this.startStation.city, this.endStation.city); // todo too many objects?
   }
 }
 
@@ -94,8 +107,21 @@ class Journey {
     this.connections = connections; // todo check validity of this journey
   }
 
+  addConnection(connection) {
+    this.connections.push(connection);
+  }
+
+  removeConnection(leg) {
+    this.connections = this.connections.filter((c) => {
+      return leg !== c.leg.id;
+    });
+  }
+
   get stopovers() {
     const cities = [];
+
+    if (this.connections.length === 0) return cities;
+
     for (let connection of this.connections) {
       cities.push(connection.startStation.city);
     }
@@ -106,6 +132,13 @@ class Journey {
   get legs() {
     return this.connections.map((c) => c.leg);
   }
+
+  hasLeg(leg) {
+    for (let connection of this.connections) {
+      if (connection.leg.id === leg.id) return true;
+    }
+    return false;
+  }
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
@@ -114,6 +147,7 @@ if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.Coordinates = Coordinates;
   module.exports.City = City;
   module.exports.Station = Station;
+  module.exports.Leg = Leg;
   module.exports.Connection = Connection;
   module.exports.Journey = Journey;
 }

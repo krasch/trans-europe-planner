@@ -1,4 +1,4 @@
-const { Connection } = require("../script/types.js");
+const { Connection, Leg } = require("../script/types.js");
 const { createCity, createStation } = require("../tests/util.js");
 
 test("connectionGetters", function () {
@@ -11,6 +11,8 @@ test("connectionGetters", function () {
   const stationB = createStation("B", cityB);
   const stationC = createStation("C", cityC);
   const stationD = createStation("D", cityD);
+
+  const leg = new Leg(cityA, cityD);
 
   const connection = new Connection(
     "DB-IC123",
@@ -30,5 +32,5 @@ test("connectionGetters", function () {
   expect(connection.endStation).toStrictEqual(stationD);
   expect(connection.startTime).toBe("10:00");
   expect(connection.endTime).toBe("13:00");
-  expect(connection.leg).toBe("A-D");
+  expect(connection.leg).toStrictEqual(leg);
 });

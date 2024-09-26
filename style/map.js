@@ -36,6 +36,25 @@ const mapStyles = {
       "line-cap": "round",
     },
     paint: {
+      "line-color": "grey",
+      "line-opacity": [
+        "case",
+        ["boolean", ["feature-state", "hover"], false],
+        0.8,
+        0.4,
+      ],
+      "line-width": 4,
+    },
+  },
+  connections: {
+    id: "connections",
+    source: "connections",
+    type: "line",
+    layout: {
+      "line-join": "round",
+      "line-cap": "round",
+    },
+    paint: {
       "line-color": "red",
       "line-opacity": [
         "case",
