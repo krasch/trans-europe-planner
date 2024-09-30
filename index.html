@@ -90,23 +90,31 @@
         journey.addConnection(defaultConnections["Berlin-München"]);
         journey.addConnection(defaultConnections["München-Verona"]);
 
-        const calendar = document.getElementById("calendar-grid");
+        const calendarDiv = document.getElementById("calendar-grid");
+        const style = getComputedStyle(calendarDiv);
+        const resolution = Number(style.getPropertyValue("--resolution"));
+        const startDay = new Date("2024-10-16");
+        const endDay = new Date("2024-10-18");
+
+        const calendar = new Calendar(calendarDiv, startDay, endDay, resolution);
+        calendar.updateView(journey);
 
         map.init();
         map.updateView(availableLegs,journey);
+        calendar.updateView(journey);
 
         map.on("legAdded", leg => {
             journey.addConnection(defaultConnections[leg]);
             map.updateView(availableLegs,journey);
+            calendar.updateView(journey);
         });
 
         map.on("legRemoved", leg => {
             journey.removeConnection(leg);
             map.updateView(availableLegs,journey);
-        })
+            calendar.updateView(journey);
+        });
 
-        initCalendarGrid(calendar);
-        displayJourneyOnCalendar(calendar, journey);
     }
 
 

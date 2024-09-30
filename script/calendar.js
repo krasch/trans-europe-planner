@@ -11,39 +11,6 @@ function getResolution() {
   return resolution;
 }
 
-function initCalendarGrid(container) {
-  const style = getComputedStyle(container);
-  const resolution = getResolution();
-  const numDays = Number(style.getPropertyValue("--num-days"));
-
-  /* hour label on left side of calendar */
-  for (let hour = 0; hour < 24; hour++) {
-    const element = createElementFromTemplate("template-calendar-grid-hour");
-
-    element.style.gridRowStart = hour * resolution + 1;
-    element.style.gridRowEnd = (hour + 1) * resolution + 1;
-    element.style.gridColumn = 1;
-    //element.style.background = "blue";
-
-    element.innerText = `${hour}`.padStart(2, "0");
-
-    container.appendChild(element);
-  }
-
-  /* empty calender cells */
-  for (let day = 0; day < numDays; day++) {
-    for (let i = 0; i < 24 * resolution; i++) {
-      const element = createElementFromTemplate("template-calendar-grid-cell");
-      element.id = `calender-cell-${day}-${i}`;
-      element.style.gridRowStart = i + 1;
-      element.style.gridRowEnd = i + 1 + 1;
-      element.style.gridColumn = day + 2; // column1 = hour labels
-
-      container.appendChild(element);
-    }
-  }
-}
-
 function createCalenderElement(connection) {
   const resolution = getResolution();
   const rowStart = Math.round(
@@ -151,37 +118,87 @@ function createCalenderElement(connection) {
   return element;
 }
 
-function displayJourneyOnCalendar(container, journey) {
-  for (let connection of journey.connections) {
-    const element = createCalenderElement(connection);
-    element.classList.add("part-of-trip");
-    element.draggable = true;
-    element.style.zIndex = zIndexConnection;
-    container.appendChild(element);
+class Calendar {
+  #endDay;
+  #container;
+  #startDay;
+  #resolution;
 
-    const alternatives = Array.from(database.getAlternatives(connection.id));
-    for (let alternative of alternatives) {
-      const alternativeElement = createCalenderElement(alternative);
-      alternativeElement.classList.add("alternative");
-      alternativeElement.draggable = false;
-      alternativeElement.style.zIndex = zIndexHiddenAlternative;
-      container.appendChild(alternativeElement);
+  constructor(container, startDay, endDay, resolution) {
+    this.#container = container;
+    this.#startDay = startDay;
+    this.#endDay = endDay;
+    this.#resolution = resolution;
+    this.numDays = 3; // todo
+
+    this.#initGrid();
+  }
+
+  #initGrid() {
+    /* hour label on left side of calendar */
+    for (let hour = 0; hour < 24; hour++) {
+      const element = createElementFromTemplate("template-calendar-grid-hour");
+
+      element.style.gridRowStart = hour * this.#resolution + 1;
+      element.style.gridRowEnd = (hour + 1) * this.#resolution + 1;
+      element.style.gridColumn = 1;
+
+      element.innerText = `${hour}`.padStart(2, "0");
+
+      this.#container.appendChild(element);
+    }
+
+    /* empty calender cells */
+    for (let day = 0; day < this.numDays; day++) {
+      for (let i = 0; i < 24 * this.#resolution; i++) {
+        const element = createElementFromTemplate(
+          "template-calendar-grid-cell",
+        );
+        element.id = `calender-cell-${day}-${i}`;
+        element.style.gridRowStart = i + 1;
+        element.style.gridRowEnd = i + 1 + 1;
+        element.style.gridColumn = day + 2; // column1 = hour labels
+
+        this.#container.appendChild(element);
+      }
     }
   }
 
-  // todo should move somewhere else
-  document.addEventListener("legHover", (e) => {
-    const leg = e.detail.leg;
-    for (let connection of document.getElementsByClassName(leg)) {
-      connection.classList.add("legSelected");
-    }
-  });
+  updateView(journey) {
+    for (let div of document.getElementsByClassName("calendar-connection"))
+      div.remove();
 
-  // todo should move somewhere else
-  document.addEventListener("legNoHover", (e) => {
-    const leg = e.detail.leg;
-    for (let connection of document.getElementsByClassName(leg)) {
-      connection.classList.remove("legSelected");
+    for (let connection of journey.connections) {
+      const element = createCalenderElement(connection);
+      element.classList.add("part-of-trip");
+      element.draggable = true;
+      element.style.zIndex = zIndexConnection;
+      this.#container.appendChild(element);
+
+      const alternatives = Array.from(database.getAlternatives(connection.id));
+      for (let alternative of alternatives) {
+        const alternativeElement = createCalenderElement(alternative);
+        alternativeElement.classList.add("alternative");
+        alternativeElement.draggable = false;
+        alternativeElement.style.zIndex = zIndexHiddenAlternative;
+        this.#container.appendChild(alternativeElement);
+      }
     }
-  });
+
+    // todo should move somewhere else
+    document.addEventListener("legHover", (e) => {
+      const leg = e.detail.leg;
+      for (let connection of document.getElementsByClassName(leg)) {
+        connection.classList.add("legSelected");
+      }
+    });
+
+    // todo should move somewhere else
+    document.addEventListener("legNoHover", (e) => {
+      const leg = e.detail.leg;
+      for (let connection of document.getElementsByClassName(leg)) {
+        connection.classList.remove("legSelected");
+      }
+    });
+  }
 }
