@@ -115,9 +115,8 @@
             calendar.updateView(database.prepareDataForCalendar(journey));
         });
 
-        calendar.on("legChanged", data => {
-            console.log(data);
-            journey.changeLeg(data.leg, database.getConnection(data.id));
+        calendar.on("legChanged", (leg, connectionId) => {
+            journey.changeLeg(leg, database.getConnection(connectionId));
             calendar.updateView(database.prepareDataForCalendar(journey));
         });
     }

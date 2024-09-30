@@ -1,5 +1,5 @@
 function enableDragAndDrop(element, leg, onDropCallback) {
-  console.log(onDropCallback);
+  element.draggable = true;
 
   element.addEventListener("dragstart", (e) => {
     e.dataTransfer.dropEffect = "move";
@@ -52,7 +52,7 @@ function enableDragAndDrop(element, leg, onDropCallback) {
     }
 
     // hide original item from calendar -> global state, should callback
-    onDropCallback(e.dataTransfer.getData("leg"), e.target.id);
+    onDropCallback(leg, e.target.id);
   });
 }
 
@@ -64,11 +64,11 @@ class CalendarGrid {
     this.resolution = resolution;
     this.numDays = 3; // todo
 
-    this.#initGrid();
+    this.#initHourLabels();
+    this.#initEmptyCalendarCells();
   }
 
-  #initGrid() {
-    /* hour label on left side of calendar */
+  #initHourLabels() {
     for (let hour = 0; hour < 24; hour++) {
       const element = createElementFromTemplate("template-calendar-grid-hour");
 
@@ -80,8 +80,9 @@ class CalendarGrid {
 
       this.container.appendChild(element);
     }
+  }
 
-    /* empty calender cells */
+  #initEmptyCalendarCells() {
     for (let day = 0; day < this.numDays; day++) {
       for (let i = 0; i < 24 * this.resolution; i++) {
         const element = createElementFromTemplate(
@@ -114,7 +115,8 @@ class CalendarGrid {
   }
 
   get entries() {
-    return this.container.getElementsByClassName("calendar-connection"); // todo
+    // todo should not know class name here
+    return this.container.getElementsByClassName("calendar-connection");
   }
 }
 
@@ -133,6 +135,20 @@ class Calendar {
       endDay,
       resolution,
     );
+
+    document.addEventListener("legHover", (e) => {
+      const leg = e.detail.leg;
+      for (let connection of document.getElementsByClassName(leg)) {
+        connection.classList.add("legSelected");
+      }
+    });
+
+    document.addEventListener("legNoHover", (e) => {
+      const leg = e.detail.leg;
+      for (let connection of document.getElementsByClassName(leg)) {
+        connection.classList.remove("legSelected");
+      }
+    });
   }
 
   on(eventName, callback) {
@@ -140,12 +156,14 @@ class Calendar {
   }
 
   updateView(connections) {
+    // remove entries that are currently in calendar but no longer necessary
     for (const element of this.#calendarGrid.entries) {
-      // if an element is currently in the calendar but no longer relevant -> remove it
-      if (!connections.has(element.id)) element.remove();
+      if (!connections[element.id]) {
+        element.remove();
+      }
     }
 
-    // currently relevant connections
+    // loop over desired connections
     for (let connection of Object.values(connections)) {
       let element = document.getElementById(connection.data.id);
 
@@ -159,11 +177,9 @@ class Calendar {
           connection.data.endTime,
         );
 
-        /*enableDragAndDrop(
-          element,
-          connection.leg.id,
-          this.#callbacks.legChanged(),
-        );*/
+        enableDragAndDrop(element, connection.data.leg.id, (leg, id) =>
+          this.#callbacks["legChanged"](leg, id),
+        );
       }
 
       if (connection.active) {
@@ -174,22 +190,6 @@ class Calendar {
         element.classList.remove("part-of-trip");
       }
     }
-
-    /*// todo should move somewhere else
-    document.addEventListener("legHover", (e) => {
-      const leg = e.detail.leg;
-      for (let connection of document.getElementsByClassName(leg)) {
-        connection.classList.add("legSelected");
-      }
-    });
-
-    // todo should move somewhere else
-    document.addEventListener("legNoHover", (e) => {
-      const leg = e.detail.leg;
-      for (let connection of document.getElementsByClassName(leg)) {
-        connection.classList.remove("legSelected");
-      }
-    });*/
   }
 
   #createCalenderEntry(connection) {
