@@ -90,25 +90,36 @@
         journey.addConnection(defaultConnections["Berlin-München"]);
         journey.addConnection(defaultConnections["München-Verona"]);
 
-        const calendar = document.getElementById("calendar-grid");
+        const calendarDiv = document.getElementById("calendar-grid");
+        const style = getComputedStyle(calendarDiv);
+        const resolution = Number(style.getPropertyValue("--resolution"));
+        const startDay = new Date("2024-10-16");
+        const endDay = new Date("2024-10-18");
+
+        const calendar = new Calendar(calendarDiv, startDay, endDay, resolution);
 
         map.init();
+
         map.updateView(availableLegs,journey);
+        calendar.updateView(database.prepareDataForCalendar(journey));
 
         map.on("legAdded", leg => {
             journey.addConnection(defaultConnections[leg]);
             map.updateView(availableLegs,journey);
+            calendar.updateView(database.prepareDataForCalendar(journey));
         });
 
         map.on("legRemoved", leg => {
             journey.removeConnection(leg);
             map.updateView(availableLegs,journey);
-        })
+            calendar.updateView(database.prepareDataForCalendar(journey));
+        });
 
-        initCalendarGrid(calendar);
-        displayJourneyOnCalendar(calendar, journey);
+        calendar.on("legChanged", (leg, connectionId) => {
+            journey.changeLeg(leg, database.getConnection(connectionId));
+            calendar.updateView(database.prepareDataForCalendar(journey));
+        });
     }
-
 
     const map = new MapWrapper(new maplibregl.Map({
       container: 'map',

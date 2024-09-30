@@ -1,95 +1,19 @@
-const zIndexHiddenAlternative = 1;
-const zIndexConnection = 2;
-const zIndexAvailableAlternative = 3;
-
-const calenderStartDate = new Date("2024-10-16");
-
-// todo it would be nice if this was a constant instead of constantly being called
-function getResolution() {
-  const style = getComputedStyle(document.getElementById("calendar-grid"));
-  const resolution = Number(style.getPropertyValue("--resolution"));
-  return resolution;
-}
-
-function initCalendarGrid(container) {
-  const style = getComputedStyle(container);
-  const resolution = getResolution();
-  const numDays = Number(style.getPropertyValue("--num-days"));
-
-  /* hour label on left side of calendar */
-  for (let hour = 0; hour < 24; hour++) {
-    const element = createElementFromTemplate("template-calendar-grid-hour");
-
-    element.style.gridRowStart = hour * resolution + 1;
-    element.style.gridRowEnd = (hour + 1) * resolution + 1;
-    element.style.gridColumn = 1;
-    //element.style.background = "blue";
-
-    element.innerText = `${hour}`.padStart(2, "0");
-
-    container.appendChild(element);
-  }
-
-  /* empty calender cells */
-  for (let day = 0; day < numDays; day++) {
-    for (let i = 0; i < 24 * resolution; i++) {
-      const element = createElementFromTemplate("template-calendar-grid-cell");
-      element.id = `calender-cell-${day}-${i}`;
-      element.style.gridRowStart = i + 1;
-      element.style.gridRowEnd = i + 1 + 1;
-      element.style.gridColumn = day + 2; // column1 = hour labels
-
-      container.appendChild(element);
-    }
-  }
-}
-
-function createCalenderElement(connection) {
-  const resolution = getResolution();
-  const rowStart = Math.round(
-    timeStringToFloat(connection.startTime) * resolution,
-  );
-  const rowEnd = Math.round(timeStringToFloat(connection.endTime) * resolution);
-  const column = differenceInDays(calenderStartDate, connection.date);
-
-  const element = createElementFromTemplate("template-calendar-connection");
-  element.id = connection.id;
-  element.classList.add(connection.leg.id);
-  element.style.gridRowStart = rowStart + 1;
-  element.style.gridRowEnd = rowEnd + 1;
-  element.style.gridColumn = column + 2;
-
-  element.getElementsByClassName("connection-icon")[0].src =
-    `images/${connection.type}.svg`;
-  element.getElementsByClassName("connection-number")[0].innerText =
-    connection.displayId;
-
-  if (
-    !connection.id.endsWith("40008503") &&
-    !connection.id.endsWith("500018289")
-  ) {
-    element.getElementsByClassName("connection-start-time")[0].innerText =
-      connection.startTime;
-    element.getElementsByClassName("connection-start-station")[0].innerText =
-      connection.startStation.name;
-    element.getElementsByClassName("connection-end-time")[0].innerText =
-      connection.endTime;
-    element.getElementsByClassName("connection-end-station")[0].innerText =
-      connection.endStation.name;
-  }
+function enableDragAndDrop(element, leg, onDropCallback) {
+  element.draggable = true;
 
   element.addEventListener("dragstart", (e) => {
     e.dataTransfer.dropEffect = "move";
     e.dataTransfer.setData("calenderItemId", element.id);
-    e.dataTransfer.setData("leg", connection.leg.id);
+    e.dataTransfer.setData("leg", leg);
 
-    for (let alt of document.getElementsByClassName(connection.leg.id)) {
+    // this is a group action
+    for (let alt of document.getElementsByClassName(leg)) {
       alt.classList.add("possibleDropTarget");
-      alt.style.zIndex = zIndexAvailableAlternative;
     }
   });
 
   element.addEventListener("dragenter", (e) => {
+    // enters a valid drop target
     const leg = e.dataTransfer.getData("leg");
     if (!e.target.classList.contains(leg)) return;
 
@@ -98,6 +22,7 @@ function createCalenderElement(connection) {
   });
 
   element.addEventListener("dragleave", (e) => {
+    // leaves a valid drop target
     const leg = e.dataTransfer.getData("leg");
     if (!e.target.classList.contains(leg)) return;
 
@@ -106,6 +31,7 @@ function createCalenderElement(connection) {
   });
 
   element.addEventListener("dragover", (e) => {
+    // regularly called
     const leg = e.dataTransfer.getData("leg");
     if (!e.target.classList.contains(leg)) return;
 
@@ -113,75 +39,194 @@ function createCalenderElement(connection) {
   });
 
   element.addEventListener("drop", (e) => {
+    // drop: from drop target; // dragend: from dragged itme
     const leg = e.dataTransfer.getData("leg");
     if (!e.target.classList.contains(leg)) return;
 
     e.preventDefault();
     e.target.classList.remove("selectedDropTarget");
 
-    // hide original item from calendar
-    const originalCalenderItemId = e.dataTransfer.getData("calenderItemId");
-    const originalCalenderItem = document.getElementById(
-      originalCalenderItemId,
-    );
-    originalCalenderItem.classList.remove("part-of-trip");
-    originalCalenderItem.classList.add("alternative");
-    originalCalenderItem.draggable = false;
-
-    for (let alt of document.getElementsByClassName(connection.leg.id)) {
+    // this is a group action
+    for (let alt of document.getElementsByClassName(leg)) {
       alt.classList.remove("possibleDropTarget");
-      alt.style.zIndex = zIndexHiddenAlternative;
     }
 
-    // make new one visible
-    e.target.classList.add("part-of-trip");
-    e.target.classList.remove("alternative");
-    e.target.draggable = true;
-    e.target.style.zIndex = zIndexConnection;
+    // hide original item from calendar -> global state, should callback
+    onDropCallback(leg, e.target.id);
   });
-
-  element.addEventListener("mouseover", (e) => {
-    new LegHoverEvent(connection.leg.id, "calendar").dispatch(document);
-  });
-
-  element.addEventListener("mouseout", (e) => {
-    new LegNoHoverEvent(connection.leg.id, "calendar").dispatch(document);
-  });
-
-  return element;
 }
 
-function displayJourneyOnCalendar(container, journey) {
-  for (let connection of journey.connections) {
-    const element = createCalenderElement(connection);
-    element.classList.add("part-of-trip");
-    element.draggable = true;
-    element.style.zIndex = zIndexConnection;
-    container.appendChild(element);
+class CalendarGrid {
+  constructor(container, startDay, endDay, resolution) {
+    this.container = container;
+    this.startDay = startDay;
+    this.endDay = endDay;
+    this.resolution = resolution;
+    this.numDays = 3; // todo
 
-    const alternatives = Array.from(database.getAlternatives(connection.id));
-    for (let alternative of alternatives) {
-      const alternativeElement = createCalenderElement(alternative);
-      alternativeElement.classList.add("alternative");
-      alternativeElement.draggable = false;
-      alternativeElement.style.zIndex = zIndexHiddenAlternative;
-      container.appendChild(alternativeElement);
+    this.#initHourLabels();
+    this.#initEmptyCalendarCells();
+  }
+
+  #initHourLabels() {
+    for (let hour = 0; hour < 24; hour++) {
+      const element = createElementFromTemplate("template-calendar-grid-hour");
+
+      element.style.gridRowStart = hour * this.resolution + 1;
+      element.style.gridRowEnd = (hour + 1) * this.resolution + 1;
+      element.style.gridColumn = 1;
+
+      element.innerText = `${hour}`.padStart(2, "0");
+
+      this.container.appendChild(element);
     }
   }
 
-  // todo should move somewhere else
-  document.addEventListener("legHover", (e) => {
-    const leg = e.detail.leg;
-    for (let connection of document.getElementsByClassName(leg)) {
-      connection.classList.add("legSelected");
-    }
-  });
+  #initEmptyCalendarCells() {
+    for (let day = 0; day < this.numDays; day++) {
+      for (let i = 0; i < 24 * this.resolution; i++) {
+        const element = createElementFromTemplate(
+          "template-calendar-grid-cell",
+        );
+        element.id = `calender-cell-${day}-${i}`;
+        element.style.gridRowStart = i + 1;
+        element.style.gridRowEnd = i + 1 + 1;
+        element.style.gridColumn = day + 2; // column1 = hour labels
 
-  // todo should move somewhere else
-  document.addEventListener("legNoHover", (e) => {
-    const leg = e.detail.leg;
-    for (let connection of document.getElementsByClassName(leg)) {
-      connection.classList.remove("legSelected");
+        this.container.appendChild(element);
+      }
     }
-  });
+  }
+
+  addEntry(element, date, startTime, endTime) {
+    const rowStart = Math.round(timeStringToFloat(startTime) * this.resolution);
+    const rowEnd = Math.round(timeStringToFloat(endTime) * this.resolution);
+    const column = differenceInDays(this.startDay, date);
+
+    element.style.gridRowStart = rowStart + 1;
+    element.style.gridRowEnd = rowEnd + 1;
+    element.style.gridColumn = column + 2;
+
+    this.container.appendChild(element);
+  }
+
+  removeEntry(element) {
+    element.remove();
+  }
+
+  get entries() {
+    // todo should not know class name here
+    return this.container.getElementsByClassName("calendar-connection");
+  }
+}
+
+class Calendar {
+  #calendarGrid;
+
+  // set all available event callbacks to noop
+  #callbacks = {
+    legChanged: () => {},
+  };
+
+  constructor(container, startDay, endDay, resolution) {
+    this.#calendarGrid = new CalendarGrid(
+      container,
+      startDay,
+      endDay,
+      resolution,
+    );
+
+    document.addEventListener("legHover", (e) => {
+      const leg = e.detail.leg;
+      for (let connection of document.getElementsByClassName(leg)) {
+        connection.classList.add("legSelected");
+      }
+    });
+
+    document.addEventListener("legNoHover", (e) => {
+      const leg = e.detail.leg;
+      for (let connection of document.getElementsByClassName(leg)) {
+        connection.classList.remove("legSelected");
+      }
+    });
+  }
+
+  on(eventName, callback) {
+    this.#callbacks[eventName] = callback; // todo check that event name allowed
+  }
+
+  updateView(connections) {
+    // remove entries that are currently in calendar but no longer necessary
+    for (const element of this.#calendarGrid.entries) {
+      if (!connections[element.id]) {
+        element.remove();
+      }
+    }
+
+    // loop over desired connections
+    for (let connection of Object.values(connections)) {
+      let element = document.getElementById(connection.data.id);
+
+      // we don't yet have an element for this connection
+      if (!element) {
+        element = this.#createCalenderEntry(connection.data);
+        this.#calendarGrid.addEntry(
+          element,
+          connection.data.date,
+          connection.data.startTime,
+          connection.data.endTime,
+        );
+
+        enableDragAndDrop(element, connection.data.leg.id, (leg, id) =>
+          this.#callbacks["legChanged"](leg, id),
+        );
+      }
+
+      if (connection.active) {
+        element.classList.add("part-of-trip");
+        element.classList.remove("alternative");
+      } else {
+        element.classList.add("alternative");
+        element.classList.remove("part-of-trip");
+      }
+    }
+  }
+
+  #createCalenderEntry(connection) {
+    const element = createElementFromTemplate("template-calendar-connection");
+
+    element.id = connection.id;
+    element.classList.add(connection.leg.id);
+
+    element.getElementsByClassName("connection-icon")[0].src =
+      `images/${connection.type}.svg`;
+    element.getElementsByClassName("connection-number")[0].innerText =
+      connection.displayId;
+
+    // todo stop hardcoding
+    if (
+      !connection.id.endsWith("40008503") &&
+      !connection.id.endsWith("500018289")
+    ) {
+      element.getElementsByClassName("connection-start-time")[0].innerText =
+        connection.startTime;
+      element.getElementsByClassName("connection-start-station")[0].innerText =
+        connection.startStation.name;
+      element.getElementsByClassName("connection-end-time")[0].innerText =
+        connection.endTime;
+      element.getElementsByClassName("connection-end-station")[0].innerText =
+        connection.endStation.name;
+    }
+
+    // todo class-wide event listener?
+    element.addEventListener("mouseover", (e) => {
+      new LegHoverEvent(connection.leg.id, "calendar").dispatch(document);
+    });
+
+    element.addEventListener("mouseout", (e) => {
+      new LegNoHoverEvent(connection.leg.id, "calendar").dispatch(document);
+    });
+
+    return element;
+  }
 }
