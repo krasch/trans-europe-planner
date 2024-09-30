@@ -99,26 +99,27 @@
         const calendar = new Calendar(calendarDiv, startDay, endDay, resolution);
 
         map.init();
+
         map.updateView(availableLegs,journey);
-        calendar.updateView(journey);
+        calendar.updateView(database.prepareDataForCalendar(journey));
 
         map.on("legAdded", leg => {
             journey.addConnection(defaultConnections[leg]);
             map.updateView(availableLegs,journey);
-            calendar.updateView(journey);
+            calendar.updateView(database.prepareDataForCalendar(journey));
         });
 
         map.on("legRemoved", leg => {
             journey.removeConnection(leg);
             map.updateView(availableLegs,journey);
-            calendar.updateView(journey);
+            calendar.updateView(database.prepareDataForCalendar(journey));
         });
 
         calendar.on("legChanged", data => {
+            console.log(data);
             journey.changeLeg(data.leg, database.getConnection(data.id));
-            calendar.updateView(journey);
-        })
-
+            calendar.updateView(database.prepareDataForCalendar(journey));
+        });
     }
 
     const map = new MapWrapper(new maplibregl.Map({

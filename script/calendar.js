@@ -44,6 +44,8 @@ function createConnectionElement(connection) {
 }
 
 function enableDragAndDrop(element, leg, onDropCallback) {
+  console.log(onDropCallback);
+
   element.addEventListener("dragstart", (e) => {
     e.dataTransfer.dropEffect = "move";
     e.dataTransfer.setData("calenderItemId", element.id);
@@ -99,7 +101,7 @@ function enableDragAndDrop(element, leg, onDropCallback) {
   });
 }
 
-function createCalenderElement(connection, onDropCallback) {
+function createCalenderElement(connection) {
   const element = createConnectionElement(connection);
 
   setGridLocation(
@@ -111,8 +113,6 @@ function createCalenderElement(connection, onDropCallback) {
 
   element.id = connection.id;
   element.classList.add(connection.leg.id);
-
-  enableDragAndDrop(element, connection.leg.id, onDropCallback);
 
   element.addEventListener("mouseover", (e) => {
     new LegHoverEvent(connection.leg.id, "calendar").dispatch(document);
@@ -130,7 +130,11 @@ class Calendar {
   #container;
   #startDay;
   #resolution;
-  #callbacks = {};
+
+  // set all available event callbacks to noop
+  #callbacks = {
+    legChanged: () => {},
+  };
 
   constructor(container, startDay, endDay, resolution) {
     this.#container = container;
@@ -173,16 +177,42 @@ class Calendar {
   }
 
   on(eventName, callback) {
-    this.#callbacks[eventName] = callback;
+    this.#callbacks[eventName] = callback; // todo check that event name allowed
   }
 
-  #makeCallback(eventName, data) {
-    if (this.#callbacks[eventName]) this.#callbacks[eventName](data);
+  #getCurrentCalendarElements() {
+    return this.#container.getElementsByClassName("calendar-connection");
   }
 
-  updateView(journey) {
-    for (let div of document.getElementsByClassName("calendar-connection"))
-      div.remove();
+  updateView(connections) {
+    for (const element of this.#getCurrentCalendarElements()) {
+      // if an element is currently in the calendar but no longer relevant -> remove it
+      if (!connections.has(element.id)) element.remove();
+    }
+
+    // currently relevant connections
+    for (let connection of Object.values(connections)) {
+      let element = document.getElementById(connection.data.id);
+
+      // we don't yet have an element for this connection
+      if (!element) {
+        element = createCalenderElement(connection.data);
+        /*enableDragAndDrop(
+          element,
+          connection.leg.id,
+          this.#callbacks.legChanged(),
+        );*/
+        this.#container.appendChild(element);
+      }
+
+      if (connection.active) {
+        element.classList.add("part-of-trip");
+        element.classList.remove("alternative");
+      } else {
+        element.classList.add("alternative");
+        element.classList.remove("part-of-trip");
+      }
+    }
 
     /*// todo should move somewhere else
     document.addEventListener("legHover", (e) => {
@@ -199,22 +229,5 @@ class Calendar {
         connection.classList.remove("legSelected");
       }
     });*/
-
-    const conn = journey.connections[1];
-    const bla = createCalenderElement(conn, (leg, id) =>
-      this.#makeCallback("legChanged", { leg: leg, id: id }),
-    );
-    bla.classList.add("part-of-trip");
-    this.#container.appendChild(bla);
-
-    const alternatives = database.getAlternatives(conn.id);
-    for (let alt of alternatives) {
-      const element = createCalenderElement(alt, (leg, id) =>
-        this.#makeCallback("legChanged", { leg: leg, id: id }),
-      );
-      element.classList.add("alternative");
-
-      this.#container.appendChild(element);
-    }
   }
 }

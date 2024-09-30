@@ -95,4 +95,26 @@ class Database {
       if (connection.leg.id === candidate.leg.id) yield candidate;
     }
   }
+
+  prepareDataForCalendar(journey) {
+    const data = new Map();
+
+    for (let connection of journey.connections) {
+      // this is the currently added connection
+      data[connection.id] = {
+        data: connection,
+        active: true,
+      };
+
+      // but this leg can also be fulfilled by these alternatives
+      for (let alternative of database.getAlternatives(connection.id)) {
+        data[alternative.id] = {
+          data: alternative,
+          active: false,
+        };
+      }
+    }
+
+    return data;
+  }
 }
