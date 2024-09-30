@@ -1,7 +1,3 @@
-const zIndexHiddenAlternative = 1;
-const zIndexConnection = 2;
-const zIndexAvailableAlternative = 3;
-
 const calenderStartDate = new Date("2024-10-16");
 
 // todo it would be nice if this was a constant instead of constantly being called
@@ -11,20 +7,19 @@ function getResolution() {
   return resolution;
 }
 
-function createCalenderElement(connection) {
+function setGridLocation(element, date, startTime, endTime) {
   const resolution = getResolution();
-  const rowStart = Math.round(
-    timeStringToFloat(connection.startTime) * resolution,
-  );
-  const rowEnd = Math.round(timeStringToFloat(connection.endTime) * resolution);
-  const column = differenceInDays(calenderStartDate, connection.date);
+  const rowStart = Math.round(timeStringToFloat(startTime) * resolution);
+  const rowEnd = Math.round(timeStringToFloat(endTime) * resolution);
+  const column = differenceInDays(calenderStartDate, date);
 
-  const element = createElementFromTemplate("template-calendar-connection");
-  element.id = connection.id;
-  element.classList.add(connection.leg.id);
   element.style.gridRowStart = rowStart + 1;
   element.style.gridRowEnd = rowEnd + 1;
   element.style.gridColumn = column + 2;
+}
+
+function createConnectionElement(connection) {
+  const element = createElementFromTemplate("template-calendar-connection");
 
   element.getElementsByClassName("connection-icon")[0].src =
     `images/${connection.type}.svg`;
@@ -45,18 +40,23 @@ function createCalenderElement(connection) {
       connection.endStation.name;
   }
 
+  return element;
+}
+
+function enableDragAndDrop(element, leg) {
   element.addEventListener("dragstart", (e) => {
     e.dataTransfer.dropEffect = "move";
     e.dataTransfer.setData("calenderItemId", element.id);
-    e.dataTransfer.setData("leg", connection.leg.id);
+    e.dataTransfer.setData("leg", leg);
 
-    for (let alt of document.getElementsByClassName(connection.leg.id)) {
+    // this is a group action
+    for (let alt of document.getElementsByClassName(leg)) {
       alt.classList.add("possibleDropTarget");
-      alt.style.zIndex = zIndexAvailableAlternative;
     }
   });
 
   element.addEventListener("dragenter", (e) => {
+    // enters a valid drop target
     const leg = e.dataTransfer.getData("leg");
     if (!e.target.classList.contains(leg)) return;
 
@@ -65,6 +65,7 @@ function createCalenderElement(connection) {
   });
 
   element.addEventListener("dragleave", (e) => {
+    // leaves a valid drop target
     const leg = e.dataTransfer.getData("leg");
     if (!e.target.classList.contains(leg)) return;
 
@@ -73,6 +74,7 @@ function createCalenderElement(connection) {
   });
 
   element.addEventListener("dragover", (e) => {
+    // regularly called
     const leg = e.dataTransfer.getData("leg");
     if (!e.target.classList.contains(leg)) return;
 
@@ -80,32 +82,48 @@ function createCalenderElement(connection) {
   });
 
   element.addEventListener("drop", (e) => {
+    // drop: from drop target; // dragend: from dragged itme
     const leg = e.dataTransfer.getData("leg");
     if (!e.target.classList.contains(leg)) return;
 
     e.preventDefault();
     e.target.classList.remove("selectedDropTarget");
 
-    // hide original item from calendar
+    // hide original item from calendar -> global state, should callback
     const originalCalenderItemId = e.dataTransfer.getData("calenderItemId");
     const originalCalenderItem = document.getElementById(
       originalCalenderItemId,
     );
     originalCalenderItem.classList.remove("part-of-trip");
     originalCalenderItem.classList.add("alternative");
-    originalCalenderItem.draggable = false;
+    originalCalenderItem.draggable = false; // move into css
 
-    for (let alt of document.getElementsByClassName(connection.leg.id)) {
+    // drag&drop functionality
+    for (let alt of document.getElementsByClassName(leg)) {
       alt.classList.remove("possibleDropTarget");
-      alt.style.zIndex = zIndexHiddenAlternative;
     }
 
     // make new one visible
     e.target.classList.add("part-of-trip");
     e.target.classList.remove("alternative");
     e.target.draggable = true;
-    e.target.style.zIndex = zIndexConnection;
   });
+}
+
+function createCalenderElement(connection) {
+  const element = createConnectionElement(connection);
+
+  setGridLocation(
+    element,
+    connection.date,
+    connection.startTime,
+    connection.endTime,
+  );
+
+  element.id = connection.id;
+  element.classList.add(connection.leg.id);
+
+  enableDragAndDrop(element, connection.leg.id);
 
   element.addEventListener("mouseover", (e) => {
     new LegHoverEvent(connection.leg.id, "calendar").dispatch(document);
@@ -165,7 +183,7 @@ class Calendar {
   }
 
   updateView(journey) {
-    for (let div of document.getElementsByClassName("calendar-connection"))
+    /*for (let div of document.getElementsByClassName("calendar-connection"))
       div.remove();
 
     for (let connection of journey.connections) {
@@ -199,6 +217,19 @@ class Calendar {
       for (let connection of document.getElementsByClassName(leg)) {
         connection.classList.remove("legSelected");
       }
-    });
+    });*/
+
+    const conn = journey.connections[1];
+    const bla = createCalenderElement(conn);
+    bla.classList.add("part-of-trip");
+    this.#container.appendChild(bla);
+
+    const alternatives = database.getAlternatives(conn.id);
+    for (let alt of alternatives) {
+      const element = createCalenderElement(alt);
+      element.classList.add("alternative");
+
+      this.#container.appendChild(element);
+    }
   }
 }
