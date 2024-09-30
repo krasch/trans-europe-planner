@@ -1,48 +1,3 @@
-const calenderStartDate = new Date("2024-10-16");
-
-// todo it would be nice if this was a constant instead of constantly being called
-function getResolution() {
-  const style = getComputedStyle(document.getElementById("calendar-grid"));
-  const resolution = Number(style.getPropertyValue("--resolution"));
-  return resolution;
-}
-
-function setGridLocation(element, date, startTime, endTime) {
-  const resolution = getResolution();
-  const rowStart = Math.round(timeStringToFloat(startTime) * resolution);
-  const rowEnd = Math.round(timeStringToFloat(endTime) * resolution);
-  const column = differenceInDays(calenderStartDate, date);
-
-  element.style.gridRowStart = rowStart + 1;
-  element.style.gridRowEnd = rowEnd + 1;
-  element.style.gridColumn = column + 2;
-}
-
-function createConnectionElement(connection) {
-  const element = createElementFromTemplate("template-calendar-connection");
-
-  element.getElementsByClassName("connection-icon")[0].src =
-    `images/${connection.type}.svg`;
-  element.getElementsByClassName("connection-number")[0].innerText =
-    connection.displayId;
-
-  if (
-    !connection.id.endsWith("40008503") &&
-    !connection.id.endsWith("500018289")
-  ) {
-    element.getElementsByClassName("connection-start-time")[0].innerText =
-      connection.startTime;
-    element.getElementsByClassName("connection-start-station")[0].innerText =
-      connection.startStation.name;
-    element.getElementsByClassName("connection-end-time")[0].innerText =
-      connection.endTime;
-    element.getElementsByClassName("connection-end-station")[0].innerText =
-      connection.endStation.name;
-  }
-
-  return element;
-}
-
 function enableDragAndDrop(element, leg, onDropCallback) {
   console.log(onDropCallback);
 
@@ -101,46 +56,12 @@ function enableDragAndDrop(element, leg, onDropCallback) {
   });
 }
 
-function createCalenderElement(connection) {
-  const element = createConnectionElement(connection);
-
-  setGridLocation(
-    element,
-    connection.date,
-    connection.startTime,
-    connection.endTime,
-  );
-
-  element.id = connection.id;
-  element.classList.add(connection.leg.id);
-
-  element.addEventListener("mouseover", (e) => {
-    new LegHoverEvent(connection.leg.id, "calendar").dispatch(document);
-  });
-
-  element.addEventListener("mouseout", (e) => {
-    new LegNoHoverEvent(connection.leg.id, "calendar").dispatch(document);
-  });
-
-  return element;
-}
-
-class Calendar {
-  #endDay;
-  #container;
-  #startDay;
-  #resolution;
-
-  // set all available event callbacks to noop
-  #callbacks = {
-    legChanged: () => {},
-  };
-
+class CalendarGrid {
   constructor(container, startDay, endDay, resolution) {
-    this.#container = container;
-    this.#startDay = startDay;
-    this.#endDay = endDay;
-    this.#resolution = resolution;
+    this.container = container;
+    this.startDay = startDay;
+    this.endDay = endDay;
+    this.resolution = resolution;
     this.numDays = 3; // todo
 
     this.#initGrid();
@@ -151,18 +72,18 @@ class Calendar {
     for (let hour = 0; hour < 24; hour++) {
       const element = createElementFromTemplate("template-calendar-grid-hour");
 
-      element.style.gridRowStart = hour * this.#resolution + 1;
-      element.style.gridRowEnd = (hour + 1) * this.#resolution + 1;
+      element.style.gridRowStart = hour * this.resolution + 1;
+      element.style.gridRowEnd = (hour + 1) * this.resolution + 1;
       element.style.gridColumn = 1;
 
       element.innerText = `${hour}`.padStart(2, "0");
 
-      this.#container.appendChild(element);
+      this.container.appendChild(element);
     }
 
     /* empty calender cells */
     for (let day = 0; day < this.numDays; day++) {
-      for (let i = 0; i < 24 * this.#resolution; i++) {
+      for (let i = 0; i < 24 * this.resolution; i++) {
         const element = createElementFromTemplate(
           "template-calendar-grid-cell",
         );
@@ -171,21 +92,55 @@ class Calendar {
         element.style.gridRowEnd = i + 1 + 1;
         element.style.gridColumn = day + 2; // column1 = hour labels
 
-        this.#container.appendChild(element);
+        this.container.appendChild(element);
       }
     }
+  }
+
+  addEntry(element, date, startTime, endTime) {
+    const rowStart = Math.round(timeStringToFloat(startTime) * this.resolution);
+    const rowEnd = Math.round(timeStringToFloat(endTime) * this.resolution);
+    const column = differenceInDays(this.startDay, date);
+
+    element.style.gridRowStart = rowStart + 1;
+    element.style.gridRowEnd = rowEnd + 1;
+    element.style.gridColumn = column + 2;
+
+    this.container.appendChild(element);
+  }
+
+  removeEntry(element) {
+    element.remove();
+  }
+
+  get entries() {
+    return this.container.getElementsByClassName("calendar-connection"); // todo
+  }
+}
+
+class Calendar {
+  #calendarGrid;
+
+  // set all available event callbacks to noop
+  #callbacks = {
+    legChanged: () => {},
+  };
+
+  constructor(container, startDay, endDay, resolution) {
+    this.#calendarGrid = new CalendarGrid(
+      container,
+      startDay,
+      endDay,
+      resolution,
+    );
   }
 
   on(eventName, callback) {
     this.#callbacks[eventName] = callback; // todo check that event name allowed
   }
 
-  #getCurrentCalendarElements() {
-    return this.#container.getElementsByClassName("calendar-connection");
-  }
-
   updateView(connections) {
-    for (const element of this.#getCurrentCalendarElements()) {
+    for (const element of this.#calendarGrid.entries) {
       // if an element is currently in the calendar but no longer relevant -> remove it
       if (!connections.has(element.id)) element.remove();
     }
@@ -196,13 +151,19 @@ class Calendar {
 
       // we don't yet have an element for this connection
       if (!element) {
-        element = createCalenderElement(connection.data);
+        element = this.#createCalenderEntry(connection.data);
+        this.#calendarGrid.addEntry(
+          element,
+          connection.data.date,
+          connection.data.startTime,
+          connection.data.endTime,
+        );
+
         /*enableDragAndDrop(
           element,
           connection.leg.id,
           this.#callbacks.legChanged(),
         );*/
-        this.#container.appendChild(element);
       }
 
       if (connection.active) {
@@ -229,5 +190,43 @@ class Calendar {
         connection.classList.remove("legSelected");
       }
     });*/
+  }
+
+  #createCalenderEntry(connection) {
+    const element = createElementFromTemplate("template-calendar-connection");
+
+    element.id = connection.id;
+    element.classList.add(connection.leg.id);
+
+    element.getElementsByClassName("connection-icon")[0].src =
+      `images/${connection.type}.svg`;
+    element.getElementsByClassName("connection-number")[0].innerText =
+      connection.displayId;
+
+    // todo stop hardcoding
+    if (
+      !connection.id.endsWith("40008503") &&
+      !connection.id.endsWith("500018289")
+    ) {
+      element.getElementsByClassName("connection-start-time")[0].innerText =
+        connection.startTime;
+      element.getElementsByClassName("connection-start-station")[0].innerText =
+        connection.startStation.name;
+      element.getElementsByClassName("connection-end-time")[0].innerText =
+        connection.endTime;
+      element.getElementsByClassName("connection-end-station")[0].innerText =
+        connection.endStation.name;
+    }
+
+    // todo class-wide event listener?
+    element.addEventListener("mouseover", (e) => {
+      new LegHoverEvent(connection.leg.id, "calendar").dispatch(document);
+    });
+
+    element.addEventListener("mouseout", (e) => {
+      new LegNoHoverEvent(connection.leg.id, "calendar").dispatch(document);
+    });
+
+    return element;
   }
 }
