@@ -114,8 +114,12 @@
             calendar.updateView(journey);
         });
 
-    }
+        calendar.on("legChanged", data => {
+            journey.changeLeg(data.leg, database.getConnection(data.id));
+            calendar.updateView(journey);
+        })
 
+    }
 
     const map = new MapWrapper(new maplibregl.Map({
       container: 'map',

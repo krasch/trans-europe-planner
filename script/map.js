@@ -174,12 +174,12 @@ class MapWrapper {
     });
   }
 
-  on(event, callback) {
-    this.#callbacks[event] = callback;
+  on(eventName, callback) {
+    this.#callbacks[eventName] = callback;
   }
 
-  #makeCallback(event, data) {
-    if (this.#callbacks[event]) this.#callbacks[event](data);
+  #makeCallback(eventName, data) {
+    if (this.#callbacks[eventName]) this.#callbacks[eventName](data);
   }
 
   updateView(availableLegs, journey) {

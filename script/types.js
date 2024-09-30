@@ -117,6 +117,16 @@ class Journey {
     });
   }
 
+  changeLeg(leg, newConnection) {
+    console.log(leg, newConnection);
+    // todo shitty datatypes, todo what if legs exists 0 or >1 times
+    for (const i in this.connections) {
+      if (this.connections[i].leg.id === leg) {
+        this.connections[i] = newConnection;
+      }
+    }
+  }
+
   get stopovers() {
     const cities = [];
 

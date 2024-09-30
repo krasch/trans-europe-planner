@@ -95,7 +95,7 @@ function enableDragAndDrop(element, leg, onDropCallback) {
     }
 
     // hide original item from calendar -> global state, should callback
-    onDropCallback(e.dataTransfer.getData("calenderItemId"), e.target.id);
+    onDropCallback(e.dataTransfer.getData("leg"), e.target.id);
   });
 }
 
@@ -130,6 +130,7 @@ class Calendar {
   #container;
   #startDay;
   #resolution;
+  #callbacks = {};
 
   constructor(container, startDay, endDay, resolution) {
     this.#container = container;
@@ -171,28 +172,19 @@ class Calendar {
     }
   }
 
+  on(eventName, callback) {
+    this.#callbacks[eventName] = callback;
+  }
+
+  #makeCallback(eventName, data) {
+    if (this.#callbacks[eventName]) this.#callbacks[eventName](data);
+  }
+
   updateView(journey) {
-    /*for (let div of document.getElementsByClassName("calendar-connection"))
+    for (let div of document.getElementsByClassName("calendar-connection"))
       div.remove();
 
-    for (let connection of journey.connections) {
-      const element = createCalenderElement(connection);
-      element.classList.add("part-of-trip");
-      element.draggable = true;
-      element.style.zIndex = zIndexConnection;
-      this.#container.appendChild(element);
-
-      const alternatives = Array.from(database.getAlternatives(connection.id));
-      for (let alternative of alternatives) {
-        const alternativeElement = createCalenderElement(alternative);
-        alternativeElement.classList.add("alternative");
-        alternativeElement.draggable = false;
-        alternativeElement.style.zIndex = zIndexHiddenAlternative;
-        this.#container.appendChild(alternativeElement);
-      }
-    }
-
-    // todo should move somewhere else
+    /*// todo should move somewhere else
     document.addEventListener("legHover", (e) => {
       const leg = e.detail.leg;
       for (let connection of document.getElementsByClassName(leg)) {
@@ -208,26 +200,18 @@ class Calendar {
       }
     });*/
 
-    function callback(oldSelectedId, newSelectedId) {
-      const oldSelected = document.getElementById(oldSelectedId);
-      oldSelected.classList.remove("part-of-trip");
-      oldSelected.classList.add("alternative");
-      oldSelected.draggable = false;
-
-      const newSelected = document.getElementById(newSelectedId);
-      newSelected.classList.add("part-of-trip");
-      newSelected.classList.remove("alternative");
-      newSelected.draggable = true;
-    }
-
     const conn = journey.connections[1];
-    const bla = createCalenderElement(conn, callback);
+    const bla = createCalenderElement(conn, (leg, id) =>
+      this.#makeCallback("legChanged", { leg: leg, id: id }),
+    );
     bla.classList.add("part-of-trip");
     this.#container.appendChild(bla);
 
     const alternatives = database.getAlternatives(conn.id);
     for (let alt of alternatives) {
-      const element = createCalenderElement(alt, callback);
+      const element = createCalenderElement(alt, (leg, id) =>
+        this.#makeCallback("legChanged", { leg: leg, id: id }),
+      );
       element.classList.add("alternative");
 
       this.#container.appendChild(element);
