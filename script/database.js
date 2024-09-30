@@ -92,7 +92,7 @@ class Database {
       if (connectionId === candidateId) continue;
 
       // this candidate is an alternative because it covers the same leg
-      if (connection.leg.numericId === candidate.leg.numericId) yield candidate;
+      if (connection.leg.id === candidate.leg.id) yield candidate;
     }
   }
 }
