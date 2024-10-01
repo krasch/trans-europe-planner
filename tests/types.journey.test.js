@@ -1,9 +1,5 @@
 const { Journey } = require("../script/types.js");
-const {
-  createCity,
-  createStation,
-  createConnection,
-} = require("../tests/util.js");
+const { DATA, createConnection } = require("./data_utils.js");
 
 test("emptyJourney", function () {
   const journey = new Journey([]);
@@ -12,16 +8,10 @@ test("emptyJourney", function () {
 });
 
 test("journeyWithOneConnection", function () {
-  const cityA = createCity("A");
-  const cityB = createCity("B");
-
-  const stationA = createStation("A", cityA);
-  const stationB = createStation("B", cityB);
-
-  const connection = createConnection(1, stationA, stationB);
+  const connection = createConnection(1, DATA.stationA, DATA.stationB);
   const journey = new Journey([connection]);
 
-  const expectedStopovers = [stationA.city, stationB.city];
+  const expectedStopovers = [DATA.stationA.city, DATA.stationB.city];
   const expectedLegs = [connection.leg];
 
   expect(journey.stopovers).toStrictEqual(expectedStopovers);
@@ -29,27 +19,17 @@ test("journeyWithOneConnection", function () {
 });
 
 test("journeyWithMultipleConnections", function () {
-  const cityA = createCity("A");
-  const cityB = createCity("B");
-  const cityC = createCity("C");
-  const cityD = createCity("D");
-
-  const stationA = createStation("A", cityA);
-  const stationB = createStation("B", cityB);
-  const stationC = createStation("C", cityC);
-  const stationD = createStation("D", cityD);
-
-  const connection1 = createConnection(1, stationA, stationB);
-  const connection2 = createConnection(2, stationB, stationC);
-  const connection3 = createConnection(3, stationC, stationD);
+  const connection1 = createConnection(1, DATA.stationA, DATA.stationB);
+  const connection2 = createConnection(2, DATA.stationB, DATA.stationC);
+  const connection3 = createConnection(3, DATA.stationC, DATA.stationD);
 
   const journey = new Journey([connection1, connection2, connection3]);
 
   const expectedStopovers = [
-    stationA.city,
-    stationB.city,
-    stationC.city,
-    stationD.city,
+    DATA.stationA.city,
+    DATA.stationB.city,
+    DATA.stationC.city,
+    DATA.stationD.city,
   ];
   const expectedLegs = [connection1.leg, connection2.leg, connection3.leg];
 
@@ -58,14 +38,8 @@ test("journeyWithMultipleConnections", function () {
 });
 
 test("changeConnection", function () {
-  const cityA = createCity("A");
-  const cityB = createCity("B");
-
-  const stationA = createStation("A", cityA);
-  const stationB = createStation("B", cityB);
-
-  const connection1 = createConnection(1, stationA, stationB);
-  const connection2 = createConnection(2, stationA, stationB);
+  const connection1 = createConnection(1, DATA.stationA, DATA.stationB);
+  const connection2 = createConnection(2, DATA.stationA, DATA.stationB);
 
   const journey = new Journey([connection1]);
   expect(journey.connections).toStrictEqual([connection1]);
