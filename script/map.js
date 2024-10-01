@@ -140,7 +140,7 @@ class MapWrapper {
 
   init() {
     this.map.getCanvas().style.cursor = "default";
-    this.map.setLayoutProperty("place-city", "text-field", ["get", `name:de`]);
+    this.map.setLayoutProperty("place-city", "text-field", ["get", `name`]);
 
     // when the user clicks on a leg, it should be added to the journey
     this.#legs.onClick((id) => this.#makeCallback("legAdded", id));
