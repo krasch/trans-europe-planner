@@ -72,7 +72,9 @@
 <script>
 
     "use strict";
-    const database = new Database();
+    const stations = parseStations(STATIONS);
+    const connections = parseConnections(stations, CONNECTIONS);
+    const database = new Database(connections);
 
     function main(){
         const availableLegs = Array.from(database.getAllLegs());

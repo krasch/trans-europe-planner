@@ -31,7 +31,7 @@ function parseStations() {
 }
 
 function parseConnections(stations) {
-  const connections = new Map();
+  const connections = [];
 
   for (let outer in CONNECTIONS) {
     for (let inner in CONNECTIONS[outer]) {
@@ -51,7 +51,7 @@ function parseConnections(stations) {
           connection.stops,
         );
 
-        connections[datedConnection.id] = datedConnection;
+        connections.push(datedConnection);
       }
     }
   }
@@ -60,9 +60,11 @@ function parseConnections(stations) {
 }
 
 class Database {
-  constructor() {
-    this.stations = parseStations();
-    this.connections = parseConnections(this.stations);
+  constructor(connections) {
+    this.connections = {};
+    for (let connection of connections) {
+      this.connections[connection.id] = connection;
+    }
   }
 
   *getAllLegs() {
@@ -92,7 +94,9 @@ class Database {
       if (connectionId === candidateId) continue;
 
       // this candidate is an alternative because it covers the same leg
-      if (connection.leg.id === candidate.leg.id) yield candidate;
+      if (connection.leg.id === candidate.leg.id) {
+        yield candidate;
+      }
     }
   }
 
@@ -117,4 +121,9 @@ class Database {
 
     return data;
   }
+}
+
+// exports for testing only (NODE_ENV='test' is automatically set by jest)
+if (typeof process === "object" && process.env.NODE_ENV === "test") {
+  module.exports.Database = Database;
 }
