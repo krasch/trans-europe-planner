@@ -60,9 +60,8 @@ function parseConnections(stations) {
 }
 
 class Database {
-  constructor() {
-    this.stations = parseStations();
-    this.connections = parseConnections(this.stations);
+  constructor(connections) {
+    this.connections = connections;
   }
 
   *getAllLegs() {
