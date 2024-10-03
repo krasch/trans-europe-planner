@@ -156,7 +156,6 @@ class Calendar {
   }
 
   updateView(connections) {
-
     // remove entries that are currently in calendar but no longer necessary
     const toRemove = [];
     for (const element of this.#calendarGrid.entries) {
@@ -165,7 +164,7 @@ class Calendar {
       }
     }
     for (const element of toRemove) {
-      element.remove()
+      element.remove();
     }
 
     // loop over desired connections
