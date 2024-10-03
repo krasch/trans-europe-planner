@@ -39,9 +39,10 @@
 /* line on top of each hour */
 /* grid lines - IMPORTANT change here when resolution changes */
 /* first number in () is resolution */
-#calendar > #calendar-grid > .calendar-grid-hour, .calendar-grid-cell:nth-child(4n+1)
+#calendar > #calendar-grid > .calendar-grid-hour,
+#calendar > #calendar-grid > .calendar-grid-cell:nth-child(4n+1)
 {
-    border-left: 1px dashed lightgrey;
+    border-top: 1px dashed lightgrey;
 }
 
 /* line on other cells should usually not be visible */
@@ -60,35 +61,6 @@
 
 #calendar > #calendar-grid > .possibleDropTarget {
     border-top-color: red;
-}
-
-/* grid lines - IMPORTANT change here when resolution changes */
-#calendar > #calendar-grid {
-    /* line to the left of each day */
-    > .calendar-grid-cell {
-        border-left: 1px dashed lightgrey;
-    }
-
-    /* line on top of each hour */
-    > .calendar-grid-hour,
-    > .calendar-grid-cell:nth-child(4n+1) /* first number in () is resolution */{
-        border-top: 1px dashed lightgrey;
-    }
-
-    /* line on other cells should usually not be visible */
-    > .calendar-grid-cell {
-        border-top: 1px dashed white;
-    }
-
-    /* except for the first hour */
-    > .calendar-grid-hour:first-child,
-    > .calendar-grid-cell:nth-child(0) { /* todo does not work */
-        border-top: 0;
-    }
-
-    > .possibleDropTarget {
-        border-top-color: red;
-    }
 }
 
 #calendar > #calendar-grid > .calendar-grid-hour{
