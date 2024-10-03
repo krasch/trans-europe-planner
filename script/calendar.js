@@ -157,11 +157,15 @@ class Calendar {
 
   updateView(connections) {
     // remove entries that are currently in calendar but no longer necessary
-    // todo why does only this Set approach work but a loop approach misses entries?
-    const desired = Object.values(connections).map((c) => c.data.id);
-    const current = Array.from(this.#calendarGrid.entries).map((c) => c.id);
-    const toDelete = new Set(current).difference(new Set(desired));
-    for (const id of toDelete) document.getElementById(id).remove();
+    const toRemove = [];
+    for (const element of this.#calendarGrid.entries) {
+      if (!connections[element.id]) {
+        toRemove.push(element);
+      }
+    }
+    for (const element of toRemove) {
+      element.remove();
+    }
 
     // loop over desired connections
     for (let connection of Object.values(connections)) {

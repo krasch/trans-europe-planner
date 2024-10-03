@@ -70,59 +70,57 @@
 
 
 <script>
-
-    "use strict";
+  function main(map){
     const stations = parseStations(STATIONS);
     const connections = parseConnections(stations, CONNECTIONS);
     const database = new Database(connections);
 
-    function main(){
-        const availableLegs = Array.from(database.getAllLegs());
+    const availableLegs = Array.from(database.getAllLegs());
 
-        // temporary
-        const defaultConnections = {
-            "Berlin-München": database.getConnection("2024-10-16X1000505"),
-            "München-Verona": database.getConnection("2024-10-16X300087"),
-            "Verona-Firenze": database.getConnection("2024-10-17X40008503"),
-            "Firenze-Livorno": database.getConnection("2024-10-17X500018289"),
-            "Livorno-Bastia": database.getConnection("2024-10-18X1234567")
-        }
-
-        const journey = new Journey([]);
-        journey.addConnection(defaultConnections["Berlin-München"]);
-        journey.addConnection(defaultConnections["München-Verona"]);
-
-        const calendarDiv = document.getElementById("calendar-grid");
-        const style = getComputedStyle(calendarDiv);
-        const resolution = Number(style.getPropertyValue("--resolution"));
-        const startDay = new Date("2024-10-16");
-        const endDay = new Date("2024-10-18");
-
-        const calendar = new Calendar(calendarDiv, startDay, endDay, resolution);
-
-        map.init();
-
-        map.updateView(availableLegs,journey);
-        calendar.updateView(database.prepareDataForCalendar(journey));
-
-        map.on("legAdded", leg => {
-            journey.addConnection(defaultConnections[leg]);
-            map.updateView(availableLegs,journey);
-            calendar.updateView(database.prepareDataForCalendar(journey));
-        });
-
-        map.on("legRemoved", leg => {
-            journey.removeConnection(leg);
-            map.updateView(availableLegs,journey);
-            calendar.updateView(database.prepareDataForCalendar(journey));
-        });
-
-        calendar.on("legChanged", (leg, connectionId) => {
-            journey.changeLeg(leg, database.getConnection(connectionId));
-            calendar.updateView(database.prepareDataForCalendar(journey));
-        });
+    // temporary
+    const defaultConnections = {
+      "Berlin-München": database.getConnection("2024-10-16X1000505"),
+      "München-Verona": database.getConnection("2024-10-16X300087"),
+      "Verona-Firenze": database.getConnection("2024-10-17X40008503"),
+      "Firenze-Livorno": database.getConnection("2024-10-17X500018289"),
+      "Livorno-Bastia": database.getConnection("2024-10-18X1234567")
     }
 
+    const journey = new Journey([]);
+    journey.addConnection(defaultConnections["Berlin-München"]);
+    journey.addConnection(defaultConnections["München-Verona"]);
+
+    const calendarDiv = document.getElementById("calendar-grid");
+    const style = getComputedStyle(calendarDiv);
+    const resolution = Number(style.getPropertyValue("--resolution"));
+    const startDay = new Date("2024-10-16");
+    const endDay = new Date("2024-10-18");
+
+    const calendar = new Calendar(calendarDiv, startDay, endDay, resolution);
+
+    map.init();
+    map.updateView(availableLegs,journey);
+    calendar.updateView(database.prepareDataForCalendar(journey));
+
+    map.on("legAdded", leg => {
+      journey.addConnection(defaultConnections[leg]);
+      map.updateView(availableLegs,journey);
+      calendar.updateView(database.prepareDataForCalendar(journey));
+    });
+
+    map.on("legRemoved", leg => {
+      journey.removeConnection(leg);
+      map.updateView(availableLegs,journey);
+      calendar.updateView(database.prepareDataForCalendar(journey));
+    });
+
+    calendar.on("legChanged", (leg, connectionId) => {
+      journey.changeLeg(leg, database.getConnection(connectionId));
+      calendar.updateView(database.prepareDataForCalendar(journey));
+    });
+  }
+
+  onload = (event) => {
     const map = new MapWrapper(new maplibregl.Map({
       container: 'map',
       style: "style/outdoors-modified.json",
@@ -131,8 +129,14 @@
     }));
 
     map.map.on('load', () => {
-        main();
+      try {
+        main(map);
+      } catch(error) {
+        console.error(error);
+      }
+
     });
+  };
 </script>
 
 </body>

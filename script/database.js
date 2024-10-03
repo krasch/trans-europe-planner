@@ -111,7 +111,7 @@ class Database {
       };
 
       // but this leg can also be fulfilled by these alternatives
-      for (let alternative of database.getAlternatives(connection.id)) {
+      for (let alternative of this.getAlternatives(connection.id)) {
         data[alternative.id] = {
           data: alternative,
           active: false,
