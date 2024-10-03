@@ -67,80 +67,76 @@
 
 #calendar > #calendar-grid > .calendar-connection {
     display: grid;
-
     grid-template-areas:
-    "icon number"
-    "start-time start-station"
-    "end-time end-station";
-
-    .connection-icon {
-        grid-area: icon;
-        max-height: 15px;
-    }
-
-    .connection-number {
-        grid-area: number;
-    }
-
-    .connection-start-time {
-        grid-area: start-time;
-    }
-
-    .connection-start-station {
-        grid-area: start-station;
-    }
-
-    .connection-end-time {
-        grid-area: end-time;
-    }
-
-    .connection-end-station {
-        grid-area: end-station;
-    }
+      "icon number"
+      "start-time start-station"
+      "end-time   end-station  ";
 
     border-radius: 10px;
     padding: 5px;
     margin: 0 5px 0 5px;
+}
 
-    &.part-of-trip {
-        border: 1px solid darkgrey;
-        background-color: rgba(255, 0, 0, 0.4);
+#calendar > #calendar-grid > .calendar-connection > .connection-icon {
+    grid-area: icon;
+    max-height: 15px;
+}
 
-        &.legSelected {
-            background-color: rgba(255, 0, 0, 0.8);
-        }
+#calendar > #calendar-grid > .calendar-connection > .connection-number {
+    grid-area: number;
+}
 
-        &:hover {
-            cursor: move;
-            background-color: rgba(255, 0, 0, 0.8);
-        }
+#calendar > #calendar-grid > .calendar-connection > .connection-start-time {
+    grid-area: start-time;
+}
 
-        z-index: 2;
-    }
+#calendar > #calendar-grid > .calendar-connection > .connection-start-station {
+    grid-area: start-station;
+}
 
-    &.alternative {
+#calendar > #calendar-grid > .calendar-connection > .connection-end-time {
+    grid-area: end-time;
+}
 
-        visibility: hidden;
+#calendar > #calendar-grid > .calendar-connection > .connection-end-station {
+    grid-area: end-station;
+}
 
-        &.possibleDropTarget {
-            visibility: visible;
-            border-top: 1px dashed red;
-            border-radius: 0;
-            z-index: 3;
+#calendar > #calendar-grid > .part-of-trip {
+    border: 1px solid darkgrey;
+    background-color: rgba(255, 0, 0, 0.4);
+    z-index: 2;
+}
 
-            /* do not want to display info about the alternative -> all children always hidden */
-            > * {
-                visibility: hidden;
-            }
-        }
+#calendar > #calendar-grid > .legSelected {
+    background-color: rgba(255, 0, 0, 0.8);
+}
 
-        &.selectedDropTarget {
-            background-color: rgba(255, 0, 0, 0.4);
-            border-radius: 10px;
-        }
+#calendar > #calendar-grid > :hover {
+    cursor: move;
+    background-color: rgba(255, 0, 0, 0.8);
+}
 
-        z-index: 1;
-    }
+#calendar > #calendar-grid > .alternative {
+
+    visibility: hidden;
+    z-index: 1;
+}
+
+#calendar > #calendar-grid > .selectedDropTarget {
+    background-color: rgba(255, 0, 0, 0.4);
+    border-radius: 10px;
+}
 
 
+#calendar > #calendar-grid > .possibleDropTarget {
+    visibility: visible;
+    border-top: 1px dashed red;
+    border-radius: 0;
+    z-index: 3;
+}
+
+/* do not want to display info about the alternative -> all children always hidden */
+#calendar > #calendar-grid > .alternative > * {
+    visibility: hidden;
 }
