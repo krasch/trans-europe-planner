@@ -102,33 +102,31 @@
     grid-area: end-station;
 }
 
+/* when hovered over map or calendar entry */
+#calendar > #calendar-grid > .legSelected {
+    background-color: rgba(255, 0, 0, 0.8);
+}
+
+#calendar > #calendar-grid > .part-of-trip:hover {
+    cursor: move;
+    background-color: rgba(255, 0, 0, 0.8);
+}
+
+
 #calendar > #calendar-grid > .part-of-trip {
     border: 1px solid darkgrey;
     background-color: rgba(255, 0, 0, 0.4);
     z-index: 2;
 }
 
-#calendar > #calendar-grid > .legSelected {
-    background-color: rgba(255, 0, 0, 0.8);
-}
 
-#calendar > #calendar-grid > :hover {
-    cursor: move;
-    background-color: rgba(255, 0, 0, 0.8);
-}
-
+/* when not in drag&drop mode, we should not see alternatives */
 #calendar > #calendar-grid > .alternative {
-
     visibility: hidden;
     z-index: 1;
 }
 
-#calendar > #calendar-grid > .selectedDropTarget {
-    background-color: rgba(255, 0, 0, 0.4);
-    border-radius: 10px;
-}
-
-
+/* we are in drag in drop mode, there should be a faint highlight */
 #calendar > #calendar-grid > .possibleDropTarget {
     visibility: visible;
     border-top: 1px dashed red;
@@ -136,7 +134,16 @@
     z-index: 3;
 }
 
-/* do not want to display info about the alternative -> all children always hidden */
+/* but in drag and drop mode we should not see details about the entry*/
 #calendar > #calendar-grid > .alternative > * {
     visibility: hidden;
 }
+
+/* in drag&drop mode and the user is hovering over an alternative entry */
+#calendar > #calendar-grid > .selectedDropTarget {
+    background-color: rgba(255, 0, 0, 0.4);
+    border-radius: 10px;
+}
+
+
+
