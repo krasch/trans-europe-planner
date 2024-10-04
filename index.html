@@ -20,6 +20,7 @@
     <script src="script/util.js"></script>
     <script src="script/types.js"></script>
 
+    <script src="script/data/cities.js"></script>
     <script src="script/data/stations.js"></script>
     <script src="script/data/connections.js"></script>
     <script src="script/database.js"></script>
@@ -71,19 +72,18 @@
 
 <script>
   function main(map){
-    const stations = parseStations(STATIONS);
-    const connections = parseConnections(stations, CONNECTIONS);
+    const connections = prepareData(CITIES, STATIONS, CONNECTIONS);
     const database = new Database(connections);
 
     const availableLegs = Array.from(database.getAllLegs());
 
     // temporary
     const defaultConnections = {
-      "Berlin-München": database.getConnection("2024-10-16X1000505"),
-      "München-Verona": database.getConnection("2024-10-16X300087"),
-      "Verona-Firenze": database.getConnection("2024-10-17X40008503"),
-      "Firenze-Livorno": database.getConnection("2024-10-17X500018289"),
-      "Livorno-Bastia": database.getConnection("2024-10-18X1234567")
+      "Berlin-München": database.getConnection("2024-10-16XICE505"),
+      "München-Verona": database.getConnection("2024-10-16XEC87"),
+      "Verona-Firenze": database.getConnection("2024-10-17XFR8503"),
+      "Firenze-Livorno": database.getConnection("2024-10-17XR18289"),
+      "Livorno-Bastia": database.getConnection("2024-10-18XCF1")
     }
 
     const journey = new Journey([]);
