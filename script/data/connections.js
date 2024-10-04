@@ -998,42 +998,6 @@ const CONNECTIONS = [
     ],
   },
   {
-    id: "ICE1119",
-    type: "train",
-    stops: [
-      {
-        station: "8098160",
-        arrival: "19:57:00",
-        departure: "20:04:00",
-      },
-      {
-        station: "8011113",
-        arrival: "20:09:00",
-        departure: "20:11:00",
-      },
-      {
-        station: "8010159",
-        arrival: "21:16:00",
-        departure: "21:18:00",
-      },
-      {
-        station: "8010101",
-        arrival: "21:45:00",
-        departure: "21:47:00",
-      },
-      {
-        station: "8000284",
-        arrival: "22:56:00",
-        departure: "22:59:00",
-      },
-      {
-        station: "8000261",
-        arrival: "00:01:00",
-        departure: "00:01:00",
-      },
-    ],
-  },
-  {
     id: "ICE1115",
     type: "train",
     stops: [
