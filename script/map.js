@@ -191,8 +191,15 @@ class MapWrapper {
       else additionalLegs.push(leg);
     }
 
-    // actual cities we have on our route
-    const markers = journey.stopovers.map(cityToGeojson);
+    // actual cities we have on our network
+    const cities = [];
+    for (let leg of availableLegs) {
+      if (!cities.includes(leg.startCity)) cities.push(leg.startCity);
+      if (!cities.includes(leg.endCity)) cities.push(leg.endCity);
+    }
+
+    const markers = cities.map(cityToGeojson);
+    //const markers = journey.stopovers.map(cityToGeojson);
     this.#cities.update(asGeojsonFeatureCollection(markers));
 
     // legs we have on our route
