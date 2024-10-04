@@ -83,12 +83,19 @@
       "München-Verona": database.getConnection("2024-10-16XEC87"),
       "Verona-Firenze": database.getConnection("2024-10-17XFR8503"),
       "Firenze-Livorno": database.getConnection("2024-10-17XR18289"),
-      "Livorno-Bastia": database.getConnection("2024-10-18XCF1")
+      "Livorno-Bastia": database.getConnection("2024-10-18XCF1"),
+      "Berlin-Zürich": database.getConnection("2024-10-16XICE73"),
+      "Zürich-Genova": database.getConnection("2024-10-17XEC327"),
+      "Berlin-Karlsruhe": database.getConnection("2024-10-16XICE71"),
+      "Karlsruhe-Marseille": database.getConnection("2024-10-16XTGV9580")
     }
 
+
     const journey = new Journey([]);
-    journey.addConnection(defaultConnections["Berlin-München"]);
-    journey.addConnection(defaultConnections["München-Verona"]);
+    //journey.addConnection(defaultConnections["Berlin-München"]);
+    //journey.addConnection(defaultConnections["München-Verona"]);
+    journey.addConnection(defaultConnections["Berlin-Karlsruhe"]);
+    journey.addConnection(defaultConnections["Karlsruhe-Marseille"]);
 
     const calendarDiv = document.getElementById("calendar-grid");
     const style = getComputedStyle(calendarDiv);

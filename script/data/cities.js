@@ -1,23 +1,63 @@
 const CITIES = {
+  23614: {
+    name: "Aix-en-Provence",
+    latitude: 43.5283,
+    longitude: 5.44973,
+  },
+  6179: {
+    name: "Arth",
+    latitude: 47.049163,
+    longitude: 8.549478,
+  },
   10782: {
     name: "Augsburg",
     latitude: 48.365444,
     longitude: 10.885568,
+  },
+  489: {
+    name: "Avignon",
+    latitude: 43.95,
+    longitude: 4.816667,
+  },
+  7726: {
+    name: "Baden-Baden",
+    latitude: 48.790085,
+    longitude: 8.190467,
   },
   6805: {
     name: "Bamberg",
     latitude: 49.900757,
     longitude: 10.899492,
   },
+  5877: {
+    name: "Basel",
+    latitude: 47.567,
+    longitude: 7.583,
+  },
   "-3": {
     name: "Bastia",
     latitude: 42.7,
     longitude: 9.449722,
   },
+  10610: {
+    name: "Belfort – Montbéliard",
+    latitude: 47.586042,
+    longitude: 6.897901,
+  },
+  18291: {
+    name: "Bellinzona",
+    latitude: 46.19543,
+    longitude: 9.029529,
+  },
   7527: {
     name: "Berlin",
     latitude: 52.520501,
     longitude: 13.386987,
+  },
+  5029: {
+    name: "Besançon",
+    latitude: 47.23792,
+    longitude: 6.02432,
   },
   7515: {
     name: "Bitterfeld",
@@ -48,6 +88,21 @@ const CITIES = {
     name: "Cascina",
     latitude: 43.674666,
     longitude: 10.545074,
+  },
+  5765: {
+    name: "Chalon-sur-Saône",
+    latitude: 46.781612,
+    longitude: 4.843454,
+  },
+  18294: {
+    name: "Chiasso",
+    latitude: 45.832167,
+    longitude: 9.031426,
+  },
+  29244: {
+    name: "Como",
+    latitude: 45.809327,
+    longitude: 9.072903,
   },
   28993: {
     name: "Darmstadt",
@@ -94,6 +149,21 @@ const CITIES = {
     latitude: 50.107149,
     longitude: 8.663785,
   },
+  7692: {
+    name: "Freiburg (Breisgau)",
+    latitude: 47.9954,
+    longitude: 7.8495,
+  },
+  7727: {
+    name: "Fulda",
+    latitude: 50.554722,
+    longitude: 9.68398,
+  },
+  8450: {
+    name: "Genova",
+    latitude: 44.416333,
+    longitude: 8.918989,
+  },
   7622: {
     name: "Günzburg",
     latitude: 48.460334,
@@ -124,6 +194,11 @@ const CITIES = {
     latitude: 47.388451,
     longitude: 11.778457,
   },
+  7665: {
+    name: "Karlsruhe",
+    latitude: 48.99351,
+    longitude: 8.401848,
+  },
   10486: {
     name: "Kufstein",
     latitude: 47.583077,
@@ -144,15 +219,40 @@ const CITIES = {
     latitude: 43.548473,
     longitude: 10.310567,
   },
+  6345: {
+    name: "Lugano",
+    latitude: 46.005506,
+    longitude: 8.946873,
+  },
   10784: {
     name: "Lutherstadt Wittenberg",
     latitude: 51.867533,
     longitude: 12.662016,
   },
+  4718: {
+    name: "Lyon",
+    latitude: 45.767658,
+    longitude: 4.834907,
+  },
+  4790: {
+    name: "Marseille",
+    latitude: 43.29641,
+    longitude: 5.371,
+  },
+  8483: {
+    name: "Milano",
+    latitude: 45.466632,
+    longitude: 9.1906,
+  },
   19670: {
     name: "Montelupo-Capraia",
     latitude: 43.733617,
     longitude: 11.019094,
+  },
+  4753: {
+    name: "Mulhouse",
+    latitude: 47.75,
+    longitude: 7.333333,
   },
   7686: {
     name: "München",
@@ -168,6 +268,11 @@ const CITIES = {
     name: "Nürnberg",
     latitude: 49.445615,
     longitude: 11.082989,
+  },
+  19483: {
+    name: "Pavia",
+    latitude: 45.188971,
+    longitude: 9.144807,
   },
   22187: {
     name: "Pisa",
@@ -209,10 +314,20 @@ const CITIES = {
     latitude: 43.775498,
     longitude: 11.095709,
   },
+  5260: {
+    name: "Strasbourg",
+    latitude: 48.58333,
+    longitude: 7.74593,
+  },
   7714: {
     name: "Stuttgart",
     latitude: 48.784081,
     longitude: 9.181636,
+  },
+  20332: {
+    name: "Tortona",
+    latitude: 44.900201,
+    longitude: 8.862078,
   },
   18829: {
     name: "Trento",
@@ -233,5 +348,15 @@ const CITIES = {
     name: "Wörgl",
     latitude: 47.4918,
     longitude: 12.060584,
+  },
+  6230: {
+    name: "Zug Bahnhof",
+    latitude: 47.173528,
+    longitude: 8.515274,
+  },
+  6401: {
+    name: "Zürich",
+    latitude: 47.378968,
+    longitude: 8.540534,
   },
 };

@@ -1,9 +1,33 @@
 const STATIONS = {
+  8704980: {
+    name: "Aix-en-Provence TGV",
+    latitude: 43.455237,
+    longitude: 5.317534,
+    city: 23614,
+  },
+  8505004: {
+    name: "Arth",
+    latitude: 47.049163,
+    longitude: 8.549478,
+    city: 6179,
+  },
   8000013: {
     name: "Augsburg Hbf",
     latitude: 48.365444,
     longitude: 10.885568,
     city: 10782,
+  },
+  8704918: {
+    name: "Avignon TGV",
+    latitude: 43.921586,
+    longitude: 4.786079,
+    city: 489,
+  },
+  8000774: {
+    name: "Baden-Baden",
+    latitude: 48.790085,
+    longitude: 8.190467,
+    city: 7726,
   },
   8000025: {
     name: "Bamberg",
@@ -11,11 +35,35 @@ const STATIONS = {
     longitude: 10.899492,
     city: 6805,
   },
+  8000026: {
+    name: "Basel Badischer Bahnhof",
+    latitude: 47.567292,
+    longitude: 7.607804,
+    city: 5877,
+  },
+  8500010: {
+    name: "Basel SBB",
+    latitude: 47.547076,
+    longitude: 7.58917,
+    city: 5877,
+  },
   "-2": {
     name: "Bastia Gare Maritime",
     latitude: 42.704074,
     longitude: 9.454851,
     city: -3,
+  },
+  8730082: {
+    name: "Belfort – Montbéliard TGV",
+    latitude: 47.585937,
+    longitude: 6.897687,
+    city: 10610,
+  },
+  8505213: {
+    name: "Bellinzona",
+    latitude: 46.19543,
+    longitude: 9.029529,
+    city: 18291,
   },
   8098160: {
     name: "Berlin Hbf (tief)",
@@ -28,6 +76,12 @@ const STATIONS = {
     latitude: 52.475475,
     longitude: 13.365571,
     city: 7527,
+  },
+  8730086: {
+    name: "Besançon-Franche-Comté TGV",
+    latitude: 47.307361,
+    longitude: 5.953195,
+    city: 5029,
   },
   8010050: {
     name: "Bitterfeld",
@@ -64,6 +118,24 @@ const STATIONS = {
     latitude: 43.674666,
     longitude: 10.545074,
     city: 20158,
+  },
+  8700091: {
+    name: "Chalon-sur-Saône",
+    latitude: 46.781612,
+    longitude: 4.843454,
+    city: 5765,
+  },
+  8505307: {
+    name: "Chiasso",
+    latitude: 45.832167,
+    longitude: 9.031426,
+    city: 18294,
+  },
+  8300056: {
+    name: "Como San Giovanni",
+    latitude: 45.80902,
+    longitude: 9.072796,
+    city: 29244,
   },
   8000068: {
     name: "Darmstadt Hbf",
@@ -125,6 +197,30 @@ const STATIONS = {
     longitude: 8.663785,
     city: 7602,
   },
+  8002041: {
+    name: "Frankfurt (Main) Süd",
+    latitude: 50.09958,
+    longitude: 8.686303,
+    city: 7602,
+  },
+  8000107: {
+    name: "Freiburg (Breisgau) Hbf",
+    latitude: 47.99769,
+    longitude: 7.841594,
+    city: 7692,
+  },
+  8000115: {
+    name: "Fulda",
+    latitude: 50.554722,
+    longitude: 9.68398,
+    city: 7727,
+  },
+  8300153: {
+    name: "Genova Piazza Principe",
+    latitude: 44.417507,
+    longitude: 8.922072,
+    city: 8450,
+  },
   8000139: {
     name: "Günzburg",
     latitude: 48.460334,
@@ -161,6 +257,12 @@ const STATIONS = {
     longitude: 11.778457,
     city: 10487,
   },
+  8000191: {
+    name: "Karlsruhe Hbf",
+    latitude: 48.99351,
+    longitude: 8.401848,
+    city: 7665,
+  },
   8100001: {
     name: "Kufstein",
     latitude: 47.583077,
@@ -185,17 +287,53 @@ const STATIONS = {
     longitude: 10.336624,
     city: 29239,
   },
+  8505300: {
+    name: "Lugano",
+    latitude: 46.005506,
+    longitude: 8.946873,
+    city: 6345,
+  },
   8010222: {
     name: "Lutherstadt Wittenberg",
     latitude: 51.867533,
     longitude: 12.662016,
     city: 10784,
   },
+  8700152: {
+    name: "Lyon Part-Dieu",
+    latitude: 45.760559,
+    longitude: 4.859355,
+    city: 4718,
+  },
+  8700074: {
+    name: "Marseille St-Charles",
+    latitude: 43.302666,
+    longitude: 5.380407,
+    city: 4790,
+  },
+  8300062: {
+    name: "Milano Lambrate",
+    latitude: 45.485066,
+    longitude: 9.237225,
+    city: 8483,
+  },
+  8300418: {
+    name: "Milano Rogoredo",
+    latitude: 45.433666,
+    longitude: 9.239014,
+    city: 8483,
+  },
   8301004: {
     name: "Montelupo-Capraia",
     latitude: 43.733617,
     longitude: 11.019094,
     city: 19670,
+  },
+  8700031: {
+    name: "Mulhouse",
+    latitude: 47.742224,
+    longitude: 7.342396,
+    city: 4753,
   },
   8000261: {
     name: "München Hbf",
@@ -226,6 +364,12 @@ const STATIONS = {
     latitude: 49.445615,
     longitude: 11.082989,
     city: 10777,
+  },
+  8300049: {
+    name: "Pavia",
+    latitude: 45.188971,
+    longitude: 9.144807,
+    city: 19483,
   },
   8300169: {
     name: "Pisa Centrale",
@@ -275,11 +419,23 @@ const STATIONS = {
     longitude: 11.095709,
     city: 20983,
   },
+  8700023: {
+    name: "Strasbourg",
+    latitude: 48.584967,
+    longitude: 7.734584,
+    city: 5260,
+  },
   8000096: {
     name: "Stuttgart Hbf",
     latitude: 48.784081,
     longitude: 9.181636,
     city: 7714,
+  },
+  8300029: {
+    name: "Tortona",
+    latitude: 44.900201,
+    longitude: 8.862078,
+    city: 20332,
   },
   8300101: {
     name: "Trento",
@@ -304,5 +460,17 @@ const STATIONS = {
     latitude: 47.4918,
     longitude: 12.060584,
     city: 10485,
+  },
+  8502204: {
+    name: "Zug Bahnhof",
+    latitude: 47.173528,
+    longitude: 8.515274,
+    city: 6230,
+  },
+  8503000: {
+    name: "Zürich HB",
+    latitude: 47.378186,
+    longitude: 8.539203,
+    city: 6401,
   },
 };
