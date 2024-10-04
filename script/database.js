@@ -5,58 +5,31 @@ class UnknownConnectionError extends Error {
   }
 }
 
-function parseStations() {
-  const stations = new Map();
-  const cities = new Map();
+function prepareData(cities, stations, connections) {
+  const coords = (dict) => new Coordinates(dict.latitude, dict.longitude);
 
-  for (let externalId in STATIONS) {
-    const data = STATIONS[externalId];
+  // parse cities
+  for (let [i, c] of Object.entries(cities))
+    cities[i] = new City(c.name, coords(c));
 
-    if (!cities.has(data.city)) {
-      cities[data.city] = new City(
-        data.city,
-        new Coordinates(data.city_latitude, data.city_longitude),
-      );
-    }
+  // parse cities
+  for (let [i, s] of Object.entries(stations))
+    stations[i] = new Station(i, s.name, coords(s), cities[s.city]);
 
-    stations[externalId] = new Station(
-      externalId,
-      data.name,
-      new Coordinates(data.latitude, data.longitude),
-      cities[data.city],
-    );
-  }
+  // parse connections
+  const result = [];
+  for (let c of connections) {
+    const stops = c.stops.map((s) => ({
+      time: s.departure.slice(0, 5), // todo
+      station: stations[s.station],
+    }));
 
-  return stations;
-}
-
-function parseConnections(stations) {
-  const connections = [];
-
-  for (let outer in CONNECTIONS) {
-    for (let inner in CONNECTIONS[outer]) {
-      const connection = structuredClone(CONNECTIONS[outer][inner]);
-
-      // lookup station objects todo do not have all stations in our list
-      for (let i in connection.stops) {
-        connection.stops[i].station = stations[connection.stops[i].station];
-      }
-
-      for (let date of ["2024-10-16", "2024-10-17", "2024-10-18"]) {
-        const datedConnection = new Connection(
-          connection.id,
-          connection.displayId,
-          connection.type,
-          new Date(date),
-          connection.stops,
-        );
-
-        connections.push(datedConnection);
-      }
+    for (let date of ["2024-10-16", "2024-10-17", "2024-10-18"]) {
+      result.push(new Connection(c.id, c.id, c.type, new Date(date), stops));
     }
   }
 
-  return connections;
+  return result;
 }
 
 class Database {

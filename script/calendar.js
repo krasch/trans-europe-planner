@@ -208,10 +208,7 @@ class Calendar {
       connection.displayId;
 
     // todo stop hardcoding
-    if (
-      !connection.id.endsWith("40008503") &&
-      !connection.id.endsWith("500018289")
-    ) {
+    if (!connection.id.endsWith("8503") && !connection.id.endsWith("18289")) {
       element.getElementsByClassName("connection-start-time")[0].innerText =
         connection.startTime;
       element.getElementsByClassName("connection-start-station")[0].innerText =
