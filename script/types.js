@@ -6,9 +6,9 @@ class IllegalCoordinateError extends Error {
 }
 
 class LegHoverEvent {
-  constructor(leg, source) {
+  constructor(leg) {
     this.event = new CustomEvent("legHover", {
-      detail: { leg: leg, source: source },
+      detail: { leg: leg },
     });
   }
 

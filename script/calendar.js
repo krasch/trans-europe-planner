@@ -221,11 +221,11 @@ class Calendar {
 
     // todo class-wide event listener?
     element.addEventListener("mouseover", (e) => {
-      new LegHoverEvent(connection.leg.id, "calendar").dispatch(document);
+      new LegHoverEvent(connection.leg.id).dispatch(document);
     });
 
     element.addEventListener("mouseout", (e) => {
-      new LegNoHoverEvent(connection.leg.id, "calendar").dispatch(document);
+      new LegNoHoverEvent(connection.leg.id).dispatch(document);
     });
 
     return element;
