@@ -133,7 +133,7 @@ class CalendarGrid {
 
   get entries() {
     // todo should not know class name here
-    return this.container.getElementsByClassName("calendar-connection");
+    return this.container.getElementsByTagName("calendar-entry");
   }
 
   *getEntriesForGroup(group) {
