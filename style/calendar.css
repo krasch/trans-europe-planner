@@ -128,13 +128,13 @@
 
 /* when not in drag&drop mode, we should not see alternatives */
 #calendar > #calendar-grid > .alternative {
-    visibility: hidden;
+    display: none;
     z-index: 1;
 }
 
 /* we are in drag in drop mode, there should be a faint highlight */
 #calendar > #calendar-grid > .possibleDropTarget {
-    visibility: visible;
+    display:grid;
     border-top: 1px dashed red;
     border-radius: 0;
     z-index: 3;

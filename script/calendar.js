@@ -1,62 +1,6 @@
-function enableDragAndDrop(element, leg, onDropCallback) {
-  element.draggable = true;
-
-  element.addEventListener("dragstart", (e) => {
-    e.dataTransfer.dropEffect = "move";
-    e.dataTransfer.setData("calenderItemId", element.id);
-    e.dataTransfer.setData("leg", leg);
-
-    // this is a group action
-    for (let alt of document.getElementsByClassName(leg)) {
-      alt.classList.add("possibleDropTarget");
-    }
-  });
-
-  element.addEventListener("dragenter", (e) => {
-    // enters a valid drop target
-    const leg = e.dataTransfer.getData("leg");
-    if (!e.target.classList.contains(leg)) return;
-
-    e.preventDefault();
-    e.target.classList.add("selectedDropTarget");
-  });
-
-  element.addEventListener("dragleave", (e) => {
-    // leaves a valid drop target
-    const leg = e.dataTransfer.getData("leg");
-    if (!e.target.classList.contains(leg)) return;
-
-    e.preventDefault();
-    e.target.classList.remove("selectedDropTarget");
-  });
-
-  element.addEventListener("dragover", (e) => {
-    // regularly called
-    const leg = e.dataTransfer.getData("leg");
-    if (!e.target.classList.contains(leg)) return;
-
-    e.preventDefault(); // must do preventDefault so that drop event is fired
-  });
-
-  element.addEventListener("drop", (e) => {
-    // drop: from drop target; // dragend: from dragged itme
-    const leg = e.dataTransfer.getData("leg");
-    if (!e.target.classList.contains(leg)) return;
-
-    e.preventDefault();
-    e.target.classList.remove("selectedDropTarget");
-
-    // this is a group action
-    for (let alt of document.getElementsByClassName(leg)) {
-      alt.classList.remove("possibleDropTarget");
-    }
-
-    // hide original item from calendar -> global state, should callback
-    onDropCallback(leg, e.target.id);
-  });
-}
-
 class CalendarGrid {
+  #onDropCallback;
+
   constructor(container, startDay, endDay, resolution) {
     this.container = container;
     this.startDay = startDay;
@@ -66,6 +10,68 @@ class CalendarGrid {
 
     this.#initHourLabels();
     this.#initEmptyCalendarCells();
+
+    this.isValidDropTarget = (e) => {
+      // only drags over a calendar entry are relevant
+      if (!e.target.classList.contains("calendar-connection")) return false;
+
+      // the "group" attributes of the element being dragged (source)
+      // and the element where the mouse is currently over (target)
+      const groupSource = e.dataTransfer.getData("leg");
+      const groupTarget = e.target.dataset.group;
+
+      // both group attributes must be the same
+      return groupSource === groupTarget;
+    };
+
+    container.addEventListener("dragstart", (e) => {
+      const leg = e.target.dataset.group;
+      e.dataTransfer.dropEffect = "move";
+      e.dataTransfer.setData("leg", leg);
+
+      // this is a group action
+      for (let alt of document.getElementsByClassName(leg)) {
+        alt.classList.add("possibleDropTarget");
+      }
+    });
+
+    // enters a valid drop target
+    container.addEventListener("dragenter", (e) => {
+      if (!this.isValidDropTarget(e)) return;
+      e.preventDefault();
+
+      e.target.classList.add("selectedDropTarget");
+    });
+
+    // this event is fired every few hundred milliseconds
+    container.addEventListener("dragover", (e) => {
+      if (!this.isValidDropTarget(e)) return;
+      e.preventDefault(); // must do preventDefault so that drop event is fired
+    });
+
+    // leaves a valid drop target
+    container.addEventListener("dragleave", (e) => {
+      if (!this.isValidDropTarget(e)) return;
+      e.preventDefault();
+
+      e.target.classList.remove("selectedDropTarget");
+    });
+
+    // drop: from drop target; // dragend: from dragged item
+    container.addEventListener("drop", (e) => {
+      if (!this.isValidDropTarget(e)) return;
+      e.preventDefault();
+
+      const leg = e.dataTransfer.getData("leg");
+
+      // this is a group action
+      for (let alt of document.getElementsByClassName(leg)) {
+        alt.classList.remove("possibleDropTarget");
+      }
+
+      // hide original item from calendar -> global state, should callback
+      this.#onDropCallback(leg, e.target.id);
+    });
   }
 
   #initHourLabels() {
@@ -118,6 +124,10 @@ class CalendarGrid {
     // todo should not know class name here
     return this.container.getElementsByClassName("calendar-connection");
   }
+
+  onDrop(callback) {
+    this.#onDropCallback = callback;
+  }
 }
 
 class Calendar {
@@ -152,7 +162,8 @@ class Calendar {
   }
 
   on(eventName, callback) {
-    this.#callbacks[eventName] = callback; // todo check that event name allowed
+    if (eventName === "legChanged") this.#calendarGrid.onDrop(callback);
+    else this.#callbacks[eventName] = callback; // todo check that event name allowed
   }
 
   updateView(connections) {
@@ -180,10 +191,12 @@ class Calendar {
           connection.data.startTime,
           connection.data.endTime,
         );
+        element.draggable = true;
+        element.dataset.group = connection.data.leg.id;
 
-        enableDragAndDrop(element, connection.data.leg.id, (leg, id) =>
+        /*enableDragAndDrop(element, connection.data.leg.id, (leg, id) =>
           this.#callbacks["legChanged"](leg, id),
-        );
+        );*/
       }
 
       if (connection.active) {
