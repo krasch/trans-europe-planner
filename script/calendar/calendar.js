@@ -101,7 +101,11 @@ class CalendarGrid {
     }
   }
 
-  addEntry(element, date, startTime, endTime) {
+  addEntry(element) {
+    const date = element.date;
+    const startTime = element.startTime;
+    const endTime = element.endTime;
+
     // todo assert that calendar entry
     const rowStart = Math.round(timeStringToFloat(startTime) * this.resolution);
     const rowEnd = Math.round(timeStringToFloat(endTime) * this.resolution);
@@ -163,6 +167,16 @@ class Calendar {
         connection.classList.remove("legSelected");
       }
     });
+
+    container.addEventListener("mouseover", (e) => {
+      if (e.target.tagName !== "CALENDAR-ENTRY") return;
+      new LegHoverEvent(e.target.group).dispatch(document);
+    });
+
+    container.addEventListener("mouseout", (e) => {
+      if (e.target.tagName !== "CALENDAR-ENTRY") return;
+      new LegNoHoverEvent(e.target.group).dispatch(document);
+    });
   }
 
   on(eventName, callback) {
@@ -188,53 +202,13 @@ class Calendar {
 
       // we don't yet have an element for this connection
       if (!element) {
-        element = this.#createCalenderEntry(connection.data);
-        this.#calendarGrid.addEntry(
-          element,
-          connection.data.date,
-          connection.data.startTime,
-          connection.data.endTime,
-        );
+        element = createCalendarEntry(connection.data);
+        this.#calendarGrid.addEntry(element);
         element.draggable = true;
       }
 
       if (connection.active) element.visibility = "full";
       else element.visibility = "hidden";
     }
-  }
-
-  #createCalenderEntry(connection) {
-    const entry = new CalendarEntry(connection.id, connection.leg.id);
-
-    const element = createElementFromTemplate("template-calendar-connection");
-
-    element.getElementsByClassName("connection-icon")[0].src =
-      `images/${connection.type}.svg`;
-    element.getElementsByClassName("connection-number")[0].innerText =
-      connection.displayId;
-
-    // todo stop hardcoding
-    if (!connection.id.endsWith("8503") && !connection.id.endsWith("18289")) {
-      element.getElementsByClassName("connection-start-time")[0].innerText =
-        connection.startTime;
-      element.getElementsByClassName("connection-start-station")[0].innerText =
-        connection.startStation.name;
-      element.getElementsByClassName("connection-end-time")[0].innerText =
-        connection.endTime;
-      element.getElementsByClassName("connection-end-station")[0].innerText =
-        connection.endStation.name;
-    }
-
-    // todo class-wide event listener?
-    element.addEventListener("mouseover", (e) => {
-      new LegHoverEvent(connection.leg.id).dispatch(document);
-    });
-
-    element.addEventListener("mouseout", (e) => {
-      new LegNoHoverEvent(connection.leg.id).dispatch(document);
-    });
-
-    entry.appendChild(element);
-    return entry;
   }
 }
