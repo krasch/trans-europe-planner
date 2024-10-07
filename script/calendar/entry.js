@@ -16,10 +16,15 @@ class CalendarEntry extends HTMLElement {
     if (!this.#visibilityStates.includes(status))
       throw Error(`Unknown visibility status ${status}`);
 
-    // make sure only this one visibility state is set
-    for (const s of this.#visibilityStates) this._internals.states.delete(s);
+    // remove all other visibility states
+    for (const s of this.#visibilityStates) {
+      if (s !== status) this._internals.states.delete(s);
+    }
     this._internals.states.add(status);
   }
+
+  //called when element is added to page
+  connectedCallback() {}
 }
 
 function createCalendarEntry(connection) {

@@ -122,6 +122,7 @@
     });
 
     calendar.on("legChanged", (leg, connectionId) => {
+      console.log("redraw", leg, connectionId);
       journey.changeLeg(leg, database.getConnection(connectionId));
       calendar.updateView(database.prepareDataForCalendar(journey));
     });

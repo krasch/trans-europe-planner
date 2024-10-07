@@ -13,26 +13,31 @@ class CalendarGrid {
 
     this.isValidDropTarget = (e) => {
       // only drags over a calendar entry are relevant
-      if (e.target.tagName !== "CALENDAR-ENTRY") return;
+      const closest = e.target.closest("calendar-entry");
+      if (!closest) return;
 
       // the "group" attributes of the element being dragged (source)
       // and the element where the mouse is currently over (target)
       const groupSource = e.dataTransfer.getData("leg");
-      const groupTarget = e.target.group;
+      const groupTarget = closest.group;
 
       // both group attributes must be the same
       return groupSource === groupTarget;
     };
 
     container.addEventListener("dragstart", (e) => {
-      const leg = e.target.group;
+      // can only drag calendar entries
+      const closest = e.target.closest("calendar-entry");
+      if (!closest) return;
+
+      const leg = closest.group;
 
       e.dataTransfer.dropEffect = "move";
       e.dataTransfer.setData("leg", leg);
 
       // this is a group action
       for (let alt of this.getEntriesForGroup(leg)) {
-        if (alt.id !== e.target.id) alt.visibility = "indicator";
+        if (alt.id !== closest.id) alt.visibility = "indicator";
       }
     });
 
@@ -41,13 +46,17 @@ class CalendarGrid {
       if (!this.isValidDropTarget(e)) return;
       e.preventDefault();
 
-      e.target.visibility = "preview";
+      const closest = e.target.closest("calendar-entry");
+      closest.visibility = "preview";
     });
 
     // this event is fired every few hundred milliseconds
     container.addEventListener("dragover", (e) => {
       if (!this.isValidDropTarget(e)) return;
       e.preventDefault(); // must do preventDefault so that drop event is fired
+
+      const closest = e.target.closest("calendar-entry");
+      closest.visibility = "preview";
     });
 
     // leaves a valid drop target
@@ -55,7 +64,8 @@ class CalendarGrid {
       if (!this.isValidDropTarget(e)) return;
       e.preventDefault();
 
-      e.target.visibility = "indicator";
+      const closest = e.target.closest("calendar-entry");
+      closest.visibility = "indicator";
     });
 
     // drop: from drop target; // dragend: from dragged item
@@ -63,11 +73,10 @@ class CalendarGrid {
       if (!this.isValidDropTarget(e)) return;
       e.preventDefault();
 
-      const leg = e.dataTransfer.getData("leg");
+      const closest = e.target.closest("calendar-entry");
 
       // hide original item from calendar -> global state, should callback
-      console.log("drop");
-      this.#onDropCallback(leg, e.target.id);
+      this.#onDropCallback(closest.group, closest.id);
     });
   }
 
@@ -154,7 +163,7 @@ class Calendar {
       resolution,
     );
 
-    document.addEventListener("legHover", (e) => {
+    /*document.addEventListener("legHover", (e) => {
       const leg = e.detail.leg;
       for (let connection of document.getElementsByClassName(leg)) {
         connection.classList.add("legSelected");
@@ -176,7 +185,7 @@ class Calendar {
     container.addEventListener("mouseout", (e) => {
       if (e.target.tagName !== "CALENDAR-ENTRY") return;
       new LegNoHoverEvent(e.target.group).dispatch(document);
-    });
+    });*/
   }
 
   on(eventName, callback) {
