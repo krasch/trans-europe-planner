@@ -13,25 +13,26 @@ class CalendarGrid {
 
     this.isValidDropTarget = (e) => {
       // only drags over a calendar entry are relevant
-      if (!e.target.classList.contains("calendar-connection")) return false;
+      if (e.target.tagName !== "CALENDAR-ENTRY") return;
 
       // the "group" attributes of the element being dragged (source)
       // and the element where the mouse is currently over (target)
       const groupSource = e.dataTransfer.getData("leg");
-      const groupTarget = e.target.dataset.group;
+      const groupTarget = e.target.group;
 
       // both group attributes must be the same
       return groupSource === groupTarget;
     };
 
     container.addEventListener("dragstart", (e) => {
-      const leg = e.target.dataset.group;
+      const leg = e.target.group;
+
       e.dataTransfer.dropEffect = "move";
       e.dataTransfer.setData("leg", leg);
 
       // this is a group action
-      for (let alt of document.getElementsByClassName(leg)) {
-        alt.classList.add("possibleDropTarget");
+      for (let alt of this.getEntriesForGroup(leg)) {
+        if (alt.id !== e.target.id) alt.visibility = "indicator";
       }
     });
 
@@ -40,7 +41,7 @@ class CalendarGrid {
       if (!this.isValidDropTarget(e)) return;
       e.preventDefault();
 
-      e.target.classList.add("selectedDropTarget");
+      e.target.visibility = "preview";
     });
 
     // this event is fired every few hundred milliseconds
@@ -54,7 +55,7 @@ class CalendarGrid {
       if (!this.isValidDropTarget(e)) return;
       e.preventDefault();
 
-      e.target.classList.remove("selectedDropTarget");
+      e.target.visibility = "indicator";
     });
 
     // drop: from drop target; // dragend: from dragged item
@@ -64,12 +65,8 @@ class CalendarGrid {
 
       const leg = e.dataTransfer.getData("leg");
 
-      // this is a group action
-      for (let alt of document.getElementsByClassName(leg)) {
-        alt.classList.remove("possibleDropTarget");
-      }
-
       // hide original item from calendar -> global state, should callback
+      console.log("drop");
       this.#onDropCallback(leg, e.target.id);
     });
   }
@@ -105,6 +102,7 @@ class CalendarGrid {
   }
 
   addEntry(element, date, startTime, endTime) {
+    // todo assert that calendar entry
     const rowStart = Math.round(timeStringToFloat(startTime) * this.resolution);
     const rowEnd = Math.round(timeStringToFloat(endTime) * this.resolution);
     const column = differenceInDays(this.startDay, date);
@@ -123,6 +121,12 @@ class CalendarGrid {
   get entries() {
     // todo should not know class name here
     return this.container.getElementsByClassName("calendar-connection");
+  }
+
+  *getEntriesForGroup(group) {
+    for (const e of document.getElementsByTagName("calendar-entry")) {
+      if (e.group === group) yield e;
+    }
   }
 
   onDrop(callback) {
@@ -192,28 +196,17 @@ class Calendar {
           connection.data.endTime,
         );
         element.draggable = true;
-        element.dataset.group = connection.data.leg.id;
-
-        /*enableDragAndDrop(element, connection.data.leg.id, (leg, id) =>
-          this.#callbacks["legChanged"](leg, id),
-        );*/
       }
 
-      if (connection.active) {
-        element.classList.add("part-of-trip");
-        element.classList.remove("alternative");
-      } else {
-        element.classList.add("alternative");
-        element.classList.remove("part-of-trip");
-      }
+      if (connection.active) element.visibility = "full";
+      else element.visibility = "hidden";
     }
   }
 
   #createCalenderEntry(connection) {
-    const element = createElementFromTemplate("template-calendar-connection");
+    const entry = new CalendarEntry(connection.id, connection.leg.id);
 
-    element.id = connection.id;
-    element.classList.add(connection.leg.id);
+    const element = createElementFromTemplate("template-calendar-connection");
 
     element.getElementsByClassName("connection-icon")[0].src =
       `images/${connection.type}.svg`;
@@ -241,6 +234,7 @@ class Calendar {
       new LegNoHoverEvent(connection.leg.id).dispatch(document);
     });
 
-    return element;
+    entry.appendChild(element);
+    return entry;
   }
 }

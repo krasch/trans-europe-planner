@@ -25,7 +25,8 @@
     <script src="script/data/connections.js"></script>
     <script src="script/database.js"></script>
 
-    <script src="script/calendar.js"></script>
+    <script src="script/calendar/calendar.js"></script>
+    <script src="script/calendar/entry.js"></script>
     <script src="script/map.js"></script>
 
     <title>Trans-Europe-Planner</title>
@@ -54,7 +55,7 @@
 
     <!-- the connections to be displayed in the calendar -->
     <template id="template-calendar-connection">
-        <div class="calendar-connection" draggable="true">
+        <div class="calendar-connection">
             <img class="connection-icon">
             <span class="connection-number"></span>
             <span class="connection-start-time"></span>
@@ -66,7 +67,6 @@
 
     <!-- All calendar elements will be added into the container below dynamically -->
     <div id="calendar-grid"></div>
-
 </div>
 
 
@@ -143,6 +143,10 @@
       }
 
     });
+
+    const elements = document.getElementsByTagName("my-custom-element");
+    for (let e of elements)
+        e.collapsed = true;
   };
 </script>
 
