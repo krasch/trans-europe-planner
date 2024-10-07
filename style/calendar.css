@@ -58,11 +58,6 @@
     border-top: 0;
 }
 
-
-#calendar > #calendar-grid > .possibleDropTarget {
-    border-top-color: red;
-}
-
 #calendar > #calendar-grid > .calendar-grid-hour{
     min-height: 1.2rem;
 
@@ -71,85 +66,91 @@
     align-content: center; /* vertically center hour label */
 }
 
-#calendar > #calendar-grid > .calendar-connection {
+calendar-entry {
+    padding: 5px;
+    margin: 0 5px 0 5px;
+
+    border-radius: 10px;
+}
+
+/* calendar entry is fully visible */
+calendar-entry:state(full) {
+    border: 1px solid darkgrey;
+    background-color: rgba(255, 0, 0, 0.4);
+}
+
+/* calendar entry is fully visible and being hovered*/
+calendar-entry:state(full):hover {
+    cursor: move;
+    background-color: rgba(255, 0, 0, 0.8);
+}
+
+/* calendar entry is fully hidden */
+calendar-entry:state(hidden) {
+    visibility: hidden;
+}
+
+/* faint highlight to show that dropping is possible here */
+calendar-entry:state(indicator) {
+    border-top: 1px dashed red;
+    border-radius: 0;
+}
+calendar-entry:state(indicator)> * { /* children should not be visible */
+    visibility: hidden
+}
+
+/* drag&drop mode and user is hovering over this drop zone */
+calendar-entry:state(preview) {
+    background-color: rgba(255, 0, 0, 0.4);
+    border-radius: 10px;
+}
+calendar-entry:state(preview) > * { /* children should not be visible */
+    visibility: hidden
+}
+
+
+
+/* when hovered over map or calendar entry */
+/*#calendar > #calendar-grid > .legSelected {
+    background-color: rgba(255, 0, 0, 0.8);
+} todo fix*/
+
+
+
+calendar-entry > div {
     display: grid;
     grid-template-areas:
       "icon number"
       "start-time start-station"
       "end-time   end-station  ";
-
-    border-radius: 10px;
-    padding: 5px;
-    margin: 0 5px 0 5px;
 }
 
-#calendar > #calendar-grid > .calendar-connection > .connection-icon {
+calendar-entry .connection-icon {
     grid-area: icon;
     max-height: 15px;
 }
 
-#calendar > #calendar-grid > .calendar-connection > .connection-number {
+calendar-entry .connection-number {
     grid-area: number;
 }
 
-#calendar > #calendar-grid > .calendar-connection > .connection-start-time {
+calendar-entry .connection-start-time {
     grid-area: start-time;
 }
 
-#calendar > #calendar-grid > .calendar-connection > .connection-start-station {
+calendar-entry .connection-start-station {
     grid-area: start-station;
 }
 
-#calendar > #calendar-grid > .calendar-connection > .connection-end-time {
+calendar-entry .connection-end-time {
     grid-area: end-time;
 }
 
-#calendar > #calendar-grid > .calendar-connection > .connection-end-station {
+calendar-entry .connection-end-station {
     grid-area: end-station;
 }
 
-/* when hovered over map or calendar entry */
-#calendar > #calendar-grid > .legSelected {
-    background-color: rgba(255, 0, 0, 0.8);
-}
-
-#calendar > #calendar-grid > .part-of-trip:hover {
-    cursor: move;
-    background-color: rgba(255, 0, 0, 0.8);
-}
-
-
-#calendar > #calendar-grid > .part-of-trip {
-    border: 1px solid darkgrey;
-    background-color: rgba(255, 0, 0, 0.4);
-    z-index: 2;
-}
-
-
-/* when not in drag&drop mode, we should not see alternatives */
-#calendar > #calendar-grid > .alternative {
-    visibility: hidden;
-    z-index: 1;
-}
-
-/* we are in drag in drop mode, there should be a faint highlight */
-#calendar > #calendar-grid > .possibleDropTarget {
-    visibility: visible;
-    border-top: 1px dashed red;
-    border-radius: 0;
-    z-index: 3;
-}
-
 /* but in drag and drop mode we should not see details about the entry*/
-#calendar > #calendar-grid > .alternative > * {
+/*#calendar > #calendar-grid > .alternative > * {
     visibility: hidden;
-}
-
-/* in drag&drop mode and the user is hovering over an alternative entry */
-#calendar > #calendar-grid > .selectedDropTarget {
-    background-color: rgba(255, 0, 0, 0.4);
-    border-radius: 10px;
-}
-
-
-
+}*/

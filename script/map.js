@@ -157,15 +157,14 @@ class MapWrapper {
 
     // when mouse starts/stops hovering over a connection, we should send an event (to ourselves and calendar)
     this.#connections.onHover((id) => {
-      new LegHoverEvent(id, "map").dispatch(document);
+      new LegHoverEvent(id).dispatch(document);
     });
     this.#connections.onHoverEnd((id) => {
-      new LegNoHoverEvent(id, "map").dispatch(document);
+      new LegNoHoverEvent(id).dispatch(document);
     });
 
     // when we get informed us that the user is hovering over a connection (in map or calendar)
     // then that connection should get highlighted
-    // we also want to hover (but not when that information originally came from us)
     document.addEventListener("legHover", (e) => {
       this.#connections.setFeatureState(e.detail.leg, { hover: true });
     });
