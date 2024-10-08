@@ -9,7 +9,8 @@ class CalendarEntry extends HTMLElement {
     this.startTime = startTime;
     this.endTime = endTime;
 
-    this._internals = this.attachInternals();
+    // does not work with older browsers
+    // this._internals = this.attachInternals();
   }
 
   set visibility(status) {
@@ -18,9 +19,10 @@ class CalendarEntry extends HTMLElement {
 
     // remove all other visibility states
     for (const s of this.#visibilityStates) {
-      if (s !== status) this._internals.states.delete(s);
+      if (s !== status) this.classList.remove(s);
     }
-    this._internals.states.add(status);
+    // set new visibility status
+    if (!this.classList.contains(status)) this.classList.add(status);
   }
 
   //called when element is added to page
