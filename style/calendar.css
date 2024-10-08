@@ -74,37 +74,37 @@ calendar-entry {
 }
 
 /* calendar entry is fully visible */
-calendar-entry:state(full) {
+calendar-entry.full {
     border: 1px solid darkgrey;
     background-color: rgba(255, 0, 0, 0.4);
 }
 
 /* calendar entry is fully visible and being hovered*/
-calendar-entry:state(full):hover {
+calendar-entry.full:hover {
     cursor: move;
     background-color: rgba(255, 0, 0, 0.8);
 }
 
 /* calendar entry is fully hidden */
-calendar-entry:state(hidden) {
+calendar-entry.hidden {
     visibility: hidden;
 }
 
 /* faint highlight to show that dropping is possible here */
-calendar-entry:state(indicator) {
+calendar-entry.indicator {
     border-top: 1px dashed red;
     border-radius: 0;
 }
-calendar-entry:state(indicator)> * { /* children should not be visible */
+calendar-entry.indicator > * { /* children should not be visible */
     visibility: hidden
 }
 
 /* drag&drop mode and user is hovering over this drop zone */
-calendar-entry:state(preview) {
+calendar-entry.preview {
     background-color: rgba(255, 0, 0, 0.4);
     border-radius: 10px;
 }
-calendar-entry:state(preview) > * { /* children should not be visible */
+calendar-entry.preview > * { /* children should not be visible */
     visibility: hidden
 }
 

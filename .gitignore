@@ -1,2 +1,6 @@
 .idea
 /node_modules/
+
+docker-compose.yml
+Dockerfile
+package-lock.json
