@@ -25,8 +25,9 @@
     <script src="script/data/connections.js"></script>
     <script src="script/database.js"></script>
 
-    <script src="script/calendar/calendar.js"></script>
+    <script src="script/calendar/grid.js"></script>
     <script src="script/calendar/entry.js"></script>
+    <script src="script/calendar/calendar.js"></script>
     <script src="script/map.js"></script>
 
     <title>Trans-Europe-Planner</title>
@@ -35,45 +36,47 @@
 
 <body>
 
+<!-- date label at the top of calendar -->
+<template id="template-calendar-grid-date">
+    <div class="calendar-grid-date"></div>
+</template>
+
+<!-- hour label at the left side of calendar -->
+<template id="template-calendar-grid-hour">
+    <div class="calendar-grid-hour"></div>
+</template>
+
+<!-- the cells of the calendar -->
+<template id="template-calendar-grid-cell">
+    <div class="calendar-grid-cell"></div>
+</template>
+
+<!-- the connections to be displayed in the calendar -->
+<template id="template-calendar-connection">
+    <div class="calendar-connection">
+        <img class="connection-icon">
+        <span class="connection-number"></span>
+        <span class="connection-start-time"></span>
+        <span class="connection-start-station"></span>
+        <span class="connection-end-time"></span>
+        <span class="connection-end-station"></span>
+    </div>
+</template>
+
+<!-- less info about the connection because of less space -->
+<template id="template-calendar-connection-short">
+    <div class="calendar-connection">
+        <img class="connection-icon">
+        <span class="connection-number"></span>
+    </div>
+</template>
+
+
 <div id="map"></div>
 <div id="calendar">
-
-    <!-- date label at the top of calendar -->
-    <template id="template-calendar-grid-date">
-        <div class="calendar-grid-date"></div>
-    </template>
-
-    <!-- hour label at the left side of calendar -->
-    <template id="template-calendar-grid-hour">
-        <div class="calendar-grid-hour"></div>
-    </template>
-
-    <!-- the cells of the calendar -->
-    <template id="template-calendar-grid-cell">
-        <div class="calendar-grid-cell"></div>
-    </template>
-
-    <!-- the connections to be displayed in the calendar -->
-    <template id="template-calendar-connection">
-        <div class="calendar-connection">
-            <img class="connection-icon">
-            <span class="connection-number"></span>
-            <span class="connection-start-time"></span>
-            <span class="connection-start-station"></span>
-            <span class="connection-end-time"></span>
-            <span class="connection-end-station"></span>
-        </div>
-    </template>
-
-    <template id="template-calendar-connection-short">
-        <div class="calendar-connection">
-            <img class="connection-icon">
-            <span class="connection-number"></span>
-        </div>
-    </template>
-
     <!-- All calendar elements will be added into the container below dynamically -->
-    <div id="calendar-grid"></div>
+    <!--calender-grid></calender-grid-->
+    <calendar-grid id="calendar-grid" start="2024-10-16" end="2024-10-18" resolution="4"></calendar-grid>
 </div>
 
 
@@ -105,19 +108,17 @@
     journey.addConnection(defaultConnections["Karlsruhe-Marseille"]);
     //journey.addConnection(defaultConnections["Verona-Firenze"]);
 
-    const calendarDiv = document.getElementById("calendar-grid");
-    const style = getComputedStyle(calendarDiv);
-    const resolution = Number(style.getPropertyValue("--resolution"));
-    const startDay = "2024-10-16";
-    const endDay = "2024-10-18";
+    const grid = document.getElementById("calendar-grid");
+    const calendar = new Calendar(grid);
 
-    const calendar = new Calendar(calendarDiv, startDay, endDay, resolution);
+   grid.onEntryStartHover((id, leg) => console.log("hover", id, leg));
+   grid.onEntryStopHover((id, leg) => console.log("nohover", id, leg));
 
     map.init();
     map.updateView(availableLegs,journey);
     calendar.updateView(database.prepareDataForCalendar(journey));
 
-    map.on("legAdded", leg => {
+    /*map.on("legAdded", leg => {
       journey.addConnection(defaultConnections[leg]);
       map.updateView(availableLegs,journey);
       calendar.updateView(database.prepareDataForCalendar(journey));
@@ -133,7 +134,7 @@
       console.log("redraw", leg, connectionId);
       journey.changeLeg(leg, database.getConnection(connectionId));
       calendar.updateView(database.prepareDataForCalendar(journey));
-    });
+    });*/
   }
 
   onload = (event) => {
