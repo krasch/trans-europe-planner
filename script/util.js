@@ -1,8 +1,19 @@
-function createElementFromTemplate(templateId) {
+function createElementFromTemplate(templateId, templateData) {
   const template = document.getElementById(templateId);
 
   // create new element by cloning template
   const element = template.content.firstElementChild.cloneNode(true);
+
+  // fill in data
+  for (let className in templateData) {
+    const children = element.getElementsByClassName(className);
+
+    for (let child of children) {
+      for (let key in templateData[className]) {
+        child[key] = templateData[className][key];
+      }
+    }
+  }
 
   return element;
 }
@@ -19,6 +30,13 @@ function differenceInDays(earlierDate, laterDate) {
   const diffMilliseconds = laterDate - earlierDate;
   const diffDays = diffMilliseconds / 1000.0 / 60.0 / 60.0 / 24.0;
   return diffDays; // todo rounding or assert that no hours
+}
+
+function differenceInHours(earlierTime, laterTime) {
+  const earlier = new Date("01/01/2007 " + earlierTime);
+  const later = new Date("01/01/2007 " + laterTime);
+
+  return later.getHours() - earlier.getHours();
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)

@@ -30,24 +30,21 @@ class CalendarEntry extends HTMLElement {
 }
 
 function createCalendarEntry(connection) {
-  const element = createElementFromTemplate("template-calendar-connection");
+  const templateData = {
+    "connection-icon": { src: `images/${connection.type}.svg` },
+    "connection-number": { innerText: connection.displayId },
+    "connection-start-time": { innerText: connection.startTime },
+    "connection-start-station": { innerText: connection.startStation.name },
+    "connection-end-time": { innerText: connection.endTime },
+    "connection-end-station": { innerText: connection.endStation.name },
+  };
 
-  element.getElementsByClassName("connection-icon")[0].src =
-    `images/${connection.type}.svg`;
-  element.getElementsByClassName("connection-number")[0].innerText =
-    connection.displayId;
+  // todo better fallback
+  let templateId = "template-calendar-connection";
+  if (differenceInHours(connection.startTime, connection.endTime) < 4)
+    templateId = "template-calendar-connection-short";
 
-  // todo stop hardcoding
-  if (!connection.id.endsWith("8503") && !connection.id.endsWith("18289")) {
-    element.getElementsByClassName("connection-start-time")[0].innerText =
-      connection.startTime;
-    element.getElementsByClassName("connection-start-station")[0].innerText =
-      connection.startStation.name;
-    element.getElementsByClassName("connection-end-time")[0].innerText =
-      connection.endTime;
-    element.getElementsByClassName("connection-end-station")[0].innerText =
-      connection.endStation.name;
-  }
+  const element = createElementFromTemplate(templateId, templateData);
 
   const entry = new CalendarEntry(
     connection.id,
