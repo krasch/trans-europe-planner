@@ -18,28 +18,56 @@ function createElementFromTemplate(templateId, templateData) {
   return element;
 }
 
-// https://stackoverflow.com/a/10893658
-function timeStringToFloat(time) {
-  const hoursMinutes = time.split(":");
-  const hours = parseInt(hoursMinutes[0], 10);
-  const minutes = hoursMinutes[1] ? parseInt(hoursMinutes[1], 10) : 0;
-  return hours + minutes / 60;
+class InvalidDatetimeFormatError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "InvalidDateTimeFormat";
+  }
 }
 
-function differenceInDays(earlierDate, laterDate) {
-  const diffMilliseconds = laterDate - earlierDate;
-  const diffDays = diffMilliseconds / 1000.0 / 60.0 / 60.0 / 24.0;
-  return diffDays; // todo rounding or assert that no hours
-}
+class CustomDateTime {
+  constructor(dateString, timeString) {
+    // todo error when wrongly formatted?
+    // todo should not have to do this anyway, should export proper timezoned datetimes
+    this.datetime = new Date(dateString + " " + timeString);
 
-function differenceInHours(earlierTime, laterTime) {
-  const earlier = new Date("01/01/2007 " + earlierTime);
-  const later = new Date("01/01/2007 " + laterTime);
+    if (this.datetime.getSeconds() !== 0)
+      throw new InvalidDatetimeFormatError(
+        `Seconds not allowed in time format: ${timeString}, ${this.datetime}`,
+      );
+  }
 
-  return later.getHours() - earlier.getHours();
+  get dateString() {
+    return this.datetime.toISOString().slice(0, 10);
+  }
+
+  get timeString() {
+    const hours = this.datetime.getHours().toString();
+    const minutes = this.datetime.getMinutes().toString();
+    return `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}`;
+  }
+
+  get minutesSinceMidnight() {
+    const hours = this.datetime.getHours();
+    const minutes = this.datetime.getMinutes();
+    return hours * 60 + minutes;
+  }
+
+  minutesSince(other) {
+    const diffMilliseconds = this.datetime - other.datetime;
+    // floor should not be necessary, value should be whole number anyway because we disallow seconds
+    return Math.floor(diffMilliseconds / 1000.0 / 60.0);
+  }
+
+  daysSince(dateString) {
+    const other = new CustomDateTime(dateString, "00:00:00");
+    const diffMilliseconds = this.datetime - other.datetime;
+    return Math.floor(diffMilliseconds / 1000.0 / 60.0 / 60.0 / 24.0);
+  }
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
-  module.exports.differenceInDays = differenceInDays;
+  module.exports.CustomDateTime = CustomDateTime;
+  module.exports.InvalidDatetimeFormatError = InvalidDatetimeFormatError;
 }

@@ -1,13 +1,12 @@
 class CalendarEntry extends HTMLElement {
   #visibilityStates = ["hidden", "indicator", "preview", "full"];
 
-  constructor(id, group, date, startTime, endTime) {
+  constructor(id, group, startDateTime, endDateTime) {
     super();
     this.id = id;
     this.group = group;
-    this.date = date;
-    this.startTime = startTime;
-    this.endTime = endTime;
+    this.startDateTime = startDateTime;
+    this.endDateTime = endDateTime;
 
     // does not work with older browsers
     // this._internals = this.attachInternals();
@@ -33,15 +32,15 @@ function createCalendarEntry(connection) {
   const templateData = {
     "connection-icon": { src: `images/${connection.type}.svg` },
     "connection-number": { innerText: connection.displayId },
-    "connection-start-time": { innerText: connection.startTime },
+    "connection-start-time": { innerText: connection.startDateTime.timeString },
     "connection-start-station": { innerText: connection.startStation.name },
-    "connection-end-time": { innerText: connection.endTime },
+    "connection-end-time": { innerText: connection.endDateTime.timeString },
     "connection-end-station": { innerText: connection.endStation.name },
   };
 
   // todo better fallback
   let templateId = "template-calendar-connection";
-  if (differenceInHours(connection.startTime, connection.endTime) < 4)
+  if (connection.endDateTime.minutesSince(connection.startDateTime) < 4 * 60)
     templateId = "template-calendar-connection-short";
 
   const element = createElementFromTemplate(templateId, templateData);
@@ -49,9 +48,8 @@ function createCalendarEntry(connection) {
   const entry = new CalendarEntry(
     connection.id,
     connection.leg.id,
-    connection.date,
-    connection.startTime,
-    connection.endTime,
+    connection.startDateTime,
+    connection.endDateTime,
   );
   entry.appendChild(element);
 

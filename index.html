@@ -108,8 +108,8 @@
     const calendarDiv = document.getElementById("calendar-grid");
     const style = getComputedStyle(calendarDiv);
     const resolution = Number(style.getPropertyValue("--resolution"));
-    const startDay = new Date("2024-10-16");
-    const endDay = new Date("2024-10-18");
+    const startDay = "2024-10-16";
+    const endDay = "2024-10-18";
 
     const calendar = new Calendar(calendarDiv, startDay, endDay, resolution);
 

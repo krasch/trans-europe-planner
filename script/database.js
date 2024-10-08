@@ -19,13 +19,12 @@ function prepareData(cities, stations, connections) {
   // parse connections
   const result = [];
   for (let c of connections) {
-    const stops = c.stops.map((s) => ({
-      time: s.departure.slice(0, 5), // todo
-      station: stations[s.station],
-    }));
-
     for (let date of ["2024-10-16", "2024-10-17", "2024-10-18"]) {
-      result.push(new Connection(c.id, c.id, c.type, new Date(date), stops));
+      const stops = c.stops.map((s) => ({
+        datetime: new CustomDateTime(date, s.departure), // todo arrival at final stop
+        station: stations[s.station],
+      }));
+      result.push(new Connection(c.id, c.id, c.type, stops));
     }
   }
 

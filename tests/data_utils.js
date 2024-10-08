@@ -1,4 +1,5 @@
 const { Coordinates, City, Station } = require("../script/types.js");
+const { CustomDateTime } = require("../script/util.js");
 const types = require("../script/types.js");
 
 function getRandomCoordinates() {
@@ -16,9 +17,15 @@ function createStation(id, name, city) {
 }
 
 function createConnection(baseId, startStation, endStation) {
-  return new types.Connection(baseId, baseId, "train", new Date("2024-10-14"), [
-    { station: startStation, time: "12:32" },
-    { station: endStation, time: "14:03" },
+  return new types.Connection(baseId, baseId, "train", [
+    {
+      station: startStation,
+      datetime: new CustomDateTime("2024-10-14", "12:32"),
+    },
+    {
+      station: endStation,
+      datetime: new CustomDateTime("2024-10-14", "14:03"),
+    },
   ]);
 }
 
