@@ -111,14 +111,16 @@ class CalendarGrid {
   }
 
   addEntry(element) {
-    const date = element.date;
-    const startTime = element.startTime;
-    const endTime = element.endTime;
+    const startTime = element.startDateTime;
+    const endTime = element.endDateTime;
 
-    // todo assert that calendar entry
-    const rowStart = Math.round(timeStringToFloat(startTime) * this.resolution);
-    const rowEnd = Math.round(timeStringToFloat(endTime) * this.resolution);
-    const column = differenceInDays(this.startDay, date);
+    const rowStart = Math.round(
+      (startTime.minutesSinceMidnight / 60.0) * this.resolution,
+    );
+    const rowEnd = Math.round(
+      (endTime.minutesSinceMidnight / 60.0) * this.resolution,
+    );
+    const column = startTime.daysSince(this.startDay);
 
     element.style.gridRowStart = rowStart + 1;
     element.style.gridRowEnd = rowEnd + 1;

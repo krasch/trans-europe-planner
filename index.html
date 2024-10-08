@@ -65,6 +65,13 @@
         </div>
     </template>
 
+    <template id="template-calendar-connection-short">
+        <div class="calendar-connection">
+            <img class="connection-icon">
+            <span class="connection-number"></span>
+        </div>
+    </template>
+
     <!-- All calendar elements will be added into the container below dynamically -->
     <div id="calendar-grid"></div>
 </div>
@@ -96,12 +103,13 @@
     //journey.addConnection(defaultConnections["München-Verona"]);
     journey.addConnection(defaultConnections["Berlin-Karlsruhe"]);
     journey.addConnection(defaultConnections["Karlsruhe-Marseille"]);
+    //journey.addConnection(defaultConnections["Verona-Firenze"]);
 
     const calendarDiv = document.getElementById("calendar-grid");
     const style = getComputedStyle(calendarDiv);
     const resolution = Number(style.getPropertyValue("--resolution"));
-    const startDay = new Date("2024-10-16");
-    const endDay = new Date("2024-10-18");
+    const startDay = "2024-10-16";
+    const endDay = "2024-10-18";
 
     const calendar = new Calendar(calendarDiv, startDay, endDay, resolution);
 

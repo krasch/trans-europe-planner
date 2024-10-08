@@ -5,6 +5,13 @@ class IllegalCoordinateError extends Error {
   }
 }
 
+class TooLongConnectionError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "TooLongConnection";
+  }
+}
+
 class LegHoverEvent {
   constructor(leg) {
     this.event = new CustomEvent("legHover", {
@@ -72,33 +79,24 @@ class Leg {
 }
 
 class Connection {
-  constructor(id, displayId, type, date, stops) {
-    this.id = `${date.toISOString().slice(0, 10)}X${id}`;
+  constructor(id, displayId, type, stops) {
+    this.startDateTime = stops[0].datetime;
+    this.endDateTime = stops.at(-1).datetime;
+
+    if (this.endDateTime.daysSince(this.startDateTime.dateString) > 0)
+      throw new TooLongConnectionError(
+        "Overnight connections currently not supported",
+      );
+
+    this.startStation = stops[0].station;
+    this.endStation = stops.at(-1).station;
+
+    this.leg = new Leg(this.startStation.city, this.endStation.city);
+    this.id = `${this.startDateTime.dateString}X${id}`;
 
     this.displayId = displayId;
     this.type = type;
     this.stops = stops;
-    this.date = date;
-  }
-
-  get startStation() {
-    return this.stops[0].station;
-  }
-
-  get startTime() {
-    return this.stops[0].time; // todo date
-  }
-
-  get endStation() {
-    return this.stops.at(-1).station;
-  }
-
-  get endTime() {
-    return this.stops.at(-1).time; // todo date
-  }
-
-  get leg() {
-    return new Leg(this.startStation.city, this.endStation.city); // todo too many objects?
   }
 }
 
@@ -153,6 +151,7 @@ class Journey {
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.IllegalCoordinateError = IllegalCoordinateError;
+  module.exports.TooLongConnectionError = TooLongConnectionError;
   module.exports.Coordinates = Coordinates;
   module.exports.City = City;
   module.exports.Station = Station;
