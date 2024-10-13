@@ -75,7 +75,6 @@
 <div id="map"></div>
 <div id="calendar">
     <!-- All calendar elements will be added into the container below dynamically -->
-    <!--calender-grid></calender-grid-->
     <calendar-grid id="calendar-grid" start="2024-10-16" end="2024-10-18" resolution="4"></calendar-grid>
 </div>
 
@@ -119,7 +118,7 @@
     map.on("legStartHover", leg => calendar.setHover(leg));
     map.on("legStopHover", leg => calendar.setNoHover(leg));
 
-    /*map.on("legAdded", leg => {
+    map.on("legAdded", leg => {
       journey.addConnection(defaultConnections[leg]);
       map.updateView(availableLegs,journey);
       calendar.updateView(database.prepareDataForCalendar(journey));
@@ -131,7 +130,7 @@
       calendar.updateView(database.prepareDataForCalendar(journey));
     });
 
-    calendar.on("legChanged", (leg, connectionId) => {
+    /*calendar.on("legChanged", (leg, connectionId) => {
       console.log("redraw", leg, connectionId);
       journey.changeLeg(leg, database.getConnection(connectionId));
       calendar.updateView(database.prepareDataForCalendar(journey));

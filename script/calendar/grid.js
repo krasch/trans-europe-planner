@@ -22,15 +22,22 @@ class CalendarGrid extends HTMLElement {
     if (name === "end") this.endDay = newValue;
   }
 
-  addToGrid(element, column, rowStart, rowEnd) {
+  addToGrid(element) {
+    const column = element.startDateTime.daysSince(this.startDay);
+    const rowStart = this.#getRow(element.startDateTime);
+    const rowEnd = this.#getRow(element.endDateTime);
+    this.#addToGrid(element, column, rowStart, rowEnd);
+  }
+
+  #getRow(datetime) {
+    return Math.round((datetime.minutesSinceMidnight / 60.0) * this.resolution);
+  }
+
+  #addToGrid(element, column, rowStart, rowEnd) {
     element.style.gridColumn = column + 2; // column 1 is date column
     element.style.gridRowStart = rowStart + 1;
     element.style.gridRowEnd = rowEnd + 1;
     this.appendChild(element);
-  }
-
-  getRow(datetime) {
-    return Math.round((datetime.minutesSinceMidnight / 60.0) * this.resolution);
   }
 
   #initHourLabels() {
@@ -38,7 +45,7 @@ class CalendarGrid extends HTMLElement {
       const element = createElementFromTemplate("template-calendar-grid-hour");
       element.innerText = `${hour}`.padStart(2, "0");
 
-      this.addToGrid(
+      this.#addToGrid(
         element,
         -1,
         hour * this.resolution,
@@ -54,7 +61,7 @@ class CalendarGrid extends HTMLElement {
           "template-calendar-grid-cell",
         );
         element.id = `calender-cell-${day}-${i}`;
-        this.addToGrid(element, day, i, i + 1);
+        this.#addToGrid(element, day, i, i + 1);
       }
     }
   }
