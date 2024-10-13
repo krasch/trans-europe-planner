@@ -84,7 +84,7 @@ calendar-entry.full:hover {
     cursor: move;
     background-color: rgba(255, 0, 0, 0.8);
 }
-calendar-entry.legSelected {
+calendar-entry.hover {
     background-color: rgba(255, 0, 0, 0.8);
 }
 

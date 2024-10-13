@@ -48,13 +48,13 @@ class CalendarGrid extends HTMLElement {
 
   setHover(group) {
     for (let entry of this.getEntriesForGroup(group)) {
-      entry.classList.add("legSelected");
+      entry.hover = true;
     }
   }
 
   setNoHover(group) {
     for (let entry of this.getEntriesForGroup(group)) {
-      entry.classList.remove("legSelected");
+      entry.hover = false;
     }
   }
 

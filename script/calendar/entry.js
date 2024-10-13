@@ -27,7 +27,10 @@ class CalendarEntry extends HTMLElement {
     if (!this.classList.contains(status)) this.classList.add(status);
   }
 
-  connectedCallback() {}
+  set hover(hover) {
+    if (hover) this.classList.add("hover");
+    else this.classList.remove("hover");
+  }
 }
 
 function createCalendarEntry(connection) {
