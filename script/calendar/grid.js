@@ -1,11 +1,6 @@
 class CalendarGrid extends HTMLElement {
   static observedAttributes = ["start", "end", "resolution"];
 
-  #callbacks = {
-    entryStartHover: () => {},
-    entryStopHover: () => {},
-  };
-
   constructor() {
     super();
 
@@ -13,14 +8,6 @@ class CalendarGrid extends HTMLElement {
     this.startDay = null;
     this.endDay = null;
     this.numDays = 3; // todo
-
-    // user is hovering/stops hovering over an entry -> callback
-    this.listen("mouseover", (entry) => {
-      this.#callbacks["entryStartHover"](entry.group);
-    });
-    this.listen("mouseout", (entry) => {
-      this.#callbacks["entryStopHover"](entry.group);
-    });
   }
 
   //called when element is added to DOM
@@ -35,43 +22,15 @@ class CalendarGrid extends HTMLElement {
     if (name === "end") this.endDay = newValue;
   }
 
-  on(name, callback) {
-    this.#callbacks[name] = callback; // todo check if name valid
+  addToGrid(element, column, rowStart, rowEnd) {
+    element.style.gridColumn = column + 2; // column 1 is date column
+    element.style.gridRowStart = rowStart + 1;
+    element.style.gridRowEnd = rowEnd + 1;
+    this.appendChild(element);
   }
 
-  addEntry(element) {
-    const column = element.startDateTime.daysSince(this.startDay);
-    const rowStart = this.#getRow(element.startDateTime);
-    const rowEnd = this.#getRow(element.endDateTime);
-    this.#placeInGrid(element, column, rowStart, rowEnd);
-  }
-
-  setHover(group) {
-    for (let entry of this.getEntriesForGroup(group)) {
-      entry.hover = true;
-    }
-  }
-
-  setNoHover(group) {
-    for (let entry of this.getEntriesForGroup(group)) {
-      entry.hover = false;
-    }
-  }
-
-  get entries() {
-    return this.getElementsByTagName("calendar-entry");
-  }
-
-  getEntriesForGroup(group) {
-    const result = [];
-    for (const e of this.entries) {
-      if (e.group === group) result.push(e);
-    }
-    return result;
-  }
-
-  #isEntry(element) {
-    return element.tagName === "CALENDAR-ENTRY";
+  getRow(datetime) {
+    return Math.round((datetime.minutesSinceMidnight / 60.0) * this.resolution);
   }
 
   #initHourLabels() {
@@ -79,7 +38,7 @@ class CalendarGrid extends HTMLElement {
       const element = createElementFromTemplate("template-calendar-grid-hour");
       element.innerText = `${hour}`.padStart(2, "0");
 
-      this.#placeInGrid(
+      this.addToGrid(
         element,
         -1,
         hour * this.resolution,
@@ -95,31 +54,9 @@ class CalendarGrid extends HTMLElement {
           "template-calendar-grid-cell",
         );
         element.id = `calender-cell-${day}-${i}`;
-        this.#placeInGrid(element, day, i, i + 1);
+        this.addToGrid(element, day, i, i + 1);
       }
     }
-  }
-
-  #getRow(datetime) {
-    return Math.round((datetime.minutesSinceMidnight / 60.0) * this.resolution);
-  }
-
-  #placeInGrid(element, column, rowStart, rowEnd) {
-    element.style.gridColumn = column + 2; // column 1 is date column
-    element.style.gridRowStart = rowStart + 1;
-    element.style.gridRowEnd = rowEnd + 1;
-    this.appendChild(element);
-  }
-
-  listen(type, listener, options) {
-    super.addEventListener(
-      type,
-      (e) => {
-        const closest = e.target.closest("calendar-entry");
-        if (closest) listener(closest);
-      },
-      options,
-    );
   }
 }
 
@@ -202,5 +139,3 @@ class DragNDropCalendarGrid extends CalendarGrid {
     this.#onDropCallback = callback;
   }
 }
-
-customElements.define("calendar-grid", CalendarGrid);

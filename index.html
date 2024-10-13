@@ -108,17 +108,16 @@
     journey.addConnection(defaultConnections["Karlsruhe-Marseille"]);
     //journey.addConnection(defaultConnections["Verona-Firenze"]);
 
-    const grid = document.getElementById("calendar-grid");
-    const calendar = new Calendar(grid);
+    const calendar = document.getElementById("calendar-grid");
 
     map.init();
     map.updateView(availableLegs,journey);
     calendar.updateView(database.prepareDataForCalendar(journey));
 
-    grid.on("entryStartHover", leg => map.setHover(leg));
-    grid.on("entryStopHover", leg => map.setNoHover(leg));
-    map.on("legStartHover", leg => grid.setHover(leg));
-    map.on("legStopHover", leg => grid.setNoHover(leg));
+    calendar.on("entryStartHover", leg => map.setHover(leg));
+    calendar.on("entryStopHover", leg => map.setNoHover(leg));
+    map.on("legStartHover", leg => calendar.setHover(leg));
+    map.on("legStopHover", leg => calendar.setNoHover(leg));
 
     /*map.on("legAdded", leg => {
       journey.addConnection(defaultConnections[leg]);
