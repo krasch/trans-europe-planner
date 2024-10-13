@@ -2,7 +2,10 @@ class CalendarEntry extends HTMLElement {
   #visibilityStates = ["hidden", "indicator", "preview", "full"];
 
   constructor(id, group, startDateTime, endDateTime) {
+    // todo this constructor will not work if placed in HTML directly
+    // because using custom JS class and because of not using attributes
     super();
+
     this.id = id;
     this.group = group;
     this.startDateTime = startDateTime;
@@ -24,8 +27,10 @@ class CalendarEntry extends HTMLElement {
     if (!this.classList.contains(status)) this.classList.add(status);
   }
 
-  //called when element is added to page
-  connectedCallback() {}
+  set hover(hover) {
+    if (hover) this.classList.add("hover");
+    else this.classList.remove("hover");
+  }
 }
 
 function createCalendarEntry(connection) {
