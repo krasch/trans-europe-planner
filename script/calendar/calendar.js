@@ -17,6 +17,11 @@ class Calendar extends CalendarGrid {
       const closest = e.target.closest("calendar-entry");
       if (closest) this.#callbacks["entryStopHover"](closest.group);
     });
+
+    // user can change leg to use different connection using drag&drop
+    enableDragAndDrop(this, (group, id) =>
+      this.#callbacks["legChanged"](group, id),
+    );
   }
 
   on(name, callback) {
@@ -24,46 +29,45 @@ class Calendar extends CalendarGrid {
   }
 
   setHover(group) {
-    for (let e of this.#entriesForGroup(group)) e.hover = true;
+    for (let e of this.entriesForGroup(group)) e.hover = true;
   }
 
   setNoHover(group) {
-    for (let e of this.#entriesForGroup(group)) e.hover = false;
+    for (let e of this.entriesForGroup(group)) e.hover = false;
   }
 
   updateView(connections) {
     // remove entries that are currently in calendar but no longer necessary
-    for (let entry of this.#entries) {
+    for (let entry of this.entries) {
       if (!connections[entry.id]) entry.remove();
     }
 
     // add entries that are not yet in calendar
     for (let connection of Object.values(connections)) {
-      if (!this.#entry(connection.data.id))
-        this.addToGrid(createCalendarEntry(connection.data));
+      if (!this.hasEntry(connection.data.id)) {
+        const entry = createCalendarEntry(connection.data);
+        entry.draggable = true; // todo this should not be here
+        this.addToGrid(entry);
+      }
     }
 
     // only show the currently active entries
-    for (let entry of this.#entries)
+    for (let entry of this.entries)
       if (connections[entry.id].active) entry.visibility = "full";
       else entry.visibility = "hidden";
   }
 
-  get #entries() {
+  get entries() {
     // arrayfrom is important!
     return Array.from(this.getElementsByTagName("calendar-entry"));
   }
 
-  #entriesForGroup(group) {
-    return this.#entries.filter((e) => e.group === group);
+  entriesForGroup(group) {
+    return this.entries.filter((e) => e.group === group);
   }
 
-  #entry(id) {
+  hasEntry(id) {
     return document.getElementById(id); // todo
-  }
-
-  #isEntry(element) {
-    return element.tagName === "CALENDAR-ENTRY";
   }
 }
 

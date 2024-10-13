@@ -28,6 +28,7 @@
     <script src="script/calendar/grid.js"></script>
     <script src="script/calendar/entry.js"></script>
     <script src="script/calendar/calendar.js"></script>
+    <script src="script/calendar/draganddrop.js"></script>
     <script src="script/map.js"></script>
 
     <title>Trans-Europe-Planner</title>
@@ -73,10 +74,8 @@
 
 
 <div id="map"></div>
-<div id="calendar">
-    <!-- All calendar elements will be added into the container below dynamically -->
-    <calendar-grid id="calendar-grid" start="2024-10-16" end="2024-10-18" resolution="4"></calendar-grid>
-</div>
+<!-- All calendar elements will be added into the container below dynamically -->
+<calendar-grid id="calendar" start="2024-10-16" end="2024-10-18" resolution="4"></calendar-grid>
 
 
 <script>
@@ -107,7 +106,7 @@
     journey.addConnection(defaultConnections["Karlsruhe-Marseille"]);
     //journey.addConnection(defaultConnections["Verona-Firenze"]);
 
-    const calendar = document.getElementById("calendar-grid");
+    const calendar = document.getElementById("calendar");
 
     map.init();
     map.updateView(availableLegs,journey);
@@ -130,11 +129,11 @@
       calendar.updateView(database.prepareDataForCalendar(journey));
     });
 
-    /*calendar.on("legChanged", (leg, connectionId) => {
+    calendar.on("legChanged", (leg, connectionId) => {
       console.log("redraw", leg, connectionId);
       journey.changeLeg(leg, database.getConnection(connectionId));
       calendar.updateView(database.prepareDataForCalendar(journey));
-    });*/
+    });
   }
 
   onload = (event) => {
