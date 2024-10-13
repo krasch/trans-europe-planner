@@ -125,7 +125,10 @@ class MapLayer {
 }
 
 class MapWrapper {
-  #callbacks = {};
+  #callbacks = {
+    legAdded: () => {},
+    legRemoved: () => {},
+  };
   #legs = null;
   #connections = null;
   #cities = null;
@@ -143,9 +146,9 @@ class MapWrapper {
     this.map.setLayoutProperty("place-city", "text-field", ["get", `name`]);
 
     // when the user clicks on a leg, it should be added to the journey
-    this.#legs.onClick((id) => this.#makeCallback("legAdded", id));
+    this.#legs.onClick((id) => this.#callbacks["legAdded"](id));
     // when the user clicks on a connection, it should be removed from the journey
-    this.#connections.onClick((id) => this.#makeCallback("legRemoved", id));
+    this.#connections.onClick((id) => this.#callbacks["legRemoved"](id));
 
     // when mouse starts/stops hovering over a leg, it should get highlighted
     this.#legs.onHover((id) => {
@@ -156,29 +159,18 @@ class MapWrapper {
     });
 
     // when mouse starts/stops hovering over a connection, we should send an event (to ourselves and calendar)
-    this.#connections.onHover((id) => {
-      new LegHoverEvent(id).dispatch(document);
+    this.#connections.onHover((leg) => {
+      this.setHover(leg);
+      this.#callbacks["legStartHover"](leg);
     });
-    this.#connections.onHoverEnd((id) => {
-      new LegNoHoverEvent(id).dispatch(document);
-    });
-
-    // when we get informed us that the user is hovering over a connection (in map or calendar)
-    // then that connection should get highlighted
-    document.addEventListener("legHover", (e) => {
-      this.#connections.setFeatureState(e.detail.leg, { hover: true });
-    });
-    document.addEventListener("legNoHover", (e) => {
-      this.#connections.setFeatureState(e.detail.leg, { hover: false });
+    this.#connections.onHoverEnd((leg) => {
+      this.setNoHover(leg);
+      this.#callbacks["legStopHover"](leg);
     });
   }
 
   on(eventName, callback) {
-    this.#callbacks[eventName] = callback;
-  }
-
-  #makeCallback(eventName, data) {
-    if (this.#callbacks[eventName]) this.#callbacks[eventName](data);
+    this.#callbacks[eventName] = callback; // todo check if name is valid
   }
 
   updateView(availableLegs, journey) {
@@ -208,6 +200,14 @@ class MapWrapper {
     // legs currently not in use
     const lines = additionalLegs.map(legToGeojson);
     this.#legs.update(asGeojsonFeatureCollection(lines));
+  }
+
+  setHover(leg) {
+    this.#connections.setFeatureState(leg, { hover: true });
+  }
+
+  setNoHover(leg) {
+    this.#connections.setFeatureState(leg, { hover: false });
   }
 }
 

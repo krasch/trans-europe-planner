@@ -1,8 +1,10 @@
 class CalendarGrid extends HTMLElement {
   static observedAttributes = ["start", "end", "resolution"];
 
-  #entryStartHoverCallback = () => {};
-  #entryStopHoverCallback = () => {};
+  #callbacks = {
+    entryStartHover: () => {},
+    entryStopHover: () => {},
+  };
 
   constructor() {
     super();
@@ -12,17 +14,16 @@ class CalendarGrid extends HTMLElement {
     this.endDay = null;
     this.numDays = 3; // todo
 
-    this.addEventListener("mouseover", (e) => {
-      if (this.#isEntry(e.target))
-        this.#entryStartHoverCallback(e.target.id, e.target.group);
+    // user is hovering/stops hovering over an entry -> callback
+    this.listen("mouseover", (entry) => {
+      this.#callbacks["entryStartHover"](entry.group);
     });
-
-    this.addEventListener("mouseout", (e) => {
-      if (this.#isEntry(e.target))
-        this.#entryStopHoverCallback(e.target.id, e.target.group);
+    this.listen("mouseout", (entry) => {
+      this.#callbacks["entryStopHover"](entry.group);
     });
   }
 
+  //called when element is added to DOM
   connectedCallback() {
     this.#initHourLabels();
     this.#initEmptyCalendarCells();
@@ -34,11 +35,27 @@ class CalendarGrid extends HTMLElement {
     if (name === "end") this.endDay = newValue;
   }
 
+  on(name, callback) {
+    this.#callbacks[name] = callback; // todo check if name valid
+  }
+
   addEntry(element) {
     const column = element.startDateTime.daysSince(this.startDay);
     const rowStart = this.#getRow(element.startDateTime);
     const rowEnd = this.#getRow(element.endDateTime);
     this.#placeInGrid(element, column, rowStart, rowEnd);
+  }
+
+  setHover(group) {
+    for (let entry of this.getEntriesForGroup(group)) {
+      entry.classList.add("legSelected");
+    }
+  }
+
+  setNoHover(group) {
+    for (let entry of this.getEntriesForGroup(group)) {
+      entry.classList.remove("legSelected");
+    }
   }
 
   get entries() {
@@ -55,14 +72,6 @@ class CalendarGrid extends HTMLElement {
 
   #isEntry(element) {
     return element.tagName === "CALENDAR-ENTRY";
-  }
-
-  onEntryStartHover(callback) {
-    this.#entryStartHoverCallback = callback;
-  }
-
-  onEntryStopHover(callback) {
-    this.#entryStopHoverCallback = callback;
   }
 
   #initHourLabels() {
@@ -100,6 +109,17 @@ class CalendarGrid extends HTMLElement {
     element.style.gridRowStart = rowStart + 1;
     element.style.gridRowEnd = rowEnd + 1;
     this.appendChild(element);
+  }
+
+  listen(type, listener, options) {
+    super.addEventListener(
+      type,
+      (e) => {
+        const closest = e.target.closest("calendar-entry");
+        if (closest) listener(closest);
+      },
+      options,
+    );
   }
 }
 
