@@ -45,8 +45,8 @@ class Calendar extends CalendarGrid {
 
     // add entries that are not yet in calendar
     for (let connection of connections) {
-      if (!this.entry(connection.data.id)) {
-        const entry = createCalendarEntry(connection.data);
+      if (!this.entry(connection.id)) {
+        const entry = createCalendarEntry(connection);
         entry.draggable = true; // todo this should not be here
         this.addToGrid(entry);
       }

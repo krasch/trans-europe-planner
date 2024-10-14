@@ -3,7 +3,7 @@ function cityToGeojson(city) {
     type: "Feature",
     geometry: {
       type: "Point",
-      coordinates: [city.coordinates.longitude, city.coordinates.latitude],
+      coordinates: [city.longitude, city.latitude],
     },
     // use this instead of outer-level 'id' field because those ids must be numeric
     properties: { name: city.name, id: city.name },
@@ -16,11 +16,8 @@ function legToGeojson(leg) {
     geometry: {
       type: "LineString",
       coordinates: [
-        [
-          leg.startCity.coordinates.longitude,
-          leg.startCity.coordinates.latitude,
-        ],
-        [leg.endCity.coordinates.longitude, leg.endCity.coordinates.latitude],
+        [leg.startCity.longitude, leg.startCity.latitude],
+        [leg.endCity.longitude, leg.endCity.latitude],
       ],
     },
     // use this instead of outer-level 'id' field because those ids must be numeric

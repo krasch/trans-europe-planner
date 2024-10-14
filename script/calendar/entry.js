@@ -38,9 +38,9 @@ function createCalendarEntry(connection) {
     "connection-icon": { src: `images/${connection.type}.svg` },
     "connection-number": { innerText: connection.displayId },
     "connection-start-time": { innerText: connection.startDateTime.timeString },
-    "connection-start-station": { innerText: connection.startStation.name },
+    "connection-start-station": { innerText: connection.startStation },
     "connection-end-time": { innerText: connection.endDateTime.timeString },
-    "connection-end-station": { innerText: connection.endStation.name },
+    "connection-end-station": { innerText: connection.endStation },
   };
 
   // todo better fallback
@@ -52,7 +52,7 @@ function createCalendarEntry(connection) {
 
   const entry = new CalendarEntry(
     connection.id,
-    connection.leg.id,
+    connection.leg,
     connection.startDateTime,
     connection.endDateTime,
   );
