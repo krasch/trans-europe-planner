@@ -83,7 +83,6 @@
     const connections = prepareData(CITIES, STATIONS, CONNECTIONS);
     const database = new Database(connections);
 
-    const availableLegs = Array.from(database.getAllLegs());
 
     // temporary
     const defaultConnections = {
@@ -109,7 +108,7 @@
     const calendar = document.getElementById("calendar");
 
     map.init();
-    map.updateView(availableLegs,journey);
+    map.updateView(database.prepareDataForMap(journey));
     calendar.updateView(database.prepareDataForCalendar(journey));
 
     calendar.on("entryStartHover", leg => map.setHover(leg));
@@ -119,18 +118,17 @@
 
     map.on("legAdded", leg => {
       journey.addConnection(defaultConnections[leg]);
-      map.updateView(availableLegs,journey);
+      map.updateView(database.prepareDataForMap(journey));
       calendar.updateView(database.prepareDataForCalendar(journey));
     });
 
     map.on("legRemoved", leg => {
       journey.removeConnection(leg);
-      map.updateView(availableLegs,journey);
+      map.updateView(database.prepareDataForMap(journey));
       calendar.updateView(database.prepareDataForCalendar(journey));
     });
 
     calendar.on("legChanged", (leg, connectionId) => {
-      console.log("redraw", leg, connectionId);
       journey.changeLeg(leg, database.getConnection(connectionId));
       calendar.updateView(database.prepareDataForCalendar(journey));
     });

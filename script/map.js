@@ -173,33 +173,18 @@ class MapWrapper {
     this.#callbacks[eventName] = callback; // todo check if name is valid
   }
 
-  updateView(availableLegs, journey) {
-    const legsInJourney = [];
-    const additionalLegs = [];
-
-    for (let leg of availableLegs) {
-      if (journey.hasLeg(leg)) legsInJourney.push(leg);
-      else additionalLegs.push(leg);
-    }
-
-    // actual cities we have on our network
-    const cities = [];
-    for (let leg of availableLegs) {
-      if (!cities.includes(leg.startCity)) cities.push(leg.startCity);
-      if (!cities.includes(leg.endCity)) cities.push(leg.endCity);
-    }
-
-    const markers = cities.map(cityToGeojson);
-    //const markers = journey.stopovers.map(cityToGeojson);
-    this.#cities.update(asGeojsonFeatureCollection(markers));
-
-    // legs we have on our route
-    const redLines = legsInJourney.map(legToGeojson);
+  updateView(legs) {
+    const redLines = legs.filter((l) => l.active).map(legToGeojson);
     this.#connections.update(asGeojsonFeatureCollection(redLines));
 
-    // legs currently not in use
-    const lines = additionalLegs.map(legToGeojson);
-    this.#legs.update(asGeojsonFeatureCollection(lines));
+    const greyLines = legs.filter((l) => !l.active).map(legToGeojson);
+    this.#legs.update(asGeojsonFeatureCollection(greyLines));
+
+    const startCities = legs.map((c) => c.startCity);
+    const endCities = legs.map((c) => c.endCity);
+    const cities = new Set(startCities.concat(endCities)); // todo only works if city object
+    const markers = Array.from(cities).map(cityToGeojson);
+    this.#cities.update(asGeojsonFeatureCollection(markers));
   }
 
   setHover(leg) {

@@ -102,6 +102,13 @@ class Journey {
     }
   }
 
+  hasLeg(leg) {
+    for (let connection of this.connections) {
+      if (connection.leg === leg) return true;
+    }
+    return false;
+  }
+
   get stopovers() {
     const cities = [];
 

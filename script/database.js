@@ -76,6 +76,20 @@ class Database {
     }
     return data;
   }
+
+  prepareDataForMap(journey) {
+    const data = [];
+    for (let leg of this.getAllLegs()) {
+      data.push({
+        id: leg.id,
+        startCity: leg.startCity,
+        endCity: leg.endCity,
+        active: journey.hasLeg(leg),
+      });
+    }
+
+    return data;
+  }
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
