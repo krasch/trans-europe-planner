@@ -43,23 +43,3 @@ test("getAllLegsMultipleConnectionsSameLeg", function () {
   ];
   expect(Array.from(database.getAllLegs())).toStrictEqual(expected);
 });
-
-test("getAlternatives", function () {
-  const connection1 = createConnection(1, DATA.stationA, DATA.stationB);
-  const connection2 = createConnection(2, DATA.stationAOther, DATA.stationB);
-  const connection3 = createConnection(3, DATA.stationC, DATA.stationD);
-  const database = new Database([connection1, connection2, connection3]);
-
-  // 2 is an alternative to 1
-  expect(Array.from(database.getAlternatives(connection1.id))).toStrictEqual([
-    connection2,
-  ]);
-  // 1 is an alternative to 2
-  expect(Array.from(database.getAlternatives(connection2.id))).toStrictEqual([
-    connection1,
-  ]);
-  // has no alternatives
-  expect(Array.from(database.getAlternatives(connection3.id))).toStrictEqual(
-    [],
-  );
-});

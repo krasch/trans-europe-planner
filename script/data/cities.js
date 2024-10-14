@@ -79,6 +79,11 @@ const CITIES = {
     latitude: 47.002338,
     longitude: 11.505428,
   },
+  8524: {
+    name: "Brescia",
+    latitude: 45.532161,
+    longitude: 10.212869,
+  },
   18825: {
     name: "Bressanone/Brixen",
     latitude: 46.709892,
@@ -174,6 +179,11 @@ const CITIES = {
     latitude: 51.477501,
     longitude: 11.984598,
   },
+  7626: {
+    name: "Hamburg",
+    latitude: 53.563816,
+    longitude: 9.965836,
+  },
   7632: {
     name: "Heidelberg",
     latitude: 49.403779,
@@ -198,6 +208,11 @@ const CITIES = {
     name: "Karlsruhe",
     latitude: 48.99351,
     longitude: 8.401848,
+  },
+  28999: {
+    name: "Kiel",
+    latitude: 54.310865,
+    longitude: 10.130618,
   },
   10486: {
     name: "Kufstein",
@@ -234,6 +249,16 @@ const CITIES = {
     latitude: 45.767658,
     longitude: 4.834907,
   },
+  7079: {
+    name: "Lüneburg",
+    latitude: 53.249652,
+    longitude: 10.419891,
+  },
+  7478: {
+    name: "Mannheim",
+    latitude: 49.479296,
+    longitude: 8.469531,
+  },
   4790: {
     name: "Marseille",
     latitude: 43.29641,
@@ -243,6 +268,11 @@ const CITIES = {
     name: "Milano",
     latitude: 45.466632,
     longitude: 9.1906,
+  },
+  8493: {
+    name: "Modena",
+    latitude: 44.654616,
+    longitude: 10.929948,
   },
   19670: {
     name: "Montelupo-Capraia",
@@ -264,15 +294,45 @@ const CITIES = {
     latitude: 43.685992,
     longitude: 10.486851,
   },
+  7137: {
+    name: "Neumünster",
+    latitude: 54.075554,
+    longitude: 9.979716,
+  },
   10777: {
     name: "Nürnberg",
     latitude: 49.445615,
     longitude: 11.082989,
   },
+  7746: {
+    name: "Offenburg",
+    latitude: 48.476479,
+    longitude: 7.946724,
+  },
+  8528: {
+    name: "Padova",
+    latitude: 45.417827,
+    longitude: 11.88062,
+  },
+  8514: {
+    name: "Parma",
+    latitude: 44.810219,
+    longitude: 10.328569,
+  },
   19483: {
     name: "Pavia",
     latitude: 45.188971,
     longitude: 9.144807,
+  },
+  19496: {
+    name: "Peschiera del Garda",
+    latitude: 45.437576,
+    longitude: 10.701181,
+  },
+  8529: {
+    name: "Piacenza",
+    latitude: 45.052101,
+    longitude: 9.706363,
   },
   22187: {
     name: "Pisa",
@@ -284,6 +344,21 @@ const CITIES = {
     latitude: 43.6625,
     longitude: 10.6325,
   },
+  23045: {
+    name: "Reggio Emilia (città)",
+    latitude: 44.69784,
+    longitude: 10.63052,
+  },
+  13237: {
+    name: "Ringsheim/Europa-Park",
+    latitude: 48.248728,
+    longitude: 7.773035,
+  },
+  8542: {
+    name: "Roma",
+    latitude: 41.893223,
+    longitude: 12.48292,
+  },
   7231: {
     name: "Rosenheim",
     latitude: 47.850128,
@@ -293,6 +368,11 @@ const CITIES = {
     name: "Rovereto",
     latitude: 45.890956,
     longitude: 11.033602,
+  },
+  14433: {
+    name: "Salzwedel",
+    latitude: 52.858109,
+    longitude: 11.162031,
   },
   20480: {
     name: "San Frediano a Settimo",
@@ -314,6 +394,11 @@ const CITIES = {
     latitude: 43.775498,
     longitude: 11.095709,
   },
+  7752: {
+    name: "Stendal",
+    latitude: 52.594725,
+    longitude: 11.854407,
+  },
   5260: {
     name: "Strasbourg",
     latitude: 48.58333,
@@ -334,15 +419,30 @@ const CITIES = {
     latitude: 46.072287,
     longitude: 11.118901,
   },
+  7349: {
+    name: "Uelzen",
+    latitude: 52.969782,
+    longitude: 10.553057,
+  },
   10796: {
     name: "Ulm",
     latitude: 48.399432,
     longitude: 9.982224,
   },
+  8573: {
+    name: "Venezia",
+    latitude: 45.43711,
+    longitude: 12.33475,
+  },
   8580: {
     name: "Verona",
     latitude: 45.4383842,
     longitude: 10.9916215,
+  },
+  10459: {
+    name: "Vicenza",
+    latitude: 45.541096,
+    longitude: 11.540774,
   },
   10485: {
     name: "Wörgl",

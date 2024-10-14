@@ -41,7 +41,7 @@ test("connectionGetters", function () {
     },
   ]);
 
-  expect(connection.id).toBe("2024-10-14XDB-IC123");
+  expect(connection.id).toBe("2024-10-14XDB-IC123XA-D");
   expect(connection.startStation).toStrictEqual(DATA.stationA);
   expect(connection.endStation).toStrictEqual(DATA.stationD);
   expect(connection.startDateTime.dateString).toBe("2024-10-14");

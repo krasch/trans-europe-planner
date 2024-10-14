@@ -37,11 +37,12 @@ class City {
 }
 
 class Station {
-  constructor(externalId, name, coordinates, city) {
+  constructor(externalId, name, coordinates, city, preferred) {
     this.id = externalId;
     this.name = name;
     this.coordinates = coordinates;
     this.city = city;
+    this.preferred = preferred;
   }
 }
 
@@ -70,7 +71,7 @@ class Connection {
     this.endStation = stops.at(-1).station;
 
     this.leg = new Leg(this.startStation.city, this.endStation.city);
-    this.id = `${this.startDateTime.dateString}X${id}`;
+    this.id = `${this.startDateTime.dateString}X${id}X${this.leg.id}`;
 
     this.displayId = displayId;
     this.type = type;
@@ -100,6 +101,13 @@ class Journey {
         this.connections[i] = newConnection;
       }
     }
+  }
+
+  hasLeg(leg) {
+    for (let connection of this.connections) {
+      if (connection.leg === leg) return true;
+    }
+    return false;
   }
 
   get stopovers() {
