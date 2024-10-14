@@ -121,13 +121,12 @@ class Database {
   prepareDataForCalendar(journey) {
     const data = [];
 
-    for (let activeConnection of journey.connections) {
-      const leg = activeConnection.leg.id;
+    for (let [leg, activeConnection] of Object.entries(journey)) {
       for (let connection of this.getConnections(leg)) {
         data.push({
           id: connection.id,
           data: connection,
-          active: connection.id === activeConnection.id,
+          active: connection.id === activeConnection,
         });
       }
     }
@@ -141,7 +140,7 @@ class Database {
         id: leg.id,
         startCity: leg.startCity,
         endCity: leg.endCity,
-        active: journey.hasLeg(leg),
+        active: leg.id in journey,
       });
     }
 

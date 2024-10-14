@@ -97,15 +97,9 @@
     const connections = prepareData(CITIES, STATIONS, CONNECTIONS, Object.keys(defaultConnections));
     const database = new Database(connections);
 
-
-
-
-    const journey = new Journey([]);
-    //journey.addConnection(defaultConnections["Berlin-München"]);
-    //journey.addConnection(defaultConnections["München-Verona"]);
-    journey.addConnection(database.getConnection(defaultConnections["Berlin-Karlsruhe"]));
-    journey.addConnection(database.getConnection(defaultConnections["Karlsruhe-Marseille"]));
-    //journey.addConnection(defaultConnections["Verona-Firenze"]);
+    const journey = new Map();
+    journey["Berlin-Karlsruhe"] = defaultConnections["Berlin-Karlsruhe"];
+    journey["Karlsruhe-Marseille"] = defaultConnections["Karlsruhe-Marseille"];
 
     const calendar = document.getElementById("calendar");
 
@@ -119,19 +113,19 @@
     map.on("legStopHover", leg => calendar.setNoHover(leg));
 
     map.on("legAdded", leg => {
-      journey.addConnection(database.getConnection(defaultConnections[leg]));
+      journey[leg] = defaultConnections[leg];
       map.updateView(database.prepareDataForMap(journey));
       calendar.updateView(database.prepareDataForCalendar(journey));
     });
 
     map.on("legRemoved", leg => {
-      journey.removeConnection(leg);
+      delete journey[leg];
       map.updateView(database.prepareDataForMap(journey));
       calendar.updateView(database.prepareDataForCalendar(journey));
     });
 
     calendar.on("legChanged", (leg, connectionId) => {
-      journey.changeLeg(leg, database.getConnection(connectionId));
+      journey[leg] = connectionId;
       calendar.updateView(database.prepareDataForCalendar(journey));
     });
   }

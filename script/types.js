@@ -79,61 +79,6 @@ class Connection {
   }
 }
 
-class Journey {
-  constructor(connections) {
-    this.connections = connections; // todo check validity of this journey
-  }
-
-  addConnection(connection) {
-    this.connections.push(connection);
-  }
-
-  removeConnection(leg) {
-    this.connections = this.connections.filter((c) => {
-      return leg !== c.leg.id;
-    });
-  }
-
-  changeLeg(leg, newConnection) {
-    // todo shitty datatypes, todo what if legs exists 0 or >1 times
-    for (const i in this.connections) {
-      if (this.connections[i].leg.id === leg) {
-        this.connections[i] = newConnection;
-      }
-    }
-  }
-
-  hasLeg(leg) {
-    for (let connection of this.connections) {
-      if (connection.leg === leg) return true;
-    }
-    return false;
-  }
-
-  get stopovers() {
-    const cities = [];
-
-    if (this.connections.length === 0) return cities;
-
-    for (let connection of this.connections) {
-      cities.push(connection.startStation.city);
-    }
-    cities.push(this.connections.at(-1).endStation.city);
-    return cities;
-  }
-
-  get legs() {
-    return this.connections.map((c) => c.leg);
-  }
-
-  hasLeg(leg) {
-    for (let connection of this.connections) {
-      if (connection.leg.id === leg.id) return true;
-    }
-    return false;
-  }
-}
-
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.IllegalCoordinateError = IllegalCoordinateError;
@@ -143,5 +88,4 @@ if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.Station = Station;
   module.exports.Leg = Leg;
   module.exports.Connection = Connection;
-  module.exports.Journey = Journey;
 }
