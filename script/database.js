@@ -1,155 +1,147 @@
-class UnknownConnectionError extends Error {
-  constructor(connectionId) {
-    super(`Unknown connection: ${connectionId}`);
-    this.name = "UnknownConnectionError";
-  }
-}
-
-function* allIndicesOf(array, item) {
-  for (let i in array) {
-    if (array[i] === item) yield Number(i);
-  }
-}
-
-function prepareData(cities, stations, connections, legs) {
-  const coords = (dict) => new Coordinates(dict.latitude, dict.longitude);
-
-  // parse cities
-  for (let [i, c] of Object.entries(cities))
-    cities[i] = new City(c.name, coords(c));
-
-  // parse stations
-  for (let [i, s] of Object.entries(stations))
-    stations[i] = new Station(
-      i,
-      s.name,
-      coords(s),
-      cities[s.city],
-      s.preferred,
-    );
-
-  // parse connections
+function temporalizeConnections(connections) {
   const result = [];
-  for (let legId of legs) {
-    // todo this is stupid
-    const [startCity, endCity] = legId.split("-");
 
-    for (let connection of connections) {
-      const cities = connection.stops.map((s) => stations[s.station].city.name);
-      const possibleStartIndices = Array.from(allIndicesOf(cities, startCity));
-      const possibleEndIndices = Array.from(allIndicesOf(cities, endCity));
+  for (let connection of connections) {
+    for (let date of ["2024-10-16", "2024-10-17", "2024-10-18"]) {
+      const stops = connection.stops.map((s) => ({
+        station: s.station,
+        arrival: new CustomDateTime(date, s.arrival),
+        departure: new CustomDateTime(date, s.departure),
+      }));
 
-      // does not connect those two cities
-      if (possibleStartIndices.length === 0 || possibleEndIndices.length === 0)
-        continue;
-
-      let startIndex = null;
-      if (possibleStartIndices.length === 1)
-        startIndex = possibleStartIndices[0];
-      else {
-        for (let i of possibleStartIndices) {
-          if (stations[connection.stops[i].station].preferred) {
-            startIndex = i;
-            break;
-          }
-        }
-      }
-
-      let endIndex = null;
-      if (possibleEndIndices.length === 1) endIndex = possibleEndIndices[0];
-      else {
-        for (let i of possibleEndIndices) {
-          if (stations[connection.stops[i].station].preferred) {
-            endIndex = i;
-            break;
-          }
-        }
-      }
-
-      if (startIndex >= endIndex) continue; // wrong direction
-
-      for (let date of ["2024-10-16", "2024-10-17", "2024-10-18"]) {
-        const stops = connection.stops.map((s) => ({
-          datetime: new CustomDateTime(date, s.departure), // todo arrival at final stop
-          station: stations[s.station],
-        }));
-        result.push(
-          new Connection(
-            connection.id,
-            connection.id,
-            connection.type,
-            stops.slice(startIndex, endIndex + 1),
-          ),
-        );
-      }
+      result.push({
+        id: `${stops[0].departure.dateString}X${connection.id}`,
+        type: connection.type,
+        stops: stops,
+      });
     }
   }
 
   return result;
 }
 
+function getPartialConnection(stops, startCityId, endCityId, stationInfo) {
+  let startIndex = null;
+  let endIndex = null;
+
+  for (let i in stops) {
+    const station = stationInfo[stops[i].station];
+
+    if (station.city === startCityId) {
+      if (startIndex === null || station.preferred) startIndex = Number(i);
+    }
+
+    if (station.city === endCityId) {
+      if (endIndex === null || station.preferred) endIndex = Number(i);
+    }
+  }
+
+  // start or end are not in the stops
+  if (startIndex === null || endIndex === null) return null;
+
+  // wrong direction
+  if (startIndex >= endIndex) return null;
+
+  return stops.slice(startIndex, endIndex + 1);
+}
+
 class Database {
-  constructor(connections) {
-    this.connections = {};
-    for (let connection of connections) {
-      this.connections[connection.id] = connection;
+  #cities;
+  #stations;
+  #legs;
+  #connections;
+  #cityNameToId;
+
+  constructor(cities, stations, legs, connections) {
+    this.#cities = cities;
+    this.#stations = stations;
+    this.#legs = legs; // todo should live elsewhere
+    this.#connections = connections;
+
+    this.#cityNameToId = new Map(
+      Object.keys(this.#cities).map((c) => [this.#cities[c].name, Number(c)]), // todo why is Number necessary
+    );
+  }
+
+  connectionsForLeg(startCity, endCity) {
+    const result = [];
+
+    for (let connection of this.#connections) {
+      // get the part of the connection that makes up this leg
+      const partial = getPartialConnection(
+        connection.stops,
+        startCity,
+        endCity,
+        this.#stations,
+      );
+
+      // there is no such part
+      if (partial === null) continue;
+
+      // id suffix based on leg
+      const suffix = `${this.#cities[startCity].name}-${this.#cities[endCity].name}`;
+
+      result.push({
+        id: `${connection.id}X${suffix}`,
+        type: connection.type,
+        stops: partial,
+      });
     }
+
+    return result;
   }
 
-  *getAllLegs() {
-    const yielded = [];
+  prepareDataForMap(journey) {
+    const data = [];
 
-    for (let connectionId in this.connections) {
-      const leg = this.connections[connectionId].leg;
-      if (yielded.includes(leg.id)) continue;
+    for (let leg of this.#legs) {
+      const [startCity, endCity] = this.#resolveLeg(leg);
 
-      yield leg;
-      yielded.push(leg.id);
+      data.push({
+        id: leg,
+        startCity: this.#cities[startCity],
+        endCity: this.#cities[endCity],
+        active: leg in journey,
+      });
     }
-  }
 
-  getConnection(connectionId) {
-    const connection = this.connections[connectionId];
-    if (!connection) throw new UnknownConnectionError(connectionId);
-    return connection;
-  }
-
-  getConnections(leg) {
-    return Object.values(this.connections).filter((c) => c.leg.id === leg);
+    return data;
   }
 
   prepareDataForCalendar(journey) {
     const data = [];
 
-    for (let activeConnection of journey.connections) {
-      const leg = activeConnection.leg.id;
-      for (let connection of this.getConnections(leg)) {
+    for (let [leg, activeConnection] of Object.entries(journey)) {
+      const [startCity, endCity] = this.#resolveLeg(leg);
+
+      for (let connection of this.connectionsForLeg(startCity, endCity)) {
         data.push({
           id: connection.id,
-          data: connection,
-          active: connection.id === activeConnection.id,
+          displayId: connection.id.split("X")[1], // todo not nice
+          type: connection.type,
+          leg: leg,
+          startStation: this.#stations[connection.stops[0].station].name,
+          startDateTime: connection.stops[0].departure,
+          endStation: this.#stations[connection.stops.at(-1).station].name,
+          endDateTime: connection.stops.at(-1).arrival,
+          active: connection.id === activeConnection,
         });
       }
     }
     return data;
   }
 
-  prepareDataForMap(journey) {
-    const data = [];
-    for (let leg of this.getAllLegs()) {
-      data.push({
-        id: leg.id,
-        startCity: leg.startCity,
-        endCity: leg.endCity,
-        active: journey.hasLeg(leg),
-      });
-    }
-
-    return data;
+  #resolveLeg(leg) {
+    // todo this is stupid
+    const [startCityName, endCityName] = leg.split("-");
+    const startCity = this.#cityNameToId.get(startCityName);
+    const endCity = this.#cityNameToId.get(endCityName);
+    return [startCity, endCity];
   }
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.Database = Database;
+  module.exports.getPartialConnection = getPartialConnection;
 }
