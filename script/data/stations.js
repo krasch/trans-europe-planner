@@ -65,6 +65,12 @@ const STATIONS = {
     longitude: 9.029529,
     city: 18291,
   },
+  8011102: {
+    name: "Berlin Gesundbrunnen",
+    latitude: 52.548961,
+    longitude: 13.388515,
+    city: 7527,
+  },
   8098160: {
     name: "Berlin Hbf (tief)",
     latitude: 52.525589,
@@ -75,6 +81,12 @@ const STATIONS = {
     name: "Berlin Südkreuz",
     latitude: 52.475475,
     longitude: 13.365571,
+    city: 7527,
+  },
+  8010404: {
+    name: "Berlin-Spandau",
+    latitude: 52.53447,
+    longitude: 13.19753,
     city: 7527,
   },
   8730086: {
@@ -106,6 +118,12 @@ const STATIONS = {
     latitude: 47.002338,
     longitude: 11.505428,
     city: 18827,
+  },
+  8300048: {
+    name: "Brescia",
+    latitude: 45.532161,
+    longitude: 10.212869,
+    city: 8524,
   },
   8300076: {
     name: "Bressanone/Brixen",
@@ -233,6 +251,30 @@ const STATIONS = {
     longitude: 11.987088,
     city: 29378,
   },
+  8002548: {
+    name: "Hamburg Dammtor",
+    latitude: 53.560751,
+    longitude: 9.989568,
+    city: 7626,
+  },
+  8002549: {
+    name: "Hamburg Hbf",
+    latitude: 53.552732,
+    longitude: 10.006908,
+    city: 7626,
+  },
+  8002553: {
+    name: "Hamburg-Altona",
+    latitude: 53.552696,
+    longitude: 9.935174,
+    city: 7626,
+  },
+  8000147: {
+    name: "Hamburg-Harburg",
+    latitude: 53.456296,
+    longitude: 9.991591,
+    city: 7626,
+  },
   8000156: {
     name: "Heidelberg Hbf",
     latitude: 49.403779,
@@ -262,6 +304,12 @@ const STATIONS = {
     latitude: 48.99351,
     longitude: 8.401848,
     city: 7665,
+  },
+  8000199: {
+    name: "Kiel Hbf",
+    latitude: 54.314982,
+    longitude: 10.131975,
+    city: 28999,
   },
   8100001: {
     name: "Kufstein",
@@ -304,6 +352,18 @@ const STATIONS = {
     latitude: 45.760559,
     longitude: 4.859355,
     city: 4718,
+  },
+  8000238: {
+    name: "Lüneburg",
+    latitude: 53.249652,
+    longitude: 10.419891,
+    city: 7079,
+  },
+  8000244: {
+    name: "Mannheim Hbf",
+    latitude: 49.479296,
+    longitude: 8.469531,
+    city: 7478,
   },
   8700074: {
     name: "Marseille St-Charles",
@@ -359,17 +419,35 @@ const STATIONS = {
     longitude: 10.486851,
     city: 19978,
   },
+  8000271: {
+    name: "Neumünster",
+    latitude: 54.075554,
+    longitude: 9.979716,
+    city: 7137,
+  },
   8000284: {
     name: "Nürnberg Hbf",
     latitude: 49.445615,
     longitude: 11.082989,
     city: 10777,
   },
+  8000290: {
+    name: "Offenburg",
+    latitude: 48.476479,
+    longitude: 7.946724,
+    city: 7746,
+  },
   8300049: {
     name: "Pavia",
     latitude: 45.188971,
     longitude: 9.144807,
     city: 19483,
+  },
+  8300124: {
+    name: "Peschiera del Garda",
+    latitude: 45.437576,
+    longitude: 10.701181,
+    city: 19496,
   },
   8300169: {
     name: "Pisa Centrale",
@@ -383,6 +461,12 @@ const STATIONS = {
     longitude: 10.629,
     city: -1,
   },
+  8300263: {
+    name: "Roma Termini",
+    latitude: 41.900833,
+    longitude: 12.501944,
+    city: 8542,
+  },
   8000320: {
     name: "Rosenheim",
     latitude: 47.850128,
@@ -394,6 +478,12 @@ const STATIONS = {
     latitude: 45.890956,
     longitude: 11.033602,
     city: 18831,
+  },
+  8010310: {
+    name: "Salzwedel",
+    latitude: 52.858109,
+    longitude: 11.162031,
+    city: 14433,
   },
   8302108: {
     name: "San Frediano a Settimo",
@@ -419,6 +509,12 @@ const STATIONS = {
     longitude: 11.095709,
     city: 20983,
   },
+  8010334: {
+    name: "Stendal",
+    latitude: 52.594725,
+    longitude: 11.854407,
+    city: 7752,
+  },
   8700023: {
     name: "Strasbourg",
     latitude: 48.584967,
@@ -442,6 +538,12 @@ const STATIONS = {
     latitude: 46.072287,
     longitude: 11.118901,
     city: 18829,
+  },
+  8000168: {
+    name: "Uelzen",
+    latitude: 52.969782,
+    longitude: 10.553057,
+    city: 7349,
   },
   8000170: {
     name: "Ulm Hbf",

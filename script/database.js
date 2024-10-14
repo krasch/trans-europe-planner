@@ -5,7 +5,7 @@ class UnknownConnectionError extends Error {
   }
 }
 
-function prepareData(cities, stations, connections) {
+function prepareData(cities, stations, connections, legs) {
   const coords = (dict) => new Coordinates(dict.latitude, dict.longitude);
 
   // parse cities
@@ -18,13 +18,38 @@ function prepareData(cities, stations, connections) {
 
   // parse connections
   const result = [];
-  for (let c of connections) {
-    for (let date of ["2024-10-16", "2024-10-17", "2024-10-18"]) {
-      const stops = c.stops.map((s) => ({
-        datetime: new CustomDateTime(date, s.departure), // todo arrival at final stop
-        station: stations[s.station],
-      }));
-      result.push(new Connection(c.id, c.id, c.type, stops));
+  for (let legId of legs) {
+    // todo this is stupid
+    const [startCityName, endCityName] = legId.split("-");
+    const startCityId = Object.values(cities).filter(
+      (c) => c.name === startCityName,
+    )[0];
+    const endCityId = Object.values(cities).filter(
+      (c) => c.name === endCityName,
+    )[0];
+
+    for (let connection of connections) {
+      const cities = connection.stops.map((s) => stations[s.station].city);
+      const startIndex = cities.indexOf(startCityId);
+      const endIndex = cities.indexOf(endCityId);
+
+      if (!(startIndex >= 0 && endIndex >= 0 && startIndex < endIndex))
+        continue;
+
+      for (let date of ["2024-10-16", "2024-10-17", "2024-10-18"]) {
+        const stops = connection.stops.map((s) => ({
+          datetime: new CustomDateTime(date, s.departure), // todo arrival at final stop
+          station: stations[s.station],
+        }));
+        result.push(
+          new Connection(
+            connection.id,
+            connection.id,
+            connection.type,
+            stops.slice(startIndex, endIndex + 1),
+          ),
+        );
+      }
     }
   }
 

@@ -70,7 +70,7 @@ class Connection {
     this.endStation = stops.at(-1).station;
 
     this.leg = new Leg(this.startStation.city, this.endStation.city);
-    this.id = `${this.startDateTime.dateString}X${id}`;
+    this.id = `${this.startDateTime.dateString}X${id}X${this.leg.id}`;
 
     this.displayId = displayId;
     this.type = type;
