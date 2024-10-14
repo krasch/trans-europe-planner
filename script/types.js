@@ -37,11 +37,12 @@ class City {
 }
 
 class Station {
-  constructor(externalId, name, coordinates, city) {
+  constructor(externalId, name, coordinates, city, preferred) {
     this.id = externalId;
     this.name = name;
     this.coordinates = coordinates;
     this.city = city;
+    this.preferred = preferred;
   }
 }
 

@@ -5,6 +5,12 @@ class UnknownConnectionError extends Error {
   }
 }
 
+function* allIndicesOf(array, item) {
+  for (let i in array) {
+    if (array[i] === item) yield Number(i);
+  }
+}
+
 function prepareData(cities, stations, connections, legs) {
   const coords = (dict) => new Coordinates(dict.latitude, dict.longitude);
 
@@ -12,29 +18,55 @@ function prepareData(cities, stations, connections, legs) {
   for (let [i, c] of Object.entries(cities))
     cities[i] = new City(c.name, coords(c));
 
-  // parse cities
+  // parse stations
   for (let [i, s] of Object.entries(stations))
-    stations[i] = new Station(i, s.name, coords(s), cities[s.city]);
+    stations[i] = new Station(
+      i,
+      s.name,
+      coords(s),
+      cities[s.city],
+      s.preferred,
+    );
 
   // parse connections
   const result = [];
   for (let legId of legs) {
     // todo this is stupid
-    const [startCityName, endCityName] = legId.split("-");
-    const startCityId = Object.values(cities).filter(
-      (c) => c.name === startCityName,
-    )[0];
-    const endCityId = Object.values(cities).filter(
-      (c) => c.name === endCityName,
-    )[0];
+    const [startCity, endCity] = legId.split("-");
 
     for (let connection of connections) {
-      const cities = connection.stops.map((s) => stations[s.station].city);
-      const startIndex = cities.indexOf(startCityId);
-      const endIndex = cities.indexOf(endCityId);
+      const cities = connection.stops.map((s) => stations[s.station].city.name);
+      const possibleStartIndices = Array.from(allIndicesOf(cities, startCity));
+      const possibleEndIndices = Array.from(allIndicesOf(cities, endCity));
 
-      if (!(startIndex >= 0 && endIndex >= 0 && startIndex < endIndex))
+      // does not connect those two cities
+      if (possibleStartIndices.length === 0 || possibleEndIndices.length === 0)
         continue;
+
+      let startIndex = null;
+      if (possibleStartIndices.length === 1)
+        startIndex = possibleStartIndices[0];
+      else {
+        for (let i of possibleStartIndices) {
+          if (stations[connection.stops[i].station].preferred) {
+            startIndex = i;
+            break;
+          }
+        }
+      }
+
+      let endIndex = null;
+      if (possibleEndIndices.length === 1) endIndex = possibleEndIndices[0];
+      else {
+        for (let i of possibleEndIndices) {
+          if (stations[connection.stops[i].station].preferred) {
+            endIndex = i;
+            break;
+          }
+        }
+      }
+
+      if (startIndex >= endIndex) continue; // wrong direction
 
       for (let date of ["2024-10-16", "2024-10-17", "2024-10-18"]) {
         const stops = connection.stops.map((s) => ({
