@@ -38,13 +38,14 @@ class Calendar extends CalendarGrid {
 
   updateView(connections) {
     // remove entries that are currently in calendar but no longer necessary
+    const connectionIds = connections.map((c) => c.id);
     for (let entry of this.entries) {
-      if (!connections[entry.id]) entry.remove();
+      if (!connectionIds.includes(entry.id)) entry.remove();
     }
 
     // add entries that are not yet in calendar
-    for (let connection of Object.values(connections)) {
-      if (!this.hasEntry(connection.data.id)) {
+    for (let connection of connections) {
+      if (!this.entry(connection.data.id)) {
         const entry = createCalendarEntry(connection.data);
         entry.draggable = true; // todo this should not be here
         this.addToGrid(entry);
@@ -52,9 +53,11 @@ class Calendar extends CalendarGrid {
     }
 
     // only show the currently active entries
-    for (let entry of this.entries)
-      if (connections[entry.id].active) entry.visibility = "full";
+    for (let connection of connections) {
+      const entry = this.entry(connection.id);
+      if (connection.active) entry.visibility = "full";
       else entry.visibility = "hidden";
+    }
   }
 
   get entries() {
@@ -66,7 +69,7 @@ class Calendar extends CalendarGrid {
     return this.entries.filter((e) => e.group === group);
   }
 
-  hasEntry(id) {
+  entry(id) {
     return document.getElementById(id); // todo
   }
 }
