@@ -57,42 +57,23 @@ class Database {
     return connection;
   }
 
-  *getAlternatives(connectionId) {
-    const connection = this.getConnection(connectionId);
-    for (let candidateId in this.connections) {
-      const candidate = this.getConnection(candidateId);
-
-      // connection can not be an alternative to itself
-      if (connectionId === candidateId) continue;
-
-      // this candidate is an alternative because it covers the same leg
-      if (connection.leg.id === candidate.leg.id) {
-        yield candidate;
-      }
-    }
+  getConnections(leg) {
+    return Object.values(this.connections).filter((c) => c.leg.id === leg);
   }
 
   prepareDataForCalendar(journey) {
     const data = [];
 
-    for (let connection of journey.connections) {
-      // this is the currently added connection
-      data.push({
-        id: connection.id,
-        data: connection,
-        active: true,
-      });
-
-      // but this leg can also be fulfilled by these alternatives
-      for (let alternative of this.getAlternatives(connection.id)) {
+    for (let activeConnection of journey.connections) {
+      const leg = activeConnection.leg.id;
+      for (let connection of this.getConnections(leg)) {
         data.push({
-          id: alternative.id,
-          data: alternative,
-          active: false,
+          id: connection.id,
+          data: connection,
+          active: connection.id === activeConnection.id,
         });
       }
     }
-
     return data;
   }
 }
