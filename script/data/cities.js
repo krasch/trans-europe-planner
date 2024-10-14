@@ -269,6 +269,11 @@ const CITIES = {
     latitude: 45.466632,
     longitude: 9.1906,
   },
+  8493: {
+    name: "Modena",
+    latitude: 44.654616,
+    longitude: 10.929948,
+  },
   19670: {
     name: "Montelupo-Capraia",
     latitude: 43.733617,
@@ -304,6 +309,16 @@ const CITIES = {
     latitude: 48.476479,
     longitude: 7.946724,
   },
+  8528: {
+    name: "Padova",
+    latitude: 45.417827,
+    longitude: 11.88062,
+  },
+  8514: {
+    name: "Parma",
+    latitude: 44.810219,
+    longitude: 10.328569,
+  },
   19483: {
     name: "Pavia",
     latitude: 45.188971,
@@ -314,6 +329,11 @@ const CITIES = {
     latitude: 45.437576,
     longitude: 10.701181,
   },
+  8529: {
+    name: "Piacenza",
+    latitude: 45.052101,
+    longitude: 9.706363,
+  },
   22187: {
     name: "Pisa",
     latitude: 43.710897,
@@ -323,6 +343,16 @@ const CITIES = {
     name: "Pontedera",
     latitude: 43.6625,
     longitude: 10.6325,
+  },
+  23045: {
+    name: "Reggio Emilia (città)",
+    latitude: 44.69784,
+    longitude: 10.63052,
+  },
+  13237: {
+    name: "Ringsheim/Europa-Park",
+    latitude: 48.248728,
+    longitude: 7.773035,
   },
   8542: {
     name: "Roma",
@@ -399,10 +429,20 @@ const CITIES = {
     latitude: 48.399432,
     longitude: 9.982224,
   },
+  8573: {
+    name: "Venezia",
+    latitude: 45.43711,
+    longitude: 12.33475,
+  },
   8580: {
     name: "Verona",
     latitude: 45.4383842,
     longitude: 10.9916215,
+  },
+  10459: {
+    name: "Vicenza",
+    latitude: 45.541096,
+    longitude: 11.540774,
   },
   10485: {
     name: "Wörgl",

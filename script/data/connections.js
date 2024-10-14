@@ -2464,6 +2464,133 @@ const CONNECTIONS = [
     ],
   },
   {
+    id: "EC315",
+    type: "train",
+    stops: [
+      {
+        station: "8503000",
+        arrival: "09:33:00",
+        departure: "09:33:00",
+      },
+      {
+        station: "8502204",
+        arrival: "09:59:00",
+        departure: "10:00:00",
+      },
+      {
+        station: "8505004",
+        arrival: "10:16:00",
+        departure: "10:18:00",
+      },
+      {
+        station: "8505213",
+        arrival: "11:12:00",
+        departure: "11:14:00",
+      },
+      {
+        station: "8505300",
+        arrival: "11:28:00",
+        departure: "11:30:00",
+      },
+      {
+        station: "8505307",
+        arrival: "11:55:00",
+        departure: "12:02:00",
+      },
+      {
+        station: "8300056",
+        arrival: "12:08:00",
+        departure: "12:10:00",
+      },
+      {
+        station: "8300046",
+        arrival: "12:53:00",
+        departure: "12:53:00",
+      },
+    ],
+  },
+  {
+    id: "ECE151",
+    type: "train",
+    stops: [
+      {
+        station: "8000105",
+        arrival: "07:52:00",
+        departure: "07:52:00",
+      },
+      {
+        station: "8000068",
+        arrival: "08:07:00",
+        departure: "08:09:00",
+      },
+      {
+        station: "8000191",
+        arrival: "09:09:00",
+        departure: "09:11:00",
+      },
+      {
+        station: "8005101",
+        arrival: "09:56:00",
+        departure: "09:58:00",
+      },
+      {
+        station: "8000107",
+        arrival: "10:13:00",
+        departure: "10:15:00",
+      },
+      {
+        station: "8000026",
+        arrival: "10:45:00",
+        departure: "10:47:00",
+      },
+      {
+        station: "8500010",
+        arrival: "10:55:00",
+        departure: "11:06:00",
+      },
+      {
+        station: "8503000",
+        arrival: "12:00:00",
+        departure: "12:33:00",
+      },
+      {
+        station: "8502204",
+        arrival: "12:59:00",
+        departure: "13:00:00",
+      },
+      {
+        station: "8505004",
+        arrival: "13:16:00",
+        departure: "13:18:00",
+      },
+      {
+        station: "8505213",
+        arrival: "14:12:00",
+        departure: "14:14:00",
+      },
+      {
+        station: "8505300",
+        arrival: "14:28:00",
+        departure: "14:30:00",
+      },
+      {
+        station: "8505307",
+        arrival: "14:55:00",
+        departure: "15:02:00",
+      },
+      {
+        station: "8300056",
+        arrival: "15:08:00",
+        departure: "15:10:00",
+      },
+      {
+        station: "8300046",
+        arrival: "15:53:00",
+        departure: "15:53:00",
+      },
+    ],
+  },
+  {
     id: "EC327",
     type: "train",
     stops: [
@@ -2526,6 +2653,439 @@ const CONNECTIONS = [
         station: "8300153",
         arrival: "15:52:00",
         departure: "15:52:00",
+      },
+    ],
+  },
+  {
+    id: "EC321",
+    type: "train",
+    stops: [
+      {
+        station: "8503000",
+        arrival: "15:33:00",
+        departure: "15:33:00",
+      },
+      {
+        station: "8502204",
+        arrival: "15:59:00",
+        departure: "16:00:00",
+      },
+      {
+        station: "8505004",
+        arrival: "16:16:00",
+        departure: "16:18:00",
+      },
+      {
+        station: "8505213",
+        arrival: "17:12:00",
+        departure: "17:14:00",
+      },
+      {
+        station: "8505300",
+        arrival: "17:28:00",
+        departure: "17:30:00",
+      },
+      {
+        station: "8505307",
+        arrival: "17:55:00",
+        departure: "18:02:00",
+      },
+      {
+        station: "8300056",
+        arrival: "18:08:00",
+        departure: "18:10:00",
+      },
+      {
+        station: "8300046",
+        arrival: "18:53:00",
+        departure: "18:53:00",
+      },
+    ],
+  },
+  {
+    id: "EC323",
+    type: "train",
+    stops: [
+      {
+        station: "8503000",
+        arrival: "17:33:00",
+        departure: "17:33:00",
+      },
+      {
+        station: "8502204",
+        arrival: "17:59:00",
+        departure: "18:00:00",
+      },
+      {
+        station: "8505004",
+        arrival: "18:16:00",
+        departure: "18:18:00",
+      },
+      {
+        station: "8505213",
+        arrival: "19:12:00",
+        departure: "19:14:00",
+      },
+      {
+        station: "8505300",
+        arrival: "19:28:00",
+        departure: "19:30:00",
+      },
+      {
+        station: "8505307",
+        arrival: "19:55:00",
+        departure: "20:02:00",
+      },
+      {
+        station: "8300056",
+        arrival: "20:08:00",
+        departure: "20:10:00",
+      },
+      {
+        station: "8300046",
+        arrival: "20:53:00",
+        departure: "20:53:00",
+      },
+    ],
+  },
+  {
+    id: "EC313",
+    type: "train",
+    stops: [
+      {
+        station: "8503000",
+        arrival: "07:33:00",
+        departure: "07:33:00",
+      },
+      {
+        station: "8502204",
+        arrival: "07:59:00",
+        departure: "08:00:00",
+      },
+      {
+        station: "8505004",
+        arrival: "08:16:00",
+        departure: "08:18:00",
+      },
+      {
+        station: "8505213",
+        arrival: "09:12:00",
+        departure: "09:14:00",
+      },
+      {
+        station: "8505300",
+        arrival: "09:28:00",
+        departure: "09:30:00",
+      },
+      {
+        station: "8505307",
+        arrival: "09:55:00",
+        departure: "10:02:00",
+      },
+      {
+        station: "8300056",
+        arrival: "10:08:00",
+        departure: "10:10:00",
+      },
+      {
+        station: "8300046",
+        arrival: "10:53:00",
+        departure: "10:53:00",
+      },
+    ],
+  },
+  {
+    id: "EC307",
+    type: "train",
+    stops: [
+      {
+        station: "8503000",
+        arrival: "06:33:00",
+        departure: "06:33:00",
+      },
+      {
+        station: "8502204",
+        arrival: "06:59:00",
+        departure: "07:00:00",
+      },
+      {
+        station: "8505004",
+        arrival: "07:16:00",
+        departure: "07:18:00",
+      },
+      {
+        station: "8505213",
+        arrival: "08:12:00",
+        departure: "08:14:00",
+      },
+      {
+        station: "8505300",
+        arrival: "08:28:00",
+        departure: "08:30:00",
+      },
+      {
+        station: "8505307",
+        arrival: "08:55:00",
+        departure: "09:02:00",
+      },
+      {
+        station: "8300056",
+        arrival: "09:08:00",
+        departure: "09:10:00",
+      },
+      {
+        station: "8300062",
+        arrival: "10:09:00",
+        departure: "10:11:00",
+      },
+      {
+        station: "8300418",
+        arrival: "10:20:00",
+        departure: "10:22:00",
+      },
+      {
+        station: "8300230",
+        arrival: "10:59:00",
+        departure: "11:01:00",
+      },
+      {
+        station: "8300215",
+        arrival: "11:31:00",
+        departure: "11:33:00",
+      },
+      {
+        station: "8300220",
+        arrival: "11:49:00",
+        departure: "11:51:00",
+      },
+      {
+        station: "8300214",
+        arrival: "12:07:00",
+        departure: "12:09:00",
+      },
+      {
+        station: "8300217",
+        arrival: "12:30:00",
+        departure: "12:30:00",
+      },
+    ],
+  },
+  {
+    id: "EC311",
+    type: "train",
+    stops: [
+      {
+        station: "8503000",
+        arrival: "08:33:00",
+        departure: "08:33:00",
+      },
+      {
+        station: "8502204",
+        arrival: "08:59:00",
+        departure: "09:00:00",
+      },
+      {
+        station: "8505004",
+        arrival: "09:16:00",
+        departure: "09:18:00",
+      },
+      {
+        station: "8505213",
+        arrival: "10:12:00",
+        departure: "10:14:00",
+      },
+      {
+        station: "8505300",
+        arrival: "10:28:00",
+        departure: "10:30:00",
+      },
+      {
+        station: "8505307",
+        arrival: "10:55:00",
+        departure: "11:02:00",
+      },
+      {
+        station: "8300056",
+        arrival: "11:08:00",
+        departure: "11:10:00",
+      },
+      {
+        station: "8300046",
+        arrival: "11:53:00",
+        departure: "12:05:00",
+      },
+      {
+        station: "8300048",
+        arrival: "12:51:00",
+        departure: "12:53:00",
+      },
+      {
+        station: "8300124",
+        arrival: "13:12:00",
+        departure: "13:14:00",
+      },
+      {
+        station: "8300120",
+        arrival: "13:28:00",
+        departure: "13:30:00",
+      },
+      {
+        station: "8300126",
+        arrival: "13:55:00",
+        departure: "13:57:00",
+      },
+      {
+        station: "8300098",
+        arrival: "14:14:00",
+        departure: "14:16:00",
+      },
+      {
+        station: "8300093",
+        arrival: "14:30:00",
+        departure: "14:32:00",
+      },
+      {
+        station: "8300094",
+        arrival: "14:42:00",
+        departure: "14:42:00",
+      },
+    ],
+  },
+  {
+    id: "EC319",
+    type: "train",
+    stops: [
+      {
+        station: "8503000",
+        arrival: "13:33:00",
+        departure: "13:33:00",
+      },
+      {
+        station: "8502204",
+        arrival: "13:59:00",
+        departure: "14:00:00",
+      },
+      {
+        station: "8505004",
+        arrival: "14:16:00",
+        departure: "14:18:00",
+      },
+      {
+        station: "8505213",
+        arrival: "15:12:00",
+        departure: "15:14:00",
+      },
+      {
+        station: "8505300",
+        arrival: "15:28:00",
+        departure: "15:30:00",
+      },
+      {
+        station: "8505307",
+        arrival: "15:55:00",
+        departure: "16:02:00",
+      },
+      {
+        station: "8300056",
+        arrival: "16:08:00",
+        departure: "16:10:00",
+      },
+      {
+        station: "8300046",
+        arrival: "16:53:00",
+        departure: "16:53:00",
+      },
+    ],
+  },
+  {
+    id: "EC325",
+    type: "train",
+    stops: [
+      {
+        station: "8503000",
+        arrival: "19:33:00",
+        departure: "19:33:00",
+      },
+      {
+        station: "8502204",
+        arrival: "19:59:00",
+        departure: "20:00:00",
+      },
+      {
+        station: "8505004",
+        arrival: "20:16:00",
+        departure: "20:18:00",
+      },
+      {
+        station: "8505213",
+        arrival: "21:12:00",
+        departure: "21:14:00",
+      },
+      {
+        station: "8505300",
+        arrival: "21:28:00",
+        departure: "21:30:00",
+      },
+      {
+        station: "8505307",
+        arrival: "21:55:00",
+        departure: "22:02:00",
+      },
+      {
+        station: "8300056",
+        arrival: "22:08:00",
+        departure: "22:10:00",
+      },
+      {
+        station: "8300046",
+        arrival: "22:53:00",
+        departure: "22:53:00",
+      },
+    ],
+  },
+  {
+    id: "EC317",
+    type: "train",
+    stops: [
+      {
+        station: "8503000",
+        arrival: "11:33:00",
+        departure: "11:33:00",
+      },
+      {
+        station: "8502204",
+        arrival: "11:59:00",
+        departure: "12:00:00",
+      },
+      {
+        station: "8505004",
+        arrival: "12:16:00",
+        departure: "12:18:00",
+      },
+      {
+        station: "8505213",
+        arrival: "13:12:00",
+        departure: "13:14:00",
+      },
+      {
+        station: "8505300",
+        arrival: "13:28:00",
+        departure: "13:30:00",
+      },
+      {
+        station: "8505307",
+        arrival: "13:55:00",
+        departure: "14:02:00",
+      },
+      {
+        station: "8300056",
+        arrival: "14:08:00",
+        departure: "14:10:00",
+      },
+      {
+        station: "8300046",
+        arrival: "14:53:00",
+        departure: "14:53:00",
       },
     ],
   },

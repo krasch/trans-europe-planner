@@ -84,7 +84,7 @@ const STATIONS = {
     preferred: false,
   },
   8098160: {
-    name: "Berlin Hbf (tief)",
+    name: "Berlin Hbf",
     latitude: 52.525589,
     longitude: 13.369548,
     city: 7527,
@@ -433,12 +433,19 @@ const STATIONS = {
     city: 4790,
     preferred: true,
   },
+  8300046: {
+    name: "Milano Centrale",
+    latitude: 45.487143,
+    longitude: 9.204828,
+    city: 8483,
+    preferred: true,
+  },
   8300062: {
     name: "Milano Lambrate",
     latitude: 45.485066,
     longitude: 9.237225,
     city: 8483,
-    preferred: true,
+    preferred: false,
   },
   8300418: {
     name: "Milano Rogoredo",
@@ -446,6 +453,13 @@ const STATIONS = {
     longitude: 9.239014,
     city: 8483,
     preferred: false,
+  },
+  8300214: {
+    name: "Modena",
+    latitude: 44.654616,
+    longitude: 10.929948,
+    city: 8493,
+    preferred: true,
   },
   8301004: {
     name: "Montelupo-Capraia",
@@ -510,6 +524,20 @@ const STATIONS = {
     city: 7746,
     preferred: true,
   },
+  8300098: {
+    name: "Padova",
+    latitude: 45.417827,
+    longitude: 11.88062,
+    city: 8528,
+    preferred: true,
+  },
+  8300215: {
+    name: "Parma",
+    latitude: 44.810219,
+    longitude: 10.328569,
+    city: 8514,
+    preferred: true,
+  },
   8300049: {
     name: "Pavia",
     latitude: 45.188971,
@@ -524,6 +552,13 @@ const STATIONS = {
     city: 19496,
     preferred: true,
   },
+  8300230: {
+    name: "Piacenza",
+    latitude: 45.052101,
+    longitude: 9.706363,
+    city: 8529,
+    preferred: true,
+  },
   8300169: {
     name: "Pisa Centrale",
     latitude: 43.707971,
@@ -536,6 +571,20 @@ const STATIONS = {
     latitude: 43.6623,
     longitude: 10.629,
     city: -1,
+    preferred: true,
+  },
+  8300220: {
+    name: "Reggio Emilia",
+    latitude: 44.697674,
+    longitude: 10.643048,
+    city: 23045,
+    preferred: true,
+  },
+  8005101: {
+    name: "Ringsheim/Europa-Park",
+    latitude: 48.248728,
+    longitude: 7.773035,
+    city: 13237,
     preferred: true,
   },
   8300263: {
@@ -643,11 +692,32 @@ const STATIONS = {
     city: 10796,
     preferred: true,
   },
+  8300093: {
+    name: "Venezia Mestre",
+    latitude: 45.481902,
+    longitude: 12.2319,
+    city: 8573,
+    preferred: false,
+  },
+  8300094: {
+    name: "Venezia Santa Lucia",
+    latitude: 45.441397,
+    longitude: 12.320462,
+    city: 8573,
+    preferred: true,
+  },
   8300120: {
     name: "Verona Porta Nuova",
     latitude: 45.428659,
     longitude: 10.982741,
     city: 8580,
+    preferred: true,
+  },
+  8300126: {
+    name: "Vicenza",
+    latitude: 45.541096,
+    longitude: 11.540774,
+    city: 10459,
     preferred: true,
   },
   8100099: {
