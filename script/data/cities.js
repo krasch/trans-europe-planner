@@ -39,6 +39,11 @@ const CITIES = {
     latitude: 42.7,
     longitude: 9.449722,
   },
+  19442: {
+    name: "Battipaglia",
+    latitude: 40.605892,
+    longitude: 14.983256,
+  },
   10610: {
     name: "Belfort – Montbéliard",
     latitude: 47.586042,
@@ -48,6 +53,11 @@ const CITIES = {
     name: "Bellinzona",
     latitude: 46.19543,
     longitude: 9.029529,
+  },
+  22158: {
+    name: "Benevento (città)",
+    latitude: 41.141756,
+    longitude: 14.770131,
   },
   7527: {
     name: "Berlin",
@@ -74,6 +84,11 @@ const CITIES = {
     latitude: 46.496117,
     longitude: 11.354675,
   },
+  29296: {
+    name: "Braunschweig",
+    latitude: 52.26594,
+    longitude: 10.52673,
+  },
   18827: {
     name: "Brennero/Brenner",
     latitude: 47.002338,
@@ -93,6 +108,11 @@ const CITIES = {
     name: "Cascina",
     latitude: 43.674666,
     longitude: 10.545074,
+  },
+  20159: {
+    name: "Caserta",
+    latitude: 41.068468,
+    longitude: 14.328167,
   },
   5765: {
     name: "Chalon-sur-Saône",
@@ -144,6 +164,11 @@ const CITIES = {
     latitude: 43.772504,
     longitude: 11.2551,
   },
+  20074: {
+    name: "Foggia",
+    latitude: 41.465944,
+    longitude: 15.555886,
+  },
   18840: {
     name: "Fortezza/Franzensfeste",
     latitude: 46.788718,
@@ -169,6 +194,16 @@ const CITIES = {
     latitude: 44.416333,
     longitude: 8.918989,
   },
+  20092: {
+    name: "Gioia Tauro",
+    latitude: 38.42341,
+    longitude: 15.897369,
+  },
+  7613: {
+    name: "Göttingen",
+    latitude: 51.536614,
+    longitude: 9.925682,
+  },
   7622: {
     name: "Günzburg",
     latitude: 48.460334,
@@ -184,10 +219,20 @@ const CITIES = {
     latitude: 53.563816,
     longitude: 9.965836,
   },
+  29379: {
+    name: "Hanau",
+    latitude: 50.121412,
+    longitude: 8.931168,
+  },
   7632: {
     name: "Heidelberg",
     latitude: 49.403779,
     longitude: 8.675741,
+  },
+  10772: {
+    name: "Hildesheim",
+    latitude: 52.160627,
+    longitude: 9.953494,
   },
   29013: {
     name: "Ingolstadt",
@@ -209,6 +254,11 @@ const CITIES = {
     latitude: 48.99351,
     longitude: 8.401848,
   },
+  16766: {
+    name: "Kassel",
+    latitude: 51.315946,
+    longitude: 9.470378,
+  },
   28999: {
     name: "Kiel",
     latitude: 54.310865,
@@ -218,6 +268,11 @@ const CITIES = {
     name: "Kufstein",
     latitude: 47.583077,
     longitude: 12.165551,
+  },
+  29341: {
+    name: "Lamezia Terme",
+    latitude: 38.9623,
+    longitude: 16.3063,
   },
   22080: {
     name: "Le Piagge",
@@ -289,6 +344,11 @@ const CITIES = {
     latitude: 48.140228,
     longitude: 11.558338,
   },
+  22184: {
+    name: "Napoli",
+    latitude: 40.858714,
+    longitude: 14.281712,
+  },
   19978: {
     name: "Navacchio",
     latitude: 43.685992,
@@ -313,6 +373,11 @@ const CITIES = {
     name: "Padova",
     latitude: 45.417827,
     longitude: 11.88062,
+  },
+  20065: {
+    name: "Paola",
+    latitude: 39.358999,
+    longitude: 16.033852,
   },
   8514: {
     name: "Parma",
@@ -349,6 +414,11 @@ const CITIES = {
     latitude: 44.69784,
     longitude: 10.63052,
   },
+  22399: {
+    name: "Reggio di Calabria",
+    latitude: 38.105745,
+    longitude: 15.644542,
+  },
   13237: {
     name: "Ringsheim/Europa-Park",
     latitude: 48.248728,
@@ -359,6 +429,11 @@ const CITIES = {
     latitude: 41.893223,
     longitude: 12.48292,
   },
+  19609: {
+    name: "Rosarno",
+    latitude: 38.488717,
+    longitude: 15.970199,
+  },
   7231: {
     name: "Rosenheim",
     latitude: 47.850128,
@@ -368,6 +443,11 @@ const CITIES = {
     name: "Rovereto",
     latitude: 45.890956,
     longitude: 11.033602,
+  },
+  20259: {
+    name: "Salerno",
+    latitude: 40.675307,
+    longitude: 14.772557,
   },
   14433: {
     name: "Salzwedel",
@@ -389,6 +469,21 @@ const CITIES = {
     latitude: 43.690586,
     longitude: 10.759764,
   },
+  20392: {
+    name: "Sapri",
+    latitude: 40.077965,
+    longitude: 15.627764,
+  },
+  21889: {
+    name: "Scalea-Santa Domenica Talao",
+    latitude: 39.808531,
+    longitude: 15.801202,
+  },
+  20634: {
+    name: "Sibari",
+    latitude: 39.74931,
+    longitude: 16.4563,
+  },
   20983: {
     name: "Signa",
     latitude: 43.775498,
@@ -408,6 +503,16 @@ const CITIES = {
     name: "Stuttgart",
     latitude: 48.784081,
     longitude: 9.181636,
+  },
+  20477: {
+    name: "Torano-Lattarico",
+    latitude: 39.494808,
+    longitude: 16.210589,
+  },
+  8565: {
+    name: "Torino",
+    latitude: 45.070755,
+    longitude: 7.686063,
   },
   20332: {
     name: "Tortona",
@@ -429,6 +534,11 @@ const CITIES = {
     latitude: 48.399432,
     longitude: 9.982224,
   },
+  22000: {
+    name: "Vallo della Lucania-Castelnuovo",
+    latitude: 40.229631,
+    longitude: 15.158419,
+  },
   8573: {
     name: "Venezia",
     latitude: 45.43711,
@@ -439,10 +549,25 @@ const CITIES = {
     latitude: 45.4383842,
     longitude: 10.9916215,
   },
+  20957: {
+    name: "Vibo Valentia-Pizzo",
+    latitude: 38.715191,
+    longitude: 16.139979,
+  },
   10459: {
     name: "Vicenza",
     latitude: 45.541096,
     longitude: 11.540774,
+  },
+  20521: {
+    name: "Villa San Giovanni",
+    latitude: 38.216655,
+    longitude: 15.634555,
+  },
+  7410: {
+    name: "Wolfsburg Hbf",
+    latitude: 52.429494,
+    longitude: 10.788197,
   },
   10485: {
     name: "Wörgl",

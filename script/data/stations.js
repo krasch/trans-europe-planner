@@ -62,6 +62,13 @@ const STATIONS = {
     city: -3,
     preferred: true,
   },
+  8300397: {
+    name: "Battipaglia",
+    latitude: 40.605892,
+    longitude: 14.983256,
+    city: 19442,
+    preferred: true,
+  },
   8730082: {
     name: "Belfort – Montbéliard TGV",
     latitude: 47.585937,
@@ -76,6 +83,13 @@ const STATIONS = {
     city: 18291,
     preferred: true,
   },
+  8300243: {
+    name: "Benevento",
+    latitude: 41.141739,
+    longitude: 14.770112,
+    city: 22158,
+    preferred: true,
+  },
   8011102: {
     name: "Berlin Gesundbrunnen",
     latitude: 52.548961,
@@ -83,12 +97,19 @@ const STATIONS = {
     city: 7527,
     preferred: false,
   },
-  8098160: {
+  8011160: {
     name: "Berlin Hbf",
     latitude: 52.525589,
     longitude: 13.369548,
     city: 7527,
     preferred: true,
+  },
+  8010255: {
+    name: "Berlin Ostbahnhof",
+    latitude: 52.510972,
+    longitude: 13.434567,
+    city: 7527,
+    preferred: false,
   },
   8011113: {
     name: "Berlin Südkreuz",
@@ -132,6 +153,13 @@ const STATIONS = {
     city: 29338,
     preferred: true,
   },
+  8000049: {
+    name: "Braunschweig Hbf",
+    latitude: 52.252236,
+    longitude: 10.539699,
+    city: 29296,
+    preferred: true,
+  },
   8300092: {
     name: "Brennero/Brenner",
     latitude: 47.002338,
@@ -158,6 +186,13 @@ const STATIONS = {
     latitude: 43.674666,
     longitude: 10.545074,
     city: 20158,
+    preferred: true,
+  },
+  8300244: {
+    name: "Caserta",
+    latitude: 41.068468,
+    longitude: 14.328167,
+    city: 20159,
     preferred: true,
   },
   8700091: {
@@ -237,6 +272,13 @@ const STATIONS = {
     city: 8433,
     preferred: true,
   },
+  8300287: {
+    name: "Foggia",
+    latitude: 41.465944,
+    longitude: 15.555886,
+    city: 20074,
+    preferred: true,
+  },
   8300089: {
     name: "Fortezza/Franzensfeste",
     latitude: 46.788718,
@@ -277,6 +319,20 @@ const STATIONS = {
     latitude: 44.417507,
     longitude: 8.922072,
     city: 8450,
+    preferred: true,
+  },
+  8300344: {
+    name: "Gioia Tauro",
+    latitude: 38.42341,
+    longitude: 15.897369,
+    city: 20092,
+    preferred: true,
+  },
+  8000128: {
+    name: "Göttingen",
+    latitude: 51.536614,
+    longitude: 9.925682,
+    city: 7613,
     preferred: true,
   },
   8000139: {
@@ -321,11 +377,25 @@ const STATIONS = {
     city: 7626,
     preferred: false,
   },
+  8000150: {
+    name: "Hanau Hbf",
+    latitude: 50.12128,
+    longitude: 8.929165,
+    city: 29379,
+    preferred: true,
+  },
   8000156: {
     name: "Heidelberg Hbf",
     latitude: 49.403779,
     longitude: 8.675741,
     city: 7632,
+    preferred: true,
+  },
+  8000169: {
+    name: "Hildesheim Hbf",
+    latitude: 52.160627,
+    longitude: 9.953494,
+    city: 10772,
     preferred: true,
   },
   8000183: {
@@ -356,6 +426,13 @@ const STATIONS = {
     city: 7665,
     preferred: true,
   },
+  8003200: {
+    name: "Kassel-Wilhelmshöhe",
+    latitude: 51.313115,
+    longitude: 9.446898,
+    city: 16766,
+    preferred: true,
+  },
   8000199: {
     name: "Kiel Hbf",
     latitude: 54.314982,
@@ -368,6 +445,13 @@ const STATIONS = {
     latitude: 47.583077,
     longitude: 12.165551,
     city: 10486,
+    preferred: true,
+  },
+  8300328: {
+    name: "Lamezia Terme Centrale",
+    latitude: 38.921161,
+    longitude: 16.25602,
+    city: 29341,
     preferred: true,
   },
   8338974: {
@@ -496,6 +580,20 @@ const STATIONS = {
     city: 7686,
     preferred: false,
   },
+  8309988: {
+    name: "Napoli Afragola",
+    latitude: 40.931389,
+    longitude: 14.331111,
+    city: 22184,
+    preferred: false,
+  },
+  8300239: {
+    name: "Napoli Centrale",
+    latitude: 40.852826,
+    longitude: 14.273072,
+    city: 22184,
+    preferred: true,
+  },
   8301802: {
     name: "Navacchio",
     latitude: 43.685992,
@@ -529,6 +627,13 @@ const STATIONS = {
     latitude: 45.417827,
     longitude: 11.88062,
     city: 8528,
+    preferred: true,
+  },
+  8300335: {
+    name: "Paola",
+    latitude: 39.358999,
+    longitude: 16.033852,
+    city: 20065,
     preferred: true,
   },
   8300215: {
@@ -580,6 +685,20 @@ const STATIONS = {
     city: 23045,
     preferred: true,
   },
+  8305254: {
+    name: "Reggio Emilia AV Mediopadana",
+    latitude: 44.7245,
+    longitude: 10.6532,
+    city: 23045,
+    preferred: false,
+  },
+  8300337: {
+    name: "Reggio di Calabria Centrale",
+    latitude: 38.104123,
+    longitude: 15.635792,
+    city: 22399,
+    preferred: true,
+  },
   8005101: {
     name: "Ringsheim/Europa-Park",
     latitude: 48.248728,
@@ -594,6 +713,20 @@ const STATIONS = {
     city: 8542,
     preferred: true,
   },
+  8300262: {
+    name: "Roma Tiburtina",
+    latitude: 41.911072,
+    longitude: 12.531457,
+    city: 8542,
+    preferred: false,
+  },
+  8300430: {
+    name: "Rosarno",
+    latitude: 38.488717,
+    longitude: 15.970199,
+    city: 19609,
+    preferred: true,
+  },
   8000320: {
     name: "Rosenheim",
     latitude: 47.850128,
@@ -606,6 +739,13 @@ const STATIONS = {
     latitude: 45.890956,
     longitude: 11.033602,
     city: 18831,
+    preferred: true,
+  },
+  8300269: {
+    name: "Salerno",
+    latitude: 40.675307,
+    longitude: 14.772557,
+    city: 20259,
     preferred: true,
   },
   8010310: {
@@ -636,6 +776,27 @@ const STATIONS = {
     city: 20747,
     preferred: true,
   },
+  8300333: {
+    name: "Sapri",
+    latitude: 40.077965,
+    longitude: 15.627764,
+    city: 20392,
+    preferred: true,
+  },
+  8300923: {
+    name: "Scalea-Santa Domenica Talao",
+    latitude: 39.808531,
+    longitude: 15.801202,
+    city: 21889,
+    preferred: true,
+  },
+  8300329: {
+    name: "Sibari",
+    latitude: 39.74931,
+    longitude: 16.4563,
+    city: 20634,
+    preferred: true,
+  },
   8300237: {
     name: "Signa",
     latitude: 43.775498,
@@ -663,6 +824,27 @@ const STATIONS = {
     longitude: 9.181636,
     city: 7714,
     preferred: true,
+  },
+  8302714: {
+    name: "Torano-Lattarico",
+    latitude: 39.494808,
+    longitude: 16.210589,
+    city: 20477,
+    preferred: true,
+  },
+  8300001: {
+    name: "Torino Porta Nuova",
+    latitude: 45.061,
+    longitude: 7.677713,
+    city: 8565,
+    preferred: true,
+  },
+  8300522: {
+    name: "Torino Porta Susa",
+    latitude: 45.071832,
+    longitude: 7.665164,
+    city: 8565,
+    preferred: false,
   },
   8300029: {
     name: "Tortona",
@@ -692,6 +874,13 @@ const STATIONS = {
     city: 10796,
     preferred: true,
   },
+  8300345: {
+    name: "Vallo della Lucania-Castelnuovo",
+    latitude: 40.229631,
+    longitude: 15.158419,
+    city: 22000,
+    preferred: true,
+  },
   8300093: {
     name: "Venezia Mestre",
     latitude: 45.481902,
@@ -713,11 +902,32 @@ const STATIONS = {
     city: 8580,
     preferred: true,
   },
+  8300346: {
+    name: "Vibo Valentia-Pizzo",
+    latitude: 38.715191,
+    longitude: 16.139979,
+    city: 20957,
+    preferred: true,
+  },
   8300126: {
     name: "Vicenza",
     latitude: 45.541096,
     longitude: 11.540774,
     city: 10459,
+    preferred: true,
+  },
+  8300342: {
+    name: "Villa San Giovanni",
+    latitude: 38.216655,
+    longitude: 15.634555,
+    city: 20521,
+    preferred: true,
+  },
+  8006552: {
+    name: "Wolfsburg Hbf",
+    latitude: 52.429494,
+    longitude: 10.788197,
+    city: 7410,
     preferred: true,
   },
   8100099: {
