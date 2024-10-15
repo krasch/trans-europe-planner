@@ -123,7 +123,6 @@ class MapLayer {
 
 class MapWrapper {
   #callbacks = {
-    load: () => {},
     legAdded: () => {},
     legRemoved: () => {},
   };
@@ -139,14 +138,18 @@ class MapWrapper {
       zoom: zoom,
     });
 
-    this.map.on("load", () => {
-      this.init();
-      this.#callbacks["load"]();
-    });
-
     this.#legs = new MapLayer(this.map, "legs", "legs");
     this.#connections = new MapLayer(this.map, "connections", "connections");
     this.#cities = new MapLayer(this.map, "cities", "cities");
+  }
+
+  async load() {
+    return new Promise((fulfilled, rejected) => {
+      this.map.on("load", () => {
+        this.init();
+        fulfilled();
+      });
+    });
   }
 
   init() {

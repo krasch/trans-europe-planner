@@ -80,16 +80,17 @@
 
 
 <script>
-    onload = (event) => {
+    onload = async (event) => {
         const map = new MapWrapper('map', [13.408333, 52.518611], 4);
+        const calendar = document.getElementById("calendar");
 
-        map.on('load', () => {
-            try {
-                main(map);
-            } catch (error) {
-                console.error(error);
-            }
-        });
+        await map.load();
+
+        try {
+            main(map, calendar);
+        } catch (error) {
+            console.error(error);
+        }
     };
 </script>
 

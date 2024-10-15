@@ -1,4 +1,4 @@
-function main(map) {
+function main(map, calendar) {
   // temporary
   const defaultConnections = {
     "Berlin-München": "2024-10-16XICE503XBerlin-München",
@@ -27,9 +27,6 @@ function main(map) {
   //journey["Berlin-Karlsruhe"] = defaultConnections["Berlin-Karlsruhe"];
   //journey["Karlsruhe-Marseille"] = defaultConnections["Karlsruhe-Marseille"];
 
-  const calendar = document.getElementById("calendar");
-
-  map.init();
   map.updateView(database.prepareDataForMap(journey));
   calendar.updateView(database.prepareDataForCalendar(journey));
 
