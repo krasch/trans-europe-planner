@@ -123,6 +123,7 @@ class MapLayer {
 
 class MapWrapper {
   #callbacks = {
+    load: () => {},
     legAdded: () => {},
     legRemoved: () => {},
   };
@@ -130,8 +131,18 @@ class MapWrapper {
   #connections = null;
   #cities = null;
 
-  constructor(map) {
-    this.map = map;
+  constructor(containerId, center, zoom) {
+    this.map = new maplibregl.Map({
+      container: containerId,
+      style: "style/outdoors-modified.json",
+      center: center,
+      zoom: zoom,
+    });
+
+    this.map.on("load", () => {
+      this.init();
+      this.#callbacks["load"]();
+    });
 
     this.#legs = new MapLayer(this.map, "legs", "legs");
     this.#connections = new MapLayer(this.map, "connections", "connections");

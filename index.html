@@ -80,23 +80,17 @@
 
 
 <script>
-  onload = (event) => {
-    const map = new MapWrapper(new maplibregl.Map({
-      container: 'map',
-      style: "style/outdoors-modified.json",
-      center: [13.408333, 52.518611],
-      zoom: 4
-    }));
+    onload = (event) => {
+        const map = new MapWrapper('map', [13.408333, 52.518611], 4);
 
-    map.map.on('load', () => {
-      try {
-        main(map);
-      } catch(error) {
-        console.error(error);
-      }
-
-    });
-  };
+        map.on('load', () => {
+            try {
+                main(map);
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    };
 </script>
 
 </body>
