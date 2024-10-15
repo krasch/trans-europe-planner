@@ -130,12 +130,26 @@ class MapWrapper {
   #connections = null;
   #cities = null;
 
-  constructor(map) {
-    this.map = map;
+  constructor(containerId, center, zoom) {
+    this.map = new maplibregl.Map({
+      container: containerId,
+      style: "style/outdoors-modified.json",
+      center: center,
+      zoom: zoom,
+    });
 
     this.#legs = new MapLayer(this.map, "legs", "legs");
     this.#connections = new MapLayer(this.map, "connections", "connections");
     this.#cities = new MapLayer(this.map, "cities", "cities");
+  }
+
+  async load() {
+    return new Promise((fulfilled, rejected) => {
+      this.map.on("load", () => {
+        this.init();
+        fulfilled();
+      });
+    });
   }
 
   init() {
