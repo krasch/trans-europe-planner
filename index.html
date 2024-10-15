@@ -24,11 +24,11 @@
     <script src="script/data/connections.js"></script>
     <script src="script/database.js"></script>
 
-    <script src="script/calendar/grid.js"></script>
-    <script src="script/calendar/entry.js"></script>
-    <script src="script/calendar/calendar.js"></script>
-    <script src="script/calendar/draganddrop.js"></script>
-    <script src="script/map.js"></script>
+    <script src="script/components/calendar/grid.js"></script>
+    <script src="script/components/calendar/entry.js"></script>
+    <script src="script/components/calendar/calendar.js"></script>
+    <script src="script/components/calendar/draganddrop.js"></script>
+    <script src="script/components/map.js"></script>
 
     <title>Trans-Europe-Planner</title>
 
@@ -136,6 +136,7 @@
       calendar.updateView(database.prepareDataForCalendar(journey));
     });
   }
+
 
   onload = (event) => {
     const map = new MapWrapper(new maplibregl.Map({
