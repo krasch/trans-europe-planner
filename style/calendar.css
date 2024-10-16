@@ -1,14 +1,4 @@
-#calendar {
-    position: absolute;
-    left: 30px;
-    top: 30px;
-
-    width: 400px; /* todo */
-
-    font-size: 0.8rem;
-}
-
-#calendar {
+calendar-grid {
     display: grid;
 
     --resolution: 4; /* must also change n-th child below */
@@ -28,7 +18,7 @@
 
 
 /* line to the left of each day */
-#calendar > .calendar-grid-cell
+calendar-grid > .calendar-grid-cell
 {
     border-left: 1px dashed lightgrey;
 }
@@ -36,26 +26,26 @@
 /* line on top of each hour */
 /* grid lines - IMPORTANT change here when resolution changes */
 /* first number in () is resolution */
-#calendar > .calendar-grid-hour,
-#calendar > .calendar-grid-cell:nth-child(4n+1)
+calendar-grid > .calendar-grid-hour,
+calendar-grid > .calendar-grid-cell:nth-child(4n+1)
 {
     border-top: 1px dashed lightgrey;
 }
 
 /* line on other cells should usually not be visible */
-#calendar > .calendar-grid-cell
+calendar-grid > .calendar-grid-cell
 {
     border-top: 1px dashed white;
 }
 
 
 /* except for the first hour */
-#calendar > .calendar-grid-hour:first-child, .calendar-grid-cell:nth-child(0)
+calendar-grid > .calendar-grid-hour:first-child, .calendar-grid-cell:nth-child(0)
 {
     border-top: 0;
 }
 
-#calendar > .calendar-grid-hour{
+calendar-grid > .calendar-grid-hour{
     min-height: 1.2rem;
 
     color: darkgrey;
@@ -64,6 +54,8 @@
 }
 
 calendar-entry {
+    --color: 0, 0, 0; /* will be set by Javascript */
+
     padding: 5px;
     margin: 0 5px 0 5px;
 
@@ -73,16 +65,16 @@ calendar-entry {
 /* calendar entry is fully visible */
 calendar-entry.full {
     border: 1px solid darkgrey;
-    background-color: rgba(255, 0, 0, 0.4);
+    background-color: rgba(var(--color), 0.6);
 }
 
 /* calendar entry is fully visible and being hovered*/
 calendar-entry.full:hover {
     cursor: move;
-    background-color: rgba(255, 0, 0, 0.8);
+    background-color: rgba(var(--color), 0.8);
 }
 calendar-entry.hover {
-    background-color: rgba(255, 0, 0, 0.8);
+    background-color:  rgba(var(--color), 0.8);
 }
 
 /* calendar entry is fully hidden */
@@ -92,7 +84,7 @@ calendar-entry.hidden {
 
 /* faint highlight to show that dropping is possible here */
 calendar-entry.indicator {
-    border-top: 1px dashed red;
+    border-top: 1px dashed rgba(var(--color));
     border-radius: 0;
 }
 calendar-entry.indicator > * { /* children should not be visible */
@@ -101,7 +93,7 @@ calendar-entry.indicator > * { /* children should not be visible */
 
 /* drag&drop mode and user is hovering over this drop zone */
 calendar-entry.preview {
-    background-color: rgba(255, 0, 0, 0.4);
+    background-color:  rgba(var(--color), 0.8);
     border-radius: 10px;
 }
 calendar-entry.preview > * { /* children should not be visible */
@@ -149,8 +141,3 @@ calendar-entry .connection-end-time {
 calendar-entry .connection-end-station {
     grid-area: end-station;
 }
-
-/* but in drag and drop mode we should not see details about the entry*/
-/*#calendar > #calendar-grid > .alternative > * {
-    visibility: hidden;
-}*/

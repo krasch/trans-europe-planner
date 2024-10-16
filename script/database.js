@@ -45,17 +45,28 @@ function getPartialConnection(stops, startCityId, endCityId, stationInfo) {
   return stops.slice(startIndex, endIndex + 1);
 }
 
+function getColour(journeyId) {
+  const body = document.getElementsByTagName("body")[0];
+  const style = getComputedStyle(body);
+
+  const assignedColors = {
+    journey1: style.getPropertyValue("--journey-green"),
+    journey2: style.getPropertyValue("--journey-orange"),
+    journey3: style.getPropertyValue("--journey-purple"),
+  };
+
+  return assignedColors[journeyId];
+}
+
 class Database {
   #cities;
   #stations;
-  #legs;
   #connections;
   #cityNameToId;
 
-  constructor(cities, stations, legs, connections) {
+  constructor(cities, stations, connections) {
     this.#cities = cities;
     this.#stations = stations;
-    this.#legs = legs; // todo should live elsewhere
     this.#connections = connections;
 
     this.#cityNameToId = new Map(
@@ -91,27 +102,45 @@ class Database {
     return result;
   }
 
-  prepareDataForMap(journey) {
-    const data = [];
+  prepareDataForMap(journeys, active) {
+    const journey = journeys[active].connections;
+    const allLegs = Object.values(journeys).flatMap((j) => j.legs);
 
-    for (let leg of this.#legs) {
+    const prepareData = (leg, active) => {
       const [startCity, endCity] = this.#resolveLeg(leg);
-
-      data.push({
+      return {
         id: leg,
         startCity: this.#cities[startCity],
         endCity: this.#cities[endCity],
-        active: leg in journey,
-      });
-    }
+        active: active,
+      };
+    };
 
-    return data;
+    const data = [];
+    const legsAlreadyAdded = [];
+
+    // add active legs (coloured lines)
+    Object.keys(journey).forEach((leg) => {
+      if (legsAlreadyAdded.includes(leg)) return;
+      data.push(prepareData(leg, true));
+      legsAlreadyAdded.push(leg);
+    });
+
+    // add inactive legs (grey lines)
+    allLegs.forEach((leg) => {
+      if (legsAlreadyAdded.includes(leg)) return;
+      data.push(prepareData(leg, false));
+      legsAlreadyAdded.push(leg);
+    });
+
+    return [data, getColour(active)];
   }
 
-  prepareDataForCalendar(journey) {
+  prepareDataForCalendar(journeys, active) {
     const data = [];
 
-    for (let [leg, activeConnection] of Object.entries(journey)) {
+    const connections = journeys[active].connections;
+    for (let [leg, activeConnection] of Object.entries(connections)) {
       const [startCity, endCity] = this.#resolveLeg(leg);
 
       for (let connection of this.connectionsForLeg(startCity, endCity)) {
@@ -125,8 +154,21 @@ class Database {
           endStation: this.#stations[connection.stops.at(-1).station].name,
           endDateTime: connection.stops.at(-1).arrival,
           active: connection.id === activeConnection,
+          color: getColour(active),
         });
       }
+    }
+    return data;
+  }
+
+  prepareDataForJourneySelection(journeys, active) {
+    const data = [];
+    for (let journeyId in journeys) {
+      data.push({
+        id: journeyId,
+        active: journeyId === active,
+        color: getColour(journeyId),
+      });
     }
     return data;
   }

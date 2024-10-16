@@ -74,6 +74,13 @@ class MapLayer {
     }
   }
 
+  setPaintProperty(key, value) {
+    const layerAlreadyAdded = this.map.getSource(this.sourceName) !== undefined;
+    if (layerAlreadyAdded) {
+      this.map.setPaintProperty(this.sourceName, key, value);
+    }
+  }
+
   onClick(callback) {
     this.map.on("click", this.sourceName, (e) => {
       callback(this.#getIdFromEvent(e));
@@ -184,9 +191,12 @@ class MapWrapper {
     this.#callbacks[eventName] = callback; // todo check if name is valid
   }
 
-  updateView(legs) {
-    const redLines = legs.filter((l) => l.active).map(legToGeojson);
-    this.#connections.update(asGeojsonFeatureCollection(redLines));
+  updateView(data) {
+    const [legs, color] = data; // todo fold into legs
+
+    const coloredLines = legs.filter((l) => l.active).map(legToGeojson);
+    this.#connections.update(asGeojsonFeatureCollection(coloredLines));
+    this.#connections.setPaintProperty("line-color", `rgb(${color})`);
 
     const greyLines = legs.filter((l) => !l.active).map(legToGeojson);
     this.#legs.update(asGeojsonFeatureCollection(greyLines));

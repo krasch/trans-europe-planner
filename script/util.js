@@ -5,12 +5,12 @@ function createElementFromTemplate(templateId, templateData) {
   const element = template.content.firstElementChild.cloneNode(true);
 
   // fill in data
-  for (let className in templateData) {
-    const children = element.getElementsByClassName(className);
+  for (let selector in templateData) {
+    const children = element.querySelectorAll(selector);
 
     for (let child of children) {
-      for (let key in templateData[className]) {
-        child[key] = templateData[className][key];
+      for (let key in templateData[selector]) {
+        child[key] = templateData[selector][key];
       }
     }
   }

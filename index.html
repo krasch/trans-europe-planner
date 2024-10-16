@@ -11,8 +11,10 @@
     <script src="https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.js"></script>
 
     <!-- styles -->
-    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/layout.css">
+    <link rel="stylesheet" href="style/colors.css">
     <link rel="stylesheet" href="style/calendar.css">
+    <link rel="stylesheet" href="style/journey-selection.css">
 
     <!-- style scripts -->
     <script src="style/map.js"></script> <!-- only contains css styles for map in js -->
@@ -31,6 +33,7 @@
     <script src="script/components/calendar/calendar.js"></script>
     <script src="script/components/calendar/draganddrop.js"></script>
     <script src="script/components/map.js"></script>
+    <script src="script/components/journeySelection.js"></script>
 
     <title>Trans-Europe-Planner</title>
 
@@ -74,20 +77,33 @@
 </template>
 
 
+<template id="template-journey-info">
+    <div class="journey-info">
+       <input type="radio" name="journey"/>
+       <label></label>
+    </div>
+</template>
+
+
+
 <div id="map"></div>
 <!-- All calendar elements will be added into the container below dynamically -->
 <calendar-grid id="calendar" start="2024-10-16" end="2024-10-18" resolution="4"></calendar-grid>
+<fieldset id="journey-selection"></fieldset>
 
 
 <script>
+    // bug: can not add an unknown leg to my route
+
     onload = async (event) => {
         const map = new MapWrapper('map', [13.408333, 52.518611], 4);
         const calendar = document.getElementById("calendar");
+        const journeySelection = new JourneySelection(document.getElementById("journey-selection"));
 
         await map.load();
 
         try {
-            main(map, calendar);
+            main(map, calendar, journeySelection);
         } catch (error) {
             console.error(error);
         }
