@@ -40,7 +40,7 @@ function initUpdateViews(map, calendar, journeySelection, database) {
     const allLegs = Object.values(journeys).flatMap((j) => j.legs);
 
     map.updateView(database.prepareDataForMap(journey, allLegs));
-    calendar.updateView(database.prepareDataForCalendar(journey));
+    calendar.updateView(database.prepareDataForCalendar(journeys, active));
     journeySelection.updateView(
       database.prepareDataForJourneySelection(journeys, active),
     );

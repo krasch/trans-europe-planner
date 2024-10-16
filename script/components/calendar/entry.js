@@ -31,6 +31,10 @@ class CalendarEntry extends HTMLElement {
     if (hover) this.classList.add("hover");
     else this.classList.remove("hover");
   }
+
+  set color(color) {
+    this.style.setProperty("--color", color);
+  }
 }
 
 function createCalendarEntry(connection) {

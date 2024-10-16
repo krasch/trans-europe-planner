@@ -55,8 +55,11 @@ class Calendar extends CalendarGrid {
     // only show the currently active entries
     for (let connection of connections) {
       const entry = this.entry(connection.id);
+
       if (connection.active) entry.visibility = "full";
       else entry.visibility = "hidden";
+
+      entry.color = connection.color;
     }
   }
 

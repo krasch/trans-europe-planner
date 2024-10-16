@@ -31,17 +31,21 @@ class JourneySelection {
     for (let journey of journeys) {
       if (!document.getElementById(journey.id)) {
         const data = {
-          input: { value: journey.id, id: journey.id },
+          input: { value: journey.id },
           label: { innerHTML: journey.id, htmlFor: journey.id },
         };
         const entry = createElementFromTemplate("template-journey-info", data);
+        entry.id = journey.id;
         this.container.appendChild(entry);
       }
     }
 
     // mark as checked the active journey (there should only be one)
     for (let journey of journeys) {
-      if (journey.active) document.getElementById(journey.id).checked = true;
+      const entry = document.getElementById(journey.id);
+      if (journey.active) entry.checked = true;
+      console.log(journey.color);
+      entry.style.setProperty("--color", journey.color);
     }
   }
 }

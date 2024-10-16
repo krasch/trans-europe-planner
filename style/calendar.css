@@ -54,6 +54,8 @@ calendar-grid > .calendar-grid-hour{
 }
 
 calendar-entry {
+    --color: 0, 0, 0; /* will be set by Javascript */
+
     padding: 5px;
     margin: 0 5px 0 5px;
 
@@ -63,16 +65,16 @@ calendar-entry {
 /* calendar entry is fully visible */
 calendar-entry.full {
     border: 1px solid darkgrey;
-    background-color: rgba(255, 0, 0, 0.4);
+    background-color: rgba(var(--color), 0.6);
 }
 
 /* calendar entry is fully visible and being hovered*/
 calendar-entry.full:hover {
     cursor: move;
-    background-color: rgba(255, 0, 0, 0.8);
+    background-color: rgba(var(--color), 0.8);
 }
 calendar-entry.hover {
-    background-color: rgba(255, 0, 0, 0.8);
+    background-color:  rgba(var(--color), 0.8);
 }
 
 /* calendar entry is fully hidden */
@@ -82,7 +84,7 @@ calendar-entry.hidden {
 
 /* faint highlight to show that dropping is possible here */
 calendar-entry.indicator {
-    border-top: 1px dashed red;
+    border-top: 1px dashed rgba(var(--color));
     border-radius: 0;
 }
 calendar-entry.indicator > * { /* children should not be visible */
@@ -91,7 +93,7 @@ calendar-entry.indicator > * { /* children should not be visible */
 
 /* drag&drop mode and user is hovering over this drop zone */
 calendar-entry.preview {
-    background-color: rgba(255, 0, 0, 0.4);
+    background-color:  rgba(var(--color), 0.8);
     border-radius: 10px;
 }
 calendar-entry.preview > * { /* children should not be visible */

@@ -2,10 +2,16 @@
     border: 1px solid lightgrey;
     border-radius: 10px;
     background-color: white;
+
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+    align-content: space-around;
 }
 
 #journey-selection .journey-info {
-    background-color: red;
+    --color: 0, 0, 0; /* will be set by Javascript */
+    background-color: rgba(var(--color), 0.6);
     border: 1px solid lightgrey;
     border-radius: 10px;
 }

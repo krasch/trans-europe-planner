@@ -45,6 +45,19 @@ function getPartialConnection(stops, startCityId, endCityId, stationInfo) {
   return stops.slice(startIndex, endIndex + 1);
 }
 
+function getColour(journeyId) {
+  const body = document.getElementsByTagName("body")[0];
+  const style = getComputedStyle(body);
+
+  const assignedColors = {
+    journey1: style.getPropertyValue("--journey-green"),
+    journey2: style.getPropertyValue("--journey-orange"),
+    journey3: style.getPropertyValue("--journey-purple"),
+  };
+
+  return assignedColors[journeyId];
+}
+
 class Database {
   #cities;
   #stations;
@@ -120,10 +133,11 @@ class Database {
     return data;
   }
 
-  prepareDataForCalendar(journey) {
+  prepareDataForCalendar(journeys, active) {
     const data = [];
 
-    for (let [leg, activeConnection] of Object.entries(journey)) {
+    const connections = journeys[active].connections;
+    for (let [leg, activeConnection] of Object.entries(connections)) {
       const [startCity, endCity] = this.#resolveLeg(leg);
 
       for (let connection of this.connectionsForLeg(startCity, endCity)) {
@@ -137,6 +151,7 @@ class Database {
           endStation: this.#stations[connection.stops.at(-1).station].name,
           endDateTime: connection.stops.at(-1).arrival,
           active: connection.id === activeConnection,
+          color: getColour(active),
         });
       }
     }
@@ -149,6 +164,7 @@ class Database {
       data.push({
         id: journeyId,
         active: journeyId === active,
+        color: getColour(journeyId),
       });
     }
     return data;
