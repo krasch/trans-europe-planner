@@ -5,9 +5,9 @@ ROUTES = {
     "Verona-Roma": "2024-10-16XFR8529XVerona-Roma",
   },
   "Berlin->Roma over Bologna": {
-    "Berlin-München": "2024-10-16XICE503XBerlin-München",
-    "München-Bologna": "2024-10-16XEC87XMünchen-Bologna",
-    "Bologna-Roma": "2024-10-17XFR9619XBologna-Roma",
+    "Berlin-München": "2024-10-16XICE1109XBerlin-München",
+    "München-Bologna": "2024-10-17XRJ81XMünchen-Bologna",
+    "Bologna-Roma": "2024-10-17XFR9637XBologna-Roma",
   },
   "Berlin-Roma over Zürich": {
     "Berlin-Zürich": "2024-10-16XICE73XBerlin-Zürich",
