@@ -1,0 +1,18 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+html, body, #map {
+    height: 100%;
+}
+
+calendar-grid {
+    position: absolute;
+    left: 30px;
+    top: 30px;
+
+    width: 400px; /* todo */
+
+    font-size: 0.8rem;
+}
