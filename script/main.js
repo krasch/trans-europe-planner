@@ -1,3 +1,11 @@
+function initUpdateViews(map, calendar, database) {
+  function updateViews(journey) {
+    map.updateView(database.prepareDataForMap(journey));
+    calendar.updateView(database.prepareDataForCalendar(journey));
+  }
+  return updateViews;
+}
+
 function main(map, calendar) {
   // temporary
   const defaultConnections = {
@@ -27,8 +35,10 @@ function main(map, calendar) {
   //journey["Berlin-Karlsruhe"] = defaultConnections["Berlin-Karlsruhe"];
   //journey["Karlsruhe-Marseille"] = defaultConnections["Karlsruhe-Marseille"];
 
-  map.updateView(database.prepareDataForMap(journey));
-  calendar.updateView(database.prepareDataForCalendar(journey));
+  const updateViews = initUpdateViews(map, calendar, database);
+
+  // draw initial journey
+  updateViews(journey);
 
   calendar.on("entryStartHover", (leg) => map.setHover(leg));
   calendar.on("entryStopHover", (leg) => map.setNoHover(leg));
@@ -37,18 +47,16 @@ function main(map, calendar) {
 
   map.on("legAdded", (leg) => {
     journey[leg] = defaultConnections[leg];
-    map.updateView(database.prepareDataForMap(journey));
-    calendar.updateView(database.prepareDataForCalendar(journey));
+    updateViews(journey);
   });
 
   map.on("legRemoved", (leg) => {
     delete journey[leg];
-    map.updateView(database.prepareDataForMap(journey));
-    calendar.updateView(database.prepareDataForCalendar(journey));
+    updateViews(journey);
   });
 
   calendar.on("legChanged", (leg, connectionId) => {
     journey[leg] = connectionId;
-    calendar.updateView(database.prepareDataForCalendar(journey));
+    updateViews(journey);
   });
 }
