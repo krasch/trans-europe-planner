@@ -45,7 +45,9 @@ class JourneySelection {
       const entry = document.getElementById(journey.id);
       if (journey.active) {
         entry.getElementsByTagName("input")[0].checked = true;
-      }
+        entry.classList.add("checked");
+      } else entry.classList.remove("checked");
+
       entry.style.setProperty("--color", journey.color);
     }
   }
