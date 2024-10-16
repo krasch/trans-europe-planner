@@ -16,6 +16,11 @@ ROUTES = {
   },
 };
 
+ALLDEFAULTS = {};
+for (let route of Object.values(ROUTES))
+  for (let [leg, connection] of Object.entries(route))
+    ALLDEFAULTS[leg] = connection;
+
 class Journey {
   constructor(defaultConnections) {
     this.defaults = defaultConnections;
@@ -75,7 +80,10 @@ function main(map, calendar, journeySelection) {
 
   //changing the journey
   map.on("legAdded", (leg) => {
-    journeys[active].connections[leg] = journeys[active].defaults[leg];
+    let connection = journeys[active].defaults[leg];
+    if (!connection) connection = ALLDEFAULTS[leg];
+
+    journeys[active].connections[leg] = connection;
     updateViews(journeys, active);
   });
   map.on("legRemoved", (leg) => {

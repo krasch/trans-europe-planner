@@ -43,7 +43,9 @@ class JourneySelection {
     // mark as checked the active journey (there should only be one)
     for (let journey of journeys) {
       const entry = document.getElementById(journey.id);
-      if (journey.active) entry.checked = true;
+      if (journey.active) {
+        entry.getElementsByTagName("input")[0].checked = true;
+      }
       entry.style.setProperty("--color", journey.color);
     }
   }

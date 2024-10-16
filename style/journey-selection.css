@@ -14,9 +14,11 @@
     background-color: rgba(var(--color), 0.6);
     border: 1px solid lightgrey;
     border-radius: 10px;
+    min-height: 2rem;
+    display: inline-block;
 }
 
+
 #journey-selection .journey-info label {
-    display: block;
-    width: 100%;
+
 }
