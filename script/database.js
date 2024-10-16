@@ -102,7 +102,10 @@ class Database {
     return result;
   }
 
-  prepareDataForMap(journey, allLegs) {
+  prepareDataForMap(journeys, active) {
+    const journey = journeys[active].connections;
+    const allLegs = Object.values(journeys).flatMap((j) => j.legs);
+
     const prepareData = (leg, active) => {
       const [startCity, endCity] = this.#resolveLeg(leg);
       return {
@@ -130,7 +133,7 @@ class Database {
       legsAlreadyAdded.push(leg);
     });
 
-    return data;
+    return [data, getColour(active)];
   }
 
   prepareDataForCalendar(journeys, active) {

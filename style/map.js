@@ -59,8 +59,8 @@ const mapStyles = {
       "line-opacity": [
         "case",
         ["boolean", ["feature-state", "hover"], false],
-        0.8,
-        0.4,
+        1.0,
+        0.6,
       ],
       "line-width": 4,
     },

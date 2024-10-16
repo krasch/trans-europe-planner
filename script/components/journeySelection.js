@@ -44,7 +44,6 @@ class JourneySelection {
     for (let journey of journeys) {
       const entry = document.getElementById(journey.id);
       if (journey.active) entry.checked = true;
-      console.log(journey.color);
       entry.style.setProperty("--color", journey.color);
     }
   }

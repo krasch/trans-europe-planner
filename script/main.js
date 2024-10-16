@@ -36,10 +36,7 @@ class Journey {
 
 function initUpdateViews(map, calendar, journeySelection, database) {
   function updateViews(journeys, active) {
-    const journey = journeys[active].connections;
-    const allLegs = Object.values(journeys).flatMap((j) => j.legs);
-
-    map.updateView(database.prepareDataForMap(journey, allLegs));
+    map.updateView(database.prepareDataForMap(journeys, active));
     calendar.updateView(database.prepareDataForCalendar(journeys, active));
     journeySelection.updateView(
       database.prepareDataForJourneySelection(journeys, active),
