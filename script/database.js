@@ -48,14 +48,12 @@ function getPartialConnection(stops, startCityId, endCityId, stationInfo) {
 class Database {
   #cities;
   #stations;
-  #legs;
   #connections;
   #cityNameToId;
 
-  constructor(cities, stations, legs, connections) {
+  constructor(cities, stations, connections) {
     this.#cities = cities;
     this.#stations = stations;
-    this.#legs = legs; // todo should live elsewhere
     this.#connections = connections;
 
     this.#cityNameToId = new Map(
@@ -91,19 +89,33 @@ class Database {
     return result;
   }
 
-  prepareDataForMap(journey) {
-    const data = [];
-
-    for (let leg of this.#legs) {
+  prepareDataForMap(journey, allLegs) {
+    const prepareData = (leg, active) => {
       const [startCity, endCity] = this.#resolveLeg(leg);
-
-      data.push({
+      return {
         id: leg,
         startCity: this.#cities[startCity],
         endCity: this.#cities[endCity],
-        active: leg in journey,
-      });
-    }
+        active: active,
+      };
+    };
+
+    const data = [];
+    const legsAlreadyAdded = [];
+
+    // add active legs (coloured lines)
+    Object.keys(journey).forEach((leg) => {
+      if (legsAlreadyAdded.includes(leg)) return;
+      data.push(prepareData(leg, true));
+      legsAlreadyAdded.push(leg);
+    });
+
+    // add inactive legs (grey lines)
+    allLegs.forEach((leg) => {
+      if (legsAlreadyAdded.includes(leg)) return;
+      data.push(prepareData(leg, false));
+      legsAlreadyAdded.push(leg);
+    });
 
     return data;
   }

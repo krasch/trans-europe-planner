@@ -138,7 +138,7 @@ test("getConnectionsForLeg", function () {
     },
   ];
 
-  const database = new Database(testCities, testStations, [], connections);
+  const database = new Database(testCities, testStations, connections);
   const got = database.connectionsForLeg("city1", "city3");
 
   const exp = [
