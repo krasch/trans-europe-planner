@@ -16,3 +16,13 @@ calendar-grid {
 
     font-size: 0.8rem;
 }
+
+#journey-selection {
+    position: absolute;
+    right: 30px;
+    top: 30px;
+
+    width: 400px; /* todo */
+
+    font-size: 0.8rem;
+}

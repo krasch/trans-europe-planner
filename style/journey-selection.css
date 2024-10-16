@@ -1,0 +1,16 @@
+#journey-selection {
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+    background-color: white;
+}
+
+#journey-selection .journey-info {
+    background-color: red;
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+}
+
+#journey-selection .journey-info label {
+    display: block;
+    width: 100%;
+}

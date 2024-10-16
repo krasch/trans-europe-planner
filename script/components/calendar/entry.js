@@ -35,12 +35,14 @@ class CalendarEntry extends HTMLElement {
 
 function createCalendarEntry(connection) {
   const templateData = {
-    "connection-icon": { src: `images/${connection.type}.svg` },
-    "connection-number": { innerText: connection.displayId },
-    "connection-start-time": { innerText: connection.startDateTime.timeString },
-    "connection-start-station": { innerText: connection.startStation },
-    "connection-end-time": { innerText: connection.endDateTime.timeString },
-    "connection-end-station": { innerText: connection.endStation },
+    ".connection-icon": { src: `images/${connection.type}.svg` },
+    ".connection-number": { innerText: connection.displayId },
+    ".connection-start-time": {
+      innerText: connection.startDateTime.timeString,
+    },
+    ".connection-start-station": { innerText: connection.startStation },
+    ".connection-end-time": { innerText: connection.endDateTime.timeString },
+    ".connection-end-station": { innerText: connection.endStation },
   };
 
   // todo better fallback

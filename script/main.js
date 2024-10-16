@@ -34,32 +34,40 @@ class Journey {
   }
 }
 
-function initUpdateViews(map, calendar, database) {
+function initUpdateViews(map, calendar, journeySelection, database) {
   function updateViews(journeys, active) {
     const journey = journeys[active].connections;
     const allLegs = Object.values(journeys).flatMap((j) => j.legs);
 
     map.updateView(database.prepareDataForMap(journey, allLegs));
     calendar.updateView(database.prepareDataForCalendar(journey));
+    journeySelection.updateView(
+      database.prepareDataForJourneySelection(journeys, active),
+    );
   }
   return updateViews;
 }
 
-function main(map, calendar) {
+function main(map, calendar, journeySelection) {
   // init database
-  const connections = temporalizeConnections(CONNECTIONS);
+  const connections = temporalizeConnections(CONNECTIONS); // todo dates here
   const database = new Database(CITIES, STATIONS, connections);
 
   // init state
   const journeys = {
-    1: Journey.fromDefaults(ROUTES["Berlin->Roma over Verona"]),
-    2: Journey.fromDefaults(ROUTES["Berlin->Roma over Bologna"]),
-    3: Journey.fromDefaults(ROUTES["Berlin-Roma over Zürich"]),
+    journey1: Journey.fromDefaults(ROUTES["Berlin->Roma over Verona"]),
+    journey2: Journey.fromDefaults(ROUTES["Berlin->Roma over Bologna"]),
+    journey3: Journey.fromDefaults(ROUTES["Berlin-Roma over Zürich"]),
   };
-  let active = 1;
+  let active = "journey3";
 
   // draw initial journey
-  const updateViews = initUpdateViews(map, calendar, database);
+  const updateViews = initUpdateViews(
+    map,
+    calendar,
+    journeySelection,
+    database,
+  );
   updateViews(journeys, active);
 
   // hovering over map or calender
@@ -81,9 +89,8 @@ function main(map, calendar) {
     journeys[active].connections[leg] = connectionId;
     updateViews(journeys, active);
   });
-
-  setTimeout(() => {
-    active = 2;
+  journeySelection.on("journeySelected", (journeyId) => {
+    active = journeyId;
     updateViews(journeys, active);
-  }, "2000");
+  });
 }

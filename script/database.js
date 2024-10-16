@@ -143,6 +143,17 @@ class Database {
     return data;
   }
 
+  prepareDataForJourneySelection(journeys, active) {
+    const data = [];
+    for (let journeyId in journeys) {
+      data.push({
+        id: journeyId,
+        active: journeyId === active,
+      });
+    }
+    return data;
+  }
+
   #resolveLeg(leg) {
     // todo this is stupid
     const [startCityName, endCityName] = leg.split("-");
