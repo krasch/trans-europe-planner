@@ -40,29 +40,36 @@ function getColour(journeyId) {
 }
 
 function getJourneySummary(journey, database) {
+  // look up all the necessary data from the database
   const connections = [];
-  for (let [leg, connectionId] of Object.entries(journey.connections))
-    connections.push(database.connectionForLegAndId(leg, connectionId));
+  for (let [leg, connectionId] of Object.entries(journey.connections)) {
+    const connection = database.connectionForLegAndId(leg, connectionId);
 
-  const startStation = connections[0].stops[0].station;
-  const endStation = connections.at(-1).stops.at(-1).station;
+    const firstStop = connection.stops[0];
+    const lastStop = connection.stops.at(-1);
 
-  const startCity = database.cityNameForStation(startStation);
-  const endCity = database.cityNameForStation(endStation);
+    connections.push({
+      first: {
+        city: database.cityNameForStation(firstStop.station),
+        dateTime: firstStop.departure,
+      },
+      last: {
+        city: database.cityNameForStation(lastStop.station),
+        dateTime: lastStop.arrival,
+      },
+    });
+  }
 
-  // todo write saner
+  // todo sort by departure time
+
+  const startCity = connections[0].first.city;
+  const endCity = connections.at(-1).last.city;
+
   const vias = [];
-  if (connections.length > 1) {
-    for (let c of connections) {
-      const arrival = database.cityNameForStation(c.stops[0].station);
-      const departure = database.cityNameForStation(c.stops.at(-1).station);
-      if (!vias.includes(arrival) && ![startCity, endCity].includes(arrival))
-        vias.push(arrival);
-      if (
-        !vias.includes(departure) &&
-        ![startCity, endCity].includes(departure)
-      )
-        vias.push(departure);
+  for (let c of connections) {
+    for (let city of [c.first.city, c.last.city]) {
+      if (city !== startCity && city !== endCity && !vias.includes(city))
+        vias.push(city);
     }
   }
 
