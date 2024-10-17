@@ -77,3 +77,31 @@ test("minutesSinceTomorrow", function () {
   const dt2 = new CustomDateTime("2024-10-01", "03:04:00");
   expect(dt1.minutesSince(dt2)).toBe(-213);
 });
+
+test("humanReadableSinceLessThanAnHour", function () {
+  const dt1 = new CustomDateTime("2024-09-30", "13:04:00");
+  const dt2 = new CustomDateTime("2024-09-30", "12:57:00");
+
+  expect(dt1.humanReadableSince(dt2)).toBe("7min");
+});
+
+test("humanReadableSinceLessThanAnDay", function () {
+  const dt1 = new CustomDateTime("2024-10-01", "01:07:00");
+  const dt2 = new CustomDateTime("2024-09-30", "13:04:00");
+
+  expect(dt1.humanReadableSince(dt2)).toBe("12h 3min");
+});
+
+test("humanReadableSinceLessThanTwoDays", function () {
+  const dt1 = new CustomDateTime("2024-10-02", "01:07:00");
+  const dt2 = new CustomDateTime("2024-09-30", "13:04:00");
+
+  expect(dt1.humanReadableSince(dt2)).toBe("1d 12h 3min");
+});
+
+test("humanReadableSinceMoreThanTwoDays", function () {
+  const dt1 = new CustomDateTime("2024-10-03", "01:07:00");
+  const dt2 = new CustomDateTime("2024-09-30", "13:04:00");
+
+  expect(dt1.humanReadableSince(dt2)).toBe("2d 12h 3min");
+});

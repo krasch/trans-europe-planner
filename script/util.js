@@ -64,6 +64,30 @@ class CustomDateTime {
     const diffMilliseconds = this.datetime - other.datetime;
     return Math.floor(diffMilliseconds / 1000.0 / 60.0 / 60.0 / 24.0);
   }
+
+  humanReadableSince(other) {
+    let minutes = this.minutesSince(other);
+    if (minutes < 0)
+      throw Error("Can't do human-redable since with negative diff");
+
+    const days = Math.floor(minutes / (60 * 24));
+    minutes = minutes - days * (60 * 24);
+
+    const hours = Math.floor(minutes / 60);
+    minutes = minutes - hours * 60;
+
+    let daysString = "";
+    if (days > 0) daysString = `${days}d`;
+
+    let hoursString = "";
+    if (hours > 0) hoursString = `${hours}h`;
+
+    let minutesString = "";
+    if (minutes > 0) minutesString = `${minutes}min`;
+
+    const result = [daysString, hoursString, minutesString];
+    return result.filter((e) => e.length > 0).join(" ");
+  }
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
