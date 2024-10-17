@@ -1,158 +1,158 @@
-const { Database, getPartialConnection } = require("../script/database.js");
+const {
+  Database,
+  getPartialStops,
+  DatabaseError,
+} = require("../script/database.js");
+const {
+  testCities,
+  testStations,
+  createConnection,
+} = require("../tests/data.js");
+const { InvalidDatetimeFormatError } = require("../script/util.js");
 
-const testCities = {
-  city1: { name: "City1" },
-  city2: { name: "City2" },
-  city3: { name: "City3" },
-  city4: { name: "City4" },
-};
-
-const testStations = {
-  city1MainStation: {
-    city: "city1",
-    preferred: true,
-  },
-  city1ExtraStation: {
-    city: "city1",
-    preferred: false,
-  },
-  city2MainStation: {
-    city: "city2",
-    preferred: true,
-  },
-  city3MainStation: {
-    city: "city3",
-    preferred: true,
-  },
-  city3ExtraStation: {
-    city: "city3",
-    preferred: false,
-  },
-  city4MainStation: {
-    city: "city4",
-    preferred: true,
-  },
-};
-
-test("getPartialConnectionNoSlicingNeeded", function () {
+test("getPartialStopsNoSlicingNeeded", function () {
   const stops = [
-    { station: "city1MainStation" },
-    { station: "city2MainStation" },
-    { station: "city3MainStation" },
-    { station: "city4MainStation" },
+    { station: "city1MainStationId" },
+    { station: "city2MainStationId" },
+    { station: "city3MainStationId" },
+    { station: "city4MainStationId" },
   ];
 
-  const got = getPartialConnection(stops, "city1", "city4", testStations);
+  const got = getPartialStops(stops, 1, 4, testStations);
   expect(got).toStrictEqual(stops);
 });
 
-test("getPartialConnectionRemoveFirstAndLast", function () {
+test("getPartialStopsRemoveFirstAndLast", function () {
   const stops = [
-    { station: "city1MainStation" },
-    { station: "city2MainStation" },
-    { station: "city3MainStation" },
-    { station: "city4MainStation" },
+    { station: "city1MainStationId" },
+    { station: "city2MainStationId" },
+    { station: "city3MainStationId" },
+    { station: "city4MainStationId" },
   ];
 
-  const got = getPartialConnection(stops, "city2", "city3", testStations);
+  const got = getPartialStops(stops, 2, 3, testStations);
   expect(got).toStrictEqual(stops.slice(1, 3));
 });
 
-test("getPartialConnectionMultipleStationsPerCity", function () {
+test("getPartialStopsMultipleStationsPerCity", function () {
   const stops = [
-    { station: "city1ExtraStation" },
-    { station: "city1MainStation" },
-    { station: "city2MainStation" },
-    { station: "city3MainStation" },
-    { station: "city3ExtraStation" },
-    { station: "city4MainStation" },
+    { station: "city1ExtraStationId" },
+    { station: "city1MainStationId" },
+    { station: "city2MainStationId" },
+    { station: "city3MainStationId" },
+    { station: "city3ExtraStationId" },
+    { station: "city4MainStationId" },
   ];
 
-  const got = getPartialConnection(stops, "city1", "city3", testStations);
+  const got = getPartialStops(stops, 1, 3, testStations);
   expect(got).toStrictEqual(stops.slice(1, 4));
 });
 
-test("getPartialConnectionStartCityNotIncluded", function () {
+test("getPartialStopsStartCityNotIncluded", function () {
   const stops = [
-    { station: "city2MainStation" },
-    { station: "city3MainStation" },
-    { station: "city4MainStation" },
+    { station: "city2MainStationId" },
+    { station: "city3MainStationId" },
+    { station: "city4MainStationId" },
   ];
 
-  const got = getPartialConnection(stops, "city1", "city4", testStations);
+  const got = getPartialStops(stops, 1, 4, testStations);
   expect(got).toBe(null);
 });
 
-test("getPartialConnectionEndCityNotIncluded", function () {
+test("getPartialStopsEndCityNotIncluded", function () {
   const stops = [
-    { station: "city1MainStation" },
-    { station: "city2MainStation" },
-    { station: "city3MainStation" },
+    { station: "city1MainStationId" },
+    { station: "city2MainStationId" },
+    { station: "city3MainStationId" },
   ];
 
-  const got = getPartialConnection(stops, "city1", "city4", testStations);
+  const got = getPartialStops(stops, 1, 4, testStations);
   expect(got).toBe(null);
 });
 
-test("getPartialConnectionWrongDirection", function () {
+test("getPartialStopsWrongDirection", function () {
   const stops = [
-    { station: "city1MainStation" },
-    { station: "city2MainStation" },
-    { station: "city3MainStation" },
-    { station: "city4MainStation" },
+    { station: "city1MainStationId" },
+    { station: "city2MainStationId" },
+    { station: "city3MainStationId" },
+    { station: "city4MainStationId" },
   ];
 
-  const got = getPartialConnection(stops, "city4", "city2", testStations);
+  const got = getPartialStops(stops, 4, 2, testStations);
   expect(got).toBe(null);
 });
 
 test("getConnectionsForLeg", function () {
-  const connections = [
-    {
-      id: "c1",
-      type: "train",
-      stops: [
-        { station: "city1MainStation" },
-        { station: "city2MainStation" },
-        { station: "city3MainStation" },
-        { station: "city4MainStation" },
-      ],
-    },
-    {
-      id: "c2",
-      type: "train",
-      stops: [
-        { station: "city1MainStation" },
-        { station: "city2MainStation" },
-        { station: "city4MainStation" },
-      ],
-    },
-    {
-      id: "c3",
-      type: "train",
-      stops: [
-        { station: "city4MainStation" },
-        { station: "city1MainStation" },
-        { station: "city3MainStation" },
-      ],
-    },
-  ];
+  const c1 = createConnection([
+    "city1MainStationId",
+    "city2MainStationId",
+    "city3MainStationId",
+    "city4MainStationId",
+  ]);
 
-  const database = new Database(testCities, testStations, connections);
-  const got = database.connectionsForLeg("city1", "city3");
+  const c2 = createConnection([
+    "city1MainStationId",
+    "city2MainStationId",
+    "city4MainStationId",
+  ]);
 
-  const exp = [
-    {
-      id: "c1XCity1-City3",
-      type: "train",
-      stops: connections[0].stops.slice(0, 3),
-    },
-    {
-      id: "c3XCity1-City3",
-      type: "train",
-      stops: connections[2].stops.slice(1, 3),
-    },
-  ];
+  const c3 = createConnection([
+    "city4MainStationId",
+    "city1MainStationId",
+    "city3MainStationId",
+  ]);
+
+  const database = new Database(testCities, testStations, [c1, c2, c3]);
+  const got = database.connectionsForLeg("City1-City3");
+
+  const c1Leg = `${c1.id}XCity1-City3`;
+  const c3Leg = `${c3.id}XCity1-City3`;
+
+  const exp = {};
+  exp[c1Leg] = {
+    id: c1Leg,
+    leg: "City1-City3",
+    type: "train",
+    stops: c1.stops.slice(0, 3),
+  };
+  exp[c3Leg] = {
+    id: c3Leg,
+    leg: "City1-City3",
+    type: "train",
+    stops: c3.stops.slice(1, 3),
+  };
 
   expect(got).toStrictEqual(exp);
+});
+
+test("unknownCity", function () {
+  const database = new Database(testCities, testStations, []);
+  expect(() => database.city("badCityIdVeryUnknown")).toThrow(DatabaseError);
+});
+
+test("unknownStation", function () {
+  const database = new Database(testCities, testStations, []);
+  expect(() => database.station("badStationIdVeryUnknown")).toThrow(
+    DatabaseError,
+  );
+});
+
+test("badLegFormat", function () {
+  const database = new Database(testCities, testStations, []);
+  expect(() => database.connectionsForLeg("badLeg-")).toThrow(DatabaseError);
+});
+
+test("unknownCityInLeg", function () {
+  const database = new Database(testCities, testStations, []);
+  expect(() => database.connectionsForLeg("City1-City1000")).toThrow(
+    DatabaseError,
+  );
+});
+
+test("unknownConnectionId", function () {
+  const c1 = createConnection(["city1MainStationId", "city2MainStationId"]);
+  const database = new Database(testCities, testStations, []);
+  expect(() => database.connectionForLegAndId("City1-City2", "ABCD")).toThrow(
+    DatabaseError,
+  );
 });

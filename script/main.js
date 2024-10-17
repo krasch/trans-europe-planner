@@ -21,30 +21,12 @@ for (let route of Object.values(ROUTES))
   for (let [leg, connection] of Object.entries(route))
     ALLDEFAULTS[leg] = connection;
 
-class Journey {
-  constructor(defaultConnections) {
-    this.defaults = defaultConnections;
-    this.connections = {};
-  }
-
-  get legs() {
-    return Object.keys(this.defaults);
-  }
-
-  static fromDefaults(defaultConnections) {
-    const journey = new Journey(defaultConnections);
-    for (let leg in defaultConnections)
-      journey.connections[leg] = defaultConnections[leg];
-    return journey;
-  }
-}
-
 function initUpdateViews(map, calendar, journeySelection, database) {
   function updateViews(journeys, active) {
-    map.updateView(database.prepareDataForMap(journeys, active));
-    calendar.updateView(database.prepareDataForCalendar(journeys, active));
+    map.updateView(prepareDataForMap(journeys, active, database));
+    calendar.updateView(prepareDataForCalendar(journeys, active, database));
     journeySelection.updateView(
-      database.prepareDataForJourneySelection(journeys, active),
+      prepareDataForJourneySelection(journeys, active, database),
     );
   }
   return updateViews;

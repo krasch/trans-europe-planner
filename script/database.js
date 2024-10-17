@@ -1,3 +1,10 @@
+class DatabaseError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "BadDatabaseQuery";
+  }
+}
+
 function temporalizeConnections(connections) {
   const result = [];
 
@@ -20,7 +27,7 @@ function temporalizeConnections(connections) {
   return result;
 }
 
-function getPartialConnection(stops, startCityId, endCityId, stationInfo) {
+function getPartialStops(stops, startCityId, endCityId, stationInfo) {
   let startIndex = null;
   let endIndex = null;
 
@@ -45,145 +52,123 @@ function getPartialConnection(stops, startCityId, endCityId, stationInfo) {
   return stops.slice(startIndex, endIndex + 1);
 }
 
-function getColour(journeyId) {
-  const body = document.getElementsByTagName("body")[0];
-  const style = getComputedStyle(body);
-
-  const assignedColors = {
-    journey1: style.getPropertyValue("--journey-green"),
-    journey2: style.getPropertyValue("--journey-orange"),
-    journey3: style.getPropertyValue("--journey-purple"),
-  };
-
-  return assignedColors[journeyId];
-}
-
 class Database {
   #cities;
   #stations;
-  #connections;
-  #cityNameToId;
+  #connectionTemplates;
+
+  #resolvedConnections;
 
   constructor(cities, stations, connections) {
     this.#cities = cities;
     this.#stations = stations;
-    this.#connections = connections;
+    this.#connectionTemplates = connections; // not yet specific to a leg
 
-    this.#cityNameToId = new Map(
-      Object.keys(this.#cities).map((c) => [this.#cities[c].name, Number(c)]), // todo why is Number necessary
-    );
+    // this will be filled with all the connections the UI is interested in
+    // should always be accessed using connectionsForLeg to make sure that leg has been indexed
+    this.#resolvedConnections = {};
+  }
+  connectionsForLeg(leg) {
+    if (!this.#resolvedConnections[leg]) this.#indexLeg(leg);
+
+    const connections = this.#resolvedConnections[leg];
+    if (Object.keys(connections).length === 0)
+      throw new DatabaseError(`No connections available for leg ${leg}`);
+
+    return connections;
   }
 
-  connectionsForLeg(startCity, endCity) {
-    const result = [];
+  connectionForLegAndId(leg, connectionId) {
+    const connections = this.connectionsForLeg(leg);
 
-    for (let connection of this.#connections) {
-      // get the part of the connection that makes up this leg
-      const partial = getPartialConnection(
-        connection.stops,
-        startCity,
-        endCity,
+    const connection = connections[connectionId];
+    if (connection === undefined)
+      throw new DatabaseError(`No connection available for id ${connectionId}`);
+
+    return connection;
+  }
+
+  city(cityId) {
+    if (!this.#cities[cityId])
+      throw new DatabaseError(`Unknown city ${cityId}`);
+    return this.#cities[cityId];
+  }
+
+  station(stationId) {
+    if (!this.#stations[stationId])
+      throw new DatabaseError(`Unknown station ${stationId}`);
+
+    return this.#stations[stationId];
+  }
+
+  citiesForLeg(leg) {
+    const [startCityId, endCityId] = this.#resolveLeg(leg);
+    return [this.city(startCityId), this.city(endCityId)];
+  }
+
+  cityNameForStation(stationId) {
+    return this.city(this.station(stationId).city).name;
+  }
+
+  stationName(stationId) {
+    return this.station(stationId).name;
+  }
+
+  #indexLeg(leg) {
+    const [startCityId, endCityId] = this.#resolveLeg(leg);
+
+    this.#resolvedConnections[leg] = {};
+
+    for (let connectionTemplate of this.#connectionTemplates) {
+      const partial = getPartialStops(
+        connectionTemplate.stops,
+        startCityId,
+        endCityId,
         this.#stations,
       );
 
-      // there is no such part
+      // there is no such part -> can not fulfill this leg with this connection
       if (partial === null) continue;
 
       // id suffix based on leg
-      const suffix = `${this.#cities[startCity].name}-${this.#cities[endCity].name}`;
+      const leg = `${this.#cities[startCityId].name}-${this.#cities[endCityId].name}`;
+      const id = `${connectionTemplate.id}X${leg}`;
 
-      result.push({
-        id: `${connection.id}X${suffix}`,
-        type: connection.type,
+      const connection = {
+        id: id,
+        leg: leg,
+        type: connectionTemplate.type,
         stops: partial,
-      });
-    }
-
-    return result;
-  }
-
-  prepareDataForMap(journeys, active) {
-    const journey = journeys[active].connections;
-    const allLegs = Object.values(journeys).flatMap((j) => j.legs);
-
-    const prepareData = (leg, active) => {
-      const [startCity, endCity] = this.#resolveLeg(leg);
-      return {
-        id: leg,
-        startCity: this.#cities[startCity],
-        endCity: this.#cities[endCity],
-        active: active,
       };
-    };
 
-    const data = [];
-    const legsAlreadyAdded = [];
-
-    // add active legs (coloured lines)
-    Object.keys(journey).forEach((leg) => {
-      if (legsAlreadyAdded.includes(leg)) return;
-      data.push(prepareData(leg, true));
-      legsAlreadyAdded.push(leg);
-    });
-
-    // add inactive legs (grey lines)
-    allLegs.forEach((leg) => {
-      if (legsAlreadyAdded.includes(leg)) return;
-      data.push(prepareData(leg, false));
-      legsAlreadyAdded.push(leg);
-    });
-
-    return [data, getColour(active)];
-  }
-
-  prepareDataForCalendar(journeys, active) {
-    const data = [];
-
-    const connections = journeys[active].connections;
-    for (let [leg, activeConnection] of Object.entries(connections)) {
-      const [startCity, endCity] = this.#resolveLeg(leg);
-
-      for (let connection of this.connectionsForLeg(startCity, endCity)) {
-        data.push({
-          id: connection.id,
-          displayId: connection.id.split("X")[1], // todo not nice
-          type: connection.type,
-          leg: leg,
-          startStation: this.#stations[connection.stops[0].station].name,
-          startDateTime: connection.stops[0].departure,
-          endStation: this.#stations[connection.stops.at(-1).station].name,
-          endDateTime: connection.stops.at(-1).arrival,
-          active: connection.id === activeConnection,
-          color: getColour(active),
-        });
-      }
+      this.#resolvedConnections[leg][id] = connection;
     }
-    return data;
-  }
-
-  prepareDataForJourneySelection(journeys, active) {
-    const data = [];
-    for (let journeyId in journeys) {
-      data.push({
-        id: journeyId,
-        active: journeyId === active,
-        color: getColour(journeyId),
-      });
-    }
-    return data;
   }
 
   #resolveLeg(leg) {
-    // todo this is stupid
+    // todo this is temporary while we are setting things up with human-readable lag names
     const [startCityName, endCityName] = leg.split("-");
-    const startCity = this.#cityNameToId.get(startCityName);
-    const endCity = this.#cityNameToId.get(endCityName);
-    return [startCity, endCity];
+    if (!startCityName || !endCityName)
+      throw new DatabaseError(`Invalid leg name ${leg}`);
+
+    const startCityId = this.#cityNameToId(startCityName);
+    const endCityId = this.#cityNameToId(endCityName);
+
+    return [startCityId, endCityId];
+  }
+
+  // temporary utility method while we are still passing around human-readable lag names
+  #cityNameToId(name) {
+    for (let [id, city] of Object.entries(this.#cities)) {
+      if (city.name === name) return Number(id);
+    }
+    throw new DatabaseError(`Unknown city ${name}`);
   }
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.Database = Database;
-  module.exports.getPartialConnection = getPartialConnection;
+  module.exports.DatabaseError = DatabaseError;
+  module.exports.getPartialStops = getPartialStops;
 }
