@@ -111,34 +111,21 @@ function prepareDataForJourneySelection(journeys, activeId, database) {
 }
 
 function prepareDataForMap(journeys, activeId, database) {
-  const legsInJourney = journeys[activeId].legs;
+  // want to display all the legs in all journeys
   const allLegs = Object.values(journeys).flatMap((j) => j.legs);
+  const allLLegsUnique = Array.from(new Set(allLegs));
 
-  const prepareData = (leg, isActive) => {
+  // but only legs in the active journey will be marked as active
+  const activeLegs = journeys[activeId].legs;
+
+  const data = allLLegsUnique.map((leg) => {
     const [startCity, endCity] = database.citiesForLeg(leg);
     return {
       id: leg,
       startCity: startCity,
       endCity: endCity,
-      active: isActive,
+      active: activeLegs.includes(leg),
     };
-  };
-
-  const data = [];
-  const legsAlreadyAdded = [];
-
-  // add active legs (coloured lines)
-  legsInJourney.forEach((leg) => {
-    if (legsAlreadyAdded.includes(leg)) return;
-    data.push(prepareData(leg, true));
-    legsAlreadyAdded.push(leg);
-  });
-
-  // add inactive legs (grey lines)
-  allLegs.forEach((leg) => {
-    if (legsAlreadyAdded.includes(leg)) return;
-    data.push(prepareData(leg, false));
-    legsAlreadyAdded.push(leg);
   });
 
   return [data, getColour(activeId)];
