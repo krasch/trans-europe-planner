@@ -30,37 +30,37 @@ function createJourney(items) {
 }
 
 test("getJourneySummaryNoVias", function () {
-  const c1 = createConnection(["city1MainStationId", "city2MainStationId"]);
-  const c2 = createConnection(["city2MainStationId", "city3MainStationId"]);
-  const c3 = createConnection(["city3MainStationId", "city4MainStationId"]);
+  const c1 = createConnection(["city1MainStationId", "city2MainStationId"], 14);
+  const c2 = createConnection(["city2MainStationId", "city3MainStationId"], 15);
+  const c3 = createConnection(["city3MainStationId", "city4MainStationId"], 16);
 
   const database = new Database(testCities, testStations, [c1, c2, c3]);
 
   // no VIA's
   const journey = createJourney({ "City1-City2": c1 });
 
-  const exp = "From City1 to City2";
+  const exp = "From City1 to City2<br/>9min";
   expect(getJourneySummary(journey, database)).toStrictEqual(exp);
 });
 
 test("getJourneySummaryOneVia", function () {
-  const c1 = createConnection(["city1MainStationId", "city2MainStationId"]);
-  const c2 = createConnection(["city2MainStationId", "city3MainStationId"]);
-  const c3 = createConnection(["city3MainStationId", "city4MainStationId"]);
+  const c1 = createConnection(["city1MainStationId", "city2MainStationId"], 14);
+  const c2 = createConnection(["city2MainStationId", "city3MainStationId"], 15);
+  const c3 = createConnection(["city3MainStationId", "city4MainStationId"], 16);
 
   const database = new Database(testCities, testStations, [c1, c2, c3]);
 
   // no VIA's
   const journey = createJourney({ "City1-City2": c1, "City2-City3": c2 });
 
-  const exp = "From City1 to City3 via City2";
+  const exp = "From City1 to City3 via City2<br/>1h 9min";
   expect(getJourneySummary(journey, database)).toStrictEqual(exp);
 });
 
 test("getJourneySummaryTwoVias", function () {
-  const c1 = createConnection(["city1MainStationId", "city2MainStationId"]);
-  const c2 = createConnection(["city2MainStationId", "city3MainStationId"]);
-  const c3 = createConnection(["city3MainStationId", "city4MainStationId"]);
+  const c1 = createConnection(["city1MainStationId", "city2MainStationId"], 14);
+  const c2 = createConnection(["city2MainStationId", "city3MainStationId"], 15);
+  const c3 = createConnection(["city3MainStationId", "city4MainStationId"], 16);
 
   const database = new Database(testCities, testStations, [c1, c2, c3]);
 
@@ -71,7 +71,25 @@ test("getJourneySummaryTwoVias", function () {
     "City3-City4": c3,
   });
 
-  const exp = "From City1 to City4 via City2, City3";
+  const exp = "From City1 to City4 via City2, City3<br/>2h 9min";
+  expect(getJourneySummary(journey, database)).toStrictEqual(exp);
+});
+
+test("getJourneySummaryTwoViasBadOrdering", function () {
+  const c1 = createConnection(["city1MainStationId", "city2MainStationId"], 14);
+  const c2 = createConnection(["city2MainStationId", "city3MainStationId"], 15);
+  const c3 = createConnection(["city3MainStationId", "city4MainStationId"], 16);
+
+  const database = new Database(testCities, testStations, [c1, c2, c3]);
+
+  // two vias
+  const journey = createJourney({
+    "City3-City4": c3,
+    "City1-City2": c1,
+    "City2-City3": c2,
+  });
+
+  const exp = "From City1 to City4 via City2, City3<br/>2h 9min";
   expect(getJourneySummary(journey, database)).toStrictEqual(exp);
 });
 
@@ -138,8 +156,8 @@ test("prepareDataForJourneySelection", function () {
   // c1 and c2 do the same leg at different hours, only c1 is used in the journey
   const c1 = createConnection(["city1MainStationId", "city2MainStationId"], 14);
   const c2 = createConnection(["city1MainStationId", "city2MainStationId"], 15);
-  const c3 = createConnection(["city2MainStationId", "city3MainStationId"]);
-  const c4 = createConnection(["city1MainStationId", "city3MainStationId"]);
+  const c3 = createConnection(["city2MainStationId", "city3MainStationId"], 16);
+  const c4 = createConnection(["city1MainStationId", "city3MainStationId"], 14);
 
   const database = new Database(testCities, testStations, [c1, c2, c3, c4]);
 
@@ -154,13 +172,13 @@ test("prepareDataForJourneySelection", function () {
       id: "journey1",
       active: true,
       color: testColors.journey1,
-      summary: "From City1 to City3 via City2",
+      summary: "From City1 to City3 via City2<br/>2h 9min",
     },
     {
       id: "journey2",
       active: false,
       color: testColors.journey2,
-      summary: "From City1 to City3",
+      summary: "From City1 to City3<br/>9min",
     },
   ];
 

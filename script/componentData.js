@@ -60,10 +60,15 @@ function getJourneySummary(journey, database) {
     });
   }
 
-  // todo sort by departure time
+  // sort by departure time
+  connections.sort((a, b) => a.first.dateTime.minutesSince(b.first.dateTime));
 
   const startCity = connections[0].first.city;
   const endCity = connections.at(-1).last.city;
+
+  const startTime = connections[0].first.dateTime;
+  const endTime = connections.at(-1).last.dateTime;
+  const travelTime = endTime.humanReadableSince(startTime);
 
   const vias = [];
   for (let c of connections) {
@@ -76,7 +81,7 @@ function getJourneySummary(journey, database) {
   let viasString = "";
   if (vias.length > 0) viasString = ` via ${vias.join(", ")}`;
 
-  return `From ${startCity} to ${endCity}${viasString}`;
+  return `From ${startCity} to ${endCity}${viasString}<br/>${travelTime}`;
 }
 
 function prepareDataForCalendar(journeys, activeId, datatabase) {
