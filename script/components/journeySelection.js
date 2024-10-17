@@ -32,7 +32,7 @@ class JourneySelection {
       if (!document.getElementById(journey.id)) {
         const data = {
           input: { value: journey.id },
-          label: { innerHTML: journey.summary, htmlFor: journey.id },
+          label: { htmlFor: journey.id },
         };
         const entry = createElementFromTemplate("template-journey-info", data);
         entry.id = journey.id;
@@ -49,6 +49,7 @@ class JourneySelection {
       } else entry.classList.remove("checked");
 
       entry.style.setProperty("--color", journey.color);
+      entry.getElementsByTagName("label")[0].innerHTML = journey.summary;
     }
   }
 }
