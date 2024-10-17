@@ -8,6 +8,10 @@ class Journey {
     return Object.keys(this.defaults);
   }
 
+  get activeLegs() {
+    return Object.keys(this.connections);
+  }
+
   static fromDefaults(defaultConnections) {
     const journey = new Journey(defaultConnections);
     for (let leg in defaultConnections)
@@ -127,8 +131,8 @@ function prepareDataForMap(journeys, activeId, database) {
   const allLegs = Object.values(journeys).flatMap((j) => j.legs);
   const allLLegsUnique = Array.from(new Set(allLegs));
 
-  // but only legs in the active journey will be marked as active
-  const activeLegs = journeys[activeId].legs;
+  // but currently used legs in the active journey will be marked as active
+  const activeLegs = journeys[activeId].activeLegs;
 
   const data = allLLegsUnique.map((leg) => {
     const [startCity, endCity] = database.citiesForLeg(leg);
