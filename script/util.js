@@ -37,6 +37,10 @@ class CustomDateTime {
       );
   }
 
+  toString() {
+    return this.datetime.toString();
+  }
+
   get dateString() {
     return this.datetime.toISOString().slice(0, 10);
   }

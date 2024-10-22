@@ -69,6 +69,7 @@ class Database {
     this.#resolvedConnections = {};
   }
   connectionsForLeg(leg) {
+    // todo return list instead of dict?
     if (!this.#resolvedConnections[leg]) this.#indexLeg(leg);
 
     const connections = this.#resolvedConnections[leg];

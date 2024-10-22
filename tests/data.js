@@ -53,12 +53,13 @@ function initIncrementalId() {
 
 const incrementalId = initIncrementalId();
 
-function createConnection(stations, startHour) {
+function createConnection(stations, startHour, startDay) {
   // because of the time handling below
   if (stations.length > 5)
     throw Error("Can not generate such long connections");
 
   if (!startHour) startHour = 14;
+  if (!startDay) startDay = "2024-10-15";
 
   const stops = [];
 
@@ -72,11 +73,8 @@ function createConnection(stations, startHour) {
 
     stops.push({
       station: stations[i],
-      arrival: new CustomDateTime("2024-10-15", `${startHour}:${arrival}:00`),
-      departure: new CustomDateTime(
-        "2024-10-15",
-        `${startHour}:${departure}:00`,
-      ),
+      arrival: new CustomDateTime(startDay, `${startHour}:${arrival}:00`),
+      departure: new CustomDateTime(startDay, `${startHour}:${departure}:00`),
     });
   }
 
