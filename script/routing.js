@@ -6,19 +6,21 @@ class CreatingItineraryNotPossible extends Error {
 }
 
 function getFirstMatchingConnection(connections, startDateTime) {
+  const leg = connections[0].leg;
+
   //sort by departure
   connections = Object.values(connections);
   connections = connections.sort((c1, c2) =>
-    c1.stops[0].departure.minutesSince(c2.stops[0].departure),
+    c1.stops[0].departure.compareTo(c2.stops[0].departure),
   );
 
   // filter by departure
   if (startDateTime)
     connections = connections.filter(
-      (c) => c.stops[0].departure >= startDateTime,
+      (c) => c.stops[0].departure.valueOf() >= startDateTime.valueOf(),
     );
 
-  if (connections.length === 0) throw new CreatingItineraryNotPossible();
+  if (connections.length === 0) throw new CreatingItineraryNotPossible(leg);
 
   return connections[0];
 }
@@ -37,6 +39,9 @@ function createItineraryForRoute(legs, startDateTime, database) {
 
   return itinerary;
 }
+
+// todo mode = space-before, space-between, etc
+// todo don't try to start before 8 on all travel dates
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {

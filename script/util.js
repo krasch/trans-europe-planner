@@ -37,8 +37,12 @@ class CustomDateTime {
       );
   }
 
-  toString() {
-    return this.datetime.toString();
+  compareTo(other) {
+    return this.valueOf() - other.valueOf();
+  }
+
+  valueOf() {
+    return this.datetime.getTime(); // unix ts
   }
 
   get dateString() {

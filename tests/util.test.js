@@ -105,3 +105,24 @@ test("humanReadableSinceMoreThanTwoDays", function () {
 
   expect(dt1.humanReadableSince(dt2)).toBe("2d 12h 3min");
 });
+
+test("compareToEqual", function () {
+  const dt1 = new CustomDateTime("2024-10-03", "00:00:00");
+  const dt2 = new CustomDateTime("2024-10-03", "00:00:00");
+
+  expect(dt1.compareTo(dt2)).toBe(0);
+});
+
+test("compareToSmaller", function () {
+  const dt1 = new CustomDateTime("2024-10-03", "00:00:00");
+  const dt2 = new CustomDateTime("2024-10-03", "01:00:00");
+
+  expect(dt1.compareTo(dt2)).toBeLessThan(0);
+});
+
+test("compareToLarger", function () {
+  const dt1 = new CustomDateTime("2024-10-03", "02:00:00");
+  const dt2 = new CustomDateTime("2024-10-03", "01:00:00");
+
+  expect(dt1.compareTo(dt2)).toBeGreaterThan(0);
+});
