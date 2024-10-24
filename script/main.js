@@ -23,12 +23,6 @@ ROUTES = {
   "Berlin->Roma over Zürich": ["Berlin-Zürich", "Zürich-Milano", "Milano-Roma"],
 };
 
-STARTS = {
-  "Berlin->Roma over Verona": new CustomDateTime("2024-10-16", "07:00:00"),
-  "Berlin->Roma over Bologna": new CustomDateTime("2024-10-16", "09:00:00"),
-  "Berlin->Roma over Zürich": new CustomDateTime("2024-10-16", "09:00:00"),
-};
-
 function initUpdateViews(map, calendar, journeySelection, database) {
   function updateViews(journeys, active) {
     map.updateView(prepareDataForMap(journeys, active, database));
@@ -42,14 +36,16 @@ function initUpdateViews(map, calendar, journeySelection, database) {
 
 function main(map, calendar, journeySelection) {
   // init database
-  const connections = temporalizeConnections(CONNECTIONS); // todo dates here
+  const connections = removeMultidayConnections(
+    temporalizeConnections(CONNECTIONS), // todo dates here
+  );
   const database = new Database(CITIES, STATIONS, connections);
 
   // build itineraries
   const initial = {};
   for (let key in ROUTES) {
     const legs = ROUTES[key];
-    const connections = createItineraryForRoute(legs, STARTS[key], database);
+    const connections = createItineraryForRoute(legs, database);
 
     // todo use better data structures
     const map = {};

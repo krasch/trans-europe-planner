@@ -5,6 +5,13 @@ class DatabaseError extends Error {
   }
 }
 
+function removeMultidayConnections(connections) {
+  return connections.filter(
+    (c) =>
+      c.stops[0].departure.minutesSinceMidnight <=
+      c.stops.at(-1).arrival.minutesSinceMidnight,
+  );
+}
 function temporalizeConnections(connections) {
   const result = [];
 

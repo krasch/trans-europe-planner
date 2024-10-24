@@ -1,172 +1,226 @@
-const { Database } = require("../script/database.js");
 const {
+  cartesianProduct,
+  isValidItinerary,
+  itinerarySummary,
+  chooseItinerary,
   createItineraryForRoute,
-  CreatingItineraryNotPossible,
 } = require("../script/routing.js");
-const { CustomDateTime } = require("../script/util.js");
-const {
-  testCities,
-  testStations,
-  createConnection,
-} = require("../tests/data.js");
+const { createDatabase } = require("../tests/data.js");
 
-test("createItinerarySingleLegSingleConnection", function () {
-  const c1 = createConnection(
-    ["city1MainStationId", "city2MainStationId"],
-    6, // departs at 06:01 and arrives at 06:10
-  );
-  const database = new Database(testCities, testStations, [c1]);
+test("cartesianProductSingleArraySingleItem", function () {
+  const array1 = ["a"];
+  const expected = [["a"]];
 
-  const start = c1.stops[0].departure;
-  const got = createItineraryForRoute(["City1-City2"], start, database);
-  const exp = [`${c1.id}XCity1-City2`];
-
-  expect(got).toStrictEqual(exp);
+  expect(cartesianProduct([array1])).toStrictEqual(expected);
 });
 
-test("createItinerarySingleLegSingleConnectionNoStartGiven", function () {
-  const c1 = createConnection(
-    ["city1MainStationId", "city2MainStationId"],
-    6, // departs at 06:01 and arrives at 06:10
-  );
-  const database = new Database(testCities, testStations, [c1]);
+test("cartesianProductTwoArraysSingleItem", function () {
+  const array1 = ["a"];
+  const array2 = ["b"];
+  const expected = [["a", "b"]];
 
-  const start = null;
-  const route = ["City1-City2"];
-
-  const got = createItineraryForRoute(route, start, database);
-  const exp = [`${c1.id}XCity1-City2`];
-
-  expect(got).toStrictEqual(exp);
+  expect(cartesianProduct([array1, array2])).toStrictEqual(expected);
 });
 
-test("createItinerarySingleLegSingleConnectionTooEarly", function () {
-  const c1 = createConnection(
-    ["city1MainStationId", "city2MainStationId"],
-    6, // departs at 06:01 and arrives at 06:10
-  );
-  const c2 = createConnection(
-    ["city1MainStationId", "city2MainStationId"],
-    8, // departs at 08:01 and arrives at 08:10
-  );
-  // only adding c1 to database
-  const database = new Database(testCities, testStations, [c1]);
+test("cartesianProductMultipleArraysMultipleItems", function () {
+  const array1 = ["a", "b", "c"];
+  const array2 = ["x"];
+  const array3 = ["1", "2"];
 
-  const start = c2.stops[0].departure; // looking for departures >= c2
-  const route = ["City1-City2"];
-  const f = () => createItineraryForRoute(route, start, database);
-  expect(f).toThrow(CreatingItineraryNotPossible);
-});
-
-test("createItinerarySingleLegTwoConnectionsUseFirst", function () {
-  const c1 = createConnection(
-    ["city1MainStationId", "city2MainStationId"],
-    6, // departs at 06:01 and arrives at 06:10
-  );
-  const c2 = createConnection(
-    ["city1MainStationId", "city2MainStationId"],
-    8, // departs at 08:01 and arrives at 08:10
-  );
-  const database = new Database(testCities, testStations, [c1, c2]);
-
-  const start = c1.stops[0].departure;
-  const route = ["City1-City2"];
-
-  const got = createItineraryForRoute(route, start, database);
-  const exp = [`${c1.id}XCity1-City2`];
-
-  expect(got).toStrictEqual(exp);
-});
-
-test("createItinerarySingleLegTwoConnectionsUseSecond", function () {
-  const c1 = createConnection(
-    ["city1MainStationId", "city2MainStationId"],
-    6, // departs at 06:01 and arrives at 06:10
-  );
-  const c2 = createConnection(
-    ["city1MainStationId", "city2MainStationId"],
-    8, // departs at 08:01 and arrives at 08:10
-  );
-  const database = new Database(testCities, testStations, [c1, c2]);
-
-  const start = c2.stops[0].departure;
-  const route = ["City1-City2"];
-
-  const got = createItineraryForRoute(route, start, database);
-  const exp = [`${c2.id}XCity1-City2`];
-
-  expect(got).toStrictEqual(exp);
-});
-
-test("createItineraryMultipleLegsOneConnectionEach", function () {
-  const c1 = createConnection(
-    ["city1MainStationId", "city2MainStationId"],
-    6, // departs at 06:01 and arrives at 06:10
-  );
-  const c2 = createConnection(
-    ["city2MainStationId", "city3MainStationId"],
-    7, // departs at 07:01 and arrives at 07:10
-  );
-  const c3 = createConnection(
-    ["city3MainStationId", "city4MainStationId"],
-    8, // departs at 08:01 and arrives at 08:10
-  );
-  const database = new Database(testCities, testStations, [c1, c2, c3]);
-
-  const start = null;
-  const route = ["City1-City2", "City2-City3", "City3-City4"];
-
-  const got = createItineraryForRoute(route, start, database);
-  const exp = [
-    `${c1.id}XCity1-City2`,
-    `${c2.id}XCity2-City3`,
-    `${c3.id}XCity3-City4`,
+  const expected = [
+    ["a", "x", "1"],
+    ["a", "x", "2"],
+    ["b", "x", "1"],
+    ["b", "x", "2"],
+    ["c", "x", "1"],
+    ["c", "x", "2"],
   ];
 
-  expect(got).toStrictEqual(exp);
+  expect(cartesianProduct([array1, array2, array3])).toStrictEqual(expected);
 });
 
-test("createItineraryMultipleLegsOneConnectionEachOneTooLate", function () {
-  const c1 = createConnection(
-    ["city1MainStationId", "city2MainStationId"],
-    6, // departs at 06:01 and arrives at 06:10
-  );
-  const c2 = createConnection(
-    ["city2MainStationId", "city3MainStationId"],
-    9, // departs at 09:01 and arrives at 09:10
-  );
-  const c3 = createConnection(
-    ["city3MainStationId", "city4MainStationId"],
-    8, // departs at 08:01 and arrives at 08:10
-  );
-  const database = new Database(testCities, testStations, [c1, c2, c3]);
+test("isValidItineraryOneLeg", function () {
+  const database = createDatabase(["City1 (6:01) -> City2 (6:10) on Day 1"]);
 
-  const start = null;
-  const route = ["City1-City2", "City2-City3", "City3-City4"];
+  const itinerary = [
+    Object.values(database.connectionsForLeg("City1-City2"))[0],
+  ];
 
-  const f = () => createItineraryForRoute(route, start, database);
-  expect(f).toThrow(CreatingItineraryNotPossible);
+  expect(isValidItinerary(itinerary)).toBe(true);
 });
 
-test("createItineraryMultipleDays", function () {
-  const c1 = createConnection(
-    ["city1MainStationId", "city2MainStationId"],
-    6,
-    "2024-10-15",
-  );
-  const c2 = createConnection(
-    ["city2MainStationId", "city3MainStationId"],
-    8,
-    "2024-10-16",
-  );
+test("isValidItineraryTwoLegs", function () {
+  const database = createDatabase([
+    "City1 (6:01) -> City2 (6:10) on Day 1",
+    "City2 (7:01) -> City3 (7:10) on Day 1",
+  ]);
 
-  const database = new Database(testCities, testStations, [c1, c2]);
+  const itinerary = [
+    Object.values(database.connectionsForLeg("City1-City2"))[0],
+    Object.values(database.connectionsForLeg("City2-City3"))[0],
+  ];
 
-  const start = null;
-  const route = ["City1-City2", "City2-City3"];
+  expect(isValidItinerary(itinerary)).toBe(true);
+});
 
-  const got = createItineraryForRoute(route, start, database);
-  const exp = [`${c1.id}XCity1-City2`, `${c2.id}XCity2-City3`];
+test("isValidItineraryTwoLegsSecondLeavesTooEarlySameDay", function () {
+  const database = createDatabase([
+    "City1 (7:01) -> City2 (7:10) on Day 1",
+    "City2 (7:01) -> City3 (7:10) on Day 1",
+  ]);
 
-  expect(got).toStrictEqual(exp);
+  const itinerary = [
+    Object.values(database.connectionsForLeg("City1-City2"))[0],
+    Object.values(database.connectionsForLeg("City2-City3"))[0],
+  ];
+
+  expect(isValidItinerary(itinerary)).toBe(false);
+});
+
+test("isValidItineraryTwoLegsSecondLeavesTooEarlyDayBefore", function () {
+  const database = createDatabase([
+    "City1 (6:01) -> City2 (6:10) on Day 2",
+    "City2 (7:01) -> City3 (7:10) on Day 1",
+  ]);
+
+  const itinerary = [
+    Object.values(database.connectionsForLeg("City1-City2"))[0],
+    Object.values(database.connectionsForLeg("City2-City3"))[0],
+  ];
+
+  expect(isValidItinerary(itinerary)).toBe(false);
+});
+
+test("itinerarySummaryOneTravelDay", function () {
+  const database = createDatabase([
+    "City1 (6:01) -> City2 (6:10) on Day 1",
+    "City2 (7:01) -> City3 (7:10) on Day 1",
+  ]);
+
+  const itinerary = [
+    Object.values(database.connectionsForLeg("City1-City2"))[0],
+    Object.values(database.connectionsForLeg("City2-City3"))[0],
+  ];
+
+  const actual = itinerarySummary(itinerary);
+  const expected = {
+    travelDays: 1,
+    earliestDeparture: 6 * 60 + 1,
+    latestDeparture: 6 * 60 + 1,
+    latestArrival: 7 * 60 + 10,
+    longestDailyTravelTime: 69,
+    busiestDay: 1,
+    totalTravelTime: 69,
+  };
+
+  expect(actual).toStrictEqual(expected);
+});
+
+test("itinerarySummaryMultipleTravelDays", function () {
+  const database = createDatabase([
+    "City1 (6:01) -> City2 (6:10) on Day 1",
+    "City2 (9:01) -> City1 (9:10) on Day 1",
+    "City1 (9:01) -> City3 (9:10) on Day 2",
+    "City3 (6:01) -> City4 (6:10) on Day 3",
+  ]);
+
+  const itinerary = [
+    Object.values(database.connectionsForLeg("City1-City2"))[0],
+    Object.values(database.connectionsForLeg("City2-City1"))[0],
+    Object.values(database.connectionsForLeg("City1-City3"))[0],
+    Object.values(database.connectionsForLeg("City3-City4"))[0],
+  ];
+
+  const actual = itinerarySummary(itinerary);
+  const expected = {
+    travelDays: 3,
+    earliestDeparture: 6 * 60 + 1,
+    latestDeparture: 9 * 60 + 1,
+    latestArrival: 9 * 60 + 10,
+    longestDailyTravelTime: 3 * 60 + 9,
+    totalTravelTime: 3 * 60 + 9 + 9 + 9,
+    busiestDay: 1,
+  };
+
+  expect(actual).toStrictEqual(expected);
+});
+
+test("itinerarySummaryMultipleTravelDaysWithGap", function () {
+  const database = createDatabase([
+    "City1 (6:01) -> City2 (6:10) on Day 1",
+    "City3 (6:01) -> City4 (6:10) on Day 3",
+  ]);
+
+  const itinerary = [
+    Object.values(database.connectionsForLeg("City1-City2"))[0],
+    Object.values(database.connectionsForLeg("City3-City4"))[0],
+  ];
+
+  const actual = itinerarySummary(itinerary);
+  const expected = {
+    travelDays: 3,
+    earliestDeparture: 6 * 60 + 1,
+    latestDeparture: 6 * 60 + 1,
+    latestArrival: 6 * 60 + 10,
+    longestDailyTravelTime: 9,
+    totalTravelTime: 9 + 9,
+    busiestDay: 1,
+  };
+
+  expect(actual).toStrictEqual(expected);
+});
+
+test("chooseItinerarySingleItinerary", function () {
+  const it0 = {
+    travelDays: 2,
+    earliestDeparture: 8 * 60,
+    latestArrival: 22 * 60,
+    longestDailyTravelTime: 10 * 60,
+    totalTravelTime: 20 * 60,
+  };
+
+  const actual = chooseItinerary([it0]);
+  expect(actual).toStrictEqual(0);
+});
+
+test("chooseItineraryOneDayVersusTwoDays", function () {
+  const it0 = {
+    travelDays: 2,
+    earliestDeparture: 8 * 60,
+    latestArrival: 22 * 60,
+    longestDailyTravelTime: 10 * 60,
+    totalTravelTime: 20 * 60,
+  };
+
+  const it1 = {
+    travelDays: 1,
+    earliestDeparture: 8 * 60,
+    latestArrival: 22 * 60,
+    longestDailyTravelTime: 10 * 60,
+    totalTravelTime: 10 * 60,
+  };
+
+  const actual = chooseItinerary([it0, it1]);
+  expect(actual).toStrictEqual(1);
+});
+
+test("chooseItinerarySameExceptForTotalTravelTime", function () {
+  const it0 = {
+    travelDays: 2,
+    earliestDeparture: 8 * 60,
+    latestArrival: 22 * 60,
+    longestDailyTravelTime: 10 * 60,
+    totalTravelTime: 20 * 60,
+  };
+
+  const it1 = {
+    travelDays: 2,
+    earliestDeparture: 8 * 60,
+    latestArrival: 22 * 60,
+    longestDailyTravelTime: 10 * 60,
+    totalTravelTime: 10 * 60,
+  };
+
+  const actual = chooseItinerary([it0, it1]);
+  expect(actual).toStrictEqual(1);
 });
