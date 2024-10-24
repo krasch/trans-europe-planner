@@ -37,6 +37,14 @@ class CustomDateTime {
       );
   }
 
+  compareTo(other) {
+    return this.valueOf() - other.valueOf();
+  }
+
+  valueOf() {
+    return this.datetime.getTime(); // unix ts
+  }
+
   get dateString() {
     return this.datetime.toISOString().slice(0, 10);
   }

@@ -8,7 +8,6 @@ const {
   testStations,
   createConnection,
 } = require("../tests/data.js");
-const { InvalidDatetimeFormatError } = require("../script/util.js");
 
 test("getPartialStopsNoSlicingNeeded", function () {
   const stops = [
