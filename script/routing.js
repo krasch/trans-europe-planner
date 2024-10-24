@@ -82,7 +82,7 @@ function itinerarySummary(itinerary) {
 
     if (travelTime > summary.longestDailyTravelTime) {
       summary.longestDailyTravelTime = travelTime;
-      summary.busiestDay = 1;
+      summary.busiestDay = i;
     }
 
     summary.totalTravelTime += travelTime;
@@ -102,7 +102,7 @@ function judgeItinerary(summary) {
     // don't depart after 10
     (summary.latestDeparture <= 10 * 60) * 50 +
     // most travel should be done on first day
-    // (summary.busiestDay === 1) * 50 +
+    (summary.busiestDay === 0) * 50 +
     // don't travel more than 9 hours per day
     (summary.longestDailyTravelTime <= 9 * 60) * 10
   );

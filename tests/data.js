@@ -106,10 +106,10 @@ const testConnections = {
     6,
     "2024-10-16",
   ),
-  "City2 (9:01) -> City1 (9:10) on Day 1": createConnection(
+  "City2 (6:01) -> City1 (6:10) on Day 2": createConnection(
     ["city2MainStationId", "city1MainStationId"],
-    9,
-    "2024-10-15",
+    6,
+    "2024-10-16",
   ),
   "City1 (9:01) -> City3 (9:10) on Day 2": createConnection(
     ["city1MainStationId", "city3MainStationId"],

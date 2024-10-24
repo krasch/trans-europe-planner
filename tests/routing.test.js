@@ -109,7 +109,7 @@ test("itinerarySummaryOneTravelDay", function () {
     latestDeparture: 6 * 60 + 1,
     latestArrival: 7 * 60 + 10,
     longestDailyTravelTime: 69,
-    busiestDay: 1,
+    busiestDay: 0,
     totalTravelTime: 69,
   };
 
@@ -119,7 +119,7 @@ test("itinerarySummaryOneTravelDay", function () {
 test("itinerarySummaryMultipleTravelDays", function () {
   const database = createDatabase([
     "City1 (6:01) -> City2 (6:10) on Day 1",
-    "City2 (9:01) -> City1 (9:10) on Day 1",
+    "City2 (6:01) -> City1 (6:10) on Day 2",
     "City1 (9:01) -> City3 (9:10) on Day 2",
     "City3 (6:01) -> City4 (6:10) on Day 3",
   ]);
@@ -135,10 +135,10 @@ test("itinerarySummaryMultipleTravelDays", function () {
   const expected = {
     travelDays: 3,
     earliestDeparture: 6 * 60 + 1,
-    latestDeparture: 9 * 60 + 1,
+    latestDeparture: 6 * 60 + 1,
     latestArrival: 9 * 60 + 10,
     longestDailyTravelTime: 3 * 60 + 9,
-    totalTravelTime: 3 * 60 + 9 + 9 + 9,
+    totalTravelTime: 9 + 3 * 60 + 9 + 9,
     busiestDay: 1,
   };
 
@@ -164,7 +164,7 @@ test("itinerarySummaryMultipleTravelDaysWithGap", function () {
     latestArrival: 6 * 60 + 10,
     longestDailyTravelTime: 9,
     totalTravelTime: 9 + 9,
-    busiestDay: 1,
+    busiestDay: 0,
   };
 
   expect(actual).toStrictEqual(expected);
