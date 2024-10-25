@@ -157,6 +157,17 @@ function createItineraryForRoute(legs, database) {
   return best.map((connections) => connections.id);
 }
 
+function createJourneyForRoute(legs, database) {
+  const connections = createItineraryForRoute(legs, database);
+
+  const connectionsByLeg = {};
+  for (let i in legs) {
+    connectionsByLeg[legs[i]] = connections[i];
+  }
+
+  return new Journey(connectionsByLeg);
+}
+
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.cartesianProduct = cartesianProduct;

@@ -41,26 +41,20 @@ function main(map, calendar, journeySelection) {
   );
   const database = new Database(CITIES, STATIONS, connections, LEGS);
 
-  // build itineraries
-  const initial = {};
-  for (let key in ROUTES) {
-    const legs = ROUTES[key];
-    const connections = createItineraryForRoute(legs, database);
-
-    // todo use better data structures
-    const map = {};
-    for (let i in legs) {
-      map[legs[i]] = connections[i];
-    }
-
-    initial[key] = map;
-  }
-
   // init state
   const journeys = {
-    journey1: Journey.fromDefaults(initial["Berlin->Roma over Verona"]),
-    journey2: Journey.fromDefaults(initial["Berlin->Roma over Bologna"]),
-    journey3: Journey.fromDefaults(initial["Berlin->Roma over Zürich"]),
+    journey1: createJourneyForRoute(
+      ROUTES["Berlin->Roma over Verona"],
+      database,
+    ),
+    journey2: createJourneyForRoute(
+      ROUTES["Berlin->Roma over Bologna"],
+      database,
+    ),
+    journey3: createJourneyForRoute(
+      ROUTES["Berlin->Roma over Zürich"],
+      database,
+    ),
   };
   let active = "journey3";
 

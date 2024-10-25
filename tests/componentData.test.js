@@ -18,10 +18,11 @@ const testColors = {
   journey3: "0, 0, 255",
 };
 
-function createJourney(items) {
-  const defaults = {};
-  for (let leg in items) defaults[leg] = `${items[leg].id}`;
-  return Journey.fromDefaults(defaults);
+function createJourney(connectionsByLeg) {
+  const connectionIdsByLeg = {};
+  for (let leg in connectionsByLeg)
+    connectionIdsByLeg[leg] = `${connectionsByLeg[leg].id}`;
+  return new Journey(connectionIdsByLeg);
 }
 
 test("getJourneySummaryNoVias", function () {

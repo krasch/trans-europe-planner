@@ -146,6 +146,7 @@ const testConnections = {
 };
 
 function createDatabase(connectionNames) {
+  // todo return the created connections in order of names
   const connections = [];
   const legs = [];
   for (let name of connectionNames) {

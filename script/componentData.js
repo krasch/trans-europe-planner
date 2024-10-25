@@ -1,14 +1,16 @@
 class Journey {
-  constructor(defaultConnections) {
-    this.defaults = defaultConnections;
-    this.connections = {};
+  #connections;
+
+  constructor(connectionsByLeg) {
+    this.#connections = connectionsByLeg;
   }
 
-  static fromDefaults(defaultConnections) {
-    const journey = new Journey(defaultConnections);
-    for (let leg in defaultConnections)
-      journey.connections[leg] = defaultConnections[leg];
-    return journey;
+  get connections() {
+    return Object.values(this.#connections);
+  }
+
+  get legs() {
+    return Object.keys(this.#connections);
   }
 }
 
@@ -38,7 +40,7 @@ function getColour(journeyId) {
 function getJourneySummary(journey, database) {
   // look up all the necessary data from the database
   const connections = [];
-  for (let [leg, connectionId] of Object.entries(journey.connections)) {
+  for (let connectionId of journey.connections) {
     const connection = database.connection(connectionId);
 
     const firstStop = connection.stops[0];
@@ -83,19 +85,20 @@ function getJourneySummary(journey, database) {
 function prepareDataForCalendar(journeys, activeId, datatabase) {
   const data = [];
 
-  const connections = journeys[activeId].connections;
-  for (let [leg, activeConnection] of Object.entries(connections)) {
+  const activeConnections = journeys[activeId].connections;
+
+  for (let leg of journeys[activeId].legs) {
     for (let connection of Object.values(datatabase.connectionsForLeg(leg))) {
       data.push({
         id: connection.id,
         displayId: connection.id.split("X")[1], // todo not nice
         type: connection.type,
-        leg: leg,
+        leg: connection.leg,
         startStation: datatabase.stationName(connection.stops[0].station),
         startDateTime: connection.stops[0].departure,
         endStation: datatabase.stationName(connection.stops.at(-1).station),
         endDateTime: connection.stops.at(-1).arrival,
-        active: connection.id === activeConnection,
+        active: activeConnections.includes(connection.id),
         color: getColour(activeId),
       });
     }
@@ -122,7 +125,7 @@ function prepareDataForMap(journeys, activeId, database) {
   const allLegs = database.legs;
 
   // but currently used legs in the active journey will be marked as active
-  const activeConnections = Object.values(journeys[activeId].connections);
+  const activeConnections = journeys[activeId].connections;
   const activeLegs = activeConnections.map((c) => database.connection(c).leg);
 
   const data = allLegs.map((leg) => {
