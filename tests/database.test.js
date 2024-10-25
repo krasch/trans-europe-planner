@@ -151,7 +151,5 @@ test("unknownCityInLeg", function () {
 test("unknownConnectionId", function () {
   const c1 = createConnection(["city1MainStationId", "city2MainStationId"]);
   const database = new Database(testCities, testStations, []);
-  expect(() => database.connectionForLegAndId("City1-City2", "ABCD")).toThrow(
-    DatabaseError,
-  );
+  expect(() => database.connection("ABCD")).toThrow(DatabaseError);
 });
