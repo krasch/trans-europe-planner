@@ -1,17 +1,3 @@
-ROUTES = {
-  "Berlin->Roma over Verona": [
-    "Berlin-München",
-    "München-Verona",
-    "Verona-Roma",
-  ],
-  "Berlin->Roma over Bologna": [
-    "Berlin-München",
-    "München-Bologna",
-    "Bologna-Roma",
-  ],
-  "Berlin->Roma over Zürich": ["Berlin-Zürich", "Zürich-Milano", "Milano-Roma"],
-};
-
 function initUpdateViews(map, calendar, journeySelection, database) {
   function updateViews(journeys, active) {
     map.updateView(prepareDataForMap(journeys, active, database));
@@ -31,19 +17,11 @@ async function main(map, calendar, journeySelection) {
   const database = new Database(CITIES, STATIONS, connections, LEGS);
 
   // init state
+  const target = "Berlin->Roma";
   const journeys = {
-    journey1: createJourneyForRoute(
-      ROUTES["Berlin->Roma over Verona"],
-      database,
-    ),
-    journey2: createJourneyForRoute(
-      ROUTES["Berlin->Roma over Bologna"],
-      database,
-    ),
-    journey3: createJourneyForRoute(
-      ROUTES["Berlin->Roma over Zürich"],
-      database,
-    ),
+    journey1: createJourneyForRoute(ROUTES[target][0], database),
+    journey2: createJourneyForRoute(ROUTES[target][1], database),
+    journey3: createJourneyForRoute(ROUTES[target][2], database),
   };
   let active = "journey3";
 
