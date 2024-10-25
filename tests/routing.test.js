@@ -3,6 +3,7 @@ const {
   isValidItinerary,
   itinerarySummary,
   chooseItinerary,
+  pickFittingConnection,
 } = require("../script/routing.js");
 const { createDatabase } = require("../tests/data.js");
 
@@ -199,4 +200,58 @@ test("chooseItinerarySameExceptForTotalTravelTime", function () {
 
   const actual = chooseItinerary([it0, it1]);
   expect(actual).toStrictEqual(1);
+});
+
+test("pickConnectionFittingToJourneyFirstOneIsChosen", function () {
+  const [database, conns] = createDatabase([
+    "City1 (6:01) -> City2 (6:10) on Day 1",
+    "City2 (7:01) -> City3 (7:10) on Day 1",
+    "City2 (8:01) -> City3 (8:10) on Day 1",
+  ]);
+
+  const journey = [conns[0].id];
+
+  const actual = pickFittingConnection(journey, "City2-City3", database);
+  expect(actual).toBe(conns[1].id);
+});
+
+test("pickConnectionFittingToJourneySecondOneIsChosen", function () {
+  const [database, conns] = createDatabase([
+    "City1 (7:01) -> City2 (7:10) on Day 1",
+    "City2 (7:01) -> City3 (7:10) on Day 1",
+    "City2 (8:01) -> City3 (8:10) on Day 1",
+  ]);
+
+  const journey = [conns[0].id];
+
+  const actual = pickFittingConnection(journey, "City2-City3", database);
+  expect(actual).toBe(conns[2].id);
+});
+
+// todo unsorted input data
+
+test("pickConnectionNoFittingMatch", function () {
+  const [database, conns] = createDatabase([
+    "City1 (8:01) -> City2 (8:10) on Day 1",
+    "City2 (7:01) -> City3 (7:10) on Day 1",
+    "City2 (8:01) -> City3 (8:10) on Day 1",
+  ]);
+
+  const journey = [conns[0].id];
+
+  const actual = pickFittingConnection(journey, "City2-City3", database);
+  expect([conns[1].id, conns[2].id].includes(actual)).toBe(true);
+});
+
+test("pickConnectionWrongOrder", function () {
+  const [database, conns] = createDatabase([
+    "City1 (6:01) -> City2 (6:10) on Day 1",
+    "City2 (7:01) -> City3 (7:10) on Day 1",
+    "City3 (8:01) -> City4 (8:10) on Day 1",
+  ]);
+
+  const journey = [conns[1].id, conns[0].id];
+
+  const actual = pickFittingConnection(journey, "City3-City4", database);
+  expect(actual).toBe(conns[2].id);
 });

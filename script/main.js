@@ -1,14 +1,3 @@
-ALLDEFAULTS = {
-  "Berlin-München": "2024-10-16XICE503XBerlin-München",
-  "München-Verona": "2024-10-16XRJ85XMünchen-Verona",
-  "Verona-Roma": "2024-10-16XFR8529XVerona-Roma",
-  "München-Bologna": "2024-10-17XRJ81XMünchen-Bologna",
-  "Bologna-Roma": "2024-10-17XFR9637XBologna-Roma",
-  "Berlin-Zürich": "2024-10-16XICE73XBerlin-Zürich",
-  "Zürich-Milano": "2024-10-16XEC323XZürich-Milano",
-  "Milano-Roma": "2024-10-17XFR9527XMilano-Roma",
-};
-
 ROUTES = {
   "Berlin->Roma over Verona": [
     "Berlin-München",
@@ -78,8 +67,15 @@ async function main(map, calendar, journeySelection) {
 
   //changing the journey
   map.on("legAdded", (leg) => {
-    const conn = journeys[active].previousConnection(leg) ?? ALLDEFAULTS[leg];
-    journeys[active].setConnectionForLeg(leg, conn);
+    let connection = journeys[active].previousConnection(leg);
+    if (!connection)
+      connection = pickFittingConnection(
+        journeys[active].unsortedConnections,
+        leg,
+        database,
+      );
+
+    journeys[active].setConnectionForLeg(leg, connection);
     updateViews(journeys, active);
   });
   map.on("legRemoved", (leg) => {
