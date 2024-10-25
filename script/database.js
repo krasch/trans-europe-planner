@@ -65,7 +65,8 @@ class Database {
   #connectionTemplates;
   #legs;
 
-  #resolvedConnections;
+  #resolvedConnectionIdsByLeg;
+  #resolvedConnectionsById;
 
   constructor(cities, stations, connections, legs) {
     this.#cities = cities;
@@ -75,27 +76,30 @@ class Database {
 
     // this will be filled with all the connections the UI is interested in
     // should always be accessed using connectionsForLeg to make sure that leg has been indexed
-    this.#resolvedConnections = {};
+    this.#resolvedConnectionIdsByLeg = {};
+    this.#resolvedConnectionsById = {};
   }
+
+  connection(id) {
+    if (!this.#resolvedConnectionsById[id])
+      throw new DatabaseError(`Unknown connection ${id}`);
+    return this.#resolvedConnectionsById[id];
+  }
+
   connectionsForLeg(leg) {
     // todo return list instead of dict?
-    if (!this.#resolvedConnections[leg]) this.#indexLeg(leg);
+    if (!this.#resolvedConnectionIdsByLeg[leg]) this.#indexLeg(leg);
 
-    const connections = this.#resolvedConnections[leg];
-    if (Object.keys(connections).length === 0)
+    const connectionIds = this.#resolvedConnectionIdsByLeg[leg];
+    if (connectionIds.length === 0)
       throw new DatabaseError(`No connections available for leg ${leg}`);
 
-    return connections;
-  }
+    const result = {};
+    for (let id of connectionIds) {
+      result[id] = this.connection(id);
+    }
 
-  connectionForLegAndId(leg, connectionId) {
-    const connections = this.connectionsForLeg(leg);
-
-    const connection = connections[connectionId];
-    if (connection === undefined)
-      throw new DatabaseError(`No connection available for id ${connectionId}`);
-
-    return connection;
+    return result;
   }
 
   city(cityId) {
@@ -131,7 +135,7 @@ class Database {
   #indexLeg(leg) {
     const [startCityId, endCityId] = this.#resolveLeg(leg);
 
-    this.#resolvedConnections[leg] = {};
+    this.#resolvedConnectionIdsByLeg[leg] = [];
 
     for (let connectionTemplate of this.#connectionTemplates) {
       const partial = getPartialStops(
@@ -155,7 +159,8 @@ class Database {
         stops: partial,
       };
 
-      this.#resolvedConnections[leg][id] = connection;
+      this.#resolvedConnectionIdsByLeg[leg].push(id);
+      this.#resolvedConnectionsById[id] = connection;
     }
   }
 

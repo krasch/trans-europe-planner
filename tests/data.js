@@ -138,16 +138,33 @@ const testConnections = {
     6,
     "2024-10-17",
   ),
+  "City3 (8:01) -> City4 (8:10) on Day 1": createConnection(
+    ["city3MainStationId", "city4MainStationId"],
+    8,
+    "2024-10-15",
+  ),
 };
 
 function createDatabase(connectionNames) {
   const connections = [];
+  const legs = [];
   for (let name of connectionNames) {
     if (!testConnections[name])
       throw new Error(`Unknown test connection ${name}`);
+
+    const connection = testConnections[name];
+    const s = testCities[testStations[connection.stops[0].station].city];
+    const e = testCities[testStations[connection.stops.at(-1).station].city];
+
     connections.push(testConnections[name]);
+    legs.push(`${s.name}-${e.name}`);
   }
-  return new Database(testCities, testStations, connections);
+  return new Database(
+    testCities,
+    testStations,
+    connections,
+    Array.from(new Set(legs)),
+  );
 }
 
 module.exports.testStations = testStations;

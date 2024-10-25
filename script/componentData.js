@@ -4,10 +4,6 @@ class Journey {
     this.connections = {};
   }
 
-  get activeLegs() {
-    return Object.keys(this.connections);
-  }
-
   static fromDefaults(defaultConnections) {
     const journey = new Journey(defaultConnections);
     for (let leg in defaultConnections)
@@ -43,7 +39,7 @@ function getJourneySummary(journey, database) {
   // look up all the necessary data from the database
   const connections = [];
   for (let [leg, connectionId] of Object.entries(journey.connections)) {
-    const connection = database.connectionForLegAndId(leg, connectionId);
+    const connection = database.connection(connectionId);
 
     const firstStop = connection.stops[0];
     const lastStop = connection.stops.at(-1);
@@ -123,12 +119,13 @@ function prepareDataForJourneySelection(journeys, activeId, database) {
 }
 
 function prepareDataForMap(journeys, activeId, database) {
-  const allLLegs = database.legs;
+  const allLegs = database.legs;
 
   // but currently used legs in the active journey will be marked as active
-  const activeLegs = journeys[activeId].activeLegs;
+  const activeConnections = Object.values(journeys[activeId].connections);
+  const activeLegs = activeConnections.map((c) => database.connection(c).leg);
 
-  const data = allLLegs.map((leg) => {
+  const data = allLegs.map((leg) => {
     const [startCity, endCity] = database.citiesForLeg(leg);
     return {
       id: leg,
