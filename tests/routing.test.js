@@ -245,9 +245,9 @@ test("pickConnectionNoFittingMatch", function () {
 
 test("pickConnectionWrongOrder", function () {
   const [database, conns] = createDatabase([
-    "City1 (6:01) -> City2 (6:10) on Day 1",
-    "City2 (7:01) -> City3 (7:10) on Day 1",
-    "City3 (8:01) -> City4 (8:10) on Day 1",
+    "City1 (9:01) -> City2 (9:10) on Day 1",
+    "City2 (8:01) -> City3 (8:10) on Day 2",
+    "City3 (6:01) -> City4 (6:10) on Day 3",
   ]);
 
   const journey = [conns[1].id, conns[0].id];

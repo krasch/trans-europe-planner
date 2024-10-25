@@ -168,10 +168,8 @@ function createJourneyForRoute(legs, database) {
 
 function pickFittingConnection(connectionIds, desiredLeg, database) {
   const connections = connectionIds.map((i) => database.connection(i));
-  connections.sort(
-    (a, b) =>
-      a.stops[0].departure.minutesSinceMidnight <
-      b.stops.at(-1).arrival.minutesSinceMidnight,
+  connections.sort((a, b) =>
+    a.stops[0].departure.compareTo(a.stops.at(-1).arrival),
   );
 
   const currentArrival = connections.at(-1).stops.at(-1).arrival;
