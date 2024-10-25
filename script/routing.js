@@ -159,13 +159,7 @@ function createItineraryForRoute(legs, database) {
 
 function createJourneyForRoute(legs, database) {
   const connections = createItineraryForRoute(legs, database);
-
-  const connectionsByLeg = {};
-  for (let i in legs) {
-    connectionsByLeg[legs[i]] = connections[i];
-  }
-
-  return new Journey(connectionsByLeg);
+  return new Journey(legs, connections);
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)

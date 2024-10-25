@@ -146,9 +146,9 @@ const testConnections = {
 };
 
 function createDatabase(connectionNames) {
-  // todo return the created connections in order of names
   const connections = [];
   const legs = [];
+
   for (let name of connectionNames) {
     if (!testConnections[name])
       throw new Error(`Unknown test connection ${name}`);
@@ -160,12 +160,23 @@ function createDatabase(connectionNames) {
     connections.push(testConnections[name]);
     legs.push(`${s.name}-${e.name}`);
   }
-  return new Database(
+
+  const database = new Database(
     testCities,
     testStations,
     connections,
     Array.from(new Set(legs)),
   );
+
+  // to init database
+  for (let leg of legs) database.connectionsForLeg(leg);
+
+  const finalConnections = [];
+  for (let i in legs) {
+    const id = `${connections[i].id}X${legs[i]}`;
+    finalConnections.push(database.connection(id));
+  }
+  return [database, finalConnections];
 }
 
 module.exports.testStations = testStations;

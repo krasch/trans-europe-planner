@@ -26,114 +26,105 @@ function createJourney(connectionsByLeg) {
 }
 
 test("getJourneySummaryNoVias", function () {
-  const database = createDatabase([
+  const [database, conns] = createDatabase([
     "City1 (6:01) -> City2 (6:10) on Day 1",
     "City2 (7:01) -> City3 (7:10) on Day 1",
   ]);
 
   // no VIA's
-  const journey = createJourney({
-    "City1-City2": Object.values(database.connectionsForLeg("City1-City2"))[0],
-  });
+  const journey = new Journey(["City1-City2"], [conns[0].id]);
 
   const exp = "From City1 to City2<br/>9min";
   expect(getJourneySummary(journey, database)).toStrictEqual(exp);
 });
 
 test("getJourneySummaryOneVia", function () {
-  const database = createDatabase([
+  const [database, conns] = createDatabase([
     "City1 (6:01) -> City2 (6:10) on Day 1",
     "City2 (7:01) -> City3 (7:10) on Day 1",
   ]);
 
   // one via
-  const journey = createJourney({
-    "City1-City2": Object.values(database.connectionsForLeg("City1-City2"))[0],
-    "City2-City3": Object.values(database.connectionsForLeg("City2-City3"))[0],
-  });
+  const journey = new Journey(
+    ["City1-City2", "city2-City3"],
+    [conns[0].id, conns[1].id],
+  );
 
   const exp = "From City1 to City3 via City2<br/>1h 9min";
   expect(getJourneySummary(journey, database)).toStrictEqual(exp);
 });
 
 test("getJourneySummaryTwoVias", function () {
-  const database = createDatabase([
+  const [database, conns] = createDatabase([
     "City1 (6:01) -> City2 (6:10) on Day 1",
     "City2 (7:01) -> City3 (7:10) on Day 1",
     "City3 (8:01) -> City4 (8:10) on Day 1",
   ]);
 
   // two VIA's
-  const journey = createJourney({
-    "City1-City2": Object.values(database.connectionsForLeg("City1-City2"))[0],
-    "City2-City3": Object.values(database.connectionsForLeg("City2-City3"))[0],
-    "City3-City4": Object.values(database.connectionsForLeg("City3-City4"))[0],
-  });
+  const journey = new Journey(
+    ["City1-City2", "city2-City3", "City3-City4"],
+    [conns[0].id, conns[1].id, conns[2].id],
+  );
 
   const exp = "From City1 to City4 via City2, City3<br/>2h 9min";
   expect(getJourneySummary(journey, database)).toStrictEqual(exp);
 });
 
 test("prepareDataForCalendar", function () {
-  const database = createDatabase([
+  const [database, conns] = createDatabase([
     "City1 (6:01) -> City2 (6:10) on Day 1",
     "City1 (6:01) -> City2 (6:10) on Day 2",
     "City2 (7:01) -> City3 (7:10) on Day 1",
-    "City3 (8:01) -> City4 (8:10) on Day 1",
+    "City1 (9:01) -> City3 (9:10) on Day 2",
   ]);
+  const [c1To2_1, c1To2_2, c2To3, c1To3] = conns;
 
-  const c1 = Object.values(database.connectionsForLeg("City1-City2"))[0];
-  const c2 = Object.values(database.connectionsForLeg("City1-City2"))[1];
-  const c3 = Object.values(database.connectionsForLeg("City2-City3"))[0];
-  const c4 = Object.values(database.connectionsForLeg("City3-City4"))[0];
-
-  // c1 and c2 do the same leg on different days, only c1 is used in the journey
+  // first two conns do the same leg on different days, but only first is used in the journey
   const journeys = {
-    journey1: createJourney({
-      "City1-City2": c1,
-      "City2-City3": c3,
-    }),
-    journey2: createJourney({
-      "City3-City4": c4,
-    }),
+    journey1: new Journey(
+      ["City1-City2", "City2-City3"],
+      [c1To2_1.id, c2To3.id],
+    ),
+    journey2: new Journey(["City1-City3"], [c1To3.id]),
   };
   const active = "journey1";
 
-  // only expect connections for the active journey j1
+  // only expect legs for the active journey j1
   const exp = [
     {
-      id: `${c1.id}`,
-      displayId: c1.id.split("X")[1],
+      id: c1To2_1.id,
+      displayId: c1To2_1.id.split("X")[1],
       type: "train",
       leg: "City1-City2",
       startStation: "City 1 Main Station",
       endStation: "City 2 Main Station",
-      startDateTime: c1.stops[0].departure,
-      endDateTime: c1.stops.at(-1).arrival,
+      startDateTime: c1To2_1.stops[0].departure,
+      endDateTime: c1To2_1.stops.at(-1).arrival,
       color: testColors.journey1,
       active: true,
     },
     {
-      id: `${c2.id}`,
-      displayId: c2.id.split("X")[1],
+      id: c1To2_2.id,
+      displayId: c1To2_2.id.split("X")[1],
       type: "train",
       leg: "City1-City2",
       startStation: "City 1 Main Station",
       endStation: "City 2 Main Station",
-      startDateTime: c2.stops[0].departure,
-      endDateTime: c2.stops.at(-1).arrival,
+      startDateTime: c1To2_2.stops[0].departure,
+      endDateTime: c1To2_2.stops.at(-1).arrival,
       color: testColors.journey1,
       active: false,
     },
     {
-      id: `${c3.id}`,
-      displayId: c3.id.split("X")[1],
+      id: c2To3.id,
+      displayId: c2To3.id.split("X")[1],
       type: "train",
       leg: "City2-City3",
       startStation: "City 2 Main Station",
       endStation: "City 3 Main Station",
-      startDateTime: c3.stops[0].departure,
-      endDateTime: c3.stops.at(-1).arrival,
+      startDateTime: c2To3.stops[0].departure,
+      endDateTime: c2To3.stops.at(-1).arrival,
       color: testColors.journey1,
       active: true,
     },
@@ -144,21 +135,20 @@ test("prepareDataForCalendar", function () {
 });
 
 test("prepareDataForJourneySelection", function () {
-  const database = createDatabase([
+  const [database, conns] = createDatabase([
     "City1 (6:01) -> City2 (6:10) on Day 1",
     "City1 (6:01) -> City2 (6:10) on Day 2",
     "City2 (7:01) -> City3 (7:10) on Day 1",
     "City1 (9:01) -> City3 (9:10) on Day 2",
   ]);
-
-  const c1 = Object.values(database.connectionsForLeg("City1-City2"))[0];
-  const c2 = Object.values(database.connectionsForLeg("City1-City2"))[1];
-  const c3 = Object.values(database.connectionsForLeg("City2-City3"))[0];
-  const c4 = Object.values(database.connectionsForLeg("City1-City3"))[0];
+  const [c1To2_1, c1To2_2, c2To3, c1To3] = conns;
 
   const journeys = {
-    journey1: createJourney({ "City1-City2": c1, "City2-City3": c3 }),
-    journey2: createJourney({ "City1-City3": c4 }),
+    journey1: new Journey(
+      ["City1-City2", "City2-City3"],
+      [c1To2_1.id, c2To3.id],
+    ),
+    journey2: new Journey(["City1-City3"], [c1To3.id]),
   };
   const active = "journey1";
 
@@ -182,22 +172,21 @@ test("prepareDataForJourneySelection", function () {
 });
 
 test("prepareDataForMap", function () {
-  const database = createDatabase([
+  const [database, conns] = createDatabase([
     "City1 (6:01) -> City2 (6:10) on Day 1",
     "City1 (6:01) -> City2 (6:10) on Day 2",
     "City2 (7:01) -> City3 (7:10) on Day 1",
     "City1 (9:01) -> City3 (9:10) on Day 2",
   ]);
+  const [c1To2_1, c1To2_2, c2To3, c1To3] = conns;
 
   // c1 and c2 do the same leg at different hours, only c1 is used in the journey
-  const c1 = Object.values(database.connectionsForLeg("City1-City2"))[0];
-  const c2 = Object.values(database.connectionsForLeg("City1-City2"))[1];
-  const c3 = Object.values(database.connectionsForLeg("City2-City3"))[0];
-  const c4 = Object.values(database.connectionsForLeg("City1-City3"))[0];
-
   const journeys = {
-    journey1: createJourney({ "City1-City2": c1, "City2-City3": c3 }),
-    journey2: createJourney({ "City1-City3": c4 }),
+    journey1: new Journey(
+      ["City1-City2", "City2-City3"],
+      [c1To2_1.id, c2To3.id],
+    ),
+    journey2: new Journey(["City1-City3"], [c1To3.id]),
   };
   const active = "journey1";
 

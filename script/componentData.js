@@ -1,16 +1,18 @@
 class Journey {
+  #legs;
   #connections;
 
-  constructor(connectionsByLeg) {
-    this.#connections = connectionsByLeg;
+  constructor(legs, connections) {
+    this.#legs = legs;
+    this.#connections = connections;
   }
 
   get connections() {
-    return Object.values(this.#connections);
+    return this.#connections;
   }
 
   get legs() {
-    return Object.keys(this.#connections);
+    return this.#legs;
   }
 }
 
