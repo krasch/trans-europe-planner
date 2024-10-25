@@ -78,18 +78,16 @@ async function main(map, calendar, journeySelection) {
 
   //changing the journey
   map.on("legAdded", (leg) => {
-    let connection = journeys[active].defaults[leg];
-    if (!connection) connection = ALLDEFAULTS[leg];
-
-    journeys[active].connections[leg] = connection;
+    const conn = journeys[active].previousConnection(leg) ?? ALLDEFAULTS[leg];
+    journeys[active].setConnectionForLeg(leg, conn);
     updateViews(journeys, active);
   });
   map.on("legRemoved", (leg) => {
-    delete journeys[active].connections[leg];
+    journeys[active].removeLeg(leg);
     updateViews(journeys, active);
   });
   calendar.on("legChanged", (leg, connectionId) => {
-    journeys[active].connections[leg] = connectionId;
+    journeys[active].setConnectionForLeg(leg, connectionId);
     updateViews(journeys, active);
   });
   journeySelection.on("journeySelected", (journeyId) => {

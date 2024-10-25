@@ -1,6 +1,13 @@
 const { CustomDateTime } = require("../script/util.js");
 const { Database } = require("../script/database.js");
 
+// todo should be taken from componentData directly
+const testColors = {
+  journey1: "0, 255, 0",
+  journey2: "255, 0, 0",
+  journey3: "0, 0, 255",
+};
+
 const testCities = {
   1: { name: "City1", latitude: 10, longitude: 10 },
   2: { name: "City2", latitude: 20, longitude: 20 },
@@ -179,6 +186,7 @@ function createDatabase(connectionNames) {
   return [database, finalConnections];
 }
 
+module.exports.testColors = testColors;
 module.exports.testStations = testStations;
 module.exports.testCities = testCities;
 module.exports.testConnections = testConnections;

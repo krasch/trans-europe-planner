@@ -1,18 +1,42 @@
+class JourneyError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "JourneyError";
+  }
+}
+
 class Journey {
-  #legs;
   #connections;
+  #cache;
 
-  constructor(legs, connections) {
-    this.#legs = legs;
-    this.#connections = connections;
+  constructor(connectionsByLegs) {
+    this.#connections = connectionsByLegs;
+    this.#cache = {};
   }
 
-  get connections() {
-    return this.#connections;
+  get unsortedConnections() {
+    return Object.values(this.#connections);
   }
 
-  get legs() {
-    return this.#legs;
+  get unsortedLegs() {
+    return Object.keys(this.#connections);
+  }
+
+  setConnectionForLeg(leg, connection) {
+    this.#connections[leg] = connection;
+  }
+
+  removeLeg(leg) {
+    if (!this.#connections[leg])
+      throw new JourneyError(`Can not remove non-existing leg ${leg}`);
+    this.#cache[leg] = this.#connections[leg];
+    delete this.#connections[leg];
+  }
+
+  previousConnection(leg) {
+    if (this.#connections[leg])
+      throw new JourneyError(`Leg is currently active`);
+    return this.#cache[leg];
   }
 }
 
@@ -42,7 +66,7 @@ function getColour(journeyId) {
 function getJourneySummary(journey, database) {
   // look up all the necessary data from the database
   const connections = [];
-  for (let connectionId of journey.connections) {
+  for (let connectionId of journey.unsortedConnections) {
     const connection = database.connection(connectionId);
 
     const firstStop = connection.stops[0];
@@ -87,9 +111,9 @@ function getJourneySummary(journey, database) {
 function prepareDataForCalendar(journeys, activeId, datatabase) {
   const data = [];
 
-  const activeConnections = journeys[activeId].connections;
+  const activeConnections = journeys[activeId].unsortedConnections;
 
-  for (let leg of journeys[activeId].legs) {
+  for (let leg of journeys[activeId].unsortedLegs) {
     for (let connection of Object.values(datatabase.connectionsForLeg(leg))) {
       data.push({
         id: connection.id,
@@ -127,7 +151,7 @@ function prepareDataForMap(journeys, activeId, database) {
   const allLegs = database.legs;
 
   // but currently used legs in the active journey will be marked as active
-  const activeConnections = journeys[activeId].connections;
+  const activeConnections = journeys[activeId].unsortedConnections;
   const activeLegs = activeConnections.map((c) => database.connection(c).leg);
 
   const data = allLegs.map((leg) => {
