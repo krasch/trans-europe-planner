@@ -94,12 +94,7 @@ class Database {
     if (connectionIds.length === 0)
       throw new DatabaseError(`No connections available for leg ${leg}`);
 
-    const result = {};
-    for (let id of connectionIds) {
-      result[id] = this.connection(id);
-    }
-
-    return result;
+    return connectionIds.map((c) => this.connection(c));
   }
 
   city(cityId) {

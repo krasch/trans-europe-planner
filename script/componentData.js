@@ -114,7 +114,7 @@ function prepareDataForCalendar(journeys, activeId, datatabase) {
   const activeConnections = journeys[activeId].unsortedConnections;
 
   for (let leg of journeys[activeId].unsortedLegs) {
-    for (let connection of Object.values(datatabase.connectionsForLeg(leg))) {
+    for (let connection of datatabase.connectionsForLeg(leg)) {
       data.push({
         id: connection.id,
         displayId: connection.id.split("X")[1], // todo not nice

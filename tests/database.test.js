@@ -107,19 +107,20 @@ test("getConnectionsForLeg", function () {
   const c1Leg = `${c1.id}XCity1-City3`;
   const c3Leg = `${c3.id}XCity1-City3`;
 
-  const exp = {};
-  exp[c1Leg] = {
-    id: c1Leg,
-    leg: "City1-City3",
-    type: "train",
-    stops: c1.stops.slice(0, 3),
-  };
-  exp[c3Leg] = {
-    id: c3Leg,
-    leg: "City1-City3",
-    type: "train",
-    stops: c3.stops.slice(1, 3),
-  };
+  const exp = [
+    {
+      id: c1Leg,
+      leg: "City1-City3",
+      type: "train",
+      stops: c1.stops.slice(0, 3),
+    },
+    {
+      id: c3Leg,
+      leg: "City1-City3",
+      type: "train",
+      stops: c3.stops.slice(1, 3),
+    },
+  ];
 
   expect(got).toStrictEqual(exp);
 });
