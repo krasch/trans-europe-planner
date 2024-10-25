@@ -39,7 +39,7 @@ function main(map, calendar, journeySelection) {
   const connections = removeMultidayConnections(
     temporalizeConnections(CONNECTIONS), // todo dates here
   );
-  const database = new Database(CITIES, STATIONS, connections);
+  const database = new Database(CITIES, STATIONS, connections, LEGS);
 
   // build itineraries
   const initial = {};

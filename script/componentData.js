@@ -4,10 +4,6 @@ class Journey {
     this.connections = {};
   }
 
-  get legs() {
-    return Object.keys(this.defaults);
-  }
-
   get activeLegs() {
     return Object.keys(this.connections);
   }
@@ -127,14 +123,12 @@ function prepareDataForJourneySelection(journeys, activeId, database) {
 }
 
 function prepareDataForMap(journeys, activeId, database) {
-  // want to display all the legs in all journeys
-  const allLegs = Object.values(journeys).flatMap((j) => j.legs);
-  const allLLegsUnique = Array.from(new Set(allLegs));
+  const allLLegs = database.legs;
 
   // but currently used legs in the active journey will be marked as active
   const activeLegs = journeys[activeId].activeLegs;
 
-  const data = allLLegsUnique.map((leg) => {
+  const data = allLLegs.map((leg) => {
     const [startCity, endCity] = database.citiesForLeg(leg);
     return {
       id: leg,

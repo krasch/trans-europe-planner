@@ -63,13 +63,15 @@ class Database {
   #cities;
   #stations;
   #connectionTemplates;
+  #legs;
 
   #resolvedConnections;
 
-  constructor(cities, stations, connections) {
+  constructor(cities, stations, connections, legs) {
     this.#cities = cities;
     this.#stations = stations;
     this.#connectionTemplates = connections; // not yet specific to a leg
+    this.#legs = legs;
 
     // this will be filled with all the connections the UI is interested in
     // should always be accessed using connectionsForLeg to make sure that leg has been indexed
@@ -120,6 +122,10 @@ class Database {
 
   stationName(stationId) {
     return this.station(stationId).name;
+  }
+
+  get legs() {
+    return this.#legs;
   }
 
   #indexLeg(leg) {
