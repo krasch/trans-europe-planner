@@ -34,7 +34,7 @@ function initUpdateViews(map, calendar, journeySelection, database) {
   return updateViews;
 }
 
-function main(map, calendar, journeySelection) {
+async function main(map, calendar, journeySelection) {
   // init database
   const connections = removeMultidayConnections(
     temporalizeConnections(CONNECTIONS), // todo dates here
@@ -57,6 +57,9 @@ function main(map, calendar, journeySelection) {
     ),
   };
   let active = "journey3";
+
+  // now have done all we can do without having the map ready
+  await map.load();
 
   // draw initial journey
   const updateViews = initUpdateViews(
