@@ -9,6 +9,13 @@ function initUpdateViews(map, calendar, journeySelection, database) {
   return updateViews;
 }
 
+function getConnectionForLeg(journey, leg, database) {
+  const connection = journey.previousConnection(leg);
+  if (connection) return connection;
+
+  return pickFittingConnection(journey.unsortedConnections, leg, database);
+}
+
 async function main(map, calendar, journeySelection) {
   // init database
   const connections = removeMultidayConnections(
@@ -45,14 +52,7 @@ async function main(map, calendar, journeySelection) {
 
   //changing the journey
   map.on("legAdded", (leg) => {
-    let connection = journeys[active].previousConnection(leg);
-    if (!connection)
-      connection = pickFittingConnection(
-        journeys[active].unsortedConnections,
-        leg,
-        database,
-      );
-
+    const connection = getConnectionForLeg(journeys[active], leg, database);
     journeys[active].setConnectionForLeg(leg, connection);
     updateViews(journeys, active);
   });
