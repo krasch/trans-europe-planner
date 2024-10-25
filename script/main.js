@@ -1,28 +1,3 @@
-ALLDEFAULTS = {
-  "Berlin-München": "2024-10-16XICE503XBerlin-München",
-  "München-Verona": "2024-10-16XRJ85XMünchen-Verona",
-  "Verona-Roma": "2024-10-16XFR8529XVerona-Roma",
-  "München-Bologna": "2024-10-17XRJ81XMünchen-Bologna",
-  "Bologna-Roma": "2024-10-17XFR9637XBologna-Roma",
-  "Berlin-Zürich": "2024-10-16XICE73XBerlin-Zürich",
-  "Zürich-Milano": "2024-10-16XEC323XZürich-Milano",
-  "Milano-Roma": "2024-10-17XFR9527XMilano-Roma",
-};
-
-ROUTES = {
-  "Berlin->Roma over Verona": [
-    "Berlin-München",
-    "München-Verona",
-    "Verona-Roma",
-  ],
-  "Berlin->Roma over Bologna": [
-    "Berlin-München",
-    "München-Bologna",
-    "Bologna-Roma",
-  ],
-  "Berlin->Roma over Zürich": ["Berlin-Zürich", "Zürich-Milano", "Milano-Roma"],
-};
-
 function initUpdateViews(map, calendar, journeySelection, database) {
   function updateViews(journeys, active) {
     map.updateView(prepareDataForMap(journeys, active, database));
@@ -34,35 +9,31 @@ function initUpdateViews(map, calendar, journeySelection, database) {
   return updateViews;
 }
 
-function main(map, calendar, journeySelection) {
+function getConnectionForLeg(journey, leg, database) {
+  const connection = journey.previousConnection(leg);
+  if (connection) return connection;
+
+  return pickFittingConnection(journey.unsortedConnections, leg, database);
+}
+
+async function main(map, calendar, journeySelection) {
   // init database
   const connections = removeMultidayConnections(
     temporalizeConnections(CONNECTIONS), // todo dates here
   );
-  const database = new Database(CITIES, STATIONS, connections);
-
-  // build itineraries
-  const initial = {};
-  for (let key in ROUTES) {
-    const legs = ROUTES[key];
-    const connections = createItineraryForRoute(legs, database);
-
-    // todo use better data structures
-    const map = {};
-    for (let i in legs) {
-      map[legs[i]] = connections[i];
-    }
-
-    initial[key] = map;
-  }
+  const database = new Database(CITIES, STATIONS, connections, LEGS);
 
   // init state
+  const target = "Berlin->Roma";
   const journeys = {
-    journey1: Journey.fromDefaults(initial["Berlin->Roma over Verona"]),
-    journey2: Journey.fromDefaults(initial["Berlin->Roma over Bologna"]),
-    journey3: Journey.fromDefaults(initial["Berlin->Roma over Zürich"]),
+    journey1: createJourneyForRoute(ROUTES[target][0], database),
+    journey2: createJourneyForRoute(ROUTES[target][1], database),
+    journey3: createJourneyForRoute(ROUTES[target][2], database),
   };
   let active = "journey3";
+
+  // now have done all we can do without having the map ready
+  await map.load();
 
   // draw initial journey
   const updateViews = initUpdateViews(
@@ -81,18 +52,16 @@ function main(map, calendar, journeySelection) {
 
   //changing the journey
   map.on("legAdded", (leg) => {
-    let connection = journeys[active].defaults[leg];
-    if (!connection) connection = ALLDEFAULTS[leg];
-
-    journeys[active].connections[leg] = connection;
+    const connection = getConnectionForLeg(journeys[active], leg, database);
+    journeys[active].setConnectionForLeg(leg, connection);
     updateViews(journeys, active);
   });
   map.on("legRemoved", (leg) => {
-    delete journeys[active].connections[leg];
+    journeys[active].removeLeg(leg);
     updateViews(journeys, active);
   });
   calendar.on("legChanged", (leg, connectionId) => {
-    journeys[active].connections[leg] = connectionId;
+    journeys[active].setConnectionForLeg(leg, connectionId);
     updateViews(journeys, active);
   });
   journeySelection.on("journeySelected", (journeyId) => {

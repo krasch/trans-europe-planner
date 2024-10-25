@@ -27,6 +27,8 @@
     <script src="script/data/cities.js"></script>
     <script src="script/data/stations.js"></script>
     <script src="script/data/connections.js"></script>
+    <script src="script/data/legs.js"></script>
+    <script src="script/data/routes.js"></script>
     <script src="script/database.js"></script>
     <script src="script/componentData.js"></script>
 
@@ -101,8 +103,6 @@
         const map = new MapWrapper('map', [13.408333, 52.518611], 4);
         const calendar = document.getElementById("calendar");
         const journeySelection = new JourneySelection(document.getElementById("journey-selection"));
-
-        await map.load();
 
         try {
             main(map, calendar, journeySelection);

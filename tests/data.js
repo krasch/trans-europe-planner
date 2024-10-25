@@ -1,6 +1,13 @@
 const { CustomDateTime } = require("../script/util.js");
 const { Database } = require("../script/database.js");
 
+// todo should be taken from componentData directly
+const testColors = {
+  journey1: "0, 255, 0",
+  journey2: "255, 0, 0",
+  journey3: "0, 0, 255",
+};
+
 const testCities = {
   1: { name: "City1", latitude: 10, longitude: 10 },
   2: { name: "City2", latitude: 20, longitude: 20 },
@@ -101,6 +108,16 @@ const testConnections = {
     7,
     "2024-10-15",
   ),
+  "City1 (8:01) -> City2 (8:10) on Day 1": createConnection(
+    ["city1MainStationId", "city2MainStationId"],
+    8,
+    "2024-10-15",
+  ),
+  "City1 (9:01) -> City2 (9:10) on Day 1": createConnection(
+    ["city1MainStationId", "city2MainStationId"],
+    9,
+    "2024-10-15",
+  ),
   "City1 (6:01) -> City2 (6:10) on Day 2": createConnection(
     ["city1MainStationId", "city2MainStationId"],
     6,
@@ -138,18 +155,48 @@ const testConnections = {
     6,
     "2024-10-17",
   ),
+  "City3 (8:01) -> City4 (8:10) on Day 1": createConnection(
+    ["city3MainStationId", "city4MainStationId"],
+    8,
+    "2024-10-15",
+  ),
 };
 
 function createDatabase(connectionNames) {
   const connections = [];
+  const legs = [];
+
   for (let name of connectionNames) {
     if (!testConnections[name])
       throw new Error(`Unknown test connection ${name}`);
+
+    const connection = testConnections[name];
+    const s = testCities[testStations[connection.stops[0].station].city];
+    const e = testCities[testStations[connection.stops.at(-1).station].city];
+
     connections.push(testConnections[name]);
+    legs.push(`${s.name}-${e.name}`);
   }
-  return new Database(testCities, testStations, connections);
+
+  const database = new Database(
+    testCities,
+    testStations,
+    connections,
+    Array.from(new Set(legs)),
+  );
+
+  // to init database
+  for (let leg of legs) database.connectionsForLeg(leg);
+
+  const finalConnections = [];
+  for (let i in legs) {
+    const id = `${connections[i].id}X${legs[i]}`;
+    finalConnections.push(database.connection(id));
+  }
+  return [database, finalConnections];
 }
 
+module.exports.testColors = testColors;
 module.exports.testStations = testStations;
 module.exports.testCities = testCities;
 module.exports.testConnections = testConnections;

@@ -1,22 +1,42 @@
+class JourneyError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "JourneyError";
+  }
+}
+
 class Journey {
-  constructor(defaultConnections) {
-    this.defaults = defaultConnections;
-    this.connections = {};
+  #connections;
+  #cache;
+
+  constructor(connectionsByLegs) {
+    this.#connections = connectionsByLegs;
+    this.#cache = {};
   }
 
-  get legs() {
-    return Object.keys(this.defaults);
+  get unsortedConnections() {
+    return Object.values(this.#connections);
   }
 
-  get activeLegs() {
-    return Object.keys(this.connections);
+  get unsortedLegs() {
+    return Object.keys(this.#connections);
   }
 
-  static fromDefaults(defaultConnections) {
-    const journey = new Journey(defaultConnections);
-    for (let leg in defaultConnections)
-      journey.connections[leg] = defaultConnections[leg];
-    return journey;
+  setConnectionForLeg(leg, connection) {
+    this.#connections[leg] = connection;
+  }
+
+  removeLeg(leg) {
+    if (!this.#connections[leg])
+      throw new JourneyError(`Can not remove non-existing leg ${leg}`);
+    this.#cache[leg] = this.#connections[leg];
+    delete this.#connections[leg];
+  }
+
+  previousConnection(leg) {
+    if (this.#connections[leg])
+      throw new JourneyError(`Leg is currently active`);
+    return this.#cache[leg];
   }
 }
 
@@ -46,8 +66,8 @@ function getColour(journeyId) {
 function getJourneySummary(journey, database) {
   // look up all the necessary data from the database
   const connections = [];
-  for (let [leg, connectionId] of Object.entries(journey.connections)) {
-    const connection = database.connectionForLegAndId(leg, connectionId);
+  for (let connectionId of journey.unsortedConnections) {
+    const connection = database.connection(connectionId);
 
     const firstStop = connection.stops[0];
     const lastStop = connection.stops.at(-1);
@@ -91,19 +111,20 @@ function getJourneySummary(journey, database) {
 function prepareDataForCalendar(journeys, activeId, datatabase) {
   const data = [];
 
-  const connections = journeys[activeId].connections;
-  for (let [leg, activeConnection] of Object.entries(connections)) {
-    for (let connection of Object.values(datatabase.connectionsForLeg(leg))) {
+  const activeConnections = journeys[activeId].unsortedConnections;
+
+  for (let leg of journeys[activeId].unsortedLegs) {
+    for (let connection of datatabase.connectionsForLeg(leg)) {
       data.push({
         id: connection.id,
         displayId: connection.id.split("X")[1], // todo not nice
         type: connection.type,
-        leg: leg,
+        leg: connection.leg,
         startStation: datatabase.stationName(connection.stops[0].station),
         startDateTime: connection.stops[0].departure,
         endStation: datatabase.stationName(connection.stops.at(-1).station),
         endDateTime: connection.stops.at(-1).arrival,
-        active: connection.id === activeConnection,
+        active: activeConnections.includes(connection.id),
         color: getColour(activeId),
       });
     }
@@ -127,14 +148,13 @@ function prepareDataForJourneySelection(journeys, activeId, database) {
 }
 
 function prepareDataForMap(journeys, activeId, database) {
-  // want to display all the legs in all journeys
-  const allLegs = Object.values(journeys).flatMap((j) => j.legs);
-  const allLLegsUnique = Array.from(new Set(allLegs));
+  const allLegs = database.legs;
 
   // but currently used legs in the active journey will be marked as active
-  const activeLegs = journeys[activeId].activeLegs;
+  const activeConnections = journeys[activeId].unsortedConnections;
+  const activeLegs = activeConnections.map((c) => database.connection(c).leg);
 
-  const data = allLLegsUnique.map((leg) => {
+  const data = allLegs.map((leg) => {
     const [startCity, endCity] = database.citiesForLeg(leg);
     return {
       id: leg,

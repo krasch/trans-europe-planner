@@ -157,12 +157,38 @@ function createItineraryForRoute(legs, database) {
   return best.map((connections) => connections.id);
 }
 
+function createJourneyForRoute(legs, database) {
+  const connections = createItineraryForRoute(legs, database);
+
+  const map = {};
+  for (let i in legs) map[legs[i]] = connections[i];
+
+  return new Journey(map);
+}
+
+function pickFittingConnection(connectionIds, desiredLeg, database) {
+  const connections = connectionIds.map((i) => database.connection(i));
+  connections.sort((a, b) =>
+    a.stops[0].departure.compareTo(a.stops.at(-1).arrival),
+  );
+
+  const currentArrival = connections.at(-1).stops.at(-1).arrival;
+
+  const candidates = database.connectionsForLeg(desiredLeg);
+
+  const later = candidates.filter(
+    (c) => c.stops[0].departure.minutesSince(currentArrival) > 0,
+  );
+
+  if (later.length > 0) return later[0].id;
+  else return candidates[0].id; // fallback: pick earliest
+}
+
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.cartesianProduct = cartesianProduct;
   module.exports.isValidItinerary = isValidItinerary;
   module.exports.itinerarySummary = itinerarySummary;
   module.exports.chooseItinerary = chooseItinerary;
-  module.exports.createItineraryForRoute = createItineraryForRoute;
-  module.exports.CreatingItineraryNotPossible = CreatingItineraryNotPossible;
+  module.exports.pickFittingConnection = pickFittingConnection;
 }

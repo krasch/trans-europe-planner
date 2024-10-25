@@ -3,7 +3,7 @@ const {
   isValidItinerary,
   itinerarySummary,
   chooseItinerary,
-  createItineraryForRoute,
+  pickFittingConnection,
 } = require("../script/routing.js");
 const { createDatabase } = require("../tests/data.js");
 
@@ -40,67 +40,52 @@ test("cartesianProductMultipleArraysMultipleItems", function () {
 });
 
 test("isValidItineraryOneLeg", function () {
-  const database = createDatabase(["City1 (6:01) -> City2 (6:10) on Day 1"]);
+  const [database, conns] = createDatabase([
+    "City1 (6:01) -> City2 (6:10) on Day 1",
+  ]);
 
-  const itinerary = [
-    Object.values(database.connectionsForLeg("City1-City2"))[0],
-  ];
+  const itinerary = [conns[0]];
 
   expect(isValidItinerary(itinerary)).toBe(true);
 });
 
 test("isValidItineraryTwoLegs", function () {
-  const database = createDatabase([
+  const [database, conns] = createDatabase([
     "City1 (6:01) -> City2 (6:10) on Day 1",
     "City2 (7:01) -> City3 (7:10) on Day 1",
   ]);
 
-  const itinerary = [
-    Object.values(database.connectionsForLeg("City1-City2"))[0],
-    Object.values(database.connectionsForLeg("City2-City3"))[0],
-  ];
-
+  const itinerary = [conns[0], conns[1]];
   expect(isValidItinerary(itinerary)).toBe(true);
 });
 
 test("isValidItineraryTwoLegsSecondLeavesTooEarlySameDay", function () {
-  const database = createDatabase([
+  const [database, conns] = createDatabase([
     "City1 (7:01) -> City2 (7:10) on Day 1",
     "City2 (7:01) -> City3 (7:10) on Day 1",
   ]);
 
-  const itinerary = [
-    Object.values(database.connectionsForLeg("City1-City2"))[0],
-    Object.values(database.connectionsForLeg("City2-City3"))[0],
-  ];
-
+  const itinerary = [conns[0], conns[1]];
   expect(isValidItinerary(itinerary)).toBe(false);
 });
 
 test("isValidItineraryTwoLegsSecondLeavesTooEarlyDayBefore", function () {
-  const database = createDatabase([
+  const [database, conns] = createDatabase([
     "City1 (6:01) -> City2 (6:10) on Day 2",
     "City2 (7:01) -> City3 (7:10) on Day 1",
   ]);
 
-  const itinerary = [
-    Object.values(database.connectionsForLeg("City1-City2"))[0],
-    Object.values(database.connectionsForLeg("City2-City3"))[0],
-  ];
-
+  const itinerary = [conns[0], conns[1]];
   expect(isValidItinerary(itinerary)).toBe(false);
 });
 
 test("itinerarySummaryOneTravelDay", function () {
-  const database = createDatabase([
+  const [database, conns] = createDatabase([
     "City1 (6:01) -> City2 (6:10) on Day 1",
     "City2 (7:01) -> City3 (7:10) on Day 1",
   ]);
 
-  const itinerary = [
-    Object.values(database.connectionsForLeg("City1-City2"))[0],
-    Object.values(database.connectionsForLeg("City2-City3"))[0],
-  ];
+  const itinerary = [conns[0], conns[1]];
 
   const actual = itinerarySummary(itinerary);
   const expected = {
@@ -117,19 +102,14 @@ test("itinerarySummaryOneTravelDay", function () {
 });
 
 test("itinerarySummaryMultipleTravelDays", function () {
-  const database = createDatabase([
+  const [database, conns] = createDatabase([
     "City1 (6:01) -> City2 (6:10) on Day 1",
     "City2 (6:01) -> City1 (6:10) on Day 2",
     "City1 (9:01) -> City3 (9:10) on Day 2",
     "City3 (6:01) -> City4 (6:10) on Day 3",
   ]);
 
-  const itinerary = [
-    Object.values(database.connectionsForLeg("City1-City2"))[0],
-    Object.values(database.connectionsForLeg("City2-City1"))[0],
-    Object.values(database.connectionsForLeg("City1-City3"))[0],
-    Object.values(database.connectionsForLeg("City3-City4"))[0],
-  ];
+  const itinerary = [conns[0], conns[1], conns[2], conns[3]];
 
   const actual = itinerarySummary(itinerary);
   const expected = {
@@ -146,15 +126,12 @@ test("itinerarySummaryMultipleTravelDays", function () {
 });
 
 test("itinerarySummaryMultipleTravelDaysWithGap", function () {
-  const database = createDatabase([
+  const [database, conns] = createDatabase([
     "City1 (6:01) -> City2 (6:10) on Day 1",
     "City3 (6:01) -> City4 (6:10) on Day 3",
   ]);
 
-  const itinerary = [
-    Object.values(database.connectionsForLeg("City1-City2"))[0],
-    Object.values(database.connectionsForLeg("City3-City4"))[0],
-  ];
+  const itinerary = [conns[0], conns[1]];
 
   const actual = itinerarySummary(itinerary);
   const expected = {
@@ -223,4 +200,58 @@ test("chooseItinerarySameExceptForTotalTravelTime", function () {
 
   const actual = chooseItinerary([it0, it1]);
   expect(actual).toStrictEqual(1);
+});
+
+test("pickConnectionFittingToJourneyFirstOneIsChosen", function () {
+  const [database, conns] = createDatabase([
+    "City1 (6:01) -> City2 (6:10) on Day 1",
+    "City2 (7:01) -> City3 (7:10) on Day 1",
+    "City2 (8:01) -> City3 (8:10) on Day 1",
+  ]);
+
+  const journey = [conns[0].id];
+
+  const actual = pickFittingConnection(journey, "City2-City3", database);
+  expect(actual).toBe(conns[1].id);
+});
+
+test("pickConnectionFittingToJourneySecondOneIsChosen", function () {
+  const [database, conns] = createDatabase([
+    "City1 (7:01) -> City2 (7:10) on Day 1",
+    "City2 (7:01) -> City3 (7:10) on Day 1",
+    "City2 (8:01) -> City3 (8:10) on Day 1",
+  ]);
+
+  const journey = [conns[0].id];
+
+  const actual = pickFittingConnection(journey, "City2-City3", database);
+  expect(actual).toBe(conns[2].id);
+});
+
+// todo unsorted input data
+
+test("pickConnectionNoFittingMatch", function () {
+  const [database, conns] = createDatabase([
+    "City1 (8:01) -> City2 (8:10) on Day 1",
+    "City2 (7:01) -> City3 (7:10) on Day 1",
+    "City2 (8:01) -> City3 (8:10) on Day 1",
+  ]);
+
+  const journey = [conns[0].id];
+
+  const actual = pickFittingConnection(journey, "City2-City3", database);
+  expect([conns[1].id, conns[2].id].includes(actual)).toBe(true);
+});
+
+test("pickConnectionWrongOrder", function () {
+  const [database, conns] = createDatabase([
+    "City1 (9:01) -> City2 (9:10) on Day 1",
+    "City2 (8:01) -> City3 (8:10) on Day 2",
+    "City3 (6:01) -> City4 (6:10) on Day 3",
+  ]);
+
+  const journey = [conns[1].id, conns[0].id];
+
+  const actual = pickFittingConnection(journey, "City3-City4", database);
+  expect(actual).toBe(conns[2].id);
 });
