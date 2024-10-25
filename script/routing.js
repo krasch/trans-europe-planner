@@ -13,9 +13,6 @@ function cartesianProduct(a) {
 }
 
 function isValidItinerary(itinerary) {
-  // todo only checks for timings, does not check that there are no legs missing
-  let valid = true;
-
   for (let i in itinerary) {
     if (i === "0") continue;
 
@@ -23,10 +20,10 @@ function isValidItinerary(itinerary) {
     const departure = itinerary[i].stops.at(0).departure;
     const changeTime = departure.minutesSince(arrival);
 
-    valid = valid && changeTime > 30;
+    if (changeTime < 30) return false;
   }
 
-  return valid;
+  return true;
 }
 
 function itinerarySummary(itinerary) {
