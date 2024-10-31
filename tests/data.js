@@ -175,7 +175,7 @@ function createDatabase(connectionNames) {
     const e = testCities[testStations[connection.stops.at(-1).station].city];
 
     connections.push(testConnections[name]);
-    legs.push(`${s.name}-${e.name}`);
+    legs.push(`${s.name}->${e.name}`);
   }
 
   const database = new Database(

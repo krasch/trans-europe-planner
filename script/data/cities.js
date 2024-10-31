@@ -34,7 +34,7 @@ const CITIES = {
     latitude: 47.567,
     longitude: 7.583,
   },
-  "-3": {
+  "-1002": {
     name: "Bastia",
     latitude: 42.7,
     longitude: 9.449722,
@@ -404,7 +404,7 @@ const CITIES = {
     latitude: 43.710897,
     longitude: 10.398817,
   },
-  "-1": {
+  "-1001": {
     name: "Pontedera",
     latitude: 43.6625,
     longitude: 10.6325,

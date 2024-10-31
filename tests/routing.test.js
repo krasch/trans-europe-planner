@@ -211,7 +211,7 @@ test("pickConnectionFittingToJourneyFirstOneIsChosen", function () {
 
   const journey = [conns[0].id];
 
-  const actual = pickFittingConnection(journey, "City2-City3", database);
+  const actual = pickFittingConnection(journey, "City2->City3", database);
   expect(actual).toBe(conns[1].id);
 });
 
@@ -224,7 +224,7 @@ test("pickConnectionFittingToJourneySecondOneIsChosen", function () {
 
   const journey = [conns[0].id];
 
-  const actual = pickFittingConnection(journey, "City2-City3", database);
+  const actual = pickFittingConnection(journey, "City2->City3", database);
   expect(actual).toBe(conns[2].id);
 });
 
@@ -239,7 +239,7 @@ test("pickConnectionNoFittingMatch", function () {
 
   const journey = [conns[0].id];
 
-  const actual = pickFittingConnection(journey, "City2-City3", database);
+  const actual = pickFittingConnection(journey, "City2->City3", database);
   expect([conns[1].id, conns[2].id].includes(actual)).toBe(true);
 });
 
@@ -252,6 +252,6 @@ test("pickConnectionWrongOrder", function () {
 
   const journey = [conns[1].id, conns[0].id];
 
-  const actual = pickFittingConnection(journey, "City3-City4", database);
+  const actual = pickFittingConnection(journey, "City3->City4", database);
   expect(actual).toBe(conns[2].id);
 });

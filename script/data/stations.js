@@ -55,11 +55,11 @@ const STATIONS = {
     city: 5877,
     preferred: true,
   },
-  "-2": {
+  "-2002": {
     name: "Bastia Gare Maritime",
     latitude: 42.704074,
     longitude: 9.454851,
-    city: -3,
+    city: -1002,
     preferred: true,
   },
   8300397: {
@@ -675,7 +675,7 @@ const STATIONS = {
     name: "Pontedera-Casciana Terme",
     latitude: 43.6623,
     longitude: 10.629,
-    city: -1,
+    city: -1001,
     preferred: true,
   },
   8300220: {

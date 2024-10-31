@@ -15,6 +15,7 @@ class Journey {
   }
 
   get unsortedConnections() {
+    if (this.#connections.length === 0) return [];
     return Object.values(this.#connections);
   }
 

@@ -144,7 +144,7 @@ class Database {
       if (partial === null) continue;
 
       // id suffix based on leg
-      const leg = `${this.#cities[startCityId].name}-${this.#cities[endCityId].name}`;
+      const leg = `${this.#cities[startCityId].name}->${this.#cities[endCityId].name}`;
       const id = `${connectionTemplate.id}X${leg}`;
 
       const connection = {
@@ -161,7 +161,7 @@ class Database {
 
   #resolveLeg(leg) {
     // todo this is temporary while we are setting things up with human-readable lag names
-    const [startCityName, endCityName] = leg.split("-");
+    const [startCityName, endCityName] = leg.split("->");
     if (!startCityName || !endCityName)
       throw new DatabaseError(`Invalid leg name ${leg}`);
 

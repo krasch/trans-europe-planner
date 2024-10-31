@@ -16,7 +16,7 @@ test("getJourneySummaryNoVias", function () {
   ]);
 
   // no VIA's
-  const journey = new Journey({ "City1-City2": conns[0].id });
+  const journey = new Journey({ "City1->City2": conns[0].id });
 
   const exp = "From City1 to City2<br/>9min";
   expect(getJourneySummary(journey, database)).toStrictEqual(exp);
@@ -30,8 +30,8 @@ test("getJourneySummaryOneVia", function () {
 
   // one via
   const journey = new Journey({
-    "City1-City2": conns[0].id,
-    "City2-City3": conns[1].id,
+    "City1->City2": conns[0].id,
+    "City2->City3": conns[1].id,
   });
 
   const exp = "From City1 to City3 via City2<br/>1h 9min";
@@ -47,9 +47,9 @@ test("getJourneySummaryTwoVias", function () {
 
   // two VIA's
   const journey = new Journey({
-    "City1-City2": conns[0].id,
-    "City2-City3": conns[1].id,
-    "City3-City4": conns[2].id,
+    "City1->City2": conns[0].id,
+    "City2->City3": conns[1].id,
+    "City3->City4": conns[2].id,
   });
 
   const exp = "From City1 to City4 via City2, City3<br/>2h 9min";
@@ -67,8 +67,8 @@ test("prepareDataForJourneySelection", function () {
 
   const journeys = {
     journey1: new Journey({
-      "City1-City2": c1To2_1.id,
-      "City2-City3": c2To3.id,
+      "City1->City2": c1To2_1.id,
+      "City2->City3": c2To3.id,
     }),
     journey2: new Journey({ "City1-City3": c1To3.id }),
   };

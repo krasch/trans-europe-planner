@@ -9,7 +9,7 @@ const CONNECTIONS = [
         departure: "07:00:00",
       },
       {
-        station: -2,
+        station: -2002,
         arrival: "11:30:00",
         departure: "11:30:00",
       },

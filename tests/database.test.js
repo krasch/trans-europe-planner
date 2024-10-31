@@ -102,21 +102,21 @@ test("getConnectionsForLeg", function () {
   ]);
 
   const database = new Database(testCities, testStations, [c1, c2, c3]);
-  const got = database.connectionsForLeg("City1-City3");
+  const got = database.connectionsForLeg("City1->City3");
 
-  const c1Leg = `${c1.id}XCity1-City3`;
-  const c3Leg = `${c3.id}XCity1-City3`;
+  const c1Leg = `${c1.id}XCity1->City3`;
+  const c3Leg = `${c3.id}XCity1->City3`;
 
   const exp = [
     {
       id: c1Leg,
-      leg: "City1-City3",
+      leg: "City1->City3",
       type: "train",
       stops: c1.stops.slice(0, 3),
     },
     {
       id: c3Leg,
-      leg: "City1-City3",
+      leg: "City1->City3",
       type: "train",
       stops: c3.stops.slice(1, 3),
     },
@@ -139,12 +139,12 @@ test("unknownStation", function () {
 
 test("badLegFormat", function () {
   const database = new Database(testCities, testStations, []);
-  expect(() => database.connectionsForLeg("badLeg-")).toThrow(DatabaseError);
+  expect(() => database.connectionsForLeg("badLeg->")).toThrow(DatabaseError);
 });
 
 test("unknownCityInLeg", function () {
   const database = new Database(testCities, testStations, []);
-  expect(() => database.connectionsForLeg("City1-City1000")).toThrow(
+  expect(() => database.connectionsForLeg("City1->City1000")).toThrow(
     DatabaseError,
   );
 });

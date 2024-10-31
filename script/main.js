@@ -29,6 +29,7 @@ async function main(map, calendar, journeySelection) {
     journey1: createJourneyForRoute(ROUTES[target][0], database),
     journey2: createJourneyForRoute(ROUTES[target][1], database),
     journey3: createJourneyForRoute(ROUTES[target][2], database),
+    //journey3: createJourneyForRoute([], database),
   };
   let active = "journey3";
 

@@ -129,6 +129,8 @@ function chooseItinerary(summaries) {
 }
 
 function createItineraryForRoute(legs, database) {
+  if (legs.length === 0) return [];
+
   // look up all necessary data from database
   const connections = legs.map((l) =>
     Object.values(database.connectionsForLeg(l)),

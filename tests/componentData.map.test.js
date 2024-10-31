@@ -17,16 +17,16 @@ test("prepareDataForMap", function () {
   // c1 and c2 do the same leg at different hours, only c1 is used in the journey
   const journeys = {
     journey1: new Journey({
-      "City1-City2": c1To2_1.id,
-      "City2-City3": c2To3.id,
+      "City1->City2": c1To2_1.id,
+      "City2->City3": c2To3.id,
     }),
-    journey2: new Journey({ "City1-City3": c1To3.id }),
+    journey2: new Journey({ "City1->City3": c1To3.id }),
   };
   const active = "journey1";
 
   const exp = [
     {
-      id: "City1-City2",
+      id: "City1->City2",
       startCity: {
         name: "City1",
         latitude: 10,
@@ -40,7 +40,7 @@ test("prepareDataForMap", function () {
       active: true,
     },
     {
-      id: "City2-City3",
+      id: "City2->City3",
       startCity: {
         name: "City2",
         latitude: 20,
@@ -54,7 +54,7 @@ test("prepareDataForMap", function () {
       active: true,
     },
     {
-      id: "City1-City3",
+      id: "City1->City3",
       startCity: {
         name: "City1",
         latitude: 10,
