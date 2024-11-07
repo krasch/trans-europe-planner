@@ -4,9 +4,14 @@ body {
     font-family: helvetica, arial, sans-serif;
 }
 
-html, body, #map {
+html, body {
     height: 100%;
 }
+
+#map {
+    height: calc(100% - 4rem);
+}
+
 
 calendar-grid {
     position: absolute;
