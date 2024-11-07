@@ -89,8 +89,11 @@ function createConnection(stations, startHour, startDay) {
   delete stops[0]["arrival"];
   delete stops.at(-1)["departure"];
 
+  const id = incrementalId();
+
   return {
-    id: `${startDay}X${incrementalId()}`,
+    id: `${startDay}X${id}`,
+    name: id,
     type: "train",
     stops: stops,
   };

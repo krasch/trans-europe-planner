@@ -24,14 +24,9 @@ async function main(map, calendar, journeySelection) {
   const database = new Database(CITIES, STATIONS, connections, LEGS);
 
   // init state
-  const target = "Berlin->Roma";
-  const journeys = {
-    journey1: createJourneyForRoute(ROUTES[target][0], database),
-    journey2: createJourneyForRoute(ROUTES[target][1], database),
-    journey3: createJourneyForRoute(ROUTES[target][2], database),
-    //journey3: createJourneyForRoute([], database),
-  };
-  let active = "journey3";
+  const target = "München->London";
+  const journeys = createJourneysForRoute(ROUTES[target], database);
+  let active = "journey1";
 
   // now have done all we can do without having the map ready
   await map.load();

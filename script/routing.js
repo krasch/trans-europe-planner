@@ -156,8 +156,32 @@ function createItineraryForRoute(legs, database) {
   return best.map((connections) => connections.id);
 }
 
+function createStupidItineraryForRoute(legs, database) {
+  const itinerary = [];
+
+  for (let i in legs) {
+    const connections = Object.values(database.connectionsForLeg(legs[i]));
+    connections.sort((a, b) =>
+      a.stops[0].departure.compareTo(b.stops[0].departure),
+    );
+
+    if (i === "0") {
+      itinerary.push(connections[0]);
+      continue;
+    }
+
+    const previousArrival = itinerary.at(-1)["stops"].at(-1)["arrival"];
+    const relevantConnections = connections.filter(
+      (c) => c.stops[0].departure.minutesSince(previousArrival) > 30,
+    );
+    itinerary.push(relevantConnections[0]);
+  }
+
+  return itinerary.map((c) => c.id);
+}
+
 function createJourneyForRoute(legs, database) {
-  const connections = createItineraryForRoute(legs, database);
+  const connections = createStupidItineraryForRoute(legs, database);
 
   const map = {};
   for (let i in legs) map[legs[i]] = connections[i];
@@ -165,10 +189,21 @@ function createJourneyForRoute(legs, database) {
   return new Journey(map);
 }
 
+function createJourneysForRoute(routes, database) {
+  const journeys = {};
+  for (let i in routes) {
+    journeys[`journey${Number(i) + 1}`] = createJourneyForRoute(
+      routes[Number(i)],
+      database,
+    );
+  }
+  return journeys;
+}
+
 function pickFittingConnection(connectionIds, desiredLeg, database) {
   const connections = connectionIds.map((i) => database.connection(i));
   connections.sort((a, b) =>
-    a.stops[0].departure.compareTo(a.stops.at(-1).arrival),
+    a.stops.at(-1).arrival.compareTo(b.stops.at(-1).arrival),
   );
 
   const currentArrival = connections.at(-1).stops.at(-1).arrival;
@@ -190,4 +225,6 @@ if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.itinerarySummary = itinerarySummary;
   module.exports.chooseItinerary = chooseItinerary;
   module.exports.pickFittingConnection = pickFittingConnection;
+  module.exports.createItineraryForRoute = createItineraryForRoute;
+  module.exports.createStupidItineraryForRoute = createStupidItineraryForRoute;
 }

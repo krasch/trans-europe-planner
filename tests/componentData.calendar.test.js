@@ -31,7 +31,7 @@ test("prepareDataForCalendar", function () {
   const exp = [
     {
       id: c1To2_1.id,
-      displayId: c1To2_1.id.split("X")[1],
+      displayId: c1To2_1.name,
       type: "train",
       leg: "City1->City2",
       startStation: "City 1 Main Station",
@@ -43,7 +43,7 @@ test("prepareDataForCalendar", function () {
     },
     {
       id: c1To2_2.id,
-      displayId: c1To2_2.id.split("X")[1],
+      displayId: c1To2_2.name,
       type: "train",
       leg: "City1->City2",
       startStation: "City 1 Main Station",
@@ -55,7 +55,7 @@ test("prepareDataForCalendar", function () {
     },
     {
       id: c2To3.id,
-      displayId: c2To3.id.split("X")[1],
+      displayId: c2To3.name,
       type: "train",
       leg: "City2->City3",
       startStation: "City 2 Main Station",

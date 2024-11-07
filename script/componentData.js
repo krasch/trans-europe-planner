@@ -118,7 +118,7 @@ function prepareDataForCalendar(journeys, activeId, datatabase) {
     for (let connection of datatabase.connectionsForLeg(leg)) {
       data.push({
         id: connection.id,
-        displayId: connection.id.split("X")[1], // todo not nice
+        displayId: connection.name,
         type: connection.type,
         leg: connection.leg,
         startStation: datatabase.stationName(connection.stops[0].station),
