@@ -8,6 +8,15 @@ const {
 } = require("../script/componentData.js");
 const { createDatabase, testColors } = require("../tests/data.js");
 
+test("prepareDataForCalendarEmpty", function () {
+  const [database, conns] = createDatabase([]);
+  const journeys = {};
+  const active = null;
+
+  const got = prepareDataForCalendar(journeys, active, database);
+  expect(got).toStrictEqual([]);
+});
+
 test("prepareDataForCalendar", function () {
   const [database, conns] = createDatabase([
     "City1 (6:01) -> City2 (6:10) on Day 1",

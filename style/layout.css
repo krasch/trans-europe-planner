@@ -17,6 +17,12 @@ calendar-grid {
     font-size: 0.8rem;
 }
 
+#header {
+    height: 4rem;
+    width: 100%;
+    background-color: grey;
+}
+
 #journey-selection {
     position: absolute;
     right: 1rem;

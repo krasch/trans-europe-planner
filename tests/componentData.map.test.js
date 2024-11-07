@@ -5,6 +5,33 @@
 const { prepareDataForMap, Journey } = require("../script/componentData.js");
 const { createDatabase, testColors } = require("../tests/data.js");
 
+test("prepareDataForMapEmpty", function () {
+  const [database, conns] = createDatabase([
+    "City1 (6:01) -> City2 (6:10) on Day 1",
+  ]);
+  const journeys = {};
+  const active = null;
+
+  const got = prepareDataForMap(journeys, active, database);
+  const exp = [
+    {
+      id: "City1->City2",
+      startCity: {
+        name: "City1",
+        latitude: 10,
+        longitude: 10,
+      },
+      endCity: {
+        name: "City2",
+        latitude: 20,
+        longitude: 20,
+      },
+      active: false,
+    },
+  ];
+  expect(got).toStrictEqual([exp, null]);
+});
+
 test("prepareDataForMap", function () {
   const [database, conns] = createDatabase([
     "City1 (6:01) -> City2 (6:10) on Day 1",

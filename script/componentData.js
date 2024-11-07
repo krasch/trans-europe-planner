@@ -112,6 +112,8 @@ function getJourneySummary(journey, database) {
 function prepareDataForCalendar(journeys, activeId, datatabase) {
   const data = [];
 
+  if (activeId == null) return data;
+
   const activeConnections = journeys[activeId].unsortedConnections;
 
   for (let leg of journeys[activeId].unsortedLegs) {
@@ -136,6 +138,8 @@ function prepareDataForCalendar(journeys, activeId, datatabase) {
 function prepareDataForJourneySelection(journeys, activeId, database) {
   const data = [];
 
+  if (activeId == null) return data;
+
   for (let journeyId in journeys) {
     data.push({
       id: journeyId,
@@ -151,9 +155,13 @@ function prepareDataForJourneySelection(journeys, activeId, database) {
 function prepareDataForMap(journeys, activeId, database) {
   const allLegs = database.legs;
 
-  // but currently used legs in the active journey will be marked as active
-  const activeConnections = journeys[activeId].unsortedConnections;
-  const activeLegs = activeConnections.map((c) => database.connection(c).leg);
+  let activeConnections = [];
+  let activeLegs = [];
+
+  if (activeId != null) {
+    activeConnections = journeys[activeId].unsortedConnections;
+    activeLegs = activeConnections.map((c) => database.connection(c).leg);
+  }
 
   const data = allLegs.map((leg) => {
     const [startCity, endCity] = database.citiesForLeg(leg);
@@ -165,7 +173,10 @@ function prepareDataForMap(journeys, activeId, database) {
     };
   });
 
-  return [data, getColour(activeId)];
+  let colour = null;
+  if (activeId != null) colour = getColour(activeId);
+
+  return [data, colour];
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)

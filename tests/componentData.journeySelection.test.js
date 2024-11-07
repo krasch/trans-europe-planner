@@ -56,6 +56,15 @@ test("getJourneySummaryTwoVias", function () {
   expect(getJourneySummary(journey, database)).toStrictEqual(exp);
 });
 
+test("prepareDataForJourneySelectionEmpty", function () {
+  const [database, conns] = createDatabase([]);
+  const journeys = {};
+  const active = null;
+
+  const got = prepareDataForJourneySelection(journeys, active, database);
+  expect(got).toStrictEqual([]);
+});
+
 test("prepareDataForJourneySelection", function () {
   const [database, conns] = createDatabase([
     "City1 (6:01) -> City2 (6:10) on Day 1",
