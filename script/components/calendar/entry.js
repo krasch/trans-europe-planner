@@ -54,7 +54,7 @@ function createCalendarEntry(connection) {
   if (connection.endDateTime.minutesSince(connection.startDateTime) < 4 * 60) {
     templateId = "template-calendar-connection-short";
   }
-  if (connection.endDateTime.minutesSince(connection.startDateTime) < 60) {
+  if (connection.endDateTime.minutesSince(connection.startDateTime) < 2 * 60) {
     templateId = "template-calendar-connection-tiny";
   }
 
