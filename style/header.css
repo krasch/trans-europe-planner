@@ -1,0 +1,51 @@
+#header {
+    height: 4rem;
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10rem;
+
+    background-color: #adcceb;
+    border: 5px lightgrey;
+}
+
+
+#logo {
+    position: absolute;
+    left: 3rem;
+    top: 0;
+    z-index: 2;
+    height: 4rem;
+}
+
+
+.select-box {
+    background-color: #f9f3ea;
+    color: #2e210d;
+    border-radius: 5px;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+}
+
+.select-box select {
+    background-color: #f9f3ea;
+    border-width: 1px;
+    width: 10rem;
+    border-radius: 2px;
+}
+
+#logo {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+    color: #f9f3ea;
+}
+
+#logo img {
+    /* https://codepen.io/sosuke/pen/Pjoqqp */
+    filter: invert(100%) sepia(10%) saturate(1000%) hue-rotate(307deg) brightness(99%) contrast(97%);
+    height: 3.5rem;
+}

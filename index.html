@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="style/colors.css">
     <link rel="stylesheet" href="style/calendar.css">
     <link rel="stylesheet" href="style/journey-selection.css">
+    <link rel="stylesheet" href="style/header.css">
 
     <!-- style scripts -->
     <script src="style/map.js"></script> <!-- only contains css styles for map in js -->
@@ -97,27 +98,33 @@
     </div>
 </template>
 
+<div id="logo">
+    <img src="images/logo.svg" alt="logo for the trans-europe-planner">
+    <span>Trans<br/>Europe<br/>Planner</span>
+</div>
 
 <div id="header">
-    <label for="select-start">Ich bin in </label>
-    <select name="start" id="select-start">
-        <option value=""></option>
-        <option value="Berlin">Berlin</option>
-        <option value="Hamburg">Hamburg</option>
-        <option value="Köln">Köln</option>
-        <option value="München">München</option>
-    </select>
-    <label for="select-end">Ich will nach </label>
-    <select name="end" id="select-end">
-        <option value=""></option>
-        <option value="London">London</option>
-        <option value="Roma">Rom</option>
-        <option value="Stockholm">Stockholm</option>
-        <option value="Warszawa">Warschau</option>
-    </select>
-
+    <div class="select-box">
+        <label for="select-start">Ich bin in </label>
+        <select name="start" id="select-start">
+            <option value=""></option>
+            <option value="Berlin">Berlin</option>
+            <option value="Hamburg">Hamburg</option>
+            <option value="Köln">Köln</option>
+            <option value="München">München</option>
+        </select>
+    </div>
+    <div class="select-box">
+        <label for="select-end">Ich will nach </label>
+        <select name="end" id="select-end">
+            <option value=""></option>
+            <option value="London">London</option>
+            <option value="Roma">Rom</option>
+            <option value="Stockholm">Stockholm</option>
+            <option value="Warszawa">Warschau</option>
+        </select>
+    </div>
 </div>
-<div id="logo"><img src="images/logo.svg" alt="logo for the trans-europe-planner"></div>
 
 
 <div id="map"></div>
