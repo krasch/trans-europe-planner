@@ -25,6 +25,7 @@ function temporalizeConnections(connections) {
 
       result.push({
         id: `${stops[0].departure.dateString}X${connection.id}`,
+        name: connection.name,
         type: connection.type,
         stops: stops,
       });
@@ -149,6 +150,7 @@ class Database {
 
       const connection = {
         id: id,
+        name: connectionTemplate.name,
         leg: leg,
         type: connectionTemplate.type,
         stops: partial,

@@ -164,9 +164,9 @@ class MapWrapper {
     this.map.setLayoutProperty("place-city", "text-field", ["get", `name`]);
 
     // when the user clicks on a leg, it should be added to the journey
-    this.#legs.onClick((id) => this.#callbacks["legAdded"](id));
+    //this.#legs.onClick((id) => this.#callbacks["legAdded"](id));
     // when the user clicks on a connection, it should be removed from the journey
-    this.#connections.onClick((id) => this.#callbacks["legRemoved"](id));
+    //this.#connections.onClick((id) => this.#callbacks["legRemoved"](id));
 
     // when mouse starts/stops hovering over a leg, it should get highlighted
     this.#legs.onHover((id) => {
@@ -201,8 +201,8 @@ class MapWrapper {
     const greyLines = legs.filter((l) => !l.active).map(legToGeojson);
     this.#legs.update(asGeojsonFeatureCollection(greyLines));
 
-    const startCities = legs.map((c) => c.startCity);
-    const endCities = legs.map((c) => c.endCity);
+    const startCities = legs.filter((l) => l.active).map((c) => c.startCity);
+    const endCities = legs.filter((l) => l.active).map((c) => c.endCity);
     const cities = new Set(startCities.concat(endCities)); // todo only works if city object
     const markers = Array.from(cities).map(cityToGeojson);
     this.#cities.update(asGeojsonFeatureCollection(markers));

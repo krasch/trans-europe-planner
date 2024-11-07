@@ -110,12 +110,14 @@ test("getConnectionsForLeg", function () {
   const exp = [
     {
       id: c1Leg,
+      name: c1.name,
       leg: "City1->City3",
       type: "train",
       stops: c1.stops.slice(0, 3),
     },
     {
       id: c3Leg,
+      name: c3.name,
       leg: "City1->City3",
       type: "train",
       stops: c3.stops.slice(1, 3),

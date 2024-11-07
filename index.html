@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="style/colors.css">
     <link rel="stylesheet" href="style/calendar.css">
     <link rel="stylesheet" href="style/journey-selection.css">
+    <link rel="stylesheet" href="style/header.css">
 
     <!-- style scripts -->
     <script src="style/map.js"></script> <!-- only contains css styles for map in js -->
@@ -24,6 +25,7 @@
     <script src="script/main.js"></script>
     <script src="script/routing.js"></script>
 
+    <!-- data -->
     <script src="script/data/cities.js"></script>
     <script src="script/data/stations.js"></script>
     <script src="script/data/connections.js"></script>
@@ -32,12 +34,14 @@
     <script src="script/database.js"></script>
     <script src="script/componentData.js"></script>
 
+    <!-- components -->
     <script src="script/components/calendar/grid.js"></script>
     <script src="script/components/calendar/entry.js"></script>
     <script src="script/components/calendar/calendar.js"></script>
     <script src="script/components/calendar/draganddrop.js"></script>
     <script src="script/components/map.js"></script>
     <script src="script/components/journeySelection.js"></script>
+    <script src="script/components/startDestinationSelection.js"></script>
 
     <title>Trans-Europe-Planner</title>
 
@@ -80,16 +84,48 @@
     </div>
 </template>
 
-
-<template id="template-journey-info">
-    <div class="journey-info">
-       <input type="radio" name="journey"/>
-       <label></label>
+<!-- even less info about the connection -->
+<template id="template-calendar-connection-tiny">
+    <div class="calendar-connection"></span>
     </div>
 </template>
 
 
-<div id="logo"><img src="images/logo.svg" alt="logo for the trans-europe-planner"></div>
+<template id="template-journey-info">
+    <div class="journey-info">
+        <input type="radio" name="journey"/>
+        <label></label>
+    </div>
+</template>
+
+<div id="logo">
+    <img src="images/logo.svg" alt="logo for the trans-europe-planner">
+    <span>Trans<br/>Europe<br/>Planner</span>
+</div>
+
+<div id="header">
+    <div class="select-box">
+        <label for="select-start">Ich bin in </label>
+        <select name="start" id="select-start">
+            <option value=""></option>
+            <option value="Berlin">Berlin</option>
+            <option value="Hamburg">Hamburg</option>
+            <option value="Köln">Köln</option>
+            <option value="München">München</option>
+        </select>
+    </div>
+    <div class="select-box">
+        <label for="select-end">Ich will nach </label>
+        <select name="end" id="select-end">
+            <option value=""></option>
+            <option value="London">London</option>
+            <option value="Roma">Rom</option>
+            <option value="Stockholm">Stockholm</option>
+            <option value="Warszawa">Warschau</option>
+        </select>
+    </div>
+</div>
+
 
 <div id="map"></div>
 <!-- All calendar elements will be added into the container below dynamically -->
@@ -104,9 +140,12 @@
         const map = new MapWrapper('map', [13.408333, 52.518611], 4);
         const calendar = document.getElementById("calendar");
         const journeySelection = new JourneySelection(document.getElementById("journey-selection"));
+        const startDestinationSelection = new StartDestinationSelection(
+            document.getElementById("select-start"),
+            document.getElementById("select-end"));
 
         try {
-            main(map, calendar, journeySelection);
+            main(map, calendar, journeySelection, startDestinationSelection);
         } catch (error) {
             console.error(error);
         }

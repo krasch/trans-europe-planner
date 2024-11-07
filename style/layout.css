@@ -1,43 +1,37 @@
 body {
     margin: 0;
     padding: 0;
+    font-family: helvetica, arial, sans-serif;
 }
 
-html, body, #map {
+html, body {
     height: 100%;
 }
+
+#map {
+    height: calc(100% - 4rem);
+}
+
 
 calendar-grid {
     position: absolute;
     left: 1rem;
-    top: 4rem;
+    top: 6rem;
 
     width: 400px; /* todo */
 
     font-size: 0.8rem;
 }
+
 
 #journey-selection {
     position: absolute;
     right: 1rem;
-    top: 4rem;
+    top: 6rem;
 
     width: 400px; /* todo */
 
     font-size: 0.8rem;
 }
 
-#logo {
-    position: absolute;
-    left: 3rem;
-    bottom: 3rem;
-    z-index: 2;
-    /*background-color: #adcceb;
-    border-radius: 20%;*/
-}
 
-#logo img {
-    /* https://codepen.io/sosuke/pen/Pjoqqp */
-    filter: invert(100%) sepia(10%) saturate(1000%) hue-rotate(307deg) brightness(99%) contrast(97%);
-    height: 8rem;
-}

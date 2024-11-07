@@ -4,6 +4,7 @@ const {
   itinerarySummary,
   chooseItinerary,
   pickFittingConnection,
+  createValidItineraries,
 } = require("../script/routing.js");
 const { createDatabase } = require("../tests/data.js");
 
