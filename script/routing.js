@@ -89,19 +89,16 @@ function itinerarySummary(itinerary) {
 }
 
 function judgeItinerary(summary) {
+  const minutesBefore8 = Math.min(0, summary.earliestDeparture - 8 * 60);
+  const minutesAfter22 = Math.min(0, 22 * 60 - summary.latestArrival);
+
   return (
     // highest priority: reduce number of days in itinerary
     summary.travelDays * -1000 +
     // don't depart before 8
-    (summary.earliestDeparture >= 8 * 60) * 200 +
-    // don't arrive after 10
-    (summary.latestArrival <= 22 * 60) * 100 +
-    // don't depart after 10
-    (summary.latestDeparture <= 10 * 60) * 50 +
-    // most travel should be done on first day
-    (summary.busiestDay === 0) * 50 +
-    // don't travel more than 9 hours per day
-    (summary.longestDailyTravelTime <= 9 * 60) * 10
+    minutesBefore8 +
+    // don't arrive after 22
+    minutesAfter22
   );
 }
 
@@ -156,25 +153,58 @@ function createItineraryForRoute(legs, database) {
   return best.map((connections) => connections.id);
 }
 
-function createStupidItineraryForRoute(legs, database) {
-  const itinerary = [];
+function createEarliestItinerary(firstConnection, connectionsForOtherLegs) {
+  const itinerary = [firstConnection];
 
-  for (let i in legs) {
-    const connections = Object.values(database.connectionsForLeg(legs[i]));
-    connections.sort((a, b) =>
-      a.stops[0].departure.compareTo(b.stops[0].departure),
-    );
-
-    if (i === "0") {
-      itinerary.push(connections[0]);
-      continue;
-    }
-
+  for (let i in connectionsForOtherLegs) {
     const previousArrival = itinerary.at(-1)["stops"].at(-1)["arrival"];
-    const relevantConnections = connections.filter(
+    const relevantConnections = connectionsForOtherLegs[i].filter(
       (c) => c.stops[0].departure.minutesSince(previousArrival) > 30,
     );
     itinerary.push(relevantConnections[0]);
+  }
+
+  return itinerary;
+}
+
+function createStupidItineraryForRoute(legs, database) {
+  if (legs.length === 0) return [];
+
+  // look up all necessary data from database and sort by departure time
+  const connections = legs.map((l) => {
+    const connsForLeg = Object.values(database.connectionsForLeg(l));
+    connsForLeg.sort((a, b) =>
+      a.stops[0].departure.compareTo(b.stops[0].departure),
+    );
+    return connsForLeg;
+  });
+
+  const connectionsForFirstLeg = connections[0];
+  const connectionsForOtherLegs = connections.slice(1, connections.length);
+
+  let itinerary = null;
+  let points = -1000000;
+
+  for (let i in connectionsForFirstLeg) {
+    const candidate = createEarliestItinerary(
+      connectionsForFirstLeg[i],
+      connectionsForOtherLegs,
+    );
+    const pointsCandidate = judgeItinerary(itinerarySummary(candidate));
+
+    // first time in loop
+    if (itinerary == null) {
+      itinerary = candidate;
+      points = pointsCandidate;
+      continue;
+    }
+
+    if (pointsCandidate > points) {
+      itinerary = candidate;
+      points = pointsCandidate;
+    } else {
+      break;
+    }
   }
 
   return itinerary.map((c) => c.id);
