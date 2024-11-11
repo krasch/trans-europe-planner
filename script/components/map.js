@@ -150,18 +150,33 @@ class MapWrapper {
     this.#cities = new MapLayer(this.map, "cities", "cities");
   }
 
-  async load() {
+  async load(cities, legs) {
     return new Promise((fulfilled, rejected) => {
       this.map.on("load", () => {
-        this.init();
-        fulfilled();
+        try {
+          this.init(cities, legs);
+          fulfilled();
+        } catch (error) {
+          rejected(error);
+        }
       });
     });
   }
 
-  init() {
+  init(cities, legs) {
     this.map.getCanvas().style.cursor = "default";
     this.map.setLayoutProperty("place-city", "text-field", ["get", `name`]);
+
+    this.cities = cities;
+    this.legs = legs;
+
+    legs = asGeojsonFeatureCollection(legs.map(legToGeojson));
+    cities = asGeojsonFeatureCollection(
+      Object.values(cities).map(cityToGeojson),
+    );
+
+    this.#legs.update(legs);
+    this.#cities.update(cities);
 
     // when the user clicks on a leg, it should be added to the journey
     //this.#legs.onClick((id) => this.#callbacks["legAdded"](id));
@@ -192,7 +207,22 @@ class MapWrapper {
   }
 
   updateView(data) {
-    const [legs, color] = data; // todo fold into legs
+    const activeLegs = data;
+
+    // unset all legs todo unset only legs that are now inactive
+    for (let leg of this.legs) {
+      this.#legs.setFeatureState(leg.id, { active: false });
+      this.#legs.setFeatureState(leg.id, { color: null });
+    }
+
+    for (let leg of activeLegs) {
+      this.#legs.setFeatureState(leg.id, { active: true });
+      this.#legs.setFeatureState(leg.id, { color: `rgb(${leg.color})` });
+    }
+
+    console.log(this.map.getSource("legs").vectorLayerIds);
+
+    /*const [legs, color] = data; // todo fold into legs
 
     const coloredLines = legs.filter((l) => l.active).map(legToGeojson);
     this.#connections.update(asGeojsonFeatureCollection(coloredLines));
@@ -205,7 +235,7 @@ class MapWrapper {
     const endCities = legs.filter((l) => l.active).map((c) => c.endCity);
     const cities = new Set(startCities.concat(endCities)); // todo only works if city object
     const markers = Array.from(cities).map(cityToGeojson);
-    this.#cities.update(asGeojsonFeatureCollection(markers));
+    this.#cities.update(asGeojsonFeatureCollection(markers));*/
   }
 
   setHover(leg) {

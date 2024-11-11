@@ -3,6 +3,7 @@ const mapStyles = {
     id: "cities",
     source: "cities",
     type: "symbol",
+    filter: ["in", "id", "placeholder"], //filter: ["in", "id", "Hamburg", "Berlin"],
     layout: {
       "text-font": ["Stadia Semibold"],
       "text-size": {
@@ -36,14 +37,19 @@ const mapStyles = {
       "line-cap": "round",
     },
     paint: {
-      "line-color": "grey",
+      "line-color": ["to-color", ["feature-state", "color"], "#aaa"],
       "line-opacity": [
         "case",
         ["boolean", ["feature-state", "hover"], false],
         0.8,
         0.4,
       ],
-      "line-width": 4,
+      "line-width": [
+        "case",
+        ["boolean", ["feature-state", "active"], false],
+        6,
+        1,
+      ],
     },
   },
   connections: {

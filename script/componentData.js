@@ -153,30 +153,46 @@ function prepareDataForJourneySelection(journeys, activeId, database) {
 }
 
 function prepareDataForMap(journeys, activeId, database) {
-  const allLegs = database.legs;
-
-  let activeConnections = [];
-  let activeLegs = [];
-
-  if (activeId != null) {
-    activeConnections = journeys[activeId].unsortedConnections;
-    activeLegs = activeConnections.map((c) => database.connection(c).leg);
+  if (activeId == null) {
+    return [];
   }
 
-  const data = allLegs.map((leg) => {
-    const [startCity, endCity] = database.citiesForLeg(leg);
-    return {
-      id: leg,
-      startCity: startCity,
-      endCity: endCity,
-      active: activeLegs.includes(leg),
-    };
-  });
+  function legsForJourney(journey) {
+    return journey.unsortedConnections.flatMap(
+      (c) => database.connection(c).subLegs,
+    );
+  }
 
-  let colour = null;
-  if (activeId != null) colour = getColour(activeId);
+  const colour = getColour(activeId);
 
-  return [data, colour];
+  const legs = [];
+  const done = [];
+
+  // first for active journey
+  for (let i in journeys[activeId].unsortedConnections) {
+    const c = journeys[activeId].unsortedConnections[i];
+    for (let leg of database.connection(c).subLegs) {
+      if (i === "0") legs.push({ id: leg, color: "27,158,119" });
+      else if (i === "1") legs.push({ id: leg, color: "217,95,2" });
+      else if (i === "2") legs.push({ id: leg, color: "117,112,179" });
+      done.push(leg);
+    }
+  }
+  console.log(legs);
+
+  // then for other journeys
+  // make sure to not overwrite what we did for active journey
+  for (let journeyId in journeys) {
+    if (journeyId === activeId) continue;
+
+    for (let leg of legsForJourney(journeys[journeyId])) {
+      if (done.includes(leg)) continue;
+      legs.push({ id: leg, color: null });
+      done.push(leg);
+    }
+  }
+
+  return legs;
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)

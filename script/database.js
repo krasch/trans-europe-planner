@@ -5,6 +5,22 @@ class DatabaseError extends Error {
   }
 }
 
+function prepareLegs(cities, legs) {
+  const cityNameToId = {};
+  for (let [id, city] of Object.entries(cities)) {
+    cityNameToId[city.name] = Number(id);
+  }
+
+  return legs.map((leg) => {
+    const [startCityName, endCityName] = leg.split("->");
+    return {
+      id: leg,
+      startCity: cities[cityNameToId[startCityName]],
+      endCity: cities[cityNameToId[endCityName]],
+    };
+  });
+}
+
 function removeMultidayConnections(connections) {
   return connections.filter(
     (c) =>
@@ -12,6 +28,7 @@ function removeMultidayConnections(connections) {
       c.stops.at(-1).arrival.minutesSinceMidnight,
   );
 }
+
 function temporalizeConnections(connections) {
   const result = [];
 
@@ -152,6 +169,7 @@ class Database {
         id: id,
         name: connectionTemplate.name,
         leg: leg,
+        subLegs: this.#stopsToLegs(partial),
         type: connectionTemplate.type,
         stops: partial,
       };
@@ -179,6 +197,23 @@ class Database {
       if (city.name === name) return Number(id);
     }
     throw new DatabaseError(`Unknown city ${name}`);
+  }
+
+  #stopsToLegs(stops) {
+    // todo move into partial?
+    const legs = [];
+    for (let i in stops) {
+      i = Number(i);
+
+      if (i === 0) continue;
+
+      let start = this.cityNameForStation(stops[i - 1].station);
+      let end = this.cityNameForStation(stops[i].station);
+      [start, end] = [start, end].sort();
+
+      if (start !== end) legs.push(`${start}->${end}`);
+    }
+    return legs;
   }
 }
 

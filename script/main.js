@@ -28,6 +28,8 @@ async function main(
   );
   const database = new Database(CITIES, STATIONS, connections, LEGS);
 
+  const mapLoadedPromise = map.load(CITIES, prepareLegs(CITIES, LEGS));
+
   // init update views
   const updateViews = initUpdateViews(
     map,
@@ -83,7 +85,7 @@ async function main(
   map.on("legStopHover", (leg) => calendar.setNoHover(leg));
 
   // now have done all we can do without having the map ready
-  await map.load();
+  await mapLoadedPromise;
 
   // read the current start/destination values and fill all views
   startDestinationSelection.triggerChangeEvent();
