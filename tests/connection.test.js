@@ -8,7 +8,7 @@ test("connection", function () {
     ["2024-10-15", "10:00", "city3MainStationId"],
   ]);
 
-  expect(connection.id).toBe("1X2024-10-15XCity1->City3");
+  expect(connection.id).toBe("1XXX2024-10-15XXXCity1->City3");
   expect(connection.leg).toBe("City1->City3");
   expect(connection.start).toStrictEqual(connection.stops[0]);
   expect(connection.end).toStrictEqual(connection.stops.at(-1));

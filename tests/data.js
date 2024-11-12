@@ -62,7 +62,7 @@ const incrementalId = initIncrementalId();
 
 function createConnection(stops) {
   const date = stops[0][0];
-  const id = `${incrementalId()}X${date}`;
+  const id = `${incrementalId()}XXX${date}`;
 
   const stopsEnriched = [];
   for (let [date, time, stationId] of stops) {
