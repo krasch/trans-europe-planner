@@ -163,20 +163,33 @@ class MapWrapper {
     });
   }
 
-  init(cities, legs) {
+  uniqueP2P(p2p) {
+    p2p = p2p.split("->");
+    p2p.sort();
+    return `${p2p[0]}->${p2p[1]}`;
+  }
+
+  init(cities, connections) {
     this.map.getCanvas().style.cursor = "default";
     this.map.setLayoutProperty("place-city", "text-field", ["get", `name`]);
 
+    this.p2p = connections.flatMap((c) => c.pointToPoint).map(this.uniqueP2P);
+    this.p2p = Array.from(new Set(this.p2p));
+
+    let p2p = this.p2p.map((p) => {
+      const [p1, p2] = p.split("->");
+      return {
+        id: p,
+        startCity: cities[p1],
+        endCity: cities[p2],
+      };
+    });
+    p2p = asGeojsonFeatureCollection(p2p.map(legToGeojson));
+    this.#legs.update(p2p);
+
     this.cities = cities;
-    this.legs = legs;
-
-    legs = asGeojsonFeatureCollection(legs.map(legToGeojson));
-    cities = asGeojsonFeatureCollection(
-      Object.values(cities).map(cityToGeojson),
-    );
-
-    this.#legs.update(legs);
-    this.#cities.update(cities);
+    cities = Object.values(cities).map(cityToGeojson);
+    this.#cities.update(asGeojsonFeatureCollection(cities));
 
     // when the user clicks on a leg, it should be added to the journey
     //this.#legs.onClick((id) => this.#callbacks["legAdded"](id));
@@ -184,22 +197,22 @@ class MapWrapper {
     //this.#connections.onClick((id) => this.#callbacks["legRemoved"](id));
 
     // when mouse starts/stops hovering over a leg, it should get highlighted
-    this.#legs.onHover((id) => {
+    /*this.#legs.onHover((id) => {
       this.#legs.setFeatureState(id, { hover: true });
     });
     this.#legs.onHoverEnd((id) => {
       this.#legs.setFeatureState(id, { hover: false });
-    });
+    });*/
 
     // when mouse starts/stops hovering over a connection, we should send an event (to ourselves and calendar)
-    this.#connections.onHover((leg) => {
+    /*this.#connections.onHover((leg) => {
       this.setHover(leg);
       this.#callbacks["legStartHover"](leg);
     });
     this.#connections.onHoverEnd((leg) => {
       this.setNoHover(leg);
       this.#callbacks["legStopHover"](leg);
-    });
+    });*/
   }
 
   on(eventName, callback) {
@@ -210,17 +223,16 @@ class MapWrapper {
     const activeLegs = data;
 
     // unset all legs todo unset only legs that are now inactive
-    for (let leg of this.legs) {
-      this.#legs.setFeatureState(leg.id, { active: false });
-      this.#legs.setFeatureState(leg.id, { color: null });
+    for (let leg of this.p2p) {
+      this.#legs.setFeatureState(leg, { active: false });
+      this.#legs.setFeatureState(leg, { color: null });
     }
 
     for (let leg of activeLegs) {
-      this.#legs.setFeatureState(leg.id, { active: true });
-      this.#legs.setFeatureState(leg.id, { color: `rgb(${leg.color})` });
+      const p2p = this.uniqueP2P(leg.p2p);
+      this.#legs.setFeatureState(p2p, { active: true });
+      this.#legs.setFeatureState(p2p, { color: `rgb(${leg.color})` });
     }
-
-    console.log(this.map.getSource("legs").vectorLayerIds);
 
     /*const [legs, color] = data; // todo fold into legs
 

@@ -22,13 +22,16 @@ async function main(
   journeySelection,
   startDestinationSelection,
 ) {
-  // init database
-  const connections = removeMultidayConnections(
-    temporalizeConnections(CONNECTIONS), // todo dates here
-  );
-  const database = new Database(CITIES, STATIONS, connections, LEGS);
+  const DATES = ["2024-10-16", "2024-10-17", "2024-10-18"];
 
-  const mapLoadedPromise = map.load(CITIES, prepareLegs(CITIES, LEGS));
+  // prepare database
+  const connections = CONNECTIONS.flatMap((c) =>
+    enrichAndTemporalizeConnection(c, STATIONS, CITIES, DATES),
+  );
+  const database = new Database(connections);
+
+  // initial drawing of all necessary geo information
+  const mapLoadedPromise = map.load(CITIES, connections);
 
   // init update views
   const updateViews = initUpdateViews(

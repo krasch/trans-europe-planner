@@ -41,63 +41,50 @@ class Journey {
   }
 }
 
-function getColour(journeyId) {
+function getColor(i) {
   const body = document.getElementsByTagName("body")[0];
   const style = getComputedStyle(body);
 
-  const assignedColors = {
-    journey1: style.getPropertyValue("--journey-green"),
-    journey2: style.getPropertyValue("--journey-orange"),
-    journey3: style.getPropertyValue("--journey-purple"),
-  };
+  const colors = [
+    style.getPropertyValue("--color1"),
+    style.getPropertyValue("--color2"),
+    style.getPropertyValue("--color3"),
+  ];
 
   // for unit tests mostly todo could be nicer
-  const backupColors = {
-    journey1: "0, 255, 0",
-    journey2: "255, 0, 0",
-    journey3: "0, 0, 255",
-  };
+  // can not use ?? above because style.getPropertyValue returns an empty string
+  const backupColors = ["0, 255, 0", "255, 0, 0", "0, 0, 255"];
+  for (let j in colors) if (colors[j].length === 0) colors[j] = backupColors[j];
 
-  for (let j in assignedColors)
-    if (assignedColors[j].length === 0) assignedColors[j] = backupColors[j];
+  return colors[i % colors.length];
+}
 
-  return assignedColors[journeyId];
+function sortConnectionsByDeparture(connections) {
+  // todo sorts in place
+  connections.sort((a, b) => a.start.departure.minutesSince(b.start.departure));
+}
+
+function getSortedJourneyConnections(journey, database) {
+  const connections = journey.unsortedConnections.map((c) =>
+    database.connection(c),
+  );
+  sortConnectionsByDeparture(connections);
+  return connections;
 }
 
 function getJourneySummary(journey, database) {
-  // look up all the necessary data from the database
-  const connections = [];
-  for (let connectionId of journey.unsortedConnections) {
-    const connection = database.connection(connectionId);
+  const connections = getSortedJourneyConnections(journey, database);
 
-    const firstStop = connection.stops[0];
-    const lastStop = connection.stops.at(-1);
+  const startCity = connections[0].start.cityName;
+  const endCity = connections.at(-1).end.cityName;
 
-    connections.push({
-      first: {
-        city: database.cityNameForStation(firstStop.station),
-        dateTime: firstStop.departure,
-      },
-      last: {
-        city: database.cityNameForStation(lastStop.station),
-        dateTime: lastStop.arrival,
-      },
-    });
-  }
-
-  // sort by departure time
-  connections.sort((a, b) => a.first.dateTime.minutesSince(b.first.dateTime));
-
-  const startCity = connections[0].first.city;
-  const endCity = connections.at(-1).last.city;
-
-  const startTime = connections[0].first.dateTime;
-  const endTime = connections.at(-1).last.dateTime;
+  const startTime = connections[0].start.departure;
+  const endTime = connections.at(-1).end.arrival;
   const travelTime = endTime.humanReadableSince(startTime);
 
   const vias = [];
   for (let c of connections) {
-    for (let city of [c.first.city, c.last.city]) {
+    for (let city of [c.start.cityName, c.end.cityName]) {
       if (city !== startCity && city !== endCity && !vias.includes(city))
         vias.push(city);
     }
@@ -109,26 +96,29 @@ function getJourneySummary(journey, database) {
   return `From ${startCity} to ${endCity}${viasString}<br/>${travelTime}`;
 }
 
-function prepareDataForCalendar(journeys, activeId, datatabase) {
+function prepareDataForCalendar(journeys, activeId, database) {
   const data = [];
 
   if (activeId == null) return data;
 
-  const activeConnections = journeys[activeId].unsortedConnections;
+  const connections = getSortedJourneyConnections(journeys[activeId], database);
 
-  for (let leg of journeys[activeId].unsortedLegs) {
-    for (let connection of datatabase.connectionsForLeg(leg)) {
+  for (let i in connections) {
+    const leg = connections[i].leg;
+    const color = getColor(i);
+
+    for (let connection of database.connectionsForLeg(leg)) {
       data.push({
         id: connection.id,
         displayId: connection.name,
         type: connection.type,
         leg: connection.leg,
-        startStation: datatabase.stationName(connection.stops[0].station),
-        startDateTime: connection.stops[0].departure,
-        endStation: datatabase.stationName(connection.stops.at(-1).station),
-        endDateTime: connection.stops.at(-1).arrival,
-        active: activeConnections.includes(connection.id),
-        color: getColour(activeId),
+        startStation: connection.start.stationName,
+        startDateTime: connection.start.departure,
+        endStation: connection.end.stationName,
+        endDateTime: connection.end.arrival,
+        active: connection.id === connections[i].id,
+        color: color,
       });
     }
   }
@@ -145,7 +135,6 @@ function prepareDataForJourneySelection(journeys, activeId, database) {
       id: journeyId,
       active: journeyId === activeId,
       summary: getJourneySummary(journeys[journeyId], database),
-      color: getColour(journeyId),
     });
   }
 
@@ -154,43 +143,39 @@ function prepareDataForJourneySelection(journeys, activeId, database) {
 
 function prepareDataForMap(journeys, activeId, database) {
   if (activeId == null) {
-    return [];
+    return []; // todo is correct?
   }
-
-  function legsForJourney(journey) {
-    return journey.unsortedConnections.flatMap(
-      (c) => database.connection(c).subLegs,
-    );
-  }
-
-  const colour = getColour(activeId);
 
   const legs = [];
   const done = [];
 
   // first for active journey
-  for (let i in journeys[activeId].unsortedConnections) {
-    const c = journeys[activeId].unsortedConnections[i];
-    for (let leg of database.connection(c).subLegs) {
-      if (i === "0") legs.push({ id: leg, color: "27,158,119" });
-      else if (i === "1") legs.push({ id: leg, color: "217,95,2" });
-      else if (i === "2") legs.push({ id: leg, color: "117,112,179" });
-      done.push(leg);
+  const connections = getSortedJourneyConnections(journeys[activeId], database);
+  for (let i in connections) {
+    const color = getColor(i);
+    for (let p2p of connections[i].pointToPoint) {
+      legs.push({ p2p: p2p, color: color, leg: connections[i].leg });
+      done.push(p2p);
     }
   }
-  console.log(legs);
 
   // then for other journeys
   // make sure to not overwrite what we did for active journey
-  for (let journeyId in journeys) {
+  /*for (let journeyId in journeys) {
     if (journeyId === activeId) continue;
 
-    for (let leg of legsForJourney(journeys[journeyId])) {
-      if (done.includes(leg)) continue;
-      legs.push({ id: leg, color: null });
-      done.push(leg);
+    const journey = journeys[journeyId];
+    const connections = getSortedJourneyConnections(journey, database);
+
+    for (let i in connections) {
+      for (let leg of connections[i].pointToPoint) {
+        if (done.includes(leg)) continue;
+
+        legs.push({ leg: leg, color: null, hover: connections[i].leg });
+        done.push(leg);
+      }
     }
-  }
+  }*/
 
   return legs;
 }
@@ -198,6 +183,8 @@ function prepareDataForMap(journeys, activeId, database) {
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.Journey = Journey;
+  module.exports.getColor = getColor;
+  module.exports.sortConnectionsByDeparture = sortConnectionsByDeparture;
   module.exports.getJourneySummary = getJourneySummary;
   module.exports.prepareDataForCalendar = prepareDataForCalendar;
   module.exports.prepareDataForJourneySelection =
