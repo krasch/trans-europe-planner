@@ -32,99 +32,28 @@ function asGeojsonFeatureCollection(features) {
   };
 }
 
-class MapLayer {
-  #callbacks = {};
+class HoverState {
+  #callbacks = {
+    hover: () => {},
+    hoverEnd: () => {},
+  };
 
-  constructor(map, sourceName, styleName) {
-    this.map = map;
-    this.sourceName = sourceName;
-    this.styleName = styleName;
+  #hoverState = null;
 
-    // maplibre mouseout/mouseleave do not give us the id of the item we just left
-    // -> we need to some explicit state management
-    // to make things extra convenient, we define two new events hover and hoverEnd
-    // that already do all the necessary stuff for us
-    let hoverState = null;
-
-    this.map.on("mouseenter", this.sourceName, (e) => {
-      const id = this.#getIdFromEvent(e);
-      hoverState = id;
-      this.#makeCallback("hover", id);
-    });
-
-    this.map.on("mouseleave", this.sourceName, (e) => {
-      if (hoverState) {
-        this.#makeCallback("hoverEnd", hoverState);
-        hoverState = null;
-      }
-    });
+  on(eventName, callback) {
+    this.#callbacks[eventName] = callback;
   }
 
-  update(geojsonData) {
-    const dataIsEmpty = geojsonData.features.length === 0;
-    const layerAlreadyAdded = this.map.getSource(this.sourceName) !== undefined;
+  mouseenter(e) {
+    this.#hoverState = e.features.at(-1).id;
+    this.#callbacks["hover"](this.#hoverState);
+  }
 
-    if (layerAlreadyAdded) {
-      if (dataIsEmpty) this.#remove();
-      else this.#redraw(geojsonData);
+  mouseleave(e) {
+    if (this.#hoverState) {
+      this.#callbacks["hoverEnd"](this.#hoverState);
+      this.#hoverState = null;
     }
-    // layer not added
-    else {
-      if (!dataIsEmpty) this.#init(geojsonData);
-    }
-  }
-
-  setPaintProperty(key, value) {
-    const layerAlreadyAdded = this.map.getSource(this.sourceName) !== undefined;
-    if (layerAlreadyAdded) {
-      this.map.setPaintProperty(this.sourceName, key, value);
-    }
-  }
-
-  onClick(callback) {
-    this.map.on("click", this.sourceName, (e) => {
-      callback(this.#getIdFromEvent(e));
-    });
-  }
-
-  onHover(callback) {
-    this.#callbacks["hover"] = callback; // todo check if hovering is enabled
-  }
-
-  onHoverEnd(callback) {
-    this.#callbacks["hoverEnd"] = callback; // todo check if hovering is enabled
-  }
-
-  setFeatureState(id, state) {
-    this.map.setFeatureState({ source: this.sourceName, id: id }, state);
-  }
-
-  #init(geojsonData) {
-    this.map.addSource(this.sourceName, {
-      type: "geojson",
-      data: geojsonData,
-      promoteId: "id", // otherwise can not use non-numeric ids
-    });
-    this.map.addLayer(mapStyles[this.styleName]);
-  }
-
-  #redraw(geojsonData) {
-    this.map.getSource(this.sourceName).setData(geojsonData);
-  }
-
-  #remove() {
-    this.map.removeLayer(this.styleName);
-    this.map.removeSource(this.sourceName);
-  }
-
-  #getIdFromEvent(e) {
-    if (e.features.length !== 1)
-      throw new Error(`Unexpected event data: ${e.toString()}`);
-    return e.features[0].id;
-  }
-
-  #makeCallback(eventName, data) {
-    if (this.#callbacks[eventName]) this.#callbacks[eventName](data);
   }
 }
 
@@ -132,10 +61,11 @@ class MapWrapper {
   #callbacks = {
     legAdded: () => {},
     legRemoved: () => {},
+    legStartHover: () => {},
+    legStopHover: () => {},
   };
-  #legs = null;
-  #connections = null;
-  #cities = null;
+
+  #currentlyActiveLegs = [];
 
   constructor(containerId, center, zoom) {
     this.map = new maplibregl.Map({
@@ -144,10 +74,6 @@ class MapWrapper {
       center: center,
       zoom: zoom,
     });
-
-    this.#legs = new MapLayer(this.map, "legs", "legs");
-    this.#connections = new MapLayer(this.map, "connections", "connections");
-    this.#cities = new MapLayer(this.map, "cities", "cities");
   }
 
   async load(cities, legs) {
@@ -167,49 +93,43 @@ class MapWrapper {
     this.map.getCanvas().style.cursor = "default";
     this.map.setLayoutProperty("place-city", "text-field", ["get", `name`]);
 
-    this.legs = legs.map((l) => l.leg);
-    this.#legs.update(asGeojsonFeatureCollection(legs.map(legToGeojson)));
-
-    /*this.p2p = connections.flatMap((c) => c.pointToPoint).map(this.uniqueP2P);
-    this.p2p = Array.from(new Set(this.p2p));
-
-    let p2p = this.p2p.map((p) => {
-      const [p1, p2] = p.split("->");
-      return {
-        id: p,
-        startCity: cities[p1],
-        endCity: cities[p2],
-      };
+    // add legs layer
+    this.map.addSource("legs", {
+      type: "geojson",
+      data: asGeojsonFeatureCollection(legs.map(legToGeojson)),
+      promoteId: "id", // otherwise can not use non-numeric ids
     });
-    p2p = asGeojsonFeatureCollection(p2p.map(legToGeojson));
-    this.#legs.update(p2p);
+    this.map.addLayer(mapStyles["legs"]);
 
-    this.cities = cities;
-    cities = Object.values(cities).map(cityToGeojson);
-    this.#cities.update(asGeojsonFeatureCollection(cities));*/
+    // at mouseleave, map does not give us the id that the mouse left
+    // so we need to keep track of it ourselves
+    // the (e) => ... is necessary, otherwise we have the wrong "this"
+    const legsHoverState = new HoverState();
+    this.map.on("mouseenter", "legs", (e) => legsHoverState.mouseenter(e));
+    this.map.on("mouseleave", "legs", (e) => legsHoverState.mouseleave(e));
+
+    // user has started hovering on a leg
+    legsHoverState.on("hover", (leg) => {
+      const state = this.#getFeatureState("legs", leg);
+      if (state["parent"]) {
+        this.#callbacks["legStartHover"](state["parent"]);
+        this.setHover(state["parent"]);
+      }
+    });
+
+    // user has finished hovering on a leg
+    legsHoverState.on("hoverEnd", (leg) => {
+      const state = this.#getFeatureState("legs", leg);
+      if (state["parent"]) {
+        this.#callbacks["legStopHover"](state["parent"]);
+        this.setNoHover(state["parent"]);
+      }
+    });
 
     // when the user clicks on a leg, it should be added to the journey
     //this.#legs.onClick((id) => this.#callbacks["legAdded"](id));
     // when the user clicks on a connection, it should be removed from the journey
     //this.#connections.onClick((id) => this.#callbacks["legRemoved"](id));
-
-    // when mouse starts/stops hovering over a leg, it should get highlighted
-    /*this.#legs.onHover((id) => {
-      this.#legs.setFeatureState(id, { hover: true });
-    });
-    this.#legs.onHoverEnd((id) => {
-      this.#legs.setFeatureState(id, { hover: false });
-    });*/
-
-    // when mouse starts/stops hovering over a connection, we should send an event (to ourselves and calendar)
-    /*this.#connections.onHover((leg) => {
-      this.setHover(leg);
-      this.#callbacks["legStartHover"](leg);
-    });
-    this.#connections.onHoverEnd((leg) => {
-      this.setNoHover(leg);
-      this.#callbacks["legStopHover"](leg);
-    });*/
   }
 
   on(eventName, callback) {
@@ -219,16 +139,26 @@ class MapWrapper {
   updateView(data) {
     const activeLegs = data;
 
-    // unset all legs todo unset only legs that are now inactive
-    for (let leg of this.legs) {
-      this.#legs.setFeatureState(leg, { active: false });
-      this.#legs.setFeatureState(leg, { color: null });
+    // for simplicity, unset all previously active legs
+    for (let leg of this.#currentlyActiveLegs) {
+      this.#setFeatureState("legs", leg.leg, {
+        active: false,
+        color: null,
+        parent: null,
+        hover: false,
+      });
     }
 
+    // draw new active legs
     for (let leg of activeLegs) {
-      this.#legs.setFeatureState(leg.leg, { active: true });
-      this.#legs.setFeatureState(leg.leg, { color: `rgb(${leg.color})` });
+      this.#setFeatureState("legs", leg.leg, {
+        active: true,
+        color: `rgb(${leg.color})`,
+        parent: leg.parent,
+        hover: false,
+      });
     }
+    this.#currentlyActiveLegs = activeLegs;
 
     /*const [legs, color] = data; // todo fold into legs
 
@@ -247,12 +177,31 @@ class MapWrapper {
   }
 
   setHover(leg) {
-    // todo for all that have parent as this leg
-    this.#legs.setFeatureState(leg, { hover: true });
+    for (let active of this.#currentlyActiveLegs) {
+      if (leg !== active.parent) continue;
+      this.#updateFeatureState("legs", active.leg, { hover: true });
+    }
   }
 
   setNoHover(leg) {
-    this.#legs.setFeatureState(leg, { hover: false });
+    for (let active of this.#currentlyActiveLegs) {
+      if (leg !== active.parent) continue;
+      this.#updateFeatureState("legs", active.leg, { hover: false });
+    }
+  }
+
+  #getFeatureState(source, id) {
+    return this.map.getFeatureState({ source: source, id: id });
+  }
+
+  #setFeatureState(source, id, state) {
+    this.map.setFeatureState({ source: source, id: id }, state);
+  }
+
+  #updateFeatureState(source, id, newState) {
+    const state = this.#getFeatureState(source, id);
+    for (let key in newState) state[key] = newState[key];
+    this.#setFeatureState(source, id, state);
   }
 }
 
