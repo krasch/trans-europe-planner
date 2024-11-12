@@ -38,7 +38,7 @@ class Connection {
     this.stops = stops;
 
     this.leg = `${stops[0].cityName}->${stops.at(-1).cityName}`;
-    this.id = `${this.baseId}X${this.leg}`;
+    this.id = `${this.baseId}XXX${this.leg}`;
 
     this.start = stops[0];
     this.end = stops.at(-1);
@@ -89,7 +89,7 @@ function enrichAndTemporalizeConnection(template, stations, cities, dates) {
       });
     }
 
-    const baseId = `${template.id}X${date}`;
+    const baseId = `${template.id}XXX${date}`;
     result.push(new Connection(baseId, template.name, template.type, stops));
   }
 
@@ -112,7 +112,7 @@ class Database {
   }
 
   connection(id) {
-    const [trainId, date, leg] = id.split("X");
+    const [trainId, date, leg] = id.split("XXX");
 
     if (!trainId || !date || !leg)
       throw new DatabaseError(`Invalid connection id ${id}`);
