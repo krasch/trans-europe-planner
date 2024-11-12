@@ -78,8 +78,74 @@ class CustomDateTime {
   }
 }
 
+function getPartialStops(stops, startCity, endCity) {
+  let startIndex = null;
+  let endIndex = null;
+
+  for (let i in stops) {
+    if (stops[i].cityName === startCity) {
+      if (startIndex === null || stops[i].stationIsPreferred)
+        startIndex = Number(i);
+    }
+
+    if (stops[i].cityName === endCity) {
+      if (endIndex === null || stops[i].stationIsPreferred)
+        endIndex = Number(i);
+    }
+  }
+
+  // start or end are not in the stops
+  if (startIndex === null || endIndex === null) return null;
+
+  // wrong direction
+  if (startIndex >= endIndex) return null;
+
+  return stops.slice(startIndex, endIndex + 1);
+}
+
+class Connection {
+  constructor(baseId, name, type, stops) {
+    this.baseId = baseId;
+    this.name = name;
+    this.type = type;
+    this.stops = stops;
+
+    this.leg = `${stops[0].cityName}->${stops.at(-1).cityName}`;
+    this.id = `${this.baseId}XXX${this.leg}`;
+
+    this.start = stops[0];
+    this.end = stops.at(-1);
+  }
+
+  get isMultiday() {
+    return this.start.departure.dateString !== this.end.arrival.dateString;
+  }
+
+  slice(startCity, endCity) {
+    const sliced = getPartialStops(this.stops, startCity, endCity);
+    if (sliced == null) return null;
+
+    return new Connection(this.baseId, this.name, this.type, sliced);
+  }
+
+  get pointToPoint() {
+    const directs = [];
+
+    for (let i in this.stops) {
+      if (i === "0") continue;
+      if (this.stops[i - 1].cityId === this.stops[i].cityId) continue;
+
+      const direct = `${this.stops[i - 1].cityId}->${this.stops[i].cityId}`;
+      if (!directs.includes(direct)) directs.push(direct);
+    }
+
+    return directs;
+  }
+}
+
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.CustomDateTime = CustomDateTime;
   module.exports.InvalidDatetimeFormatError = InvalidDatetimeFormatError;
+  module.exports.Connection = Connection;
 }

@@ -1,4 +1,4 @@
-const { Connection } = require("../script/database.js");
+const { Connection } = require("../script/types.js");
 const { createConnection } = require("../tests/data.js");
 
 test("connection", function () {
