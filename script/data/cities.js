@@ -519,11 +519,6 @@ const CITIES = {
     latitude: 51.056167,
     longitude: 13.72411,
   },
-  7510: {
-    name: "Dresden-Neustadt",
-    latitude: 51.065768,
-    longitude: 13.740928,
-  },
   10780: {
     name: "Duisburg",
     latitude: 51.429786,

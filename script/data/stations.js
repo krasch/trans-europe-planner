@@ -809,7 +809,7 @@ const STATIONS = {
     latitude: 51.040562,
     longitude: 13.732038,
     city: 7518,
-    preferred: true,
+    preferred: false,
   },
   8013444: {
     name: "Dresden Mitte",
@@ -822,8 +822,8 @@ const STATIONS = {
     name: "Dresden-Neustadt",
     latitude: 51.065768,
     longitude: 13.740928,
-    city: 7510,
-    preferred: true,
+    city: 7518,
+    preferred: false,
   },
   8000086: {
     name: "Duisburg Hbf",

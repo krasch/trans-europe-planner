@@ -22,11 +22,18 @@ async function main(
   journeySelection,
   startDestinationSelection,
 ) {
-  // init database
-  const connections = removeMultidayConnections(
-    temporalizeConnections(CONNECTIONS), // todo dates here
+  const DATES = ["2024-10-16", "2024-10-17", "2024-10-18"];
+
+  // prepare database
+  const connections = CONNECTIONS.flatMap((c) =>
+    enrichAndTemporalizeConnection(c, STATIONS, CITIES, DATES),
   );
-  const database = new Database(CITIES, STATIONS, connections, LEGS);
+  const database = new Database(connections);
+
+  // initial drawing of all necessary geo information
+  const mapLoadedPromise = map.load(
+    prepareInitialDataForMap(CITIES, connections),
+  );
 
   // init update views
   const updateViews = initUpdateViews(
@@ -83,7 +90,7 @@ async function main(
   map.on("legStopHover", (leg) => calendar.setNoHover(leg));
 
   // now have done all we can do without having the map ready
-  await map.load();
+  await mapLoadedPromise;
 
   // read the current start/destination values and fill all views
   startDestinationSelection.triggerChangeEvent();

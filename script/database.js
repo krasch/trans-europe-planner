@@ -5,180 +5,83 @@ class DatabaseError extends Error {
   }
 }
 
-function removeMultidayConnections(connections) {
-  return connections.filter(
-    (c) =>
-      c.stops[0].departure.minutesSinceMidnight <=
-      c.stops.at(-1).arrival.minutesSinceMidnight,
-  );
-}
-function temporalizeConnections(connections) {
+function enrichAndTemporalizeConnection(template, stations, cities, dates) {
   const result = [];
 
-  for (let connection of connections) {
-    for (let date of ["2024-10-16", "2024-10-17", "2024-10-18"]) {
-      const stops = connection.stops.map((s) => ({
-        station: s.station,
-        arrival: new CustomDateTime(date, s.arrival),
-        departure: new CustomDateTime(date, s.departure),
-      }));
-
-      result.push({
-        id: `${stops[0].departure.dateString}X${connection.id}`,
-        name: connection.name,
-        type: connection.type,
-        stops: stops,
+  for (let date of dates) {
+    const stops = [];
+    for (let stop of template.stops) {
+      stops.push({
+        // temporalize
+        arrival: new CustomDateTime(date, stop.arrival),
+        departure: new CustomDateTime(date, stop.departure),
+        // enrich with additional station and city info
+        stationId: stop.station,
+        stationName: stations[stop.station].name,
+        stationIsPreferred: stations[stop.station].preferred,
+        cityId: stations[stop.station].city,
+        cityName: cities[stations[stop.station].city].name,
       });
     }
+
+    result.push(
+      new Connection(template.id, date, template.name, template.type, stops),
+    );
   }
 
   return result;
 }
 
-function getPartialStops(stops, startCityId, endCityId, stationInfo) {
-  let startIndex = null;
-  let endIndex = null;
-
-  for (let i in stops) {
-    const station = stationInfo[stops[i].station];
-
-    if (station.city === startCityId) {
-      if (startIndex === null || station.preferred) startIndex = Number(i);
-    }
-
-    if (station.city === endCityId) {
-      if (endIndex === null || station.preferred) endIndex = Number(i);
-    }
-  }
-
-  // start or end are not in the stops
-  if (startIndex === null || endIndex === null) return null;
-
-  // wrong direction
-  if (startIndex >= endIndex) return null;
-
-  return stops.slice(startIndex, endIndex + 1);
-}
-
 class Database {
-  #cities;
-  #stations;
-  #connectionTemplates;
-  #legs;
+  #fullConnections;
 
-  #resolvedConnectionIdsByLeg;
-  #resolvedConnectionsById;
+  #slicedConnectionIdsByLeg;
+  #slicedConnectionsById;
 
-  constructor(cities, stations, connections, legs) {
-    this.#cities = cities;
-    this.#stations = stations;
-    this.#connectionTemplates = connections; // not yet specific to a leg
-    this.#legs = legs;
+  constructor(connections) {
+    this.#fullConnections = connections;
 
     // this will be filled with all the connections the UI is interested in
     // should always be accessed using connectionsForLeg to make sure that leg has been indexed
-    this.#resolvedConnectionIdsByLeg = {};
-    this.#resolvedConnectionsById = {};
+    this.#slicedConnectionIdsByLeg = {};
+    this.#slicedConnectionsById = {};
   }
 
   connection(id) {
-    if (!this.#resolvedConnectionsById[id])
+    if (typeof id === "string") id = ConnectionId.fromString(id);
+
+    if (!this.#slicedConnectionIdsByLeg[id.leg]) this.#indexLeg(id.leg);
+
+    if (!this.#slicedConnectionsById[id])
       throw new DatabaseError(`Unknown connection ${id}`);
-    return this.#resolvedConnectionsById[id];
+    return this.#slicedConnectionsById[id];
   }
 
   connectionsForLeg(leg) {
-    // todo return list instead of dict?
-    if (!this.#resolvedConnectionIdsByLeg[leg]) this.#indexLeg(leg);
+    if (typeof leg === "string") leg = Leg.fromString(leg);
 
-    const connectionIds = this.#resolvedConnectionIdsByLeg[leg];
+    if (!this.#slicedConnectionIdsByLeg[leg]) this.#indexLeg(leg);
+
+    const connectionIds = this.#slicedConnectionIdsByLeg[leg];
     if (connectionIds.length === 0)
       throw new DatabaseError(`No connections available for leg ${leg}`);
 
+    // todo return list instead of dict?
     return connectionIds.map((c) => this.connection(c));
   }
 
-  city(cityId) {
-    if (!this.#cities[cityId])
-      throw new DatabaseError(`Unknown city ${cityId}`);
-    return this.#cities[cityId];
-  }
-
-  station(stationId) {
-    if (!this.#stations[stationId])
-      throw new DatabaseError(`Unknown station ${stationId}`);
-
-    return this.#stations[stationId];
-  }
-
-  citiesForLeg(leg) {
-    const [startCityId, endCityId] = this.#resolveLeg(leg);
-    return [this.city(startCityId), this.city(endCityId)];
-  }
-
-  cityNameForStation(stationId) {
-    return this.city(this.station(stationId).city).name;
-  }
-
-  stationName(stationId) {
-    return this.station(stationId).name;
-  }
-
-  get legs() {
-    return this.#legs;
-  }
-
   #indexLeg(leg) {
-    const [startCityId, endCityId] = this.#resolveLeg(leg);
+    this.#slicedConnectionIdsByLeg[leg] = [];
 
-    this.#resolvedConnectionIdsByLeg[leg] = [];
+    for (let connection of this.#fullConnections) {
+      const sliced = connection.slice(leg.startCityName, leg.endCityName);
 
-    for (let connectionTemplate of this.#connectionTemplates) {
-      const partial = getPartialStops(
-        connectionTemplate.stops,
-        startCityId,
-        endCityId,
-        this.#stations,
-      );
+      // there is no such slice -> can not fulfill this leg with this connection
+      if (sliced === null) continue;
 
-      // there is no such part -> can not fulfill this leg with this connection
-      if (partial === null) continue;
-
-      // id suffix based on leg
-      const leg = `${this.#cities[startCityId].name}->${this.#cities[endCityId].name}`;
-      const id = `${connectionTemplate.id}X${leg}`;
-
-      const connection = {
-        id: id,
-        name: connectionTemplate.name,
-        leg: leg,
-        type: connectionTemplate.type,
-        stops: partial,
-      };
-
-      this.#resolvedConnectionIdsByLeg[leg].push(id);
-      this.#resolvedConnectionsById[id] = connection;
+      this.#slicedConnectionIdsByLeg[leg].push(sliced.id);
+      this.#slicedConnectionsById[sliced.id] = sliced;
     }
-  }
-
-  #resolveLeg(leg) {
-    // todo this is temporary while we are setting things up with human-readable lag names
-    const [startCityName, endCityName] = leg.split("->");
-    if (!startCityName || !endCityName)
-      throw new DatabaseError(`Invalid leg name ${leg}`);
-
-    const startCityId = this.#cityNameToId(startCityName);
-    const endCityId = this.#cityNameToId(endCityName);
-
-    return [startCityId, endCityId];
-  }
-
-  // temporary utility method while we are still passing around human-readable lag names
-  #cityNameToId(name) {
-    for (let [id, city] of Object.entries(this.#cities)) {
-      if (city.name === name) return Number(id);
-    }
-    throw new DatabaseError(`Unknown city ${name}`);
   }
 }
 
@@ -186,5 +89,4 @@ class Database {
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.Database = Database;
   module.exports.DatabaseError = DatabaseError;
-  module.exports.getPartialStops = getPartialStops;
 }

@@ -5,11 +5,13 @@
 const {
   prepareDataForCalendar,
   Journey,
+  getColor,
 } = require("../script/componentData.js");
-const { createDatabase, testColors } = require("../tests/data.js");
+const { Database } = require("../script/database.js");
+const { createConnection } = require("../tests/data.js");
 
 test("prepareDataForCalendarEmpty", function () {
-  const [database, conns] = createDatabase([]);
+  const database = new Database([]);
   const journeys = {};
   const active = null;
 
@@ -18,13 +20,24 @@ test("prepareDataForCalendarEmpty", function () {
 });
 
 test("prepareDataForCalendar", function () {
-  const [database, conns] = createDatabase([
-    "City1 (6:01) -> City2 (6:10) on Day 1",
-    "City1 (6:01) -> City2 (6:10) on Day 2",
-    "City2 (7:01) -> City3 (7:10) on Day 1",
-    "City1 (9:01) -> City3 (9:10) on Day 2",
+  const c1To2_1 = createConnection([
+    ["2024-10-15", "06:00", "city1MainStationId"],
+    ["2024-10-15", "07:00", "city2MainStationId"],
   ]);
-  const [c1To2_1, c1To2_2, c2To3, c1To3] = conns;
+  const c1To2_2 = createConnection([
+    ["2024-10-16", "06:00", "city1MainStationId"],
+    ["2024-10-16", "07:00", "city2MainStationId"],
+  ]);
+  const c2To3 = createConnection([
+    ["2024-10-16", "08:00", "city2MainStationId"],
+    ["2024-10-16", "09:00", "city3MainStationId"],
+  ]);
+  const c1To3 = createConnection([
+    ["2024-10-16", "09:00", "city1MainStationId"],
+    ["2024-10-16", "10:00", "city3MainStationId"],
+  ]);
+
+  const database = new Database([c1To2_1, c1To2_2, c2To3, c1To3]);
 
   // first two conns do the same leg on different days, but only first is used in the journey
   const journeys = {
@@ -39,39 +52,39 @@ test("prepareDataForCalendar", function () {
   // only expect legs for the active journey j1
   const exp = [
     {
-      id: c1To2_1.id,
+      id: c1To2_1.id.toString(),
       displayId: c1To2_1.name,
       type: "train",
-      leg: "City1->City2",
+      leg: c1To2_1.leg.toString(),
       startStation: "City 1 Main Station",
       endStation: "City 2 Main Station",
-      startDateTime: c1To2_1.stops[0].departure,
-      endDateTime: c1To2_1.stops.at(-1).arrival,
-      color: testColors.journey1,
+      startDateTime: c1To2_1.start.departure,
+      endDateTime: c1To2_1.end.arrival,
+      color: getColor(0),
       active: true,
     },
     {
-      id: c1To2_2.id,
+      id: c1To2_2.id.toString(),
       displayId: c1To2_2.name,
       type: "train",
-      leg: "City1->City2",
+      leg: c1To2_2.leg.toString(),
       startStation: "City 1 Main Station",
       endStation: "City 2 Main Station",
-      startDateTime: c1To2_2.stops[0].departure,
-      endDateTime: c1To2_2.stops.at(-1).arrival,
-      color: testColors.journey1,
+      startDateTime: c1To2_2.start.departure,
+      endDateTime: c1To2_2.end.arrival,
+      color: getColor(0),
       active: false,
     },
     {
-      id: c2To3.id,
+      id: c2To3.id.toString(),
       displayId: c2To3.name,
       type: "train",
-      leg: "City2->City3",
+      leg: c2To3.leg.toString(),
       startStation: "City 2 Main Station",
       endStation: "City 3 Main Station",
-      startDateTime: c2To3.stops[0].departure,
-      endDateTime: c2To3.stops.at(-1).arrival,
-      color: testColors.journey1,
+      startDateTime: c2To3.start.departure,
+      endDateTime: c2To3.end.arrival,
+      color: getColor(1),
       active: true,
     },
   ];

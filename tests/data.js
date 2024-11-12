@@ -1,18 +1,11 @@
-const { CustomDateTime } = require("../script/util.js");
-const { Database } = require("../script/database.js");
-
-// todo should be taken from componentData directly
-const testColors = {
-  journey1: "0, 255, 0",
-  journey2: "255, 0, 0",
-  journey3: "0, 0, 255",
-};
+const { CustomDateTime, Connection } = require("../script/types.js");
 
 const testCities = {
   1: { name: "City1", latitude: 10, longitude: 10 },
   2: { name: "City2", latitude: 20, longitude: 20 },
   3: { name: "City3", latitude: 30, longitude: 30 },
   4: { name: "City4", latitude: 40, longitude: 40 },
+  5: { name: "City5", latitude: 50, longitude: 50 },
 };
 
 const testStations = {
@@ -46,6 +39,11 @@ const testStations = {
     city: 4,
     preferred: true,
   },
+  city5MainStationId: {
+    name: "City 5 Main Station",
+    city: 5,
+    preferred: true,
+  },
 };
 
 function initIncrementalId() {
@@ -53,7 +51,7 @@ function initIncrementalId() {
 
   function increment() {
     id += 1;
-    return id;
+    return String(id);
   }
 
   return increment;
@@ -61,147 +59,26 @@ function initIncrementalId() {
 
 const incrementalId = initIncrementalId();
 
-function createConnection(stations, startHour, startDay) {
-  // because of the time handling below
-  if (stations.length > 5)
-    throw Error("Can not generate such long connections");
+function createConnection(stops) {
+  const train = incrementalId();
+  const date = stops[0][0];
 
-  if (!startHour) startHour = 14;
-  if (!startDay) startDay = "2024-10-15";
-
-  const stops = [];
-
-  for (let i in stations) {
-    if (!testStations[stations[i]])
-      throw new Error(`Unknown test station ${stations[i]}`);
-
-    // always 10 minutes between stops, departure 1 min after arrival
-    const arrival = String(i * 10).padStart(2, "0");
-    const departure = String(i * 10 + 1).padStart(2, "0");
-
-    stops.push({
-      station: stations[i],
-      arrival: new CustomDateTime(startDay, `${startHour}:${arrival}:00`),
-      departure: new CustomDateTime(startDay, `${startHour}:${departure}:00`),
+  const stopsEnriched = [];
+  for (let [date, time, stationId] of stops) {
+    stopsEnriched.push({
+      arrival: new CustomDateTime(date, time + ":00"),
+      departure: new CustomDateTime(date, time + ":00"),
+      stationId: stationId,
+      stationName: testStations[stationId].name,
+      stationIsPreferred: testStations[stationId].preferred,
+      cityId: testStations[stationId].city,
+      cityName: testCities[testStations[stationId].city].name,
     });
   }
 
-  delete stops[0]["arrival"];
-  delete stops.at(-1)["departure"];
-
-  const id = incrementalId();
-
-  return {
-    id: `${startDay}X${id}`,
-    name: id,
-    type: "train",
-    stops: stops,
-  };
+  return new Connection(train, date, "test", "train", stopsEnriched);
 }
 
-const testConnections = {
-  // City1 <-> City2
-  "City1 (6:01) -> City2 (6:10) on Day 1": createConnection(
-    ["city1MainStationId", "city2MainStationId"],
-    6,
-    "2024-10-15",
-  ),
-  "City1 (7:01) -> City2 (7:10) on Day 1": createConnection(
-    ["city1MainStationId", "city2MainStationId"],
-    7,
-    "2024-10-15",
-  ),
-  "City1 (8:01) -> City2 (8:10) on Day 1": createConnection(
-    ["city1MainStationId", "city2MainStationId"],
-    8,
-    "2024-10-15",
-  ),
-  "City1 (9:01) -> City2 (9:10) on Day 1": createConnection(
-    ["city1MainStationId", "city2MainStationId"],
-    9,
-    "2024-10-15",
-  ),
-  "City1 (6:01) -> City2 (6:10) on Day 2": createConnection(
-    ["city1MainStationId", "city2MainStationId"],
-    6,
-    "2024-10-16",
-  ),
-  "City2 (6:01) -> City1 (6:10) on Day 2": createConnection(
-    ["city2MainStationId", "city1MainStationId"],
-    6,
-    "2024-10-16",
-  ),
-  "City1 (9:01) -> City3 (9:10) on Day 2": createConnection(
-    ["city1MainStationId", "city3MainStationId"],
-    9,
-    "2024-10-16",
-  ),
-  // City2 <-> City3
-  "City2 (7:01) -> City3 (7:10) on Day 1": createConnection(
-    ["city2MainStationId", "city3MainStationId"],
-    7,
-    "2024-10-15",
-  ),
-  "City2 (8:01) -> City3 (8:10) on Day 1": createConnection(
-    ["city2MainStationId", "city3MainStationId"],
-    8,
-    "2024-10-15",
-  ),
-  "City2 (8:01) -> City3 (8:10) on Day 2": createConnection(
-    ["city2MainStationId", "city3MainStationId"],
-    8,
-    "2024-10-16",
-  ),
-  // City3 <-> City4
-  "City3 (6:01) -> City4 (6:10) on Day 3": createConnection(
-    ["city3MainStationId", "city4MainStationId"],
-    6,
-    "2024-10-17",
-  ),
-  "City3 (8:01) -> City4 (8:10) on Day 1": createConnection(
-    ["city3MainStationId", "city4MainStationId"],
-    8,
-    "2024-10-15",
-  ),
-};
-
-function createDatabase(connectionNames) {
-  const connections = [];
-  const legs = [];
-
-  for (let name of connectionNames) {
-    if (!testConnections[name])
-      throw new Error(`Unknown test connection ${name}`);
-
-    const connection = testConnections[name];
-    const s = testCities[testStations[connection.stops[0].station].city];
-    const e = testCities[testStations[connection.stops.at(-1).station].city];
-
-    connections.push(testConnections[name]);
-    legs.push(`${s.name}->${e.name}`);
-  }
-
-  const database = new Database(
-    testCities,
-    testStations,
-    connections,
-    Array.from(new Set(legs)),
-  );
-
-  // to init database
-  for (let leg of legs) database.connectionsForLeg(leg);
-
-  const finalConnections = [];
-  for (let i in legs) {
-    const id = `${connections[i].id}X${legs[i]}`;
-    finalConnections.push(database.connection(id));
-  }
-  return [database, finalConnections];
-}
-
-module.exports.testColors = testColors;
 module.exports.testStations = testStations;
 module.exports.testCities = testCities;
-module.exports.testConnections = testConnections;
 module.exports.createConnection = createConnection;
-module.exports.createDatabase = createDatabase;
