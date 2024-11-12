@@ -1,4 +1,4 @@
-const { CustomDateTime } = require("../script/util.js");
+const { CustomDateTime } = require("../script/types.js");
 const { Connection } = require("../script/database.js");
 
 const testCities = {
