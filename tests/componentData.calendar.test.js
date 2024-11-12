@@ -52,10 +52,10 @@ test("prepareDataForCalendar", function () {
   // only expect legs for the active journey j1
   const exp = [
     {
-      id: c1To2_1.id,
+      id: c1To2_1.id.toString(),
       displayId: c1To2_1.name,
       type: "train",
-      leg: "City1->City2",
+      leg: c1To2_1.leg.toString(),
       startStation: "City 1 Main Station",
       endStation: "City 2 Main Station",
       startDateTime: c1To2_1.start.departure,
@@ -64,10 +64,10 @@ test("prepareDataForCalendar", function () {
       active: true,
     },
     {
-      id: c1To2_2.id,
+      id: c1To2_2.id.toString(),
       displayId: c1To2_2.name,
       type: "train",
-      leg: "City1->City2",
+      leg: c1To2_2.leg.toString(),
       startStation: "City 1 Main Station",
       endStation: "City 2 Main Station",
       startDateTime: c1To2_2.start.departure,
@@ -76,10 +76,10 @@ test("prepareDataForCalendar", function () {
       active: false,
     },
     {
-      id: c2To3.id,
+      id: c2To3.id.toString(),
       displayId: c2To3.name,
       type: "train",
-      leg: "City2->City3",
+      leg: c2To3.leg.toString(),
       startStation: "City 2 Main Station",
       endStation: "City 3 Main Station",
       startDateTime: c2To3.start.departure,

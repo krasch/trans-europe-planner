@@ -6,6 +6,7 @@ const {
   pickFittingConnection,
 } = require("../script/routing.js");
 const { Database } = require("../script/database.js");
+const { Leg } = require("../script/types.js");
 const { createConnection } = require("../tests/data.js");
 
 test("cartesianProductSingleArraySingleItem", function () {
@@ -250,8 +251,10 @@ test("pickConnectionFittingToJourneyFirstOneIsChosen", function () {
   const journey = [c1.id];
   const database = new Database([c1, c2, c3]);
 
-  const actual = pickFittingConnection(journey, "City2->City3", database);
-  expect(actual).toBe(c2.id);
+  const leg = new Leg("City2", "City3");
+  const actual = pickFittingConnection(journey, leg, database);
+
+  expect(actual).toStrictEqual(c2.id);
 });
 
 test("pickConnectionFittingToJourneySecondOneIsChosen", function () {
@@ -271,11 +274,11 @@ test("pickConnectionFittingToJourneySecondOneIsChosen", function () {
   const journey = [c1.id];
   const database = new Database([c1, c2, c3]);
 
-  const actual = pickFittingConnection(journey, "City2->City3", database);
-  expect(actual).toBe(c3.id);
-});
+  const leg = new Leg("City2", "City3");
+  const actual = pickFittingConnection(journey, leg, database);
 
-// todo unsorted input data
+  expect(actual).toStrictEqual(c3.id);
+});
 
 test("pickConnectionNoFittingMatch", function () {
   const c1 = createConnection([
@@ -294,8 +297,11 @@ test("pickConnectionNoFittingMatch", function () {
   const journey = [c1.id];
   const database = new Database([c1, c2, c3]);
 
-  const actual = pickFittingConnection(journey, "City2->City3", database);
-  expect([c2.id, c3.id].includes(actual)).toBe(true);
+  const leg = new Leg("City2", "City3");
+  const actual = pickFittingConnection(journey, leg, database);
+
+  const choices = [c2.id.toString(), c3.id.toString()];
+  expect(choices.includes(actual.toString())).toBe(true);
 });
 
 test("pickConnectionWrongOrder", function () {
@@ -315,6 +321,8 @@ test("pickConnectionWrongOrder", function () {
   const journey = [c2.id, c1.id];
   const database = new Database([c1, c2, c3]);
 
-  const actual = pickFittingConnection(journey, "City3->City4", database);
-  expect(actual).toBe(c3.id);
+  const leg = new Leg("City3", "City4");
+  const actual = pickFittingConnection(journey, leg, database);
+
+  expect(actual).toStrictEqual(c3.id);
 });

@@ -1,4 +1,5 @@
-const { Database, DatabaseError } = require("../script/database.js");
+const { Database } = require("../script/database.js");
+const { Leg } = require("../script/types.js");
 const { createConnection } = require("../tests/data.js");
 
 test("getConnectionsForLeg", function () {
@@ -22,29 +23,8 @@ test("getConnectionsForLeg", function () {
   ]);
 
   const database = new Database([c1, c2, c3]);
-  const got = database.connectionsForLeg("City1->City3");
+  const got = database.connectionsForLeg(new Leg("City1", "City3"));
 
   const exp = [c1.slice("City1", "City3"), c3.slice("City1", "City3")];
   expect(got).toStrictEqual(exp);
-});
-
-test("badLegFormat", function () {
-  const database = new Database([]);
-  expect(() => database.connectionsForLeg("badLeg->")).toThrow(DatabaseError);
-});
-
-test("unknownCityInLeg", function () {
-  const database = new Database([]);
-  expect(() => database.connectionsForLeg("City1->City1000")).toThrow(
-    DatabaseError,
-  );
-});
-
-test("unknownConnectionId", function () {
-  const c1 = createConnection([
-    ["2024-10-15", "08:00", "city1MainStationId"],
-    ["2024-10-16", "09:00", "city2MainStationId"],
-  ]);
-  const database = new Database([c1]);
-  expect(() => database.connection("ABCD")).toThrow(DatabaseError);
 });

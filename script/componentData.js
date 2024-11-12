@@ -117,10 +117,10 @@ function prepareDataForCalendar(journeys, activeId, database) {
 
     for (let connection of database.connectionsForLeg(leg)) {
       data.push({
-        id: connection.id,
+        id: connection.id.toString(),
         displayId: connection.name,
         type: connection.type,
-        leg: connection.leg,
+        leg: connection.leg.toString(),
         startStation: connection.start.stationName,
         startDateTime: connection.start.departure,
         endStation: connection.end.stationName,
@@ -162,7 +162,7 @@ function prepareDataForMap(journeys, activeId, database) {
   for (let i in connections) {
     const color = getColor(i);
     for (let p2p of connections[i].pointToPoint) {
-      legs.push({ p2p: p2p, color: color, leg: connections[i].leg });
+      legs.push({ p2p: p2p, color: color, leg: connections[i].leg.toString() });
       done.push(p2p);
     }
   }

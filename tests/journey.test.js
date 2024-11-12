@@ -1,4 +1,3 @@
-const { CustomDateTime } = require("../script/util.js");
 const { Journey, JourneyError } = require("../script/componentData.js");
 
 test("testInit", function () {

@@ -1,4 +1,4 @@
-const { Connection } = require("../script/types.js");
+const { Connection, ConnectionId, Leg } = require("../script/types.js");
 const { createConnection } = require("../tests/data.js");
 
 test("connection", function () {
@@ -8,8 +8,10 @@ test("connection", function () {
     ["2024-10-15", "10:00", "city3MainStationId"],
   ]);
 
-  expect(connection.id).toBe("1XXX2024-10-15XXXCity1->City3");
-  expect(connection.leg).toBe("City1->City3");
+  expect(connection.id).toStrictEqual(
+    ConnectionId.fromString("1XXX2024-10-15XXXCity1->City3"),
+  );
+  expect(connection.leg).toStrictEqual(Leg.fromString("City1->City3"));
   expect(connection.start).toStrictEqual(connection.stops[0]);
   expect(connection.end).toStrictEqual(connection.stops.at(-1));
 });
@@ -54,7 +56,8 @@ test("sliceRemoveFirstAndLast", function () {
 
   const got = connection.slice("City2", "City3");
   const exp = new Connection(
-    connection.baseId,
+    connection.id.train,
+    connection.id.date,
     connection.name,
     connection.type,
     connection.stops.slice(1, 3),
@@ -75,7 +78,8 @@ test("sliceMultipleStationsPerCity", function () {
 
   const got = connection.slice("City1", "City3");
   const exp = new Connection(
-    connection.baseId,
+    connection.id.train,
+    connection.id.date,
     connection.name,
     connection.type,
     connection.stops.slice(1, 4),

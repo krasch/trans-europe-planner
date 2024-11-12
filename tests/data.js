@@ -51,7 +51,7 @@ function initIncrementalId() {
 
   function increment() {
     id += 1;
-    return id;
+    return String(id);
   }
 
   return increment;
@@ -60,8 +60,8 @@ function initIncrementalId() {
 const incrementalId = initIncrementalId();
 
 function createConnection(stops) {
+  const train = incrementalId();
   const date = stops[0][0];
-  const id = `${incrementalId()}XXX${date}`;
 
   const stopsEnriched = [];
   for (let [date, time, stationId] of stops) {
@@ -76,7 +76,7 @@ function createConnection(stops) {
     });
   }
 
-  return new Connection(id, "test", "train", stopsEnriched);
+  return new Connection(train, date, "test", "train", stopsEnriched);
 }
 
 module.exports.testStations = testStations;

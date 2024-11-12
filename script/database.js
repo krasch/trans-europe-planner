@@ -24,8 +24,9 @@ function enrichAndTemporalizeConnection(template, stations, cities, dates) {
       });
     }
 
-    const baseId = `${template.id}XXX${date}`;
-    result.push(new Connection(baseId, template.name, template.type, stops));
+    result.push(
+      new Connection(template.id, date, template.name, template.type, stops),
+    );
   }
 
   return result;
@@ -47,12 +48,9 @@ class Database {
   }
 
   connection(id) {
-    const [trainId, date, leg] = id.split("XXX");
+    if (typeof id === "string") id = ConnectionId.fromString(id);
 
-    if (!trainId || !date || !leg)
-      throw new DatabaseError(`Invalid connection id ${id}`);
-
-    if (!this.#slicedConnectionIdsByLeg[leg]) this.#indexLeg(leg);
+    if (!this.#slicedConnectionIdsByLeg[id.leg]) this.#indexLeg(id.leg);
 
     if (!this.#slicedConnectionsById[id])
       throw new DatabaseError(`Unknown connection ${id}`);
@@ -60,6 +58,8 @@ class Database {
   }
 
   connectionsForLeg(leg) {
+    if (typeof leg === "string") leg = Leg.fromString(leg);
+
     if (!this.#slicedConnectionIdsByLeg[leg]) this.#indexLeg(leg);
 
     const connectionIds = this.#slicedConnectionIdsByLeg[leg];
@@ -71,14 +71,10 @@ class Database {
   }
 
   #indexLeg(leg) {
-    const [startCityName, endCityName] = leg.split("->");
-    if (!startCityName || !endCityName)
-      throw new DatabaseError(`Invalid leg name ${leg}`);
-
     this.#slicedConnectionIdsByLeg[leg] = [];
 
     for (let connection of this.#fullConnections) {
-      const sliced = connection.slice(startCityName, endCityName);
+      const sliced = connection.slice(leg.startCityName, leg.endCityName);
 
       // there is no such slice -> can not fulfill this leg with this connection
       if (sliced === null) continue;

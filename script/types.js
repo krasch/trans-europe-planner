@@ -5,6 +5,20 @@ class InvalidDatetimeFormatError extends Error {
   }
 }
 
+class InvalidConnectionIdFormat extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "InvalidConnectionId";
+  }
+}
+
+class InvalidLegFormat extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "InvalidLegFormat";
+  }
+}
+
 class CustomDateTime {
   constructor(dateString, timeString) {
     // todo error when wrongly formatted?
@@ -103,18 +117,54 @@ function getPartialStops(stops, startCity, endCity) {
   return stops.slice(startIndex, endIndex + 1);
 }
 
+class Leg {
+  constructor(startCityName, endCityName) {
+    this.startCityName = startCityName;
+    this.endCityName = endCityName;
+  }
+
+  toString() {
+    return `${this.startCityName}->${this.endCityName}`;
+  }
+
+  static fromString(string) {
+    const [cityA, cityB] = string.split("->");
+    if (!cityA || !cityB) throw new InvalidLegFormat(string);
+
+    return new Leg(cityA, cityB);
+  }
+}
+
+class ConnectionId {
+  constructor(train, date, leg) {
+    this.train = train;
+    this.date = date;
+    this.leg = leg;
+  }
+
+  toString() {
+    return `${this.train}XXX${this.date}XXX${this.leg.toString()}`;
+  }
+
+  static fromString(string) {
+    const [train, date, leg] = string.split("XXX");
+    if (!train || !date || !leg) throw new InvalidConnectionIdFormat(string);
+
+    return new ConnectionId(train, date, Leg.fromString(leg));
+  }
+}
+
 class Connection {
-  constructor(baseId, name, type, stops) {
-    this.baseId = baseId;
+  constructor(train, date, name, type, stops) {
     this.name = name;
     this.type = type;
     this.stops = stops;
 
-    this.leg = `${stops[0].cityName}->${stops.at(-1).cityName}`;
-    this.id = `${this.baseId}XXX${this.leg}`;
-
     this.start = stops[0];
     this.end = stops.at(-1);
+
+    this.leg = new Leg(this.start.cityName, this.end.cityName);
+    this.id = new ConnectionId(train, date, this.leg);
   }
 
   get isMultiday() {
@@ -125,7 +175,13 @@ class Connection {
     const sliced = getPartialStops(this.stops, startCity, endCity);
     if (sliced == null) return null;
 
-    return new Connection(this.baseId, this.name, this.type, sliced);
+    return new Connection(
+      this.id.train,
+      this.id.date,
+      this.name,
+      this.type,
+      sliced,
+    );
   }
 
   get pointToPoint() {
@@ -148,4 +204,6 @@ if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.CustomDateTime = CustomDateTime;
   module.exports.InvalidDatetimeFormatError = InvalidDatetimeFormatError;
   module.exports.Connection = Connection;
+  module.exports.ConnectionId = ConnectionId;
+  module.exports.Leg = Leg;
 }
