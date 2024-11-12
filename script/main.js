@@ -31,7 +31,9 @@ async function main(
   const database = new Database(connections);
 
   // initial drawing of all necessary geo information
-  const mapLoadedPromise = map.load(CITIES, connections);
+  const mapLoadedPromise = map.load(
+    prepareInitialDataForMap(CITIES, connections),
+  );
 
   // init update views
   const updateViews = initUpdateViews(

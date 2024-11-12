@@ -149,6 +149,29 @@ function prepareDataForJourneySelection(journeys, activeId, database) {
   return data;
 }
 
+function prepareInitialDataForMap(cities, connections) {
+  const cityNameToId = {};
+  for (let id in cities) cityNameToId[cities[id].name] = id;
+
+  const legs = [];
+  const done = [];
+
+  for (let c of connections) {
+    for (let leg of c.trace) {
+      if (done.includes(leg.toAlphabeticString())) continue;
+
+      done.push(leg.toAlphabeticString());
+      legs.push({
+        leg: leg.toAlphabeticString(),
+        startCity: cities[cityNameToId[leg.startCityName]],
+        endCity: cities[cityNameToId[leg.endCityName]],
+      });
+    }
+  }
+
+  return legs;
+}
+
 function prepareDataForMap(journeys, activeId, database) {
   if (activeId == null) {
     return []; // todo is correct?
@@ -161,9 +184,13 @@ function prepareDataForMap(journeys, activeId, database) {
   const connections = getSortedJourneyConnections(journeys[activeId], database);
   for (let i in connections) {
     const color = getColor(i);
-    for (let p2p of connections[i].pointToPoint) {
-      legs.push({ p2p: p2p, color: color, leg: connections[i].leg.toString() });
-      done.push(p2p);
+    for (let leg of connections[i].trace) {
+      legs.push({
+        leg: leg.toAlphabeticString(),
+        color: color,
+        parent: connections[i].leg.toString(),
+      });
+      done.push(leg.toAlphabeticString());
     }
   }
 
@@ -198,4 +225,5 @@ if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.prepareDataForJourneySelection =
     prepareDataForJourneySelection;
   module.exports.prepareDataForMap = prepareDataForMap;
+  module.exports.prepareInitialDataForMap = prepareInitialDataForMap;
 }

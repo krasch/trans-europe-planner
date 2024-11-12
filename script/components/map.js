@@ -21,7 +21,7 @@ function legToGeojson(leg) {
       ],
     },
     // use this instead of outer-level 'id' field because those ids must be numeric
-    properties: { id: leg.id },
+    properties: { id: leg.leg },
   };
 }
 
@@ -163,17 +163,14 @@ class MapWrapper {
     });
   }
 
-  uniqueP2P(p2p) {
-    p2p = p2p.split("->");
-    p2p.sort();
-    return `${p2p[0]}->${p2p[1]}`;
-  }
-
-  init(cities, connections) {
+  init(legs) {
     this.map.getCanvas().style.cursor = "default";
     this.map.setLayoutProperty("place-city", "text-field", ["get", `name`]);
 
-    this.p2p = connections.flatMap((c) => c.pointToPoint).map(this.uniqueP2P);
+    this.legs = legs.map((l) => l.leg);
+    this.#legs.update(asGeojsonFeatureCollection(legs.map(legToGeojson)));
+
+    /*this.p2p = connections.flatMap((c) => c.pointToPoint).map(this.uniqueP2P);
     this.p2p = Array.from(new Set(this.p2p));
 
     let p2p = this.p2p.map((p) => {
@@ -189,7 +186,7 @@ class MapWrapper {
 
     this.cities = cities;
     cities = Object.values(cities).map(cityToGeojson);
-    this.#cities.update(asGeojsonFeatureCollection(cities));
+    this.#cities.update(asGeojsonFeatureCollection(cities));*/
 
     // when the user clicks on a leg, it should be added to the journey
     //this.#legs.onClick((id) => this.#callbacks["legAdded"](id));
@@ -223,15 +220,14 @@ class MapWrapper {
     const activeLegs = data;
 
     // unset all legs todo unset only legs that are now inactive
-    for (let leg of this.p2p) {
+    for (let leg of this.legs) {
       this.#legs.setFeatureState(leg, { active: false });
       this.#legs.setFeatureState(leg, { color: null });
     }
 
     for (let leg of activeLegs) {
-      const p2p = this.uniqueP2P(leg.p2p);
-      this.#legs.setFeatureState(p2p, { active: true });
-      this.#legs.setFeatureState(p2p, { color: `rgb(${leg.color})` });
+      this.#legs.setFeatureState(leg.leg, { active: true });
+      this.#legs.setFeatureState(leg.leg, { color: `rgb(${leg.color})` });
     }
 
     /*const [legs, color] = data; // todo fold into legs
@@ -251,11 +247,12 @@ class MapWrapper {
   }
 
   setHover(leg) {
-    this.#connections.setFeatureState(leg, { hover: true });
+    // todo for all that have parent as this leg
+    this.#legs.setFeatureState(leg, { hover: true });
   }
 
   setNoHover(leg) {
-    this.#connections.setFeatureState(leg, { hover: false });
+    this.#legs.setFeatureState(leg, { hover: false });
   }
 }
 

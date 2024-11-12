@@ -118,7 +118,7 @@ test("sliceWrongDirection", function () {
   expect(got).toBe(null);
 });
 
-test("testPointToPoint", function () {
+test("testTrace", function () {
   const connection = createConnection([
     ["2024-10-15", "08:00", "city1MainStationId"],
     ["2024-10-15", "09:00", "city1ExtraStationId"],
@@ -127,6 +127,8 @@ test("testPointToPoint", function () {
     ["2024-10-15", "12:00", "city3ExtraStationId"],
   ]);
 
-  const got = connection.pointToPoint;
-  expect(got).toStrictEqual(["1->2", "2->3"]);
+  const got = connection.trace;
+  const exp = [new Leg("City1", "City2"), new Leg("City2", "City3")];
+
+  expect(got).toStrictEqual(exp);
 });

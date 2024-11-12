@@ -127,6 +127,13 @@ class Leg {
     return `${this.startCityName}->${this.endCityName}`;
   }
 
+  toAlphabeticString() {
+    const cities = [this.startCityName, this.endCityName];
+    cities.sort();
+
+    return `${cities[0]}->${cities[1]}`;
+  }
+
   static fromString(string) {
     const [cityA, cityB] = string.split("->");
     if (!cityA || !cityB) throw new InvalidLegFormat(string);
@@ -184,15 +191,14 @@ class Connection {
     );
   }
 
-  get pointToPoint() {
+  get trace() {
     const directs = [];
 
     for (let i in this.stops) {
       if (i === "0") continue;
       if (this.stops[i - 1].cityId === this.stops[i].cityId) continue;
 
-      const direct = `${this.stops[i - 1].cityId}->${this.stops[i].cityId}`;
-      if (!directs.includes(direct)) directs.push(direct);
+      directs.push(new Leg(this.stops[i - 1].cityName, this.stops[i].cityName));
     }
 
     return directs;

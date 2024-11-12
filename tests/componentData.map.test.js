@@ -4,11 +4,55 @@
 
 const {
   prepareDataForMap,
+  prepareInitialDataForMap,
   Journey,
   getColor,
 } = require("../script/componentData.js");
 const { Database } = require("../script/database.js");
-const { createConnection } = require("../tests/data.js");
+const { createConnection, testCities } = require("../tests/data.js");
+
+test("prepareInitialDataForMap", function () {
+  const c1 = createConnection([
+    ["2024-10-15", "06:00", "city1MainStationId"],
+    ["2024-10-15", "07:00", "city1ExtraStationId"],
+    ["2024-10-15", "08:00", "city2MainStationId"],
+    ["2024-10-15", "09:00", "city3MainStationId"],
+  ]);
+
+  const c2 = createConnection([
+    ["2024-10-15", "06:00", "city1MainStationId"],
+    ["2024-10-15", "07:00", "city1ExtraStationId"],
+    ["2024-10-15", "09:00", "city3MainStationId"],
+  ]);
+
+  // direction inverted
+  const c3 = createConnection([
+    ["2024-10-15", "06:00", "city3MainStationId"],
+    ["2024-10-15", "07:00", "city1ExtraStationId"],
+    ["2024-10-15", "09:00", "city1MainStationId"],
+  ]);
+
+  const got = prepareInitialDataForMap(testCities, [c1, c2, c3]);
+  const exp = [
+    {
+      leg: "City1->City2",
+      startCity: { name: "City1", latitude: 10, longitude: 10 },
+      endCity: { name: "City2", latitude: 20, longitude: 20 },
+    },
+    {
+      leg: "City2->City3",
+      startCity: { name: "City2", latitude: 20, longitude: 20 },
+      endCity: { name: "City3", latitude: 30, longitude: 30 },
+    },
+    {
+      leg: "City1->City3",
+      startCity: { name: "City1", latitude: 10, longitude: 10 },
+      endCity: { name: "City3", latitude: 30, longitude: 30 },
+    },
+  ];
+
+  expect(got).toStrictEqual(exp);
+});
 
 test("prepareDataForMapEmpty", function () {
   const database = new Database([]);
@@ -49,9 +93,9 @@ test("prepareDataForMap", function () {
   const active = "journey1";
 
   const exp = [
-    { p2p: "1->2", color: getColor(0), leg: "City1->City3" },
-    { p2p: "2->3", color: getColor(0), leg: "City1->City3" },
-    { p2p: "3->4", color: getColor(1), leg: "City3->City4" },
+    { leg: "City1->City2", color: getColor(0), parent: "City1->City3" },
+    { leg: "City2->City3", color: getColor(0), parent: "City1->City3" },
+    { leg: "City3->City4", color: getColor(1), parent: "City3->City4" },
   ];
   const got = prepareDataForMap(journeys, active, database);
   expect(got).toStrictEqual(exp);
