@@ -49,11 +49,19 @@ function getColor(i) {
     style.getPropertyValue("--color1"),
     style.getPropertyValue("--color2"),
     style.getPropertyValue("--color3"),
+    style.getPropertyValue("--color4"),
+    style.getPropertyValue("--color5"),
   ];
 
   // for unit tests mostly todo could be nicer
   // can not use ?? above because style.getPropertyValue returns an empty string
-  const backupColors = ["0, 255, 0", "255, 0, 0", "0, 0, 255"];
+  const backupColors = [
+    "0, 255, 0",
+    "255, 0, 0",
+    "0, 0, 255",
+    "255, 255, 0",
+    "255, 0, 255",
+  ];
   for (let j in colors) if (colors[j].length === 0) colors[j] = backupColors[j];
 
   return colors[i % colors.length];
