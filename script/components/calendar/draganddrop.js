@@ -5,9 +5,12 @@ function enableDragAndDrop(calendar, onDropCallback) {
     if (!closest) return;
 
     // the "group" attributes of the element being dragged (source)
-    // and the element where the mouse is currently over (target)
-    const groupSource = e.dataTransfer.getData("group");
-    const groupTarget = closest.group;
+    // chrome only allows us to access the getData in drop event -> workaround
+    let groupSource = e.dataTransfer.types[0];
+
+    // and the group attribute where the mouse is currently over (target)
+    // group source might be lower-case due to chrome workaround
+    const groupTarget = closest.group.toLowerCase();
 
     // both group attributes must be the same
     return groupSource === groupTarget;
@@ -18,12 +21,17 @@ function enableDragAndDrop(calendar, onDropCallback) {
     const closest = e.target.closest("calendar-entry");
     if (!closest) return;
 
-    e.dataTransfer.dropEffect = "move";
-    e.dataTransfer.setData("group", closest.group);
+    // should not be in the timeout
+    e.dataTransfer.setData(closest.group, closest.group); // chrome workaraound
 
-    for (let alt of calendar.entriesForGroup(closest.group)) {
-      if (alt.id !== closest.id) alt.visibility = "indicator";
-    }
+    // another chrome-workaround, otherwise it directly fires dragend event
+    setTimeout(() => {
+      e.dataTransfer.dropEffect = "move";
+
+      for (let alt of calendar.entriesForGroup(closest.group)) {
+        if (alt.id !== closest.id) alt.visibility = "indicator";
+      }
+    }, 10);
   });
 
   // enters a valid drop target
@@ -62,5 +70,15 @@ function enableDragAndDrop(calendar, onDropCallback) {
 
     // hide original item from calendar -> global state, should callback
     onDropCallback(closest.group, closest.id);
+  });
+
+  calendar.addEventListener("dragend", (e) => {
+    e.preventDefault();
+
+    // no drop event fired, drag&drop was aborted, redraw previous state
+    if (e.dataTransfer.dropEffect === "none") {
+      const closest = e.target.closest("calendar-entry");
+      onDropCallback(closest.group, closest.id); // todo workaround
+    }
   });
 }
