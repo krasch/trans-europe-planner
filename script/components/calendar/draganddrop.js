@@ -73,6 +73,12 @@ function enableDragAndDrop(calendar, onDropCallback) {
   });
 
   calendar.addEventListener("dragend", (e) => {
-    // console.log("end");
+    e.preventDefault();
+
+    // no drop event fired, drag&drop was aborted, redraw previous state
+    if (e.dataTransfer.dropEffect === "none") {
+      const closest = e.target.closest("calendar-entry");
+      onDropCallback(closest.group, closest.id); // todo workaround
+    }
   });
 }
