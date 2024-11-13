@@ -5,9 +5,12 @@ function enableDragAndDrop(calendar, onDropCallback) {
     if (!closest) return;
 
     // the "group" attributes of the element being dragged (source)
-    // and the element where the mouse is currently over (target)
-    const groupSource = e.dataTransfer.getData("group");
-    const groupTarget = closest.group;
+    // chrome only allows us to access the getData in drop event -> workaround
+    let groupSource = e.dataTransfer.types[0];
+
+    // and the group attribute where the mouse is currently over (target)
+    // group source might be lower-case due to chrome workaround
+    const groupTarget = closest.group.toLowerCase();
 
     // both group attributes must be the same
     return groupSource === groupTarget;
@@ -19,7 +22,7 @@ function enableDragAndDrop(calendar, onDropCallback) {
     if (!closest) return;
 
     e.dataTransfer.dropEffect = "move";
-    e.dataTransfer.setData("group", closest.group);
+    e.dataTransfer.setData(closest.group, closest.group); // chrome workaraound
 
     for (let alt of calendar.entriesForGroup(closest.group)) {
       if (alt.id !== closest.id) alt.visibility = "indicator";
