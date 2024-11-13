@@ -89,17 +89,27 @@ class MapWrapper {
     });
   }
 
-  init(legs) {
+  init(data) {
+    const [cities, legs] = data;
+
     this.map.getCanvas().style.cursor = "default";
     this.map.setLayoutProperty("place-city", "text-field", ["get", `name`]);
 
-    // add legs layer
+    // add legs data and layer
     this.map.addSource("legs", {
       type: "geojson",
       data: asGeojsonFeatureCollection(legs.map(legToGeojson)),
       promoteId: "id", // otherwise can not use non-numeric ids
     });
     this.map.addLayer(mapStyles["legs"]);
+
+    // add cities data and layers
+    this.map.addSource("cities", {
+      type: "geojson",
+      data: asGeojsonFeatureCollection(cities.map(cityToGeojson)),
+      promoteId: "name", // otherwise can not use non-numeric ids
+    });
+    this.map.addLayer(mapStyles["stops"]);
 
     // at mouseleave, map does not give us the id that the mouse left
     // so we need to keep track of it ourselves
@@ -137,7 +147,7 @@ class MapWrapper {
   }
 
   updateView(data) {
-    const activeLegs = data;
+    const [cities, activeLegs] = data;
 
     // for simplicity, unset all previously active legs
     for (let leg of this.#currentlyActiveLegs) {
@@ -159,6 +169,17 @@ class MapWrapper {
       });
     }
     this.#currentlyActiveLegs = activeLegs;
+
+    for (let city of cities) {
+      this.#setFeatureState("cities", city.city, {
+        color: `rgb(${city.color})`,
+      });
+    }
+
+    const filter = ["in", "id"];
+    for (let city of cities) filter.push(city.city);
+    console.log(filter);
+    this.map.setFilter("stops", filter);
 
     /*const [legs, color] = data; // todo fold into legs
 

@@ -1,9 +1,21 @@
 const mapStyles = {
-  cities: {
+  stops: {
+    id: "stops",
+    source: "cities",
+    filter: ["in", "id", "placeholder"],
+    type: "circle",
+    paint: {
+      "circle-radius": 3,
+      "circle-color": "white",
+      "circle-stroke-width": 1,
+      "circle-stroke-color": ["to-color", ["feature-state", "color"], "#aaa"],
+    },
+  },
+  cities2: {
     id: "cities",
     source: "cities",
     type: "symbol",
-    filter: ["in", "id", "placeholder"], //filter: ["in", "id", "Hamburg", "Berlin"],
+    // filter: ["in", "id", "placeholder"], //filter: ["in", "id", "Hamburg", "Berlin"],
     layout: {
       "text-font": ["Stadia Semibold"],
       "text-size": {
@@ -50,25 +62,6 @@ const mapStyles = {
         6,
         1,
       ],
-    },
-  },
-  connections: {
-    id: "connections",
-    source: "connections",
-    type: "line",
-    layout: {
-      "line-join": "round",
-      "line-cap": "round",
-    },
-    paint: {
-      "line-color": "red",
-      "line-opacity": [
-        "case",
-        ["boolean", ["feature-state", "hover"], false],
-        1.0,
-        0.6,
-      ],
-      "line-width": 4,
     },
   },
 };
