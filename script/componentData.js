@@ -115,7 +115,10 @@ function prepareDataForCalendar(journeys, activeId, database) {
     const leg = connections[i].leg;
     const color = getColor(i);
 
-    for (let connection of database.connectionsForLeg(leg)) {
+    const connectionsForLeg = database.connectionsForLeg(leg);
+    sortConnectionsByDeparture(connectionsForLeg);
+
+    for (let connection of connectionsForLeg) {
       data.push({
         id: connection.id.toString(),
         displayId: connection.name,
