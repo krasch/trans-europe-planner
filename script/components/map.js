@@ -110,6 +110,7 @@ class MapWrapper {
       promoteId: "name", // otherwise can not use non-numeric ids
     });
     this.map.addLayer(mapStyles["stops"]);
+    this.map.addLayer(mapStyles["transfers"]);
 
     // at mouseleave, map does not give us the id that the mouse left
     // so we need to keep track of it ourselves
@@ -177,9 +178,12 @@ class MapWrapper {
     }
 
     const filter = ["in", "id"];
-    for (let city of cities) filter.push(city.city);
-    console.log(filter);
+    for (let city of cities.filter((c) => !c.transfer)) filter.push(city.city);
     this.map.setFilter("stops", filter);
+
+    //const filter2 = ["in", "id"];
+    //for (let city of cities.filter((c) => c.transfer)) filter2.push(city.city);
+    //this.map.setFilter("transfers", filter2);
 
     /*const [legs, color] = data; // todo fold into legs
 

@@ -98,10 +98,10 @@ test("prepareDataForMap", function () {
   const active = "journey1";
 
   const expCities = [
-    { city: "City1", color: getColor(0) },
-    { city: "City2", color: getColor(0) },
-    { city: "City3", color: getColor(0) },
-    { city: "City4", color: getColor(1) },
+    { city: "City1", color: getColor(0), transfer: true },
+    { city: "City2", color: getColor(0), transfer: false },
+    { city: "City3", color: getColor(0), transfer: true },
+    { city: "City4", color: getColor(1), transfer: true },
   ];
 
   const expLegs = [
@@ -110,6 +110,5 @@ test("prepareDataForMap", function () {
     { leg: "City3->City4", color: getColor(1), parent: "City3->City4" },
   ];
   const got = prepareDataForMap(journeys, active, database);
-  console.log(got);
   expect(got).toStrictEqual([expCities, expLegs]);
 });

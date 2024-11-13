@@ -11,11 +11,11 @@ const mapStyles = {
       "circle-stroke-color": ["to-color", ["feature-state", "color"], "#aaa"],
     },
   },
-  cities2: {
-    id: "cities",
+  transfers: {
+    id: "transfers",
     source: "cities",
     type: "symbol",
-    // filter: ["in", "id", "placeholder"], //filter: ["in", "id", "Hamburg", "Berlin"],
+    filter: ["in", "id", "placeholder"],
     layout: {
       "text-font": ["Stadia Semibold"],
       "text-size": {
@@ -28,9 +28,7 @@ const mapStyles = {
       "text-field": ["get", "name"],
       "text-max-width": 8,
       "text-line-height": 1.55,
-      "icon-image": "star_11",
       "text-offset": [0.4, 0],
-      "icon-size": 0.8,
       "text-variable-anchor": ["left", "right"],
       visibility: "visible",
     },

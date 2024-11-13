@@ -215,6 +215,7 @@ function prepareDataForMap(journeys, activeId, database) {
         cities.push({
           city: leg.startCityName,
           color: color,
+          transfer: leg.startCityName === connections[i].start.cityName,
         });
         citiesDone.push(leg.startCityName);
       }
@@ -223,6 +224,7 @@ function prepareDataForMap(journeys, activeId, database) {
         cities.push({
           city: leg.endCityName,
           color: color,
+          transfer: leg.endCityName === connections[i].end.cityName,
         });
         citiesDone.push(leg.endCityName);
       }
