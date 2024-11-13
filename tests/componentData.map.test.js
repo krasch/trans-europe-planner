@@ -33,7 +33,12 @@ test("prepareInitialDataForMap", function () {
   ]);
 
   const got = prepareInitialDataForMap(testCities, [c1, c2, c3]);
-  const exp = [
+  const expCities = [
+    { name: "City1", latitude: 10, longitude: 10 },
+    { name: "City2", latitude: 20, longitude: 20 },
+    { name: "City3", latitude: 30, longitude: 30 },
+  ];
+  const expLegs = [
     {
       leg: "City1->City2",
       startCity: { name: "City1", latitude: 10, longitude: 10 },
@@ -51,7 +56,7 @@ test("prepareInitialDataForMap", function () {
     },
   ];
 
-  expect(got).toStrictEqual(exp);
+  expect(got).toStrictEqual([expCities, expLegs]);
 });
 
 test("prepareDataForMapEmpty", function () {
@@ -92,11 +97,18 @@ test("prepareDataForMap", function () {
   };
   const active = "journey1";
 
-  const exp = [
+  const expCities = [
+    { city: "City1", color: getColor(0), transfer: true },
+    { city: "City2", color: getColor(0), transfer: false },
+    { city: "City3", color: getColor(0), transfer: true },
+    { city: "City4", color: getColor(1), transfer: true },
+  ];
+
+  const expLegs = [
     { leg: "City1->City2", color: getColor(0), parent: "City1->City3" },
     { leg: "City2->City3", color: getColor(0), parent: "City1->City3" },
     { leg: "City3->City4", color: getColor(1), parent: "City3->City4" },
   ];
   const got = prepareDataForMap(journeys, active, database);
-  expect(got).toStrictEqual(exp);
+  expect(got).toStrictEqual([expCities, expLegs]);
 });

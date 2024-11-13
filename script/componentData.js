@@ -149,27 +149,43 @@ function prepareDataForJourneySelection(journeys, activeId, database) {
   return data;
 }
 
-function prepareInitialDataForMap(cities, connections) {
+function prepareInitialDataForMap(cityInfo, connections) {
   const cityNameToId = {};
-  for (let id in cities) cityNameToId[cities[id].name] = id;
+  for (let id in cityInfo) cityNameToId[cityInfo[id].name] = id;
 
   const legs = [];
-  const done = [];
+  const legsDone = [];
+
+  const cities = [];
+  const citiesDone = [];
 
   for (let c of connections) {
     for (let leg of c.trace) {
-      if (done.includes(leg.toAlphabeticString())) continue;
+      // leg
+      if (!legsDone.includes(leg.toAlphabeticString())) {
+        legsDone.push(leg.toAlphabeticString());
+        legs.push({
+          leg: leg.toAlphabeticString(),
+          startCity: cityInfo[cityNameToId[leg.startCityName]],
+          endCity: cityInfo[cityNameToId[leg.endCityName]],
+        });
+      }
 
-      done.push(leg.toAlphabeticString());
-      legs.push({
-        leg: leg.toAlphabeticString(),
-        startCity: cities[cityNameToId[leg.startCityName]],
-        endCity: cities[cityNameToId[leg.endCityName]],
-      });
+      // start city
+      if (!citiesDone.includes(leg.startCityName)) {
+        citiesDone.push(leg.startCityName);
+        cities.push(cityInfo[cityNameToId[leg.startCityName]]);
+      }
+
+      // end city
+      if (!citiesDone.includes(leg.endCityName)) {
+        citiesDone.push(leg.endCityName);
+        cities.push(cityInfo[cityNameToId[leg.endCityName]]);
+      }
     }
   }
 
-  return legs;
+  return [cities, legs];
 }
 
 function prepareDataForMap(journeys, activeId, database) {
@@ -177,8 +193,11 @@ function prepareDataForMap(journeys, activeId, database) {
     return []; // todo is correct?
   }
 
+  const cities = [];
+  const citiesDone = [];
+
   const legs = [];
-  const done = [];
+  //const legsDone = [];
 
   // first for active journey
   const connections = getSortedJourneyConnections(journeys[activeId], database);
@@ -190,7 +209,25 @@ function prepareDataForMap(journeys, activeId, database) {
         color: color,
         parent: connections[i].leg.toString(),
       });
-      done.push(leg.toAlphabeticString());
+      //legsDone.push(leg.toAlphabeticString());
+
+      if (!citiesDone.includes(leg.startCityName)) {
+        cities.push({
+          city: leg.startCityName,
+          color: color,
+          transfer: leg.startCityName === connections[i].start.cityName,
+        });
+        citiesDone.push(leg.startCityName);
+      }
+
+      if (!citiesDone.includes(leg.endCityName)) {
+        cities.push({
+          city: leg.endCityName,
+          color: color,
+          transfer: leg.endCityName === connections[i].end.cityName,
+        });
+        citiesDone.push(leg.endCityName);
+      }
     }
   }
 
@@ -212,7 +249,7 @@ function prepareDataForMap(journeys, activeId, database) {
     }
   }*/
 
-  return legs;
+  return [cities, legs];
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
