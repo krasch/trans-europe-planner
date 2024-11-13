@@ -21,12 +21,17 @@ function enableDragAndDrop(calendar, onDropCallback) {
     const closest = e.target.closest("calendar-entry");
     if (!closest) return;
 
-    e.dataTransfer.dropEffect = "move";
+    // should not be in the timeout
     e.dataTransfer.setData(closest.group, closest.group); // chrome workaraound
 
-    for (let alt of calendar.entriesForGroup(closest.group)) {
-      if (alt.id !== closest.id) alt.visibility = "indicator";
-    }
+    // another chrome-workaround, otherwise it directly fires dragend event
+    setTimeout(() => {
+      e.dataTransfer.dropEffect = "move";
+
+      for (let alt of calendar.entriesForGroup(closest.group)) {
+        if (alt.id !== closest.id) alt.visibility = "indicator";
+      }
+    }, 10);
   });
 
   // enters a valid drop target
@@ -65,5 +70,9 @@ function enableDragAndDrop(calendar, onDropCallback) {
 
     // hide original item from calendar -> global state, should callback
     onDropCallback(closest.group, closest.id);
+  });
+
+  calendar.addEventListener("dragend", (e) => {
+    // console.log("end");
   });
 }
