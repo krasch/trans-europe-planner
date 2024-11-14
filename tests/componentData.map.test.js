@@ -38,25 +38,25 @@ test("prepareInitialDataForMap", function () {
     { name: "City2", latitude: 20, longitude: 20 },
     { name: "City3", latitude: 30, longitude: 30 },
   ];
-  const expLegs = [
+  const expEdges = [
     {
-      leg: "City1->City2",
+      id: "City1->City2",
       startCity: { name: "City1", latitude: 10, longitude: 10 },
       endCity: { name: "City2", latitude: 20, longitude: 20 },
     },
     {
-      leg: "City2->City3",
+      id: "City2->City3",
       startCity: { name: "City2", latitude: 20, longitude: 20 },
       endCity: { name: "City3", latitude: 30, longitude: 30 },
     },
     {
-      leg: "City1->City3",
+      id: "City1->City3",
       startCity: { name: "City1", latitude: 10, longitude: 10 },
       endCity: { name: "City3", latitude: 30, longitude: 30 },
     },
   ];
 
-  expect(got).toStrictEqual([expCities, expLegs]);
+  expect(got).toStrictEqual([expCities, expEdges]);
 });
 
 test("prepareDataForMapEmpty", function () {
@@ -80,35 +80,57 @@ test("prepareDataForMap", function () {
     ["2024-10-15", "10:00", "city3MainStationId"],
     ["2024-10-15", "11:00", "city4MainStationId"],
   ]);
-  /*const c3 = createConnection([
+  const c3 = createConnection([
     ["2024-10-15", "09:00", "city1MainStationId"],
-    ["2024-10-15", "10:00", "city3ExtraStationId"],
-    ["2024-10-15", "11:00", "city3MainStationId"],
-  ]);*/
+    ["2024-10-15", "10:00", "city2MainStationId"],
+    ["2024-10-15", "11:00", "city5MainStationId"],
+  ]);
 
-  const database = new Database([c1, c2]);
+  const database = new Database([c1, c2, c3]);
 
   const journeys = {
     journey1: new Journey({
       "City1->City2": c1.id,
       "City2->City3": c2.id,
     }),
-    // journey2: new Journey({ "City1->City3": c3.id }),
+    journey2: new Journey({ "City1->City3": c3.id }),
   };
   const active = "journey1";
 
   const expCities = [
-    { city: "City1", color: getColor(0), transfer: true },
-    { city: "City2", color: getColor(0), transfer: false },
-    { city: "City3", color: getColor(0), transfer: true },
-    { city: "City4", color: getColor(1), transfer: true },
+    { name: "City1", color: getColor(0), transfer: true },
+    { name: "City2", color: getColor(0), transfer: false },
+    { name: "City3", color: getColor(0), transfer: true },
+    { name: "City4", color: getColor(1), transfer: true },
+    { name: "City5", color: null, transfer: true },
   ];
 
-  const expLegs = [
-    { leg: "City1->City2", color: getColor(0), parent: "City1->City3" },
-    { leg: "City2->City3", color: getColor(0), parent: "City1->City3" },
-    { leg: "City3->City4", color: getColor(1), parent: "City3->City4" },
+  const expEdges = [
+    {
+      id: "City1->City2",
+      color: getColor(0),
+      leg: "City1->City3",
+      status: "active",
+    },
+    {
+      id: "City2->City3",
+      color: getColor(0),
+      leg: "City1->City3",
+      status: "active",
+    },
+    {
+      id: "City3->City4",
+      color: getColor(1),
+      leg: "City3->City4",
+      status: "active",
+    },
+    {
+      id: "City2->City5",
+      color: null,
+      leg: "City1->City5",
+      status: "alternative",
+    },
   ];
   const got = prepareDataForMap(journeys, active, database);
-  expect(got).toStrictEqual([expCities, expLegs]);
+  expect(got).toStrictEqual([expCities, expEdges]);
 });

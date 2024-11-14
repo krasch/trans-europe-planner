@@ -6,22 +6,22 @@ function cityToGeojson(city) {
       coordinates: [city.longitude, city.latitude],
     },
     // use this instead of outer-level 'id' field because those ids must be numeric
-    properties: { name: city.name, id: city.name },
+    properties: { name: city.name, id: city.name, rank: city.rank },
   };
 }
 
-function legToGeojson(leg) {
+function edgeToGeojson(edge) {
   return {
     type: "Feature",
     geometry: {
       type: "LineString",
       coordinates: [
-        [leg.startCity.longitude, leg.startCity.latitude],
-        [leg.endCity.longitude, leg.endCity.latitude],
+        [edge.startCity.longitude, edge.startCity.latitude],
+        [edge.endCity.longitude, edge.endCity.latitude],
       ],
     },
     // use this instead of outer-level 'id' field because those ids must be numeric
-    properties: { id: leg.leg },
+    properties: { id: edge.id },
   };
 }
 
@@ -32,40 +32,145 @@ function asGeojsonFeatureCollection(features) {
   };
 }
 
-class HoverState {
+class EdgeManager {
+  #map;
+  #currentlyActive = [];
+
   #callbacks = {
-    hover: () => {},
-    hoverEnd: () => {},
+    activeLegHoverStart: () => {},
+    activeLegHoverStop: () => {},
   };
 
-  #hoverState = null;
+  constructor(map) {
+    this.#map = map;
+
+    let hoverState = null;
+
+    // hover start
+    this.#map.on("mouseenter", "edges", (e) => {
+      const edgeId = e.features.at(-1).id;
+      const state = this.#map.getFeatureState({ source: "edges", id: edgeId });
+
+      // nothing changed, this can happen for example when directly hovering from one edge to next of same leg
+      if (state.leg === hoverState) return;
+
+      hoverState = state.leg;
+      if (state.status === "active")
+        this.#callbacks["activeLegHoverStart"](state.leg);
+    });
+
+    // hover done
+    this.#map.on("mouseleave", "edges", (e) => {
+      if (hoverState) {
+        this.#callbacks["activeLegHoverStop"](hoverState);
+        hoverState = null;
+      }
+    });
+  }
 
   on(eventName, callback) {
     this.#callbacks[eventName] = callback;
   }
 
-  mouseenter(e) {
-    this.#hoverState = e.features.at(-1).id;
-    this.#callbacks["hover"](this.#hoverState);
+  updateView(edges) {
+    // for simplicity, unset all previous state
+    for (let edge of this.#currentlyActive) {
+      const state = {
+        active: false,
+        alternative: false,
+        color: null,
+        leg: null,
+        hover: false,
+      };
+      this.#map.setFeatureState({ source: "edges", id: edge.id }, state);
+    }
+
+    // set new state
+    for (let edge of edges) {
+      const state = {
+        status: edge.status,
+        color: `rgb(${edge.color})`,
+        leg: edge.leg,
+        hover: false,
+      };
+      this.#map.setFeatureState({ source: "edges", id: edge.id }, state);
+    }
+
+    this.#currentlyActive = edges;
   }
 
-  mouseleave(e) {
-    if (this.#hoverState) {
-      this.#callbacks["hoverEnd"](this.#hoverState);
-      this.#hoverState = null;
+  setHoverLeg(leg) {
+    for (let edge of this.#currentlyActive) {
+      if (leg !== edge.leg) continue;
+      this.#updateFeatureState(edge.id, { hover: true });
     }
+  }
+
+  setNoHoverLeg(leg) {
+    for (let edge of this.#currentlyActive) {
+      if (leg !== edge.leg) continue;
+      this.#updateFeatureState(edge.id, { hover: false });
+    }
+  }
+
+  #updateFeatureState(id, newState) {
+    const state = this.#map.getFeatureState({ source: "edges", id: id });
+    for (let key in newState) state[key] = newState[key];
+    this.#map.setFeatureState({ source: "edges", id: id }, state);
+  }
+}
+
+class CityManager {
+  #map;
+  #currentlyActive = [];
+
+  constructor(map) {
+    this.#map = map;
+  }
+
+  updateView(cities) {
+    // for simplicity, unset previously state
+    for (let city of this.#currentlyActive) {
+      const state = { color: null };
+      this.#map.setFeatureState({ source: "cities", id: city.name }, state);
+    }
+
+    // set new state
+    for (let city of cities) {
+      const state = { color: `rgb(${city.color})` };
+      this.#map.setFeatureState({ source: "cities", id: city.name }, state);
+    }
+    this.#currentlyActive = cities;
+
+    // can't filter by feature state which things are visible/not visible
+    // -> manually set filters by id
+    // all cities on the line get a circle
+    this.#map.setFilter(
+      "city-circle-stops-transfers",
+      this.#getIdFilter(cities.map((c) => c.name)),
+    );
+    // but only transfers also get a name
+    this.#map.setFilter(
+      "city-name-transfers",
+      this.#getIdFilter(cities.filter((c) => c.transfer).map((c) => c.name)),
+    );
+  }
+
+  #getIdFilter(items) {
+    const filter = ["in", "id"];
+    for (let i of items) filter.push(i);
+    return filter;
   }
 }
 
 class MapWrapper {
   #callbacks = {
-    legAdded: () => {},
-    legRemoved: () => {},
-    legStartHover: () => {},
-    legStopHover: () => {},
+    legHoverStart: () => {},
+    legHoverStop: () => {},
   };
 
-  #currentlyActiveLegs = [];
+  #edgeManager = null;
+  #cities = null;
 
   constructor(containerId, center, zoom) {
     this.map = new maplibregl.Map({
@@ -90,57 +195,38 @@ class MapWrapper {
   }
 
   init(data) {
-    const [cities, legs] = data;
+    const [cities, edges] = data;
 
     this.map.getCanvas().style.cursor = "default";
-    this.map.setLayoutProperty("place-city", "text-field", ["get", `name`]);
 
-    // add legs data and layer
-    this.map.addSource("legs", {
-      type: "geojson",
-      data: asGeojsonFeatureCollection(legs.map(legToGeojson)),
-      promoteId: "id", // otherwise can not use non-numeric ids
-    });
-    this.map.addLayer(mapStyles["legs"]);
-
-    // add cities data and layers
+    // add cities and legs data
     this.map.addSource("cities", {
       type: "geojson",
       data: asGeojsonFeatureCollection(cities.map(cityToGeojson)),
       promoteId: "name", // otherwise can not use non-numeric ids
     });
-    this.map.addLayer(mapStyles["stops"]);
-    this.map.addLayer(mapStyles["transfers"]);
+    this.map.addSource("edges", {
+      type: "geojson",
+      data: asGeojsonFeatureCollection(edges.map(edgeToGeojson)),
+      promoteId: "id", // otherwise can not use non-numeric ids
+    });
 
-    // at mouseleave, map does not give us the id that the mouse left
-    // so we need to keep track of it ourselves
-    // the (e) => ... is necessary, otherwise we have the wrong "this"
-    const legsHoverState = new HoverState();
-    this.map.on("mouseenter", "legs", (e) => legsHoverState.mouseenter(e));
-    this.map.on("mouseleave", "legs", (e) => legsHoverState.mouseleave(e));
+    // add all layers
+    for (let layer of mapStyles) this.map.addLayer(layer);
+
+    // these two abstract away some of the details of dealing with the map items
+    this.#edgeManager = new EdgeManager(this.map);
+    this.#cities = new CityManager(this.map);
 
     // user has started hovering on a leg
-    legsHoverState.on("hover", (leg) => {
-      const state = this.#getFeatureState("legs", leg);
-      if (state["parent"]) {
-        this.#callbacks["legStartHover"](state["parent"]);
-        this.setHover(state["parent"]);
-      }
+    this.#edgeManager.on("activeLegHoverStart", (leg) => {
+      this.#callbacks["legHoverStart"](leg);
+      this.#edgeManager.setHoverLeg(leg);
     });
-
-    // user has finished hovering on a leg
-    legsHoverState.on("hoverEnd", (leg) => {
-      const state = this.#getFeatureState("legs", leg);
-      if (state["parent"]) {
-        this.#callbacks["legStopHover"](state["parent"]);
-        this.setNoHover(state["parent"]);
-      }
+    this.#edgeManager.on("activeLegHoverStop", (leg) => {
+      this.#callbacks["legHoverStop"](leg);
+      this.#edgeManager.setNoHoverLeg(leg);
     });
-
-    // when the user clicks on a leg, it should be added to the journey
-    //this.#legs.onClick((id) => this.#callbacks["legAdded"](id));
-    // when the user clicks on a connection, it should be removed from the journey
-    //this.#connections.onClick((id) => this.#callbacks["legRemoved"](id));
   }
 
   on(eventName, callback) {
@@ -148,90 +234,25 @@ class MapWrapper {
   }
 
   updateView(data) {
-    const [cities, activeLegs] = data;
+    const [cities, legs] = data;
 
-    // for simplicity, unset all previously active legs
-    for (let leg of this.#currentlyActiveLegs) {
-      this.#setFeatureState("legs", leg.leg, {
-        active: false,
-        color: null,
-        parent: null,
-        hover: false,
-      });
-    }
-
-    // draw new active legs
-    for (let leg of activeLegs) {
-      this.#setFeatureState("legs", leg.leg, {
-        active: true,
-        color: `rgb(${leg.color})`,
-        parent: leg.parent,
-        hover: false,
-      });
-    }
-    this.#currentlyActiveLegs = activeLegs;
-
-    for (let city of cities) {
-      this.#setFeatureState("cities", city.city, {
-        color: `rgb(${city.color})`,
-      });
-    }
-
-    const filter = ["in", "id"];
-    for (let city of cities.filter((c) => !c.transfer)) filter.push(city.city);
-    this.map.setFilter("stops", filter);
-
-    //const filter2 = ["in", "id"];
-    //for (let city of cities.filter((c) => c.transfer)) filter2.push(city.city);
-    //this.map.setFilter("transfers", filter2);
-
-    /*const [legs, color] = data; // todo fold into legs
-
-    const coloredLines = legs.filter((l) => l.active).map(legToGeojson);
-    this.#connections.update(asGeojsonFeatureCollection(coloredLines));
-    this.#connections.setPaintProperty("line-color", `rgb(${color})`);
-
-    const greyLines = legs.filter((l) => !l.active).map(legToGeojson);
-    this.#legs.update(asGeojsonFeatureCollection(greyLines));
-
-    const startCities = legs.filter((l) => l.active).map((c) => c.startCity);
-    const endCities = legs.filter((l) => l.active).map((c) => c.endCity);
-    const cities = new Set(startCities.concat(endCities)); // todo only works if city object
-    const markers = Array.from(cities).map(cityToGeojson);
-    this.#cities.update(asGeojsonFeatureCollection(markers));*/
+    // todo it might be visually more pleasing to first
+    // todo remove both old legs and cities and then draw the new legs and cities
+    this.#edgeManager.updateView(legs);
+    this.#cities.updateView(cities);
   }
 
-  setHover(leg) {
-    for (let active of this.#currentlyActiveLegs) {
-      if (leg !== active.parent) continue;
-      this.#updateFeatureState("legs", active.leg, { hover: true });
-    }
+  setHoverLeg(leg) {
+    this.#edgeManager.setHoverLeg(leg);
   }
 
-  setNoHover(leg) {
-    for (let active of this.#currentlyActiveLegs) {
-      if (leg !== active.parent) continue;
-      this.#updateFeatureState("legs", active.leg, { hover: false });
-    }
-  }
-
-  #getFeatureState(source, id) {
-    return this.map.getFeatureState({ source: source, id: id });
-  }
-
-  #setFeatureState(source, id, state) {
-    this.map.setFeatureState({ source: source, id: id }, state);
-  }
-
-  #updateFeatureState(source, id, newState) {
-    const state = this.#getFeatureState(source, id);
-    for (let key in newState) state[key] = newState[key];
-    this.#setFeatureState(source, id, state);
+  setNoHoverLeg(leg) {
+    this.#edgeManager.setNoHoverLeg(leg);
   }
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.cityToGeojson = cityToGeojson;
-  module.exports.legToGeojson = legToGeojson;
+  module.exports.legToGeojson = edgeToGeojson;
 }

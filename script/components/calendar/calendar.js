@@ -1,8 +1,8 @@
 class Calendar extends CalendarGrid {
   #callbacks = {
     legChanged: () => {},
-    entryStartHover: () => {},
-    entryStopHover: () => {},
+    entryHoverStart: () => {},
+    entryHoverStop: () => {},
   };
 
   constructor() {
@@ -11,11 +11,11 @@ class Calendar extends CalendarGrid {
     // user is hovering/stops hovering over an entry -> callback
     this.addEventListener("mouseover", (e) => {
       const closest = e.target.closest("calendar-entry");
-      if (closest) this.#callbacks["entryStartHover"](closest.group);
+      if (closest) this.#callbacks["entryHoverStart"](closest.group);
     });
     this.addEventListener("mouseout", (e) => {
       const closest = e.target.closest("calendar-entry");
-      if (closest) this.#callbacks["entryStopHover"](closest.group);
+      if (closest) this.#callbacks["entryHoverStop"](closest.group);
     });
 
     // user can change leg to use different connection using drag&drop
@@ -28,11 +28,11 @@ class Calendar extends CalendarGrid {
     this.#callbacks[name] = callback; // todo check that name valid
   }
 
-  setHover(group) {
+  setHoverEntry(group) {
     for (let e of this.entriesForGroup(group)) e.hover = true;
   }
 
-  setNoHover(group) {
+  setNoHoverEntry(group) {
     for (let e of this.entriesForGroup(group)) e.hover = false;
   }
 

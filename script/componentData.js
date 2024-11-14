@@ -80,6 +80,23 @@ function getSortedJourneyConnections(journey, database) {
   return connections;
 }
 
+class UniqueArray {
+  #doneKeys = [];
+
+  constructor(uniqueKeyFn) {
+    this.uniqueKeyFn = uniqueKeyFn;
+    this.data = [];
+  }
+
+  push(item) {
+    const key = this.uniqueKeyFn(item);
+    if (!this.#doneKeys.includes(key)) {
+      this.data.push(item);
+      this.#doneKeys.push(key);
+    }
+  }
+}
+
 function getJourneySummary(journey, database) {
   const connections = getSortedJourneyConnections(journey, database);
 
@@ -156,39 +173,25 @@ function prepareInitialDataForMap(cityInfo, connections) {
   const cityNameToId = {};
   for (let id in cityInfo) cityNameToId[cityInfo[id].name] = id;
 
-  const legs = [];
-  const legsDone = [];
-
-  const cities = [];
-  const citiesDone = [];
+  // array that only allows one item with each key and quietly rejects updates
+  // this works similar to a set but is much less cumbersome to work with
+  const edges = new UniqueArray((edge) => edge.id);
+  const cities = new UniqueArray((city) => city.name); // todo id
 
   for (let c of connections) {
-    for (let leg of c.trace) {
-      // leg
-      if (!legsDone.includes(leg.toAlphabeticString())) {
-        legsDone.push(leg.toAlphabeticString());
-        legs.push({
-          leg: leg.toAlphabeticString(),
-          startCity: cityInfo[cityNameToId[leg.startCityName]],
-          endCity: cityInfo[cityNameToId[leg.endCityName]],
-        });
-      }
+    for (let edge of c.trace) {
+      cities.push(cityInfo[cityNameToId[edge.startCityName]]);
+      cities.push(cityInfo[cityNameToId[edge.endCityName]]);
 
-      // start city
-      if (!citiesDone.includes(leg.startCityName)) {
-        citiesDone.push(leg.startCityName);
-        cities.push(cityInfo[cityNameToId[leg.startCityName]]);
-      }
-
-      // end city
-      if (!citiesDone.includes(leg.endCityName)) {
-        citiesDone.push(leg.endCityName);
-        cities.push(cityInfo[cityNameToId[leg.endCityName]]);
-      }
+      edges.push({
+        id: edge.toAlphabeticString(),
+        startCity: cityInfo[cityNameToId[edge.startCityName]],
+        endCity: cityInfo[cityNameToId[edge.endCityName]],
+      });
     }
   }
 
-  return [cities, legs];
+  return [cities.data, edges.data];
 }
 
 function prepareDataForMap(journeys, activeId, database) {
@@ -196,63 +199,53 @@ function prepareDataForMap(journeys, activeId, database) {
     return []; // todo is correct?
   }
 
-  const cities = [];
-  const citiesDone = [];
+  // order journeys such that the active journey is first and all other journeys follow after
+  const journeyOrder = [activeId];
+  for (let journeyId in journeys)
+    if (journeyId !== activeId) journeyOrder.push(journeyId);
 
-  const legs = [];
-  //const legsDone = [];
+  // array that only allows one item with each key and quietly rejects updates
+  // this works similar to a set but is much less cumbersome to work with
+  // because we are looping through active journey first, this makes sure that edges/cities for the
+  // active journey are never overwritten
+  const edges = new UniqueArray((edge) => edge.id);
+  const cities = new UniqueArray((city) => city.name); // todo id
 
-  // first for active journey
-  const connections = getSortedJourneyConnections(journeys[activeId], database);
-  for (let i in connections) {
-    const color = getColor(i);
-    for (let leg of connections[i].trace) {
-      legs.push({
-        leg: leg.toAlphabeticString(),
-        color: color,
-        parent: connections[i].leg.toString(),
-      });
-      //legsDone.push(leg.toAlphabeticString());
+  for (let journeyId of journeyOrder) {
+    const journey = journeys[journeyId];
+    const connections = getSortedJourneyConnections(journey, database);
 
-      if (!citiesDone.includes(leg.startCityName)) {
+    let edgeStatus = "alternative";
+    if (journeyId === activeId) edgeStatus = "active";
+
+    for (let i in connections) {
+      let color = null;
+      if (journeyId === activeId) color = getColor(i);
+
+      for (let edge of connections[i].trace) {
         cities.push({
-          city: leg.startCityName,
+          name: edge.startCityName,
           color: color,
-          transfer: leg.startCityName === connections[i].start.cityName,
+          transfer: edge.startCityName === connections[i].start.cityName,
         });
-        citiesDone.push(leg.startCityName);
-      }
 
-      if (!citiesDone.includes(leg.endCityName)) {
         cities.push({
-          city: leg.endCityName,
+          name: edge.endCityName,
           color: color,
-          transfer: leg.endCityName === connections[i].end.cityName,
+          transfer: edge.endCityName === connections[i].end.cityName,
         });
-        citiesDone.push(leg.endCityName);
+
+        edges.push({
+          id: edge.toAlphabeticString(),
+          color: color,
+          leg: connections[i].leg.toString(),
+          status: edgeStatus,
+        });
       }
     }
   }
 
-  // then for other journeys
-  // make sure to not overwrite what we did for active journey
-  /*for (let journeyId in journeys) {
-    if (journeyId === activeId) continue;
-
-    const journey = journeys[journeyId];
-    const connections = getSortedJourneyConnections(journey, database);
-
-    for (let i in connections) {
-      for (let leg of connections[i].pointToPoint) {
-        if (done.includes(leg)) continue;
-
-        legs.push({ leg: leg, color: null, hover: connections[i].leg });
-        done.push(leg);
-      }
-    }
-  }*/
-
-  return [cities, legs];
+  return [cities.data, edges.data];
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
