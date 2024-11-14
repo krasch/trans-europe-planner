@@ -55,10 +55,13 @@ const mapStyles = [
         0.4,
       ],
       "line-width": [
-        "case",
-        ["boolean", ["feature-state", "active"], false],
-        6,
-        0,
+        "match",
+        ["feature-state", "status"],
+        "active",
+        6, // line width for active
+        "alternative",
+        6, // line width for alternative
+        0, // fallback
       ],
     },
   },

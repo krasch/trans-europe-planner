@@ -37,8 +37,8 @@ class EdgeManager {
   #currentlyActive = [];
 
   #callbacks = {
-    legHoverStart: () => {},
-    legHoverStop: () => {},
+    activeLegHoverStart: () => {},
+    activeLegHoverStop: () => {},
   };
 
   constructor(map) {
@@ -51,16 +51,20 @@ class EdgeManager {
       const edgeId = e.features.at(-1).id;
       const state = this.#map.getFeatureState({ source: "edges", id: edgeId });
 
-      if (state.leg !== hoverState) {
-        hoverState = state.leg;
-        this.#callbacks["legHoverStart"](state.leg);
-      }
+      // nothing changed, this can happen for example when directly hovering from one edge to next of same leg
+      if (state.leg === hoverState) return;
+
+      hoverState = state.leg;
+      if (state.status === "active")
+        this.#callbacks["activeLegHoverStart"](state.leg);
     });
 
     // hover done
     this.#map.on("mouseleave", "edges", (e) => {
-      this.#callbacks["legHoverStop"](hoverState);
-      hoverState = null;
+      if (hoverState) {
+        this.#callbacks["activeLegHoverStop"](hoverState);
+        hoverState = null;
+      }
     });
   }
 
@@ -73,6 +77,7 @@ class EdgeManager {
     for (let edge of this.#currentlyActive) {
       const state = {
         active: false,
+        alternative: false,
         color: null,
         leg: null,
         hover: false,
@@ -83,7 +88,7 @@ class EdgeManager {
     // set new state
     for (let edge of edges) {
       const state = {
-        active: true,
+        status: edge.status,
         color: `rgb(${edge.color})`,
         leg: edge.leg,
         hover: false,
@@ -214,11 +219,11 @@ class MapWrapper {
     this.#cities = new CityManager(this.map);
 
     // user has started hovering on a leg
-    this.#edgeManager.on("legHoverStart", (leg) => {
+    this.#edgeManager.on("activeLegHoverStart", (leg) => {
       this.#callbacks["legHoverStart"](leg);
       this.#edgeManager.setHoverLeg(leg);
     });
-    this.#edgeManager.on("legHoverStop", (leg) => {
+    this.#edgeManager.on("activeLegHoverStop", (leg) => {
       this.#callbacks["legHoverStop"](leg);
       this.#edgeManager.setNoHoverLeg(leg);
     });
