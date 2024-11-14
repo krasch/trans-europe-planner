@@ -87,7 +87,7 @@ async function main(
   calendar.on("entryStartHover", (leg) => map.setHoverLeg(leg));
   calendar.on("entryStopHover", (leg) => map.setNoHoverLeg(leg));
   map.on("legHoverStart", (leg) => calendar.setHover(leg));
-  map.on("legHoverStart", (leg) => calendar.setNoHover(leg));
+  map.on("legHoverStop", (leg) => calendar.setNoHover(leg));
 
   // now have done all we can do without having the map ready
   await mapLoadedPromise;

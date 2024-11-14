@@ -219,7 +219,7 @@ class MapWrapper {
       this.#edgeManager.setHoverLeg(leg);
     });
     this.#edgeManager.on("legHoverStop", (leg) => {
-      this.#callbacks["legHoverStart"](leg);
+      this.#callbacks["legHoverStop"](leg);
       this.#edgeManager.setNoHoverLeg(leg);
     });
   }
