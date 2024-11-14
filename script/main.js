@@ -61,7 +61,7 @@ async function main(
   });
 
   // removing/adding a leg in map
-  map.on("legAdded", (leg) => {
+  /*map.on("legAdded", (leg) => {
     const connection = getConnectionForLeg(journeys[active], leg, database);
     journeys[active].setConnectionForLeg(leg, connection);
     updateViews(journeys, active);
@@ -69,7 +69,7 @@ async function main(
   map.on("legRemoved", (leg) => {
     journeys[active].removeLeg(leg);
     updateViews(journeys, active);
-  });
+  });*/
 
   // moving things around in the calendar
   calendar.on("legChanged", (leg, connectionId) => {
@@ -84,10 +84,10 @@ async function main(
   });
 
   // hovering over map or calender
-  calendar.on("entryStartHover", (leg) => map.setHover(leg));
-  calendar.on("entryStopHover", (leg) => map.setNoHover(leg));
-  map.on("legStartHover", (leg) => calendar.setHover(leg));
-  map.on("legStopHover", (leg) => calendar.setNoHover(leg));
+  calendar.on("entryStartHover", (leg) => map.setHoverLeg(leg));
+  calendar.on("entryStopHover", (leg) => map.setNoHoverLeg(leg));
+  map.on("legHoverStart", (leg) => calendar.setHover(leg));
+  map.on("legHoverStart", (leg) => calendar.setNoHover(leg));
 
   // now have done all we can do without having the map ready
   await mapLoadedPromise;

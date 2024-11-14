@@ -32,38 +32,13 @@ function asGeojsonFeatureCollection(features) {
   };
 }
 
-class HoverState {
-  #callbacks = {
-    hover: () => {},
-    hoverEnd: () => {},
-  };
-
-  #hoverState = null;
-
-  on(eventName, callback) {
-    this.#callbacks[eventName] = callback;
-  }
-
-  mouseenter(e) {
-    this.#hoverState = e.features.at(-1).id;
-    this.#callbacks["hover"](this.#hoverState);
-  }
-
-  mouseleave(e) {
-    if (this.#hoverState) {
-      this.#callbacks["hoverEnd"](this.#hoverState);
-      this.#hoverState = null;
-    }
-  }
-}
-
 class EdgeManager {
   #map;
   #currentlyActive = [];
 
   #callbacks = {
-    hover: () => {},
-    hoverEnd: () => {},
+    legHoverStart: () => {},
+    legHoverStop: () => {},
   };
 
   constructor(map) {
@@ -78,13 +53,13 @@ class EdgeManager {
 
       if (state.leg !== hoverState) {
         hoverState = state.leg;
-        this.#callbacks["hover"](state.leg);
+        this.#callbacks["legHoverStart"](state.leg);
       }
     });
 
     // hover done
     this.#map.on("mouseleave", "edges", (e) => {
-      this.#callbacks["hoverEnd"](hoverState);
+      this.#callbacks["legHoverStop"](hoverState);
       hoverState = null;
     });
   }
@@ -117,6 +92,26 @@ class EdgeManager {
     }
 
     this.#currentlyActive = edges;
+  }
+
+  setHoverLeg(leg) {
+    for (let edge of this.#currentlyActive) {
+      if (leg !== edge.leg) continue;
+      this.#updateFeatureState(edge.id, { hover: true });
+    }
+  }
+
+  setNoHoverLeg(leg) {
+    for (let edge of this.#currentlyActive) {
+      if (leg !== edge.leg) continue;
+      this.#updateFeatureState(edge.id, { hover: false });
+    }
+  }
+
+  #updateFeatureState(id, newState) {
+    const state = this.#map.getFeatureState({ source: "edges", id: id });
+    for (let key in newState) state[key] = newState[key];
+    this.#map.setFeatureState({ source: "edges", id: id }, state);
   }
 }
 
@@ -165,10 +160,8 @@ class CityManager {
 
 class MapWrapper {
   #callbacks = {
-    legAdded: () => {},
-    legRemoved: () => {},
-    legStartHover: () => {},
-    legStopHover: () => {},
+    legHoverStart: () => {},
+    legHoverStop: () => {},
   };
 
   #edgeManager = null;
@@ -221,13 +214,13 @@ class MapWrapper {
     this.#cities = new CityManager(this.map);
 
     // user has started hovering on a leg
-    this.#edgeManager.on("hover", (leg) => {
-      this.#callbacks["legStartHover"](leg);
-      //this.setHover(leg);
+    this.#edgeManager.on("legHoverStart", (leg) => {
+      this.#callbacks["legHoverStart"](leg);
+      this.#edgeManager.setHoverLeg(leg);
     });
-    this.#edgeManager.on("hoverEnd", (leg) => {
-      this.#callbacks["legStopHover"](leg);
-      //this.setHover(leg);
+    this.#edgeManager.on("legHoverStop", (leg) => {
+      this.#callbacks["legHoverStart"](leg);
+      this.#edgeManager.setNoHoverLeg(leg);
     });
   }
 
@@ -244,19 +237,13 @@ class MapWrapper {
     this.#cities.updateView(cities);
   }
 
-  /*setHover(leg) {
-    for (let active of this.#currentlyActiveLegs) {
-      if (leg !== active.parent) continue;
-      this.#updateFeatureState("legs", active.leg, { hover: true });
-    }
+  setHoverLeg(leg) {
+    this.#edgeManager.setHoverLeg(leg);
   }
 
-  setNoHover(leg) {
-    for (let active of this.#currentlyActiveLegs) {
-      if (leg !== active.parent) continue;
-      this.#updateFeatureState("legs", active.leg, { hover: false });
-    }
-  }*/
+  setNoHoverLeg(leg) {
+    this.#edgeManager.setNoHoverLeg(leg);
+  }
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
