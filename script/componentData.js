@@ -80,6 +80,23 @@ function getSortedJourneyConnections(journey, database) {
   return connections;
 }
 
+class UniqueArray {
+  #doneKeys = [];
+
+  constructor(uniqueKeyFn) {
+    this.uniqueKeyFn = uniqueKeyFn;
+    this.data = [];
+  }
+
+  push(item) {
+    const key = this.uniqueKeyFn(item);
+    if (!this.#doneKeys.includes(key)) {
+      this.data.push(item);
+      this.#doneKeys.push(key);
+    }
+  }
+}
+
 function getJourneySummary(journey, database) {
   const connections = getSortedJourneyConnections(journey, database);
 
@@ -156,39 +173,25 @@ function prepareInitialDataForMap(cityInfo, connections) {
   const cityNameToId = {};
   for (let id in cityInfo) cityNameToId[cityInfo[id].name] = id;
 
-  const edges = [];
-  const edgesDone = [];
-
-  const cities = [];
-  const citiesDone = [];
+  // array that only allows one item with each key and quietly rejects updates
+  // this works similar to a set but is much less cumbersome to work with
+  const edges = new UniqueArray((edge) => edge.id);
+  const cities = new UniqueArray((city) => city.name); // todo id
 
   for (let c of connections) {
     for (let edge of c.trace) {
-      // edge
-      if (!edgesDone.includes(edge.toAlphabeticString())) {
-        edgesDone.push(edge.toAlphabeticString());
-        edges.push({
-          id: edge.toAlphabeticString(),
-          startCity: cityInfo[cityNameToId[edge.startCityName]],
-          endCity: cityInfo[cityNameToId[edge.endCityName]],
-        });
-      }
+      cities.push(cityInfo[cityNameToId[edge.startCityName]]);
+      cities.push(cityInfo[cityNameToId[edge.endCityName]]);
 
-      // start city
-      if (!citiesDone.includes(edge.startCityName)) {
-        citiesDone.push(edge.startCityName);
-        cities.push(cityInfo[cityNameToId[edge.startCityName]]);
-      }
-
-      // end city
-      if (!citiesDone.includes(edge.endCityName)) {
-        citiesDone.push(edge.endCityName);
-        cities.push(cityInfo[cityNameToId[edge.endCityName]]);
-      }
+      edges.push({
+        id: edge.toAlphabeticString(),
+        startCity: cityInfo[cityNameToId[edge.startCityName]],
+        endCity: cityInfo[cityNameToId[edge.endCityName]],
+      });
     }
   }
 
-  return [cities, edges];
+  return [cities.data, edges.data];
 }
 
 function prepareDataForMap(journeys, activeId, database) {
@@ -196,41 +199,33 @@ function prepareDataForMap(journeys, activeId, database) {
     return []; // todo is correct?
   }
 
-  const cities = [];
-  const citiesDone = [];
-
-  const edges = [];
-  //const legsDone = [];
+  // array that only allows one item with each key and quietly rejects updates
+  // this works similar to a set but is much less cumbersome to work with
+  const edges = new UniqueArray((edge) => edge.id);
+  const cities = new UniqueArray((city) => city.name); // todo id
 
   // first for active journey
   const connections = getSortedJourneyConnections(journeys[activeId], database);
   for (let i in connections) {
     const color = getColor(i);
     for (let edge of connections[i].trace) {
+      cities.push({
+        name: edge.startCityName,
+        color: color,
+        transfer: edge.startCityName === connections[i].start.cityName,
+      });
+
+      cities.push({
+        name: edge.endCityName,
+        color: color,
+        transfer: edge.endCityName === connections[i].end.cityName,
+      });
+
       edges.push({
         id: edge.toAlphabeticString(),
         color: color,
         leg: connections[i].leg.toString(),
       });
-      //legsDone.push(leg.toAlphabeticString());
-
-      if (!citiesDone.includes(edge.startCityName)) {
-        cities.push({
-          name: edge.startCityName,
-          color: color,
-          transfer: edge.startCityName === connections[i].start.cityName,
-        });
-        citiesDone.push(edge.startCityName);
-      }
-
-      if (!citiesDone.includes(edge.endCityName)) {
-        cities.push({
-          name: edge.endCityName,
-          color: color,
-          transfer: edge.endCityName === connections[i].end.cityName,
-        });
-        citiesDone.push(edge.endCityName);
-      }
     }
   }
 
@@ -252,7 +247,7 @@ function prepareDataForMap(journeys, activeId, database) {
     }
   }*/
 
-  return [cities, edges];
+  return [cities.data, edges.data];
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
