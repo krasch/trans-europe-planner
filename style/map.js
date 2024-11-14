@@ -15,7 +15,7 @@ const mapStyles = {
     id: "transfers",
     source: "cities",
     type: "symbol",
-    filter: ["in", "id", "placeholder"],
+    //filter: ["in", "id", "placeholder"],
     layout: {
       "text-font": ["Stadia Semibold"],
       "text-size": {
