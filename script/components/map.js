@@ -62,8 +62,8 @@ class LegsManager {
   #currentlyActive = [];
 
   #callbacks = {
-    parentHover: () => {},
-    parentHoverEnd: () => {},
+    hover: () => {},
+    hoverEnd: () => {},
   };
 
   constructor(map) {
@@ -73,8 +73,13 @@ class LegsManager {
 
     // hover start
     this.#map.on("mouseenter", "legs", (e) => {
-      hoverState = e.features.at(-1).id;
-      this.#callbacks["hover"](hoverState);
+      const leg = e.features.at(-1).id;
+      const state = this.#map.getFeatureState({ source: "legs", id: leg });
+
+      if (state.parentLeg !== hoverState) {
+        hoverState = state.parentLeg;
+        this.#callbacks["hover"](state.parentLeg);
+      }
     });
 
     // hover done
@@ -94,7 +99,8 @@ class LegsManager {
       const state = {
         active: false,
         color: null,
-        parent: null,
+        parentLeg: null,
+        journey: null,
         hover: false,
       };
       this.#map.setFeatureState({ source: "legs", id: leg.leg }, state);
@@ -105,7 +111,8 @@ class LegsManager {
       const state = {
         active: true,
         color: `rgb(${leg.color})`,
-        parent: leg.parent,
+        parentLeg: leg.parentLeg,
+        journey: leg.journey,
         hover: false,
       };
       this.#map.setFeatureState({ source: "legs", id: leg.leg }, state);
@@ -215,35 +222,15 @@ class MapWrapper {
     this.#legs = new LegsManager(this.map);
     this.#cities = new CityManager(this.map);
 
-    // at mouseleave, map does not give us the id that the mouse left
-    // so we need to keep track of it ourselves
-    // the (e) => ... is necessary, otherwise we have the wrong "this"
-    /*const legsHoverState = new HoverState();
-    this.map.on("mouseenter", "legs", (e) => legsHoverState.mouseenter(e));
-    this.map.on("mouseleave", "legs", (e) => legsHoverState.mouseleave(e));
-
-    // user has started hovering on a leg
-    legsHoverState.on("hover", (leg) => {
-      const state = this.#getFeatureState("legs", leg);
-      if (state["parent"]) {
-        this.#callbacks["legStartHover"](state["parent"]);
-        this.setHover(state["parent"]);
-      }
+    // user has started hovering on a train connection
+    this.#legs.on("hover", (leg) => {
+      this.#callbacks["legStartHover"](leg);
+      //this.setHover(leg);
     });
-
-    // user has finished hovering on a leg
-    legsHoverState.on("hoverEnd", (leg) => {
-      const state = this.#getFeatureState("legs", leg);
-      if (state["parent"]) {
-        this.#callbacks["legStopHover"](state["parent"]);
-        this.setNoHover(state["parent"]);
-      }
-    });*/
-
-    // when the user clicks on a leg, it should be added to the journey
-    //this.#legs.onClick((id) => this.#callbacks["legAdded"](id));
-    // when the user clicks on a connection, it should be removed from the journey
-    //this.#connections.onClick((id) => this.#callbacks["legRemoved"](id));
+    this.#legs.on("hoverEnd", (leg) => {
+      this.#callbacks["legStopHover"](leg);
+      //this.setHover(leg);
+    });
   }
 
   on(eventName, callback) {

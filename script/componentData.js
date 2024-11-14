@@ -210,7 +210,8 @@ function prepareDataForMap(journeys, activeId, database) {
       legs.push({
         leg: leg.toAlphabeticString(),
         color: color,
-        parent: connections[i].leg.toString(),
+        parentLeg: connections[i].leg.toString(),
+        journey: activeId,
       });
       //legsDone.push(leg.toAlphabeticString());
 
