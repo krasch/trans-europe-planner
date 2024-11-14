@@ -98,10 +98,10 @@ test("prepareDataForMap", function () {
   const active = "journey1";
 
   const expCities = [
-    { city: "City1", color: getColor(0), transfer: true },
-    { city: "City2", color: getColor(0), transfer: false },
-    { city: "City3", color: getColor(0), transfer: true },
-    { city: "City4", color: getColor(1), transfer: true },
+    { name: "City1", color: getColor(0), transfer: true },
+    { name: "City2", color: getColor(0), transfer: false },
+    { name: "City3", color: getColor(0), transfer: true },
+    { name: "City4", color: getColor(1), transfer: true },
   ];
 
   const expEdges = [
