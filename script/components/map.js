@@ -93,7 +93,6 @@ class MapWrapper {
     const [cities, legs] = data;
 
     this.map.getCanvas().style.cursor = "default";
-    this.map.setLayoutProperty("place-city", "text-field", ["get", `name`]);
 
     // add legs data and layer
     this.map.addSource("legs", {
