@@ -156,39 +156,39 @@ function prepareInitialDataForMap(cityInfo, connections) {
   const cityNameToId = {};
   for (let id in cityInfo) cityNameToId[cityInfo[id].name] = id;
 
-  const legs = [];
-  const legsDone = [];
+  const edges = [];
+  const edgesDone = [];
 
   const cities = [];
   const citiesDone = [];
 
   for (let c of connections) {
-    for (let leg of c.trace) {
-      // leg
-      if (!legsDone.includes(leg.toAlphabeticString())) {
-        legsDone.push(leg.toAlphabeticString());
-        legs.push({
-          leg: leg.toAlphabeticString(),
-          startCity: cityInfo[cityNameToId[leg.startCityName]],
-          endCity: cityInfo[cityNameToId[leg.endCityName]],
+    for (let edge of c.trace) {
+      // edge
+      if (!edgesDone.includes(edge.toAlphabeticString())) {
+        edgesDone.push(edge.toAlphabeticString());
+        edges.push({
+          id: edge.toAlphabeticString(),
+          startCity: cityInfo[cityNameToId[edge.startCityName]],
+          endCity: cityInfo[cityNameToId[edge.endCityName]],
         });
       }
 
       // start city
-      if (!citiesDone.includes(leg.startCityName)) {
-        citiesDone.push(leg.startCityName);
-        cities.push(cityInfo[cityNameToId[leg.startCityName]]);
+      if (!citiesDone.includes(edge.startCityName)) {
+        citiesDone.push(edge.startCityName);
+        cities.push(cityInfo[cityNameToId[edge.startCityName]]);
       }
 
       // end city
-      if (!citiesDone.includes(leg.endCityName)) {
-        citiesDone.push(leg.endCityName);
-        cities.push(cityInfo[cityNameToId[leg.endCityName]]);
+      if (!citiesDone.includes(edge.endCityName)) {
+        citiesDone.push(edge.endCityName);
+        cities.push(cityInfo[cityNameToId[edge.endCityName]]);
       }
     }
   }
 
-  return [cities, legs];
+  return [cities, edges];
 }
 
 function prepareDataForMap(journeys, activeId, database) {
@@ -199,38 +199,37 @@ function prepareDataForMap(journeys, activeId, database) {
   const cities = [];
   const citiesDone = [];
 
-  const legs = [];
+  const edges = [];
   //const legsDone = [];
 
   // first for active journey
   const connections = getSortedJourneyConnections(journeys[activeId], database);
   for (let i in connections) {
     const color = getColor(i);
-    for (let leg of connections[i].trace) {
-      legs.push({
-        leg: leg.toAlphabeticString(),
+    for (let edge of connections[i].trace) {
+      edges.push({
+        id: edge.toAlphabeticString(),
         color: color,
-        parentLeg: connections[i].leg.toString(),
-        journey: activeId,
+        leg: connections[i].leg.toString(),
       });
       //legsDone.push(leg.toAlphabeticString());
 
-      if (!citiesDone.includes(leg.startCityName)) {
+      if (!citiesDone.includes(edge.startCityName)) {
         cities.push({
-          city: leg.startCityName,
+          name: edge.startCityName,
           color: color,
-          transfer: leg.startCityName === connections[i].start.cityName,
+          transfer: edge.startCityName === connections[i].start.cityName,
         });
-        citiesDone.push(leg.startCityName);
+        citiesDone.push(edge.startCityName);
       }
 
-      if (!citiesDone.includes(leg.endCityName)) {
+      if (!citiesDone.includes(edge.endCityName)) {
         cities.push({
-          city: leg.endCityName,
+          name: edge.endCityName,
           color: color,
-          transfer: leg.endCityName === connections[i].end.cityName,
+          transfer: edge.endCityName === connections[i].end.cityName,
         });
-        citiesDone.push(leg.endCityName);
+        citiesDone.push(edge.endCityName);
       }
     }
   }
@@ -253,7 +252,7 @@ function prepareDataForMap(journeys, activeId, database) {
     }
   }*/
 
-  return [cities, legs];
+  return [cities, edges];
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)

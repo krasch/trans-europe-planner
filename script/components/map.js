@@ -10,18 +10,18 @@ function cityToGeojson(city) {
   };
 }
 
-function legToGeojson(leg) {
+function edgeToGeojson(edge) {
   return {
     type: "Feature",
     geometry: {
       type: "LineString",
       coordinates: [
-        [leg.startCity.longitude, leg.startCity.latitude],
-        [leg.endCity.longitude, leg.endCity.latitude],
+        [edge.startCity.longitude, edge.startCity.latitude],
+        [edge.endCity.longitude, edge.endCity.latitude],
       ],
     },
     // use this instead of outer-level 'id' field because those ids must be numeric
-    properties: { id: leg.leg },
+    properties: { id: edge.id },
   };
 }
 
@@ -57,7 +57,7 @@ class HoverState {
   }
 }
 
-class LegsManager {
+class EdgeManager {
   #map;
   #currentlyActive = [];
 
@@ -72,18 +72,18 @@ class LegsManager {
     let hoverState = null;
 
     // hover start
-    this.#map.on("mouseenter", "legs", (e) => {
-      const leg = e.features.at(-1).id;
-      const state = this.#map.getFeatureState({ source: "legs", id: leg });
+    this.#map.on("mouseenter", "edges", (e) => {
+      const edgeId = e.features.at(-1).id;
+      const state = this.#map.getFeatureState({ source: "edges", id: edgeId });
 
-      if (state.parentLeg !== hoverState) {
-        hoverState = state.parentLeg;
-        this.#callbacks["hover"](state.parentLeg);
+      if (state.leg !== hoverState) {
+        hoverState = state.leg;
+        this.#callbacks["hover"](state.leg);
       }
     });
 
     // hover done
-    this.#map.on("mouseleave", "legs", (e) => {
+    this.#map.on("mouseleave", "edges", (e) => {
       this.#callbacks["hoverEnd"](hoverState);
       hoverState = null;
     });
@@ -93,32 +93,30 @@ class LegsManager {
     this.#callbacks[eventName] = callback;
   }
 
-  updateView(legs) {
+  updateView(edges) {
     // for simplicity, unset all previous state
-    for (let leg of this.#currentlyActive) {
+    for (let edge of this.#currentlyActive) {
       const state = {
         active: false,
         color: null,
-        parentLeg: null,
-        journey: null,
+        leg: null,
         hover: false,
       };
-      this.#map.setFeatureState({ source: "legs", id: leg.leg }, state);
+      this.#map.setFeatureState({ source: "edges", id: edge.id }, state);
     }
 
     // set new state
-    for (let leg of legs) {
+    for (let edge of edges) {
       const state = {
         active: true,
-        color: `rgb(${leg.color})`,
-        parentLeg: leg.parentLeg,
-        journey: leg.journey,
+        color: `rgb(${edge.color})`,
+        leg: edge.leg,
         hover: false,
       };
-      this.#map.setFeatureState({ source: "legs", id: leg.leg }, state);
+      this.#map.setFeatureState({ source: "edges", id: edge.id }, state);
     }
 
-    this.#currentlyActive = legs;
+    this.#currentlyActive = edges;
   }
 }
 
@@ -134,13 +132,13 @@ class CityManager {
     // for simplicity, unset previously state
     for (let city of this.#currentlyActive) {
       const state = { color: null };
-      this.#map.setFeatureState({ source: "cities", id: city.city }, state);
+      this.#map.setFeatureState({ source: "cities", id: city.name }, state);
     }
 
     // set new state
     for (let city of cities) {
       const state = { color: `rgb(${city.color})` };
-      this.#map.setFeatureState({ source: "cities", id: city.city }, state);
+      this.#map.setFeatureState({ source: "cities", id: city.name }, state);
     }
     this.#currentlyActive = cities;
 
@@ -149,12 +147,12 @@ class CityManager {
     // all cities on the line get a circle
     this.#map.setFilter(
       "city-circle-stops-transfers",
-      this.#getIdFilter(cities.map((c) => c.city)),
+      this.#getIdFilter(cities.map((c) => c.name)),
     );
     // but only transfers also get a name
     this.#map.setFilter(
       "city-name-transfers",
-      this.#getIdFilter(cities.filter((c) => c.transfer).map((c) => c.city)),
+      this.#getIdFilter(cities.filter((c) => c.transfer).map((c) => c.name)),
     );
   }
 
@@ -173,7 +171,7 @@ class MapWrapper {
     legStopHover: () => {},
   };
 
-  #legs = null;
+  #edgeManager = null;
   #cities = null;
 
   constructor(containerId, center, zoom) {
@@ -199,7 +197,7 @@ class MapWrapper {
   }
 
   init(data) {
-    const [cities, legs] = data;
+    const [cities, edges] = data;
 
     this.map.getCanvas().style.cursor = "default";
 
@@ -209,9 +207,9 @@ class MapWrapper {
       data: asGeojsonFeatureCollection(cities.map(cityToGeojson)),
       promoteId: "name", // otherwise can not use non-numeric ids
     });
-    this.map.addSource("legs", {
+    this.map.addSource("edges", {
       type: "geojson",
-      data: asGeojsonFeatureCollection(legs.map(legToGeojson)),
+      data: asGeojsonFeatureCollection(edges.map(edgeToGeojson)),
       promoteId: "id", // otherwise can not use non-numeric ids
     });
 
@@ -219,15 +217,15 @@ class MapWrapper {
     for (let layer of mapStyles) this.map.addLayer(layer);
 
     // these two abstract away some of the details of dealing with the map items
-    this.#legs = new LegsManager(this.map);
+    this.#edgeManager = new EdgeManager(this.map);
     this.#cities = new CityManager(this.map);
 
-    // user has started hovering on a train connection
-    this.#legs.on("hover", (leg) => {
+    // user has started hovering on a leg
+    this.#edgeManager.on("hover", (leg) => {
       this.#callbacks["legStartHover"](leg);
       //this.setHover(leg);
     });
-    this.#legs.on("hoverEnd", (leg) => {
+    this.#edgeManager.on("hoverEnd", (leg) => {
       this.#callbacks["legStopHover"](leg);
       //this.setHover(leg);
     });
@@ -242,7 +240,7 @@ class MapWrapper {
 
     // todo it might be visually more pleasing to first
     // todo remove both old legs and cities and then draw the new legs and cities
-    this.#legs.updateView(legs);
+    this.#edgeManager.updateView(legs);
     this.#cities.updateView(cities);
   }
 
@@ -264,5 +262,5 @@ class MapWrapper {
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.cityToGeojson = cityToGeojson;
-  module.exports.legToGeojson = legToGeojson;
+  module.exports.legToGeojson = edgeToGeojson;
 }

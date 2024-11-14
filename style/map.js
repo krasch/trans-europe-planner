@@ -36,11 +36,11 @@ const cityCircleBaseStyle = {
 
 const mapStyles = [
   // ################################
-  //           legs
+  //           edges (subLegs)
   // ################################
   {
-    id: "legs",
-    source: "legs",
+    id: "edges",
+    source: "edges",
     type: "line",
     layout: {
       "line-join": "round",
