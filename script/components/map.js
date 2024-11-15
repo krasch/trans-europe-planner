@@ -39,6 +39,7 @@ class EdgeManager {
   #callbacks = {
     activeLegHoverStart: () => {},
     activeLegHoverStop: () => {},
+    alternativeJourneyClicked: () => {},
   };
 
   constructor(map) {
@@ -66,6 +67,15 @@ class EdgeManager {
         hoverState = null;
       }
     });
+
+    // click
+    this.#map.on("click", "edges", (e) => {
+      const edgeId = e.features.at(-1).id;
+      const state = this.#map.getFeatureState({ source: "edges", id: edgeId });
+
+      if (state.status === "alternative")
+        this.#callbacks["alternativeJourneyClicked"](state.journey);
+    });
   }
 
   on(eventName, callback) {
@@ -91,6 +101,7 @@ class EdgeManager {
         status: edge.status,
         color: `rgb(${edge.color})`,
         leg: edge.leg,
+        journey: edge.journey,
         hover: false,
       };
       this.#map.setFeatureState({ source: "edges", id: edge.id }, state);
@@ -167,6 +178,7 @@ class MapWrapper {
   #callbacks = {
     legHoverStart: () => {},
     legHoverStop: () => {},
+    journeySelected: () => {},
   };
 
   #edgeManager = null;
@@ -226,6 +238,11 @@ class MapWrapper {
     this.#edgeManager.on("activeLegHoverStop", (leg) => {
       this.#callbacks["legHoverStop"](leg);
       this.#edgeManager.setNoHoverLeg(leg);
+    });
+
+    // user has clicked on an alternative journey
+    this.#edgeManager.on("alternativeJourneyClicked", (journey) => {
+      this.#callbacks["journeySelected"](journey);
     });
   }
 

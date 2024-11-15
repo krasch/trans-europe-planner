@@ -111,24 +111,28 @@ test("prepareDataForMap", function () {
       color: getColor(0),
       leg: "City1->City3",
       status: "active",
+      journey: "journey1",
     },
     {
       id: "City2->City3",
       color: getColor(0),
       leg: "City1->City3",
       status: "active",
+      journey: "journey1",
     },
     {
       id: "City3->City4",
       color: getColor(1),
       leg: "City3->City4",
       status: "active",
+      journey: "journey1",
     },
     {
       id: "City2->City5",
       color: null,
       leg: "City1->City5",
       status: "alternative",
+      journey: "journey2",
     },
   ];
   const got = prepareDataForMap(journeys, active, database);
