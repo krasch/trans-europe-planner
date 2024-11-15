@@ -1,10 +1,7 @@
-function initUpdateViews(map, calendar, journeySelection, database) {
+function initUpdateViews(map, calendar, database) {
   function updateViews(journeys, active) {
     map.updateView(prepareDataForMap(journeys, active, database));
     calendar.updateView(prepareDataForCalendar(journeys, active, database));
-    journeySelection.updateView(
-      prepareDataForJourneySelection(journeys, active, database),
-    );
   }
   return updateViews;
 }
@@ -16,12 +13,7 @@ function getConnectionForLeg(journey, leg, database) {
   return pickFittingConnection(journey.unsortedConnections, leg, database);
 }
 
-async function main(
-  map,
-  calendar,
-  journeySelection,
-  startDestinationSelection,
-) {
+async function main(map, calendar, startDestinationSelection) {
   const DATES = ["2024-10-16", "2024-10-17", "2024-10-18"];
 
   // prepare database
@@ -36,12 +28,7 @@ async function main(
   );
 
   // init update views
-  const updateViews = initUpdateViews(
-    map,
-    calendar,
-    journeySelection,
-    database,
-  );
+  const updateViews = initUpdateViews(map, calendar, database);
 
   // init state
   let journeys = {};
@@ -78,10 +65,6 @@ async function main(
   });
 
   // selecting a different journey
-  journeySelection.on("journeySelected", (journeyId) => {
-    active = journeyId;
-    updateViews(journeys, active);
-  });
   map.on("journeySelected", (journeyId) => {
     active = journeyId;
     updateViews(journeys, active);

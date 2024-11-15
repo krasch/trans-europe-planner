@@ -130,7 +130,7 @@
 <div id="map"></div>
 <!-- All calendar elements will be added into the container below dynamically -->
 <calendar-grid id="calendar" start="2024-10-16" end="2024-10-18" resolution="4"></calendar-grid>
-<fieldset id="journey-selection"></fieldset>
+<!--fieldset id="journey-selection"></fieldset-->
 
 
 <script>
@@ -139,13 +139,12 @@
     onload = async (event) => {
         const map = new MapWrapper('map', [13.408333, 52.518611], 4);
         const calendar = document.getElementById("calendar");
-        const journeySelection = new JourneySelection(document.getElementById("journey-selection"));
         const startDestinationSelection = new StartDestinationSelection(
             document.getElementById("select-start"),
             document.getElementById("select-end"));
 
         try {
-            main(map, calendar, journeySelection, startDestinationSelection);
+            main(map, calendar, startDestinationSelection);
         } catch (error) {
             console.error(error);
         }
