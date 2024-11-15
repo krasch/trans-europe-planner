@@ -35,3 +35,6 @@ calendar-grid {
 }
 
 
+.maplibregl-popup-tip {
+    visibility: hidden;
+}
