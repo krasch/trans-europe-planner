@@ -227,12 +227,14 @@ function prepareDataForMap(journeys, activeId, database) {
           name: edge.startCityName,
           color: color,
           transfer: edge.startCityName === connections[i].start.cityName,
+          active: journeyId === activeId,
         });
 
         cities.push({
           name: edge.endCityName,
           color: color,
           transfer: edge.endCityName === connections[i].end.cityName,
+          active: journeyId === activeId,
         });
 
         edges.push({
