@@ -1,3 +1,9 @@
+/*
+
+todo currently annoying that I keep copying things to the state by listing keys
+can I just keep all the edges/cities that are in the map, calculate a diff and set that one?
+ */
+
 function cityToGeojson(city) {
   return {
     type: "Feature",
@@ -36,6 +42,8 @@ class EdgeManager {
   #map;
   #currentlyActive = [];
 
+  #hoverState = { edge: null, leg: null, journey: null };
+
   #callbacks = {
     activeLegHoverStart: () => {},
     activeLegHoverStop: () => {},
@@ -45,26 +53,50 @@ class EdgeManager {
   constructor(map) {
     this.#map = map;
 
-    let hoverState = null;
+    let hoverPopup = null;
 
     // hover start
-    this.#map.on("mouseenter", "edges", (e) => {
+    this.#map.on("mouseover", "edges", (e) => {
       const edgeId = e.features.at(-1).id;
       const state = this.#map.getFeatureState({ source: "edges", id: edgeId });
 
-      // nothing changed, this can happen for example when directly hovering from one edge to next of same leg
-      if (state.leg === hoverState) return;
+      // check what changed
+      const changed = {
+        edge: this.#hoverState.edge !== edgeId,
+        leg: this.#hoverState.leg !== state.leg,
+        journey: this.#hoverState.journey !== state.journey,
+      };
 
-      hoverState = state.leg;
-      if (state.status === "active")
-        this.#callbacks["activeLegHoverStart"](state.leg);
+      // update hover state
+      this.#hoverState = { id: edgeId, leg: state.leg, journey: state.journey };
+
+      // react to changes
+      if (changed.journey) {
+        this.startShowHover("journey", state.journey);
+
+        hoverPopup = new maplibregl.Popup({
+          closeButton: false,
+          closeOnClick: false,
+          anchor: "left",
+          offset: [10, 0],
+        });
+        hoverPopup
+          .setLngLat(e.lngLat)
+          .setHTML(state.journeyTravelTime)
+          .addTo(map);
+      }
     });
 
     // hover done
     this.#map.on("mouseleave", "edges", (e) => {
-      if (hoverState) {
-        this.#callbacks["activeLegHoverStop"](hoverState);
-        hoverState = null;
+      if (this.#hoverState.journey)
+        this.stopShowHover("journey", this.#hoverState.journey);
+
+      this.#hoverState = { edge: null, leg: null, journey: null };
+
+      if (hoverPopup) {
+        hoverPopup.remove();
+        hoverPopup = null;
       }
     });
 
@@ -87,9 +119,10 @@ class EdgeManager {
     for (let edge of this.#currentlyActive) {
       const state = {
         status: null,
-        alternative: false,
         color: null,
         leg: null,
+        journey: null,
+        journeyTravelTime: null,
         hover: false,
       };
       this.#map.setFeatureState({ source: "edges", id: edge.id }, state);
@@ -102,7 +135,8 @@ class EdgeManager {
         color: `rgb(${edge.color})`,
         leg: edge.leg,
         journey: edge.journey,
-        hover: false,
+        journeyTravelTime: edge.journeyTravelTime,
+        hover: this.#hoverState.journey === edge.journey,
       };
       this.#map.setFeatureState({ source: "edges", id: edge.id }, state);
     }
@@ -110,16 +144,22 @@ class EdgeManager {
     this.#currentlyActive = edges;
   }
 
-  setHoverLeg(leg) {
+  startShowHover(key, value) {
+    if (!["id", "leg", "journey"].includes(key))
+      throw new Error('Please pass one of ["id", "leg", "journey"]');
+
     for (let edge of this.#currentlyActive) {
-      if (leg !== edge.leg) continue;
+      if (value !== edge[key]) continue;
       this.#updateFeatureState(edge.id, { hover: true });
     }
   }
 
-  setNoHoverLeg(leg) {
+  stopShowHover(key, value) {
+    if (!["id", "leg", "journey"].includes(key))
+      throw new Error('Please pass one of ["id", "leg", "journey"]');
+
     for (let edge of this.#currentlyActive) {
-      if (leg !== edge.leg) continue;
+      if (value !== edge[key]) continue;
       this.#updateFeatureState(edge.id, { hover: false });
     }
   }
@@ -269,11 +309,11 @@ class MapWrapper {
   }
 
   setHoverLeg(leg) {
-    this.#edgeManager.setHoverLeg(leg);
+    this.#edgeManager.startShowHover("leg", leg);
   }
 
   setNoHoverLeg(leg) {
-    this.#edgeManager.setNoHoverLeg(leg);
+    this.#edgeManager.stopShowHover("leg", leg);
   }
 }
 

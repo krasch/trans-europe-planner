@@ -112,6 +112,7 @@ test("prepareDataForMap", function () {
       leg: "City1->City3",
       status: "active",
       journey: "journey1",
+      journeyTravelTime: "5h",
     },
     {
       id: "City2->City3",
@@ -119,6 +120,7 @@ test("prepareDataForMap", function () {
       leg: "City1->City3",
       status: "active",
       journey: "journey1",
+      journeyTravelTime: "5h",
     },
     {
       id: "City3->City4",
@@ -126,6 +128,7 @@ test("prepareDataForMap", function () {
       leg: "City3->City4",
       status: "active",
       journey: "journey1",
+      journeyTravelTime: "5h",
     },
     {
       id: "City2->City5",
@@ -133,6 +136,7 @@ test("prepareDataForMap", function () {
       leg: "City1->City5",
       status: "alternative",
       journey: "journey2",
+      journeyTravelTime: "2h",
     },
   ];
   const got = prepareDataForMap(journeys, active, database);

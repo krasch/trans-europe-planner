@@ -118,7 +118,12 @@ function getJourneySummary(journey, database) {
   let viasString = "";
   if (vias.length > 0) viasString = ` via ${vias.join(", ")}`;
 
-  return `From ${startCity} to ${endCity}${viasString}<br/>${travelTime}`;
+  return {
+    from: startCity,
+    to: endCity,
+    via: viasString,
+    travelTime: travelTime,
+  };
 }
 
 function prepareDataForCalendar(journeys, activeId, database) {
@@ -159,10 +164,13 @@ function prepareDataForJourneySelection(journeys, activeId, database) {
   if (activeId == null) return data;
 
   for (let journeyId in journeys) {
+    const summary = getJourneySummary(journeys[journeyId], database);
+    const summaryString = `From ${summary.from} to ${summary.to}${summary.via}<br/>${summary.travelTime}`;
+
     data.push({
       id: journeyId,
       active: journeyId === activeId,
-      summary: getJourneySummary(journeys[journeyId], database),
+      summary: summaryString,
     });
   }
 
@@ -215,6 +223,8 @@ function prepareDataForMap(journeys, activeId, database) {
     const journey = journeys[journeyId];
     const connections = getSortedJourneyConnections(journey, database);
 
+    let journeySummary = getJourneySummary(journey, database);
+
     let edgeStatus = "alternative";
     if (journeyId === activeId) edgeStatus = "active";
 
@@ -242,6 +252,7 @@ function prepareDataForMap(journeys, activeId, database) {
           color: color,
           leg: connections[i].leg.toString(),
           journey: journeyId,
+          journeyTravelTime: journeySummary.travelTime,
           status: edgeStatus,
         });
       }
