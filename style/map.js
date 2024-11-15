@@ -1,4 +1,4 @@
-const cityNameBaseStyle = {
+const textStyle = {
   layout: {
     "text-font": ["Stadia Semibold"],
     "text-size": {
@@ -12,11 +12,7 @@ const cityNameBaseStyle = {
     "text-max-width": 8,
     "text-line-height": 1.55,
     "text-offset": [-0.4, 0],
-    "text-anchor": "right",
-    // using variable anchor means some city names might appear multiple times
-    // because our style layers are not mutually exclusive
-    // because can not combine feature and feature-state filters
-    //"text-variable-anchor": ["left", "right"],
+    "text-variable-anchor": ["left", "right"],
   },
   paint: {
     "text-color": "#333",
@@ -24,15 +20,6 @@ const cityNameBaseStyle = {
     "text-halo-color": "rgba(255,255,255,0.8)",
   },
 };
-
-/* for city circles and names, respectively:
- - it is not possible to use feature-state in a filter
- - meaning I am manually filtering by id, set in the code
- - which makes it hard to combine this with feature-filters
- - because of that there are multiple circle/name layers
- - which is annoying because I am repeating stylings
- - and because the same item might get styled twice
- */
 
 const mapStyles = [
   // ################################
@@ -69,61 +56,51 @@ const mapStyles = [
   //           city circles
   // ################################
 
-  // important hubs always visible, others only in higher zoom levels
+  // despite this having a lot of the same repeated checks for transfer,
+  // it is still nicer to have this all in one layer and avoid having the same circle
+  // in multiple layers, because those tend to shine through
   {
     id: "city-circle",
     source: "cities",
     filter: [
-      ">=",
-      ["zoom"],
-      [
-        "match",
-        ["get", "rank"],
-        1, // rank 1
-        1, // minimum zoom level for rank 1
-        2, // rank 2
-        5, // minimum zoom level for rank 2
-        23, // fallback zoom level
-      ],
+      "any",
+      // stops and transfers are always visible
+      ["in", ["get", "id"], ["literal", ["placeholder for stops/transfers"]]],
+      // important hubs are always visible
+      ["==", ["get", "rank"], 1],
+      // other cities only visible in higher zoom levels
+      [">=", ["zoom"], 5],
     ],
     type: "circle",
     paint: {
-      "circle-radius": 3,
+      "circle-radius": [
+        "case",
+        ["boolean", ["feature-state", "transfer"], false],
+        4, // transfer
+        3, // all other
+      ],
       "circle-color": "white",
-      "circle-stroke-width": 1,
+      "circle-opacity": [
+        "case",
+        ["boolean", ["feature-state", "transfer"], false],
+        1.0, // transfer
+        0.4, // all other
+      ],
+      "circle-stroke-width": [
+        "case",
+        ["boolean", ["feature-state", "transfer"], false],
+        2, // transfer
+        1, // all other
+      ],
       "circle-stroke-color": ["to-color", ["feature-state", "color"], "#aaa"],
-    },
-  },
-
-  // stops are always visible
-  {
-    id: "city-circle-stops",
-    source: "cities",
-    filter: ["in", "id", "placeholder"], // will be set in code
-    type: "circle",
-    paint: {
-      "circle-radius": 3,
-      "circle-color": "white",
-      "circle-opacity": 0.4,
-      "circle-stroke-width": 1,
-      "circle-stroke-color": ["to-color", ["feature-state", "color"], "#aaa"],
-      "circle-stroke-opacity": 0.2,
-    },
-  },
-
-  // transfers are even more visible
-  {
-    id: "city-circle-transfers",
-    source: "cities",
-    filter: ["in", "id", "placeholder"], // will be set in code
-    type: "circle",
-    paint: {
-      "circle-radius": 4,
-      "circle-color": "white",
-      "circle-opacity": 1.0,
-      "circle-stroke-width": 2,
-      "circle-stroke-color": ["to-color", ["feature-state", "color"], "#aaa"],
-      "circle-stroke-opacity": 0.4,
+      "circle-stroke-opacity": [
+        "case",
+        ["boolean", ["feature-state", "transfer"], false],
+        0.6, // transfer
+        ["boolean", ["feature-state", "stop"], false],
+        0.2, // stops
+        1.0, // all other
+      ],
     },
   },
 
@@ -135,30 +112,42 @@ const mapStyles = [
     source: "cities",
     type: "symbol",
     filter: [
-      // important hubs always visible, others only in higher zoom levels
-      ">=",
-      ["zoom"],
+      "all",
+      // transfers get excluded here because they are in next layer
       [
-        "match",
-        ["get", "rank"],
-        1, // rank 1
-        1, // minimum zoom level for rank 1
-        2, // rank 2
-        5, // minimum zoom level for rank 2
-        23, // fallback zoom level
+        "!",
+        ["in", ["get", "id"], ["literal", ["placeholder for transfer cities"]]],
+      ],
+      [
+        "any",
+        // important hubs are always visible
+        ["==", ["get", "rank"], 1],
+        // other cities only visible in higher zoom levels
+        [">=", ["zoom"], 5],
       ],
     ],
-    layout: cityNameBaseStyle.layout,
-    paint: cityNameBaseStyle.paint,
+    paint: textStyle.paint,
+    layout: textStyle.layout,
   },
-  // transfer city names should always be visible
+
+  // handling transfers in a later layer so that they take preference
   {
-    id: "city-name-transfers",
+    id: "city-name-transfer",
     source: "cities",
     type: "symbol",
-    filter: ["in", "id", "placeholder"], // will be set in code
-    minzoom: 1,
-    layout: cityNameBaseStyle.layout,
-    paint: cityNameBaseStyle.paint,
+    filter: [
+      "any", // using any filter to make compatible to other filters
+      ["in", ["get", "id"], ["literal", ["placeholder for transfer cities"]]],
+    ],
+    paint: textStyle.paint,
+    layout: textStyle.layout,
   },
 ];
+
+function updateFilterExpression(layer, filterExpression, cities) {
+  if (layer === "city-circle" || layer === "city-name-transfer") {
+    filterExpression[1][2][1] = cities;
+  } else if (layer === "city-name") {
+    filterExpression[1][1][2][1] = cities;
+  } else throw new Error("Unknown layer");
+}

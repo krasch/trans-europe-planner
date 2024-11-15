@@ -142,32 +142,44 @@ class CityManager {
   updateView(cities) {
     // for simplicity, unset previously state
     for (let city of this.#currentlyActive) {
-      const state = { color: null };
+      const state = {
+        color: null,
+        stop: false,
+        transfer: false,
+      };
       this.#map.setFeatureState({ source: "cities", id: city.name }, state);
     }
 
     // set new state
     for (let city of cities) {
-      const state = { color: `rgb(${city.color})` };
+      const state = {
+        color: `rgb(${city.color})`,
+        stop: true,
+        transfer: city.transfer,
+      };
       this.#map.setFeatureState({ source: "cities", id: city.name }, state);
     }
     this.#currentlyActive = cities;
 
-    const stops = cities.map((c) => c.name);
-    const transfers = cities.filter((c) => c.transfer).map((c) => c.name);
+    const stopIds = cities.map((c) => c.name);
+    const activeTransferIds = cities
+      .filter((c) => c.active && c.transfer)
+      .map((c) => c.name);
 
-    // all cities on the line get a circle
-    this.#map.setFilter("city-circle-stops", this.#getIdFilter(stops));
-    // transfers get a more prominent circle
-    this.#map.setFilter("city-circle-transfers", this.#getIdFilter(transfers));
-    // only transfers also get a name
-    this.#map.setFilter("city-name-transfers", this.#getIdFilter(transfers));
+    // all stops should have visible circle
+    this.#updateFilter("city-circle", stopIds);
+
+    // first filter sets the cities that should be ignored in that layer
+    // second filter sets those same cities to be displayed in a higher layer
+    // this means that names of transfers in the active journey will always have precedent when rendering
+    this.#updateFilter("city-name", activeTransferIds);
+    this.#updateFilter("city-name-transfer", activeTransferIds);
   }
 
-  #getIdFilter(items) {
-    const filter = ["in", "id"];
-    for (let i of items) filter.push(i);
-    return filter;
+  #updateFilter(layer, cities) {
+    const filter = this.#map.getFilter(layer);
+    updateFilterExpression(layer, filter, cities);
+    this.#map.setFilter(layer, filter);
   }
 }
 

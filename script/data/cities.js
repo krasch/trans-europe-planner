@@ -801,7 +801,7 @@ const CITIES = {
     name: "Frankfurt (Main)",
     latitude: 50.107149,
     longitude: 8.663785,
-    rank: 1,
+    rank: 2,
   },
   7730: {
     name: "Frankfurt (Oder)",
