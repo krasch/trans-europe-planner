@@ -25,14 +25,14 @@ const cityNameBaseStyle = {
   },
 };
 
-const cityCircleBaseStyle = {
-  paint: {
-    "circle-radius": 3,
-    "circle-color": "white",
-    "circle-stroke-width": 1,
-    "circle-stroke-color": ["to-color", ["feature-state", "color"], "#aaa"],
-  },
-};
+/* for city circles and names, respectively:
+ - it is not possible to use feature-state in a filter
+ - meaning I am manually filtering by id, set in the code
+ - which makes it hard to combine this with feature-filters
+ - because of that there are multiple circle/name layers
+ - which is annoying because I am repeating stylings
+ - and because the same item might get styled twice
+ */
 
 const mapStyles = [
   // ################################
@@ -87,16 +87,44 @@ const mapStyles = [
       ],
     ],
     type: "circle",
-    paint: cityCircleBaseStyle.paint,
+    paint: {
+      "circle-radius": 3,
+      "circle-color": "white",
+      "circle-stroke-width": 1,
+      "circle-stroke-color": ["to-color", ["feature-state", "color"], "#aaa"],
+    },
   },
 
-  // stops and transfer circles always visible
+  // stops are always visible
   {
-    id: "city-circle-stops-transfers",
+    id: "city-circle-stops",
     source: "cities",
-    filter: ["in", "id", "placeholder"],
+    filter: ["in", "id", "placeholder"], // will be set in code
     type: "circle",
-    paint: cityCircleBaseStyle.paint,
+    paint: {
+      "circle-radius": 3,
+      "circle-color": "white",
+      "circle-opacity": 0.4,
+      "circle-stroke-width": 1,
+      "circle-stroke-color": ["to-color", ["feature-state", "color"], "#aaa"],
+      "circle-stroke-opacity": 0.2,
+    },
+  },
+
+  // transfers are even more visible
+  {
+    id: "city-circle-transfers",
+    source: "cities",
+    filter: ["in", "id", "placeholder"], // will be set in code
+    type: "circle",
+    paint: {
+      "circle-radius": 4,
+      "circle-color": "white",
+      "circle-opacity": 1.0,
+      "circle-stroke-width": 2,
+      "circle-stroke-color": ["to-color", ["feature-state", "color"], "#aaa"],
+      "circle-stroke-opacity": 0.4,
+    },
   },
 
   // ################################
@@ -124,13 +152,11 @@ const mapStyles = [
     paint: cityNameBaseStyle.paint,
   },
   // transfer city names should always be visible
-  // must filter by name because can not filter by feature-state
-  // this is also why I can not just merge this with the previous layer
   {
     id: "city-name-transfers",
     source: "cities",
     type: "symbol",
-    filter: ["in", "id", "placeholder"], // set in code
+    filter: ["in", "id", "placeholder"], // will be set in code
     minzoom: 1,
     layout: cityNameBaseStyle.layout,
     paint: cityNameBaseStyle.paint,

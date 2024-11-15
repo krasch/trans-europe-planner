@@ -153,18 +153,15 @@ class CityManager {
     }
     this.#currentlyActive = cities;
 
-    // can't filter by feature state which things are visible/not visible
-    // -> manually set filters by id
+    const stops = cities.map((c) => c.name);
+    const transfers = cities.filter((c) => c.transfer).map((c) => c.name);
+
     // all cities on the line get a circle
-    this.#map.setFilter(
-      "city-circle-stops-transfers",
-      this.#getIdFilter(cities.map((c) => c.name)),
-    );
-    // but only transfers also get a name
-    this.#map.setFilter(
-      "city-name-transfers",
-      this.#getIdFilter(cities.filter((c) => c.transfer).map((c) => c.name)),
-    );
+    this.#map.setFilter("city-circle-stops", this.#getIdFilter(stops));
+    // transfers get a more prominent circle
+    this.#map.setFilter("city-circle-transfers", this.#getIdFilter(transfers));
+    // only transfers also get a name
+    this.#map.setFilter("city-name-transfers", this.#getIdFilter(transfers));
   }
 
   #getIdFilter(items) {
