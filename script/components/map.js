@@ -201,24 +201,33 @@ class CityManager {
     }
     this.#currentlyActive = cities;
 
-    const stopIds = cities.map((c) => c.name);
-    const activeTransferIds = cities
-      .filter((c) => c.active && c.transfer)
-      .map((c) => c.name);
+    const transfers = cities.filter((c) => c.transfer);
 
     // all stops should have visible circle
-    this.#updateFilter("city-circle", stopIds);
+    this.#updateFilter("city-circle", cities);
 
-    // first filter sets the cities that should be ignored in that layer
-    // second filter sets those same cities to be displayed in a higher layer
-    // this means that names of transfers in the active journey will always have precedent when rendering
-    this.#updateFilter("city-name", activeTransferIds);
-    this.#updateFilter("city-name-transfer", activeTransferIds);
+    // for displaying names, non-transfer cities have lowest priority
+    // (need to give transfer cities because of !in query)
+    this.#updateFilter("city-name", transfers);
+    // next highest priority to transfers in alternative journeys
+    this.#updateFilter(
+      "city-name-transfer-alternative",
+      transfers.filter((c) => !c.active),
+    );
+    // highest priority to transfers in active journey
+    this.#updateFilter(
+      "city-name-transfer-active",
+      transfers.filter((c) => c.active),
+    );
   }
 
   #updateFilter(layer, cities) {
     const filter = this.#map.getFilter(layer);
-    updateFilterExpression(layer, filter, cities);
+    updateFilterExpression(
+      layer,
+      filter,
+      cities.map((c) => c.name),
+    );
     this.#map.setFilter(layer, filter);
   }
 }

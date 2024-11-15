@@ -129,15 +129,35 @@ const mapStyles = [
     paint: textStyle.paint,
     layout: textStyle.layout,
   },
-
-  // handling transfers in a later layer so that they take preference
+  // transfers in alternative journeys have precedence
   {
-    id: "city-name-transfer",
+    id: "city-name-transfer-alternative",
     source: "cities",
     type: "symbol",
     filter: [
       "any", // using any filter to make compatible to other filters
-      ["in", ["get", "id"], ["literal", ["placeholder for transfer cities"]]],
+      [
+        "in",
+        ["get", "id"],
+        ["literal", ["placeholder for alternative transfer cities"]],
+      ],
+    ],
+    paint: textStyle.paint,
+    layout: textStyle.layout,
+  },
+
+  // transfers in active city have highest precedence
+  {
+    id: "city-name-transfer-active",
+    source: "cities",
+    type: "symbol",
+    filter: [
+      "any", // using any filter to make compatible to other filters
+      [
+        "in",
+        ["get", "id"],
+        ["literal", ["placeholder for active transfer cities"]],
+      ],
     ],
     paint: textStyle.paint,
     layout: textStyle.layout,
@@ -145,9 +165,20 @@ const mapStyles = [
 ];
 
 function updateFilterExpression(layer, filterExpression, cities) {
-  if (layer === "city-circle" || layer === "city-name-transfer") {
-    filterExpression[1][2][1] = cities;
-  } else if (layer === "city-name") {
-    filterExpression[1][1][2][1] = cities;
-  } else throw new Error("Unknown layer");
+  switch (layer) {
+    case "city-circle":
+      filterExpression[1][2][1] = cities;
+      break;
+    case "city-name":
+      filterExpression[1][1][2][1] = cities;
+      break;
+    case "city-name-transfer-alternative":
+      filterExpression[1][2][1] = cities;
+      break;
+    case "city-name-transfer-active":
+      filterExpression[1][2][1] = cities;
+      break;
+    default:
+      throw new Error("Unknown layer");
+  }
 }
