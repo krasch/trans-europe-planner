@@ -86,7 +86,7 @@ class EdgeManager {
     // for simplicity, unset all previous state
     for (let edge of this.#currentlyActive) {
       const state = {
-        active: false,
+        status: null,
         alternative: false,
         color: null,
         leg: null,
