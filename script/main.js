@@ -82,6 +82,10 @@ async function main(
     active = journeyId;
     updateViews(journeys, active);
   });
+  map.on("journeySelected", (journeyId) => {
+    active = journeyId;
+    updateViews(journeys, active);
+  });
 
   // hovering over map or calender
   calendar.on("entryHoverStart", (leg) => map.setHoverLeg(leg));

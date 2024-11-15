@@ -239,6 +239,7 @@ function prepareDataForMap(journeys, activeId, database) {
           id: edge.toAlphabeticString(),
           color: color,
           leg: connections[i].leg.toString(),
+          journey: journeyId,
           status: edgeStatus,
         });
       }
