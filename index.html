@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="style/layout.css">
     <link rel="stylesheet" href="style/colors.css">
     <link rel="stylesheet" href="style/calendar.css">
+    <link rel="stylesheet" href="style/calendar2.css">
     <link rel="stylesheet" href="style/journey-selection.css">
     <link rel="stylesheet" href="style/header.css">
 
@@ -35,6 +36,7 @@
     <script src="script/componentData.js"></script>
 
     <!-- components -->
+    <script src="script/customElements/travelCalendar.js"></script>
     <script src="script/components/calendar/grid.js"></script>
     <script src="script/components/calendar/entry.js"></script>
     <script src="script/components/calendar/calendar.js"></script>
@@ -130,14 +132,13 @@
 
 <div id="map"></div>
 <!-- All calendar elements will be added into the container below dynamically -->
-<calendar-grid id="calendar" start="2024-10-16" end="2024-10-18" resolution="4"></calendar-grid>
+<!--calendar-grid id="calendar" start="2024-10-16" end="2024-10-18" resolution="4"></calendar-grid-->
 <!--fieldset id="journey-selection"></fieldset-->
+<travel-calendar num-days="3" resolution="4"></travel-calendar>
 
 
 <script>
-    // bug: can not add an unknown leg to my route
-
-    onload = async (event) => {
+    /*onload = async (event) => {
         const map = new MapWrapper('map', [13.408333, 52.518611], 4);
         const calendar = document.getElementById("calendar");
         const startDestinationSelection = new StartDestinationSelection(
@@ -149,7 +150,7 @@
         } catch (error) {
             console.error(error);
         }
-    };
+    };*/
 </script>
 
 </body>
