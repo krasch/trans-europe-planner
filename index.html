@@ -37,6 +37,7 @@
 
     <!-- components -->
     <script src="script/customElements/travelCalendar.js"></script>
+    <script src="script/customElements/calendarEntry.js"></script>
     <script src="script/components/calendar/grid.js"></script>
     <script src="script/components/calendar/entry.js"></script>
     <script src="script/components/calendar/calendar.js"></script>
@@ -134,10 +135,26 @@
 <!-- All calendar elements will be added into the container below dynamically -->
 <!--calendar-grid id="calendar" start="2024-10-16" end="2024-10-18" resolution="4"></calendar-grid-->
 <!--fieldset id="journey-selection"></fieldset-->
-<travel-calendar num-days="3" resolution="4"></travel-calendar>
+<travel-calendar id="calendar" num-days="3" resolution="4">
+    <calendar-entry2 id="ladida" start-hour="1" end-hour="4" train="train1">
+    </calendar-entry2>
+    <calendar-entry2 id="ladida2" start-hour="14" end-hour="17" train="train2">
+    </calendar-entry2>
+    <calendar-entry2 id="ladida3" start-hour="6" end-hour="13" train="train3">
+    </calendar-entry2>
+</travel-calendar>
 
 
 <script>
+    const calendar = document.getElementById("calendar");
+
+    const el = document.getElementById("ladida");
+    el.setAttribute("start-hour", "3");
+    const el2 = document.getElementById("ladida2");
+    el2.remove();
+    /*const el = document.createElement("div");
+    calendar.appendChild(el)*/
+
     /*onload = async (event) => {
         const map = new MapWrapper('map', [13.408333, 52.518611], 4);
         const calendar = document.getElementById("calendar");

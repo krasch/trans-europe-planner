@@ -1,16 +1,3 @@
-/*const gridHourTemplate = document.createElement("template");
-gridHourTemplate.innerHTML = `
-<style>
-button {
-  background: var(--background);
-  color: var(--color);
-  padding: var(--padding);
-  font-size: var(--font-size);
-  border: 0;
-}
-</style>
-<div></div>`;*/
-
 const style = `
 <style>
 :host {
@@ -50,18 +37,53 @@ class TravelCalendar extends HTMLElement {
   #resolution;
   static observedAttributes = ["numDays", "resolution"];
 
+  // object can only have string keys
+  // whereas map can also have complex keys (e.g. HTMLElements)
+  #entries = new Map();
+
   constructor() {
     super();
 
     this.attachShadow({ mode: "open" });
-    this.shadowRoot.innerHTML = style;
+    this.shadowRoot.innerHTML = style + "<slot></slot>";
   }
 
   connectedCallback() {
     this.#drawGrid();
+
+    const observer = new MutationObserver((mutations) => {
+      for (let mutation of mutations) {
+        // children added/removed
+        if (mutation.type === "childList") {
+          for (let node of mutation.addedNodes) {
+            if (node.tagName === "CALENDAR-ENTRY2")
+              this.#entryAddedCallback(node);
+          }
+          for (let node of mutation.removedNodes) {
+            if (node.tagName === "CALENDAR-ENTRY2")
+              this.#entryRemovedCallback(node);
+          }
+        }
+
+        // child attributes changed
+        if (mutation.type === "attributes") {
+          if (mutation.target.tagName === "CALENDAR-ENTRY2") {
+            this.#entryRemovedCallback(mutation.target);
+            this.#entryAddedCallback(mutation.target);
+          }
+        }
+      }
+    });
+
+    observer.observe(this.shadowRoot.host, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+    });
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
+    // todo redraw?
     switch (name) {
       case "resolution":
         this.#resolution = Number(newValue);
@@ -73,6 +95,27 @@ class TravelCalendar extends HTMLElement {
       default:
         throw new Error(`Unknown attribute ${name}`);
     }
+  }
+
+  #entryAddedCallback(entry) {
+    const element = document.createElement("div");
+    element.innerHTML = entry.getAttribute("train");
+
+    const startHour = entry.getAttribute("start-hour");
+    const endHour = entry.getAttribute("end-hour");
+
+    element.style.gridColumn = 3; // 1 = date column
+    element.style.gridRowStart = startHour * this.#resolution;
+    element.style.gridRowEnd = endHour * this.#resolution;
+    element.style.background = "beige";
+    this.shadowRoot.appendChild(element);
+
+    this.#entries.set(entry, element);
+  }
+
+  #entryRemovedCallback(entry) {
+    this.shadowRoot.removeChild(this.#entries.get(entry));
+    this.#entries.delete(entry);
   }
 
   #drawGrid() {
