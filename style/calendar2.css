@@ -5,5 +5,8 @@ travel-calendar {
     border: 1px solid lightgrey;
 
     --calendar-lines: 1px dashed lightgrey;
+}
 
+travel-option {
+    background-color: lavender;
 }

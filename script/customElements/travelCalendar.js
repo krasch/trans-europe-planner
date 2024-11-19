@@ -27,15 +27,14 @@ const style = `
   border-left: var(--calendar-lines);
 }
 
-div {
+.entry {
   overflow: hidden;
+  background-color: lavender;
 }
 
 </style>`;
 
 class TravelCalendar extends HTMLElement {
-  #numDays = 3; // todo is not being read from attribute
-  #resolution;
   static observedAttributes = ["numDays", "resolution"];
 
   // object can only have string keys
@@ -49,6 +48,14 @@ class TravelCalendar extends HTMLElement {
     this.shadowRoot.innerHTML = style + "<slot></slot>";
   }
 
+  get resolution() {
+    return Number(this.getAttribute("resolution"));
+  }
+
+  get numDays() {
+    return Number(this.getAttribute("num-days"));
+  }
+
   connectedCallback() {
     this.#drawGrid();
 
@@ -57,18 +64,18 @@ class TravelCalendar extends HTMLElement {
         // children added/removed
         if (mutation.type === "childList") {
           for (let node of mutation.addedNodes) {
-            if (node.tagName === "CALENDAR-ENTRY2")
+            if (node.tagName === "TRAVEL-OPTION")
               this.#entryAddedCallback(node);
           }
           for (let node of mutation.removedNodes) {
-            if (node.tagName === "CALENDAR-ENTRY2")
+            if (node.tagName === "TRAVEL-OPTION")
               this.#entryRemovedCallback(node);
           }
         }
 
         // child attributes changed
         if (mutation.type === "attributes") {
-          if (mutation.target.tagName === "CALENDAR-ENTRY2") {
+          if (mutation.target.tagName === "TRAVEL-OPTION") {
             this.#entryRemovedCallback(mutation.target);
             this.#entryAddedCallback(mutation.target);
           }
@@ -83,34 +90,12 @@ class TravelCalendar extends HTMLElement {
     });
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
-    // todo redraw?
-    switch (name) {
-      case "resolution":
-        this.#resolution = Number(newValue);
-        break;
-      case "num-days":
-        this.#numDays = Number(newValue);
-        break;
-
-      default:
-        throw new Error(`Unknown attribute ${name}`);
-    }
-  }
-
   #entryAddedCallback(entry) {
     const element = document.createElement("div");
-    element.innerHTML = entry.getAttribute("train");
+    element.innerHTML = entry.train;
+    element.classList.add("entry");
 
-    const startHour = entry.getAttribute("start-hour");
-    const endHour = entry.getAttribute("end-hour");
-
-    element.style.gridColumn = 3; // 1 = date column
-    element.style.gridRowStart = startHour * this.#resolution;
-    element.style.gridRowEnd = endHour * this.#resolution;
-    element.style.background = "beige";
-    this.shadowRoot.appendChild(element);
-
+    this.#placeInGrid(element, 1, entry.startHour * 60, entry.endHour * 60);
     this.#entries.set(entry, element);
   }
 
@@ -128,28 +113,34 @@ class TravelCalendar extends HTMLElement {
 
       if (hour !== 0) element.classList.add("border-top");
 
-      element.style.gridColumn = 1; // 1 = date column
-      element.style.gridRowStart = hour * this.#resolution;
-      element.style.gridRowEnd = (hour + 1) * this.#resolution;
-      this.shadowRoot.appendChild(element);
+      this.#placeInGrid(element, -1, hour * 60, (hour + 1) * 60);
     }
 
     // grid cells
-    for (let day = 0; day < this.#numDays; day++) {
-      for (let i = 0; i < 24 * this.#resolution; i++) {
+    const minutesPerSlice = 60 / this.resolution; // todo rounding errors?
+    for (let day = 0; day < this.numDays; day++) {
+      for (let minute = 0; minute < 24 * 60; minute += minutesPerSlice) {
         const element = document.createElement("div");
         element.classList.add("cell");
 
-        if (i % this.#resolution === 0 && i > 0)
+        if (minute % 60 === 0 && minute > 0)
           element.classList.add("border-top");
 
-        // element.id = `calender-cell-${day}-${i}`;
-        element.style.gridColumn = day + 1 + 1;
-        element.style.gridRowStart = i;
-        element.style.gridRowEnd = i + 1;
-        this.shadowRoot.appendChild(element);
+        this.#placeInGrid(element, day, minute, minute + minutesPerSlice);
       }
     }
+  }
+
+  #placeInGrid(element, day, startMinute, endMinute) {
+    const startRow = Math.round((startMinute / 60.0) * this.resolution);
+    const endRow = Math.round((endMinute / 60.0) * this.resolution);
+
+    // first +1 because counting starts at 1, second +1 for hour column
+    element.style.gridColumn = day + 1 + 1;
+    element.style.gridRowStart = startRow;
+    element.style.gridRowEnd = endRow;
+
+    this.shadowRoot.appendChild(element);
   }
 }
 
