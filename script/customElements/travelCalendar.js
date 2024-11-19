@@ -28,8 +28,19 @@ const style = `
 }
 
 .entry {
+  --color: 27,158,119;
   overflow: hidden;
-  background-color: lavender;
+  border: 1px solid darkgrey;
+}
+
+.entry.full {
+    border: 1px solid darkgrey;
+    border-radius: 10px;
+    background-color: rgba(var(--color), 0.6);
+}
+
+.entry.hidden {
+  visibility: hidden;
 }
 
 </style>`;
@@ -94,8 +105,23 @@ class TravelCalendar extends HTMLElement {
     const element = document.createElement("div");
     element.innerHTML = entry.train;
     element.classList.add("entry");
+    element.classList.add(entry.status);
+    element.style.setProperty(
+      "--color",
+      entry.style.getPropertyValue("--color"),
+    );
+    /*element.style.backgroundColor =
+      window.getComputedStyle(entry).backgroundColor;
+    element.style.border = window.getComputedStyle(entry).border;*/
 
-    this.#placeInGrid(element, 1, entry.startHour * 60, entry.endHour * 60);
+    const start = new Date(entry.startTime);
+    const end = new Date(entry.endTime);
+    const date = start.getDate() - 16; // todo place in right column
+
+    const startMinute = start.getHours() * 60 + start.getMinutes();
+    const endMinute = end.getHours() * 60 + end.getMinutes();
+
+    this.#placeInGrid(element, date, startMinute, endMinute);
     this.#entries.set(entry, element);
   }
 

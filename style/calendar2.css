@@ -1,5 +1,5 @@
 travel-calendar {
-    background-color: beige;
+    background-color: white;
 
     border-radius: 10px;
     border: 1px solid lightgrey;
@@ -8,5 +8,7 @@ travel-calendar {
 }
 
 travel-option {
+    /*  --color: 27,158,119; */
+    /*background-color: lavender;*/
     background-color: lavender;
 }

@@ -35,13 +35,16 @@
     <script src="script/database.js"></script>
     <script src="script/componentData.js"></script>
 
-    <!-- components -->
+    <!-- custom elements -->
     <script src="script/customElements/travelCalendar.js"></script>
     <script src="script/customElements/travelOption.js"></script>
-    <script src="script/components/calendar/grid.js"></script>
+
+    <!-- views -->
+    <script src="script/views/calendar.js"></script>
+    <!--script src="script/components/calendar/grid.js"></script>
     <script src="script/components/calendar/entry.js"></script>
     <script src="script/components/calendar/calendar.js"></script>
-    <script src="script/components/calendar/draganddrop.js"></script>
+    <script src="script/components/calendar/draganddrop.js"></script-->
     <script src="script/components/map.js"></script>
     <script src="script/components/journeySelection.js"></script>
     <script src="script/components/startDestinationSelection.js"></script>
@@ -97,7 +100,7 @@
         <select name="start" id="select-start">
             <option value=""></option>
             <option value="Berlin">Berlin</option>
-            <option value="Hamburg"  selected="selected">Hamburg</option>
+            <option value="Hamburg" selected="selected">Hamburg</option>
             <option value="Köln">Köln</option>
             <option value="München">München</option>
         </select>
@@ -121,8 +124,13 @@
 <!--calendar-grid id="calendar" start="2024-10-16" end="2024-10-18" resolution="4"></calendar-grid-->
 <!--fieldset id="journey-selection"></fieldset-->
 <travel-calendar id="calendar" num-days="3" resolution="4">
-    <travel-options start-city="Berlin" end-city="München">
-        <travel-option id="ladida" start-hour="1" end-hour="4" train="train"></travel-option>
+    <!--travel-options start-city="Berlin" end-city="München">
+        <travel-option id="ladida"
+                       start-time="2024-10-17T03:14:00.000Z"
+                       end-hour="2024-10-17T08:14:00.000Z"
+                       train="train"
+                       status="full">
+        </travel-option-->
     </travel-options>
 
 
@@ -146,9 +154,9 @@
     /*const el = document.createElement("div");
     calendar.appendChild(el)*/
 
-    /*onload = async (event) => {
+    onload = async (event) => {
         const map = new MapWrapper('map', [13.408333, 52.518611], 4);
-        const calendar = document.getElementById("calendar");
+        const calendar = new CalendarView(document.getElementById("calendar"));
         const startDestinationSelection = new StartDestinationSelection(
             document.getElementById("select-start"),
             document.getElementById("select-end"));
@@ -158,7 +166,7 @@
         } catch (error) {
             console.error(error);
         }
-    };*/
+    };
 </script>
 
 </body>
