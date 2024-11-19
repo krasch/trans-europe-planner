@@ -2,24 +2,21 @@ const style = `
 <style>
 :host {
   /* can be set in external css to style this custom element */
-  --background-color: white;
+  --calendar-lines: 1px dashed lightgrey;
   
   display: grid;
   grid-auto-flow: column;
   /* first column are the hour labels */
-  grid-template-columns: 3rem repeat(3, 1fr); /* todo 3 = num-days, todo calc? */
+  grid-template-columns: 3rem repeat(3, minmax(0, 1fr)); /* todo 3 = num-days, todo calc? */
   
-  border-radius: 10px;
-  border: 1px solid lightgrey;
-  background-color: var(--background-color);
 }
 
 .border-top {
-  border-top: 1px dashed lightgrey;
+  border-top: var(--calendar-lines);
 }
 
 .hour-label {
-  min-height: 1.2rem;
+  min-height: 1.2rem; /* todo external sizing? */
 
   color: darkgrey;
   text-align: center; /* horizontally center */
@@ -27,7 +24,11 @@ const style = `
 }
 
 .cell {
-  border-left: 1px dashed lightgrey;
+  border-left: var(--calendar-lines);
+}
+
+div {
+  overflow: hidden;
 }
 
 </style>`;

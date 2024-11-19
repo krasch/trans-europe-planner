@@ -1,3 +1,9 @@
 travel-calendar {
-    background-color: white;
+    background-color: beige;
+
+    border-radius: 10px;
+    border: 1px solid lightgrey;
+
+    --calendar-lines: 1px dashed lightgrey;
+
 }
