@@ -13,7 +13,7 @@ function getConnectionForLeg(journey, leg, database) {
   return pickFittingConnection(journey.unsortedConnections, leg, database);
 }
 
-async function main(map, calendar, startDestinationSelection) {
+async function main(map, calendar, startDestination) {
   const DATES = ["2024-10-16", "2024-10-17", "2024-10-18"];
 
   // prepare database
@@ -35,7 +35,7 @@ async function main(map, calendar, startDestinationSelection) {
   let active = null;
 
   // changing start/destination
-  startDestinationSelection.on("startOrDestinationChanged", (target) => {
+  startDestination.on("startOrDestinationChanged", (target) => {
     if (target == null) {
       journeys = {};
       active = null;
@@ -80,5 +80,5 @@ async function main(map, calendar, startDestinationSelection) {
   await mapLoadedPromise;
 
   // read the current start/destination values and fill all views
-  startDestinationSelection.triggerChangeEvent();
+  startDestination.triggerChangeEvent();
 }

@@ -1,4 +1,4 @@
-class StartDestinationSelection {
+class StartDestinationView {
   #callbacks = {
     startOrDestinationChanged: () => {},
   };

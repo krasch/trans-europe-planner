@@ -6,7 +6,7 @@ const {
   prepareDataForCalendar,
   Journey,
   getColor,
-} = require("../script/componentData.js");
+} = require("../script/views/viewData.js");
 const { Database } = require("../script/database.js");
 const { createConnection } = require("../tests/data.js");
 

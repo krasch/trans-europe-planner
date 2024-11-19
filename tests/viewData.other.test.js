@@ -1,4 +1,4 @@
-const { sortConnectionsByDeparture } = require("../script/componentData.js");
+const { sortConnectionsByDeparture } = require("../script/views/viewData.js");
 const { createConnection } = require("../tests/data.js");
 
 test("sortConnectionsByDeparture", function () {

@@ -24,8 +24,8 @@
     <!-- scripts -->
     <script src="script/types.js"></script>
     <script src="script/util.js"></script>
-    <script src="script/main.js"></script>
     <script src="script/routing.js"></script>
+    <script src="script/main.js"></script>
 
     <!-- data -->
     <script src="data/cities.js"></script>
@@ -33,21 +33,16 @@
     <script src="data/connections.js"></script>
     <script src="data/routes.js"></script>
     <script src="script/database.js"></script>
-    <script src="script/componentData.js"></script>
 
     <!-- custom elements -->
     <script src="script/customElements/travelCalendar.js"></script>
     <script src="script/customElements/travelOption.js"></script>
 
     <!-- views -->
+    <script src="script/views/viewData.js"></script>
     <script src="script/views/calendar.js"></script>
-    <!--script src="script/components/calendar/grid.js"></script>
-    <script src="script/components/calendar/entry.js"></script>
-    <script src="script/components/calendar/calendar.js"></script>
-    <script src="script/components/calendar/draganddrop.js"></script-->
-    <script src="script/components/map.js"></script>
-    <script src="script/components/journeySelection.js"></script>
-    <script src="script/components/startDestinationSelection.js"></script>
+    <script src="script/views/map.js"></script>
+    <script src="script/views/startDestination.js"></script>
 
     <title>Trans-Europe-Planner</title>
 
@@ -130,8 +125,8 @@
                        end-hour="2024-10-17T08:14:00.000Z"
                        train="train"
                        status="full">
-        </travel-option-->
-    </travel-options>
+        </travel-option>
+    </travel-options-->
 
 
     <!--calendar-entry2 id="ladida" start-hour="1" end-hour="4" train="train">
@@ -155,14 +150,14 @@
     calendar.appendChild(el)*/
 
     onload = async (event) => {
-        const map = new MapWrapper('map', [13.408333, 52.518611], 4);
+        const map = new MapView('map', [13.408333, 52.518611], 4);
         const calendar = new CalendarView(document.getElementById("calendar"));
-        const startDestinationSelection = new StartDestinationSelection(
+        const startDestination = new StartDestinationView(
             document.getElementById("select-start"),
             document.getElementById("select-end"));
 
         try {
-            main(map, calendar, startDestinationSelection);
+            main(map, calendar, startDestination);
         } catch (error) {
             console.error(error);
         }
