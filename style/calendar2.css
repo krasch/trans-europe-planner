@@ -10,5 +10,6 @@ travel-calendar {
 travel-option {
     /*  --color: 27,158,119; */
     /*background-color: lavender;*/
-    background-color: lavender;
+    border: 1px solid darkgrey;
+    border-radius: 10px;
 }

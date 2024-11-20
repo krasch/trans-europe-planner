@@ -27,6 +27,7 @@ const style = `
   border-left: var(--calendar-lines);
 }
 
+
 .entry {
   --color: 27,158,119;
   overflow: hidden;
@@ -47,6 +48,7 @@ const style = `
 
 class TravelCalendar extends HTMLElement {
   static observedAttributes = ["numDays", "resolution"];
+  static #observedStyles = ["visibility", "--color", "border", "border-radius"];
 
   // object can only have string keys
   // whereas map can also have complex keys (e.g. HTMLElements)
@@ -75,20 +77,23 @@ class TravelCalendar extends HTMLElement {
         // children added/removed
         if (mutation.type === "childList") {
           for (let node of mutation.addedNodes) {
-            if (node.tagName === "TRAVEL-OPTION")
-              this.#entryAddedCallback(node);
+            if (node.tagName === "TRAVEL-OPTION") this.#addTravelOption(node);
           }
           for (let node of mutation.removedNodes) {
             if (node.tagName === "TRAVEL-OPTION")
-              this.#entryRemovedCallback(node);
+              this.#removeTravelOption(node);
           }
         }
 
         // child attributes changed
         if (mutation.type === "attributes") {
           if (mutation.target.tagName === "TRAVEL-OPTION") {
-            this.#entryRemovedCallback(mutation.target);
-            this.#entryAddedCallback(mutation.target);
+            if (mutation.target.attributeName === "style")
+              this.#propagateStyle(mutation.target);
+            else {
+              this.#removeTravelOption(mutation.target);
+              this.#addTravelOption(mutation.target);
+            }
           }
         }
       }
@@ -101,33 +106,36 @@ class TravelCalendar extends HTMLElement {
     });
   }
 
-  #entryAddedCallback(entry) {
+  #addTravelOption(travelOption) {
     const element = document.createElement("div");
-    element.innerHTML = entry.train;
+    element.innerHTML = travelOption.train;
     element.classList.add("entry");
-    element.classList.add(entry.status);
-    element.style.setProperty(
-      "--color",
-      entry.style.getPropertyValue("--color"),
-    );
-    /*element.style.backgroundColor =
-      window.getComputedStyle(entry).backgroundColor;
-    element.style.border = window.getComputedStyle(entry).border;*/
+    element.classList.add(travelOption.status);
 
-    const start = new Date(entry.startTime);
-    const end = new Date(entry.endTime);
+    const start = new Date(travelOption.startTime);
+    const end = new Date(travelOption.endTime);
     const date = start.getDate() - 16; // todo place in right column
 
     const startMinute = start.getHours() * 60 + start.getMinutes();
     const endMinute = end.getHours() * 60 + end.getMinutes();
 
     this.#placeInGrid(element, date, startMinute, endMinute);
-    this.#entries.set(entry, element);
+    this.#entries.set(travelOption, element);
+
+    this.#propagateStyle(travelOption);
   }
 
-  #entryRemovedCallback(entry) {
-    this.shadowRoot.removeChild(this.#entries.get(entry));
-    this.#entries.delete(entry);
+  #removeTravelOption(travelOption) {
+    this.shadowRoot.removeChild(this.#entries.get(travelOption));
+    this.#entries.delete(travelOption);
+  }
+
+  #propagateStyle(travelOption) {
+    const entry = this.#entries.get(travelOption);
+    const style = window.getComputedStyle(travelOption);
+    for (let key of TravelCalendar.#observedStyles) {
+      entry.style.setProperty(key, style.getPropertyValue(key));
+    }
   }
 
   #drawGrid() {

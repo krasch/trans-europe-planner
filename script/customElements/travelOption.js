@@ -1,9 +1,16 @@
-class TravelOptions extends HTMLElement {
+class TravelOptionGroup extends HTMLElement {
   static observedAttributes = ["start-city", "end-city"];
 }
 
 class TravelOption extends HTMLElement {
-  static observedAttributes = ["start-time", "end-time", "train", "status"];
+  static observedAttributes = [
+    "start-city",
+    "end-city",
+    "start-time",
+    "end-time",
+    "train",
+    "status",
+  ];
 
   get startTime() {
     return this.getAttribute("start-time");
@@ -55,5 +62,5 @@ class TravelOption extends HTMLElement {
   }*/
 }
 
-customElements.define("travel-options", TravelOptions);
+customElements.define("travel-option-group", TravelOptionGroup);
 customElements.define("travel-option", TravelOption);

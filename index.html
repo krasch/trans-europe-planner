@@ -119,15 +119,14 @@
 <!--calendar-grid id="calendar" start="2024-10-16" end="2024-10-18" resolution="4"></calendar-grid-->
 <!--fieldset id="journey-selection"></fieldset-->
 <travel-calendar id="calendar" num-days="3" resolution="4">
-    <!--travel-options start-city="Berlin" end-city="München">
-        <travel-option id="ladida"
-                       start-time="2024-10-17T03:14:00.000Z"
-                       end-hour="2024-10-17T08:14:00.000Z"
-                       train="train"
-                       status="full">
-        </travel-option>
-    </travel-options-->
-
+    <travel-option id="ladida"
+                   start-city="Berlin"
+                   end-city="München"
+                   start-time="2024-10-17T03:14:00.000Z"
+                   end-hour="2024-10-17T08:14:00.000Z"
+                   train="train"
+                   status="full">
+    </travel-option>
 
     <!--calendar-entry2 id="ladida" start-hour="1" end-hour="4" train="train">
 
@@ -141,6 +140,9 @@
 
 <script>
     const calendar = document.getElementById("calendar");
+    const el = document.getElementsByTagName("travel-option")[0];
+    //el.style.setProperty("visibility", "hidden");
+    el.style.setProperty("--color", "117,112,179");
 
     /*const el = document.getElementById("ladida");
     el.setAttribute("start-hour", "3");
@@ -149,7 +151,7 @@
     /*const el = document.createElement("div");
     calendar.appendChild(el)*/
 
-    onload = async (event) => {
+    /*onload = async (event) => {
         const map = new MapView('map', [13.408333, 52.518611], 4);
         const calendar = new CalendarView(document.getElementById("calendar"));
         const startDestination = new StartDestinationView(
@@ -161,7 +163,7 @@
         } catch (error) {
             console.error(error);
         }
-    };
+    };*/
 </script>
 
 </body>
