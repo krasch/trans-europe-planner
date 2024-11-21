@@ -3,23 +3,21 @@ class CalendarGrid extends HTMLElement {
 
   constructor() {
     super();
-
-    this.resolution = null;
-    this.startDay = null;
-    this.endDay = null;
     this.numDays = 3; // todo
+  }
+
+  get resolution() {
+    return Number(this.getAttribute("resolution"));
+  }
+
+  get startDay() {
+    return this.getAttribute("start");
   }
 
   //called when element is added to DOM
   connectedCallback() {
     this.#initHourLabels();
     this.#initEmptyCalendarCells();
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (name === "resolution") this.resolution = newValue;
-    if (name === "start") this.startDay = newValue;
-    if (name === "end") this.endDay = newValue;
   }
 
   addToGrid(element) {
