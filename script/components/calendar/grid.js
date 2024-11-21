@@ -5,7 +5,6 @@ class CalendarGrid extends HTMLElement {
 
   constructor() {
     super();
-    this.numDays = 3; // todo
   }
 
   get resolution() {
@@ -14,6 +13,10 @@ class CalendarGrid extends HTMLElement {
 
   get startDay() {
     return this.getAttribute("start");
+  }
+
+  get numDays() {
+    return Number(this.getAttribute("num-days"));
   }
 
   //called when element is added to DOM

@@ -14,7 +14,7 @@ function getConnectionForLeg(journey, leg, database) {
 }
 
 async function main(map, calendar, startDestinationSelection) {
-  const DATES = ["2024-10-16", "2024-10-17", "2024-10-18"];
+  const DATES = ["2024-12-01", "2024-12-02", "2024-12-03"];
 
   // prepare database
   const connections = CONNECTIONS.flatMap((c) =>

@@ -23,6 +23,8 @@ fieldset {
 .select-box input {
     font-family: helvetica, arial, sans-serif;
     padding: 0;
+    color: lightgrey;
+    cursor: not-allowed;
 }
 
 #logo {
