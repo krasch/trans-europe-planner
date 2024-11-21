@@ -40,10 +40,16 @@ async function main(map, calendar, startDestinationSelection) {
       journeys = {};
       active = null;
       updateViews(journeys, active);
+      document
+        .getElementById("calender-details")
+        .style.setProperty("visibility", "hidden");
     } else {
       journeys = createJourneysForRoute(ROUTES[target], database);
       active = "journey1";
       updateViews(journeys, active);
+      document
+        .getElementById("calender-details")
+        .style.setProperty("visibility", "visible");
     }
   });
 

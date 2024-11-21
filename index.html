@@ -112,42 +112,49 @@
         </div>
     </div>
 
-    <fieldset id="controls">
-        <div class="legend">Reisedaten konfigurieren</div>
-        <div class="select-box">
-            <label for="select-start">Ich bin in </label>
-            <select name="start" id="select-start">
-                <option value=""></option>
-                <option value="Berlin">Berlin</option>
-                <option value="Hamburg" selected="selected">Hamburg</option>
-                <option value="Köln">Köln</option>
-                <option value="München">München</option>
-            </select>
-        </div>
-        <div class="select-box">
-            <label for="select-end">Ich will nach </label>
-            <select name="end" id="select-end">
-                <option value=""></option>
-                <option value="London">London</option>
-                <option value="Roma">Rom</option>
-                <option value="Süden" selected="selected">Süden 🏖️</option>
-                <option value="Stockholm">Stockholm</option>
-                <option value="Warszawa">Warschau</option>
-            </select>
-        </div>
-        <div class="select-box">
-            <label for="select-end">Am </label>
-            <input type="date" id="date" value="2024-12-01" disabled="true"/>
-        </div>
-    </fieldset>
+    <details id="controls" open>
+        <summary class="legend">Reisedaten konfigurieren</summary>
+        <fieldset>
+            <div class="select-box">
+                <label for="select-start">Ich bin in </label>
+                <select name="start" id="select-start">
+                    <option value=""></option>
+                    <option value="Berlin">Berlin</option>
+                    <option value="Hamburg">Hamburg</option>
+                    <option value="Köln">Köln</option>
+                    <option value="München">München</option>
+                </select>
+            </div>
+            <div class="select-box">
+                <label for="select-end">Ich will nach </label>
+                <select name="end" id="select-end">
+                    <option value=""></option>
+                    <option value="London">London</option>
+                    <option value="Roma">Rom</option>
+                    <option value="Süden">Süden 🏖️</option>
+                    <option value="Stockholm">Stockholm</option>
+                    <option value="Warszawa">Warschau</option>
+                </select>
+            </div>
+            <div class="select-box">
+                <label for="select-end">Am </label>
+                <input type="date" id="date" value="2024-12-01" disabled="disabled"/>
+            </div>
+        </fieldset>
+    </details>
 
     <!-- All calendar elements will be added into the container below dynamically -->
-    <fieldset id="calender-fieldset" role="presentation">
-        <div class="legend">Reisedetails anpassen</div>
-        <div class="explanation"> Hier kannst du Zugverbindungen einfach <strong>hin und her schieben</strong> um Umsteigezeiten anzupassen oder die Reise
-            auf mehrere Tage zu verteilen.</div>
-        <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
-    </fieldset>
+    <details id="calender-details" open="open">
+        <summary class="legend">Verbindungsdetails anpassen</summary>
+        <fieldset id="calender-fieldset" role="presentation">
+
+            <div class="explanation"> Hier kannst du Zugverbindungen einfach <strong>hin und her schieben</strong> um
+                Umsteigezeiten anzupassen oder die Reise
+                auf mehrere Tage zu verteilen.
+            </div>
+            <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
+        </fieldset>
+    </details>
 </div>
 <div id="map"></div>
 

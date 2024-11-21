@@ -1,8 +1,12 @@
-fieldset {
+details {
     color: var(--color-dark);
     border: 0;
     border-radius: 10px;
     background-color: white;
+}
+
+fieldset {
+    border: 0;
 }
 
 .select-box label {
