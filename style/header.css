@@ -9,7 +9,7 @@ fieldset {
     margin-left: 1rem;
 }
 
-.select-box select {
+.select-box select, .select-box input {
     margin-right: 1rem;
     background-color: white;
     color: var(--color-dark);
@@ -17,6 +17,12 @@ fieldset {
     border-radius: 5px;
     width: calc(100% - 10rem);
     height: 1.5rem;
+
+}
+
+.select-box input {
+    font-family: helvetica, arial, sans-serif;
+    padding: 0;
 }
 
 #logo {
