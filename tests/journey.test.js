@@ -1,4 +1,4 @@
-const { Journey, JourneyError } = require("../script/componentData.js");
+const { Journey, JourneyError } = require("../script/views/viewData.js");
 
 test("testInit", function () {
   const journey = new Journey({ a: 1, b: 2 });

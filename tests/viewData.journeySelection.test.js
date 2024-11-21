@@ -6,7 +6,7 @@ const {
   getJourneySummary,
   prepareDataForJourneySelection,
   Journey,
-} = require("../script/componentData.js");
+} = require("../script/views/viewData.js");
 const { Database } = require("../script/database.js");
 const { createConnection, testColors } = require("../tests/data.js");
 

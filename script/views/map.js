@@ -232,7 +232,7 @@ class CityManager {
   }
 }
 
-class MapWrapper {
+class MapView {
   #callbacks = {
     legHoverStart: () => {},
     legHoverStop: () => {},

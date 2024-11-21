@@ -43,6 +43,10 @@ class CustomDateTime {
     return this.datetime.toISOString().slice(0, 10);
   }
 
+  get ISOString() {
+    return this.datetime.toISOString();
+  }
+
   get timeString() {
     const hours = this.datetime.getHours().toString();
     const minutes = this.datetime.getMinutes().toString();

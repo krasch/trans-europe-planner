@@ -7,7 +7,7 @@ const {
   prepareInitialDataForMap,
   Journey,
   getColor,
-} = require("../script/componentData.js");
+} = require("../script/views/viewData.js");
 const { Database } = require("../script/database.js");
 const { createConnection, testCities } = require("../tests/data.js");
 
