@@ -51,7 +51,11 @@
 
 <!-- date label at the top of calendar -->
 <template id="template-calendar-grid-date">
-    <div class="calendar-grid-date"></div>
+    <div class="calendar-grid-date">
+        <span class="weekday"></span><br/>
+        <span class="day"></span>
+        <span class="month"></span><br/>
+    </div>
 </template>
 
 <!-- hour label at the left side of calendar -->
@@ -98,47 +102,66 @@
     </div>
 </template>
 
-<div id="logo">
-    <img src="images/logo.svg" alt="logo for the trans-europe-planner">
-    <span>Trans<br/>Europe<br/>Planner</span>
-</div>
 
-<div id="header">
-    <div class="select-box">
-        <label for="select-start">Ich bin in </label>
-        <select name="start" id="select-start">
-            <option value=""></option>
-            <option value="Berlin">Berlin</option>
-            <option value="Hamburg"  selected="selected">Hamburg</option>
-            <option value="Köln">Köln</option>
-            <option value="München">München</option>
-        </select>
+<div id="sidebar">
+    <div id="logo">
+        <img src="images/logo_no_text.svg" alt="logo for the trans-europe-planner">
+        <div>
+            <div>Trans Europe Planner</div>
+            <div class="claim"><em>Einfacher mit dem Zug quer durch Europa</em></div>
+        </div>
     </div>
-    <div class="select-box">
-        <label for="select-end">Ich will nach </label>
-        <select name="end" id="select-end">
-            <option value=""></option>
-            <option value="London">London</option>
-            <option value="Roma">Rom</option>
-            <option value="Süden" selected="selected">Süden</option>
-            <option value="Stockholm">Stockholm</option>
-            <option value="Warszawa">Warschau</option>
-        </select>
-    </div>
+
+    <details id="controls" open>
+        <summary class="legend">Reisedaten konfigurieren</summary>
+        <fieldset>
+            <div class="select-box">
+                <label for="select-start">Ich bin in </label>
+                <select name="start" id="select-start">
+                    <option value=""></option>
+                    <option value="Berlin">Berlin</option>
+                    <option value="Hamburg" selected>Hamburg</option>
+                    <option value="Köln">Köln</option>
+                    <option value="München">München</option>
+                </select>
+            </div>
+            <div class="select-box">
+                <label for="select-end">Ich will nach </label>
+                <select name="end" id="select-end">
+                    <option value=""></option>
+                    <option value="London">London</option>
+                    <option value="Roma">Rom</option>
+                    <option value="Süden" selected>Süden 🏖️</option>
+                    <option value="Stockholm">Stockholm</option>
+                    <option value="Warszawa">Warschau</option>
+                </select>
+            </div>
+            <div class="select-box">
+                <label for="select-end">Am <em style="font-size: 0.6rem">(noch nicht änderbar)</em> </label>
+                <input type="date" id="date" value="2024-12-01" disabled="disabled"/>
+            </div>
+        </fieldset>
+    </details>
+
+    <!-- All calendar elements will be added into the container below dynamically -->
+    <details id="calender-details" open="open">
+        <summary class="legend">Verbindungsdetails anpassen</summary>
+        <fieldset id="calender-fieldset" role="presentation">
+
+            <div class="explanation"> Hier kannst du Zugverbindungen einfach <strong>hin und her schieben</strong> um
+                Umsteigezeiten anzupassen oder die Reise
+                auf mehrere Tage zu verteilen.
+            </div>
+            <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
+        </fieldset>
+    </details>
 </div>
-
-
 <div id="map"></div>
-<!-- All calendar elements will be added into the container below dynamically -->
-<calendar-grid id="calendar" start="2024-10-16" end="2024-10-18" resolution="4"></calendar-grid>
-<!--fieldset id="journey-selection"></fieldset-->
 
 
 <script>
-    // bug: can not add an unknown leg to my route
-
     onload = async (event) => {
-        const map = new MapWrapper('map', [13.408333, 52.518611], 4);
+        const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3);
         const calendar = document.getElementById("calendar");
         const startDestinationSelection = new StartDestinationSelection(
             document.getElementById("select-start"),

@@ -66,7 +66,7 @@ test("prepareDataForMapEmpty", function () {
   const active = null;
 
   const got = prepareDataForMap(journeys, active, database);
-  expect(got).toStrictEqual([]);
+  expect(got).toStrictEqual([[], []]);
 });
 
 test("prepareDataForMap", function () {

@@ -204,7 +204,7 @@ function prepareInitialDataForMap(cityInfo, connections) {
 
 function prepareDataForMap(journeys, activeId, database) {
   if (activeId == null) {
-    return []; // todo is correct?
+    return [[], []]; // todo is correct?
   }
 
   // order journeys such that the active journey is first and all other journeys follow after
