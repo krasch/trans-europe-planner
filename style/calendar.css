@@ -3,7 +3,7 @@ calendar-grid {
 
     --resolution: 4; /* must also change n-th child below */
     --num-days: 3;
-    --num-rows: calc(24*var(--resolution));
+    --num-rows: calc(24*var(--resolution) + 8);
 
     /*grid-template-rows: repeat(24, 1fr);*/
     grid-auto-flow: column;
@@ -33,6 +33,13 @@ calendar-grid > .calendar-grid-hour{
     color: darkgrey;
     text-align: center; /* horizontally center hour label */
     align-content: center; /* vertically center hour label */
+}
+
+calendar-grid > .calendar-grid-date{
+    border-left: 1px dashed lightgrey;
+    color: darkgrey;
+    text-align: center; /* horizontally center date label */
+    align-content: center; /* vertically center date label */
 }
 
 calendar-entry {

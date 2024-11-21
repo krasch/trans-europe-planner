@@ -1,3 +1,5 @@
+const LOCALE = new Intl.NumberFormat().resolvedOptions().locale;
+
 class CalendarGrid extends HTMLElement {
   static observedAttributes = ["start", "end", "resolution"];
 
@@ -18,6 +20,7 @@ class CalendarGrid extends HTMLElement {
   connectedCallback() {
     this.#initHourLabels();
     this.#initEmptyCalendarCells();
+    this.#initTableHeader();
   }
 
   addToGrid(element) {
@@ -32,9 +35,13 @@ class CalendarGrid extends HTMLElement {
   }
 
   #addToGrid(element, column, rowStart, rowEnd) {
-    element.style.gridColumn = column + 2; // column 1 is date column
-    element.style.gridRowStart = rowStart + 1;
-    element.style.gridRowEnd = rowEnd + 1;
+    const columnOffset = 1; // column 1 is date column
+    const rowOffset = 8; // first x rows are for date header
+
+    // +1 always because grid starts counting at 1
+    element.style.gridColumn = column + 1 + columnOffset;
+    element.style.gridRowStart = rowStart + 1 + rowOffset;
+    element.style.gridRowEnd = rowEnd + 1 + rowOffset;
     this.appendChild(element);
   }
 
@@ -43,7 +50,7 @@ class CalendarGrid extends HTMLElement {
       const element = createElementFromTemplate("template-calendar-grid-hour");
       element.innerText = `${hour}`.padStart(2, "0");
 
-      if (hour > 0) element.classList.add("border-top");
+      element.classList.add("border-top");
 
       this.#addToGrid(
         element,
@@ -60,12 +67,36 @@ class CalendarGrid extends HTMLElement {
         const element = createElementFromTemplate(
           "template-calendar-grid-cell",
         );
-        if (i % this.resolution === 0 && i > 0)
-          element.classList.add("border-top");
+        if (i % this.resolution === 0) element.classList.add("border-top");
 
         element.id = `calender-cell-${day}-${i}`;
         this.#addToGrid(element, day, i, i + 1);
       }
+    }
+  }
+
+  #initTableHeader() {
+    const start = new Date(this.startDay);
+
+    for (let day = 0; day < this.numDays; day++) {
+      const date = new Date(start.getTime() + 86400000 * day);
+
+      const data = {
+        ".weekday": {
+          innerText: date.toLocaleString(LOCALE, { weekday: "short" }),
+        },
+        ".day": { innerText: date.getDate() },
+        ".month": {
+          innerText: date.toLocaleString(LOCALE, { month: "short" }),
+        },
+      };
+
+      const element = createElementFromTemplate(
+        "template-calendar-grid-date",
+        data,
+      );
+
+      this.#addToGrid(element, day, -8, 0);
     }
   }
 }
