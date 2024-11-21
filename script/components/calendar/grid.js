@@ -43,6 +43,8 @@ class CalendarGrid extends HTMLElement {
       const element = createElementFromTemplate("template-calendar-grid-hour");
       element.innerText = `${hour}`.padStart(2, "0");
 
+      if (hour > 0) element.classList.add("border-top");
+
       this.#addToGrid(
         element,
         -1,
@@ -58,6 +60,9 @@ class CalendarGrid extends HTMLElement {
         const element = createElementFromTemplate(
           "template-calendar-grid-cell",
         );
+        if (i % this.resolution === 0 && i > 0)
+          element.classList.add("border-top");
+
         element.id = `calender-cell-${day}-${i}`;
         this.#addToGrid(element, day, i, i + 1);
       }
