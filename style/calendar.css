@@ -10,9 +10,10 @@ calendar-grid {
     grid-template-rows: repeat(var(--num-rows), 1fr);
     grid-template-columns: 3rem repeat(var(--num-days), 1fr);
 
-    border: 1px solid lightgrey;
-    border-radius: 10px;
+    border: 1px solid var(--color-background);
+    border-radius: 5px;
     background-color: white;
+    color: #2e210d;
 }
 
 
@@ -30,14 +31,14 @@ calendar-grid > .calendar-grid-cell
 calendar-grid > .calendar-grid-hour{
     min-height: 1.2rem;
 
-    color: darkgrey;
+    color: var(--color-dark);
     text-align: center; /* horizontally center hour label */
     align-content: center; /* vertically center hour label */
 }
 
 calendar-grid > .calendar-grid-date{
     border-left: 1px dashed lightgrey;
-    color: darkgrey;
+    color: var(--color-dark);
     text-align: center; /* horizontally center date label */
     align-content: center; /* vertically center date label */
 }

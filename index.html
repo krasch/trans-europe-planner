@@ -102,47 +102,52 @@
     </div>
 </template>
 
-<div id="logo">
-    <img src="images/logo.svg" alt="logo for the trans-europe-planner">
-    <span>Trans<br/>Europe<br/>Planner</span>
-</div>
 
-<div id="header">
-    <div class="select-box">
-        <label for="select-start">Ich bin in </label>
-        <select name="start" id="select-start">
-            <option value=""></option>
-            <option value="Berlin">Berlin</option>
-            <option value="Hamburg"  selected="selected">Hamburg</option>
-            <option value="Köln">Köln</option>
-            <option value="München">München</option>
-        </select>
+<div id="sidebar">
+    <div id="logo">
+        <img src="images/logo.svg" alt="logo for the trans-europe-planner">
+        <span>Ohne Flugzeug quer durch Europa</span>
     </div>
-    <div class="select-box">
-        <label for="select-end">Ich will nach </label>
-        <select name="end" id="select-end">
-            <option value=""></option>
-            <option value="London">London</option>
-            <option value="Roma">Rom</option>
-            <option value="Süden" selected="selected">Süden</option>
-            <option value="Stockholm">Stockholm</option>
-            <option value="Warszawa">Warschau</option>
-        </select>
-    </div>
+
+    <fieldset id="controls">
+        <div class="legend">Reisedaten konfigurieren</div>
+        <div class="select-box">
+            <label for="select-start">Ich bin in </label>
+            <select name="start" id="select-start">
+                <option value=""></option>
+                <option value="Berlin">Berlin</option>
+                <option value="Hamburg" selected="selected">Hamburg</option>
+                <option value="Köln">Köln</option>
+                <option value="München">München</option>
+            </select>
+        </div>
+        <div class="select-box">
+            <label for="select-end">Ich will nach </label>
+            <select name="end" id="select-end">
+                <option value=""></option>
+                <option value="London">London</option>
+                <option value="Roma">Rom</option>
+                <option value="Süden" selected="selected">Süden 🏖️</option>
+                <option value="Stockholm">Stockholm</option>
+                <option value="Warszawa">Warschau</option>
+            </select>
+        </div>
+    </fieldset>
+
+    <!-- All calendar elements will be added into the container below dynamically -->
+    <fieldset id="calender-fieldset" role="presentation">
+        <div class="legend">Reisedetails anpassen</div>
+        <div class="explanation"> Hier kannst du Zugverbindungen einfach <strong>hin und her schieben</strong> um Umsteigezeiten anzupassen oder die Reise
+            auf mehrere Tage zu verteilen.</div>
+        <calendar-grid id="calendar" start="2024-10-16" end="2024-10-18" resolution="4"></calendar-grid>
+    </fieldset>
 </div>
-
-
 <div id="map"></div>
-<!-- All calendar elements will be added into the container below dynamically -->
-<calendar-grid id="calendar" start="2024-10-16" end="2024-10-18" resolution="4"></calendar-grid>
-<!--fieldset id="journey-selection"></fieldset-->
 
 
 <script>
-    // bug: can not add an unknown leg to my route
-
     onload = async (event) => {
-        const map = new MapWrapper('map', [13.408333, 52.518611], 4);
+        const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3);
         const calendar = document.getElementById("calendar");
         const startDestinationSelection = new StartDestinationSelection(
             document.getElementById("select-start"),
