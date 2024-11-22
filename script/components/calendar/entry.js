@@ -49,14 +49,15 @@ function createCalendarEntry(connection) {
     ".connection-end-station": { innerText: connection.endStation },
   };
 
-  // todo better fallback
   let templateId = "template-calendar-connection";
+  // todo better fallback
+  /*let templateId = "template-calendar-connection";
   if (connection.endDateTime.minutesSince(connection.startDateTime) < 4 * 60) {
     templateId = "template-calendar-connection-short";
   }
   if (connection.endDateTime.minutesSince(connection.startDateTime) < 2 * 60) {
     templateId = "template-calendar-connection-tiny";
-  }
+  }*/
 
   const element = createElementFromTemplate(templateId, templateData);
 

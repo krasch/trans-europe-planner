@@ -47,6 +47,7 @@ calendar-entry {
     margin: 0 5px 0 5px;
 
     border-radius: 10px;
+    overflow: hidden;
 }
 
 /* calendar entry is fully visible */
@@ -88,25 +89,19 @@ calendar-entry.preview > * { /* children should not be visible */
 }
 
 
-
-/* when hovered over map or calendar entry */
-/*#calendar > #calendar-grid > .legSelected {
-    background-color: rgba(255, 0, 0, 0.8);
-} todo fix*/
-
-
-
 calendar-entry > div {
+    height: 100%;
     display: grid;
     grid-template-areas:
       "icon number"
       "start-time start-station"
       "end-time   end-station  ";
+    grid-template-rows: 1rem 1fr auto;
 }
 
 calendar-entry .connection-icon {
     grid-area: icon;
-    max-height: 15px;
+    height: 1rem
 }
 
 calendar-entry .connection-number {
@@ -115,6 +110,7 @@ calendar-entry .connection-number {
 
 calendar-entry .connection-start-time {
     grid-area: start-time;
+    font-size: 100%;
 }
 
 calendar-entry .connection-start-station {
