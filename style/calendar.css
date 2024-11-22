@@ -97,6 +97,8 @@ calendar-entry > div {
       "start-time start-station"
       "end-time   end-station  ";
     grid-template-rows: 1rem 1fr auto;
+    gap: 0.15rem;
+    font-size: 0.7rem;
 }
 
 calendar-entry .connection-icon {
@@ -110,11 +112,13 @@ calendar-entry .connection-number {
 
 calendar-entry .connection-start-time {
     grid-area: start-time;
-    font-size: 100%;
 }
 
 calendar-entry .connection-start-station {
     grid-area: start-station;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
 }
 
 calendar-entry .connection-end-time {
@@ -123,4 +127,8 @@ calendar-entry .connection-end-time {
 
 calendar-entry .connection-end-station {
     grid-area: end-station;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
 }
+
