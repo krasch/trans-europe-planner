@@ -55,7 +55,6 @@ calendar-entry.full {
 
 /* calendar entry is fully visible and being hovered*/
 calendar-entry.full:hover {
-    cursor: move;
     background-color: rgba(var(--color), 0.8);
 }
 calendar-entry.hover {
@@ -86,6 +85,7 @@ calendar-entry.preview > * { /* children should not be visible */
 }
 
 
+/* calender entry is made of multiple rows */
 calendar-entry > .calendar-connection {
     display: flex;
     flex-direction: column;
@@ -93,6 +93,7 @@ calendar-entry > .calendar-connection {
     height: 100%
 }
 
+/* each row has a bunch of info */
 calendar-entry > .calendar-connection > div {
     display: flex;
     flex-direction: row;
@@ -101,6 +102,7 @@ calendar-entry > .calendar-connection > div {
     padding: 0 5px 5px 5px;
 }
 
+/* the first row is the header */
 calendar-entry > .calendar-connection > div:first-child {
     padding-top: 5px;
 
@@ -108,6 +110,15 @@ calendar-entry > .calendar-connection > div:first-child {
     color: white;
 }
 
+/* the move icon is the last child and should be at right hand of card */
+calendar-entry > .calendar-connection > div:first-child > img:last-child {
+    flex-grow: 1;
+    cursor: move;
+    /* to disallow drag events firing on img rather than calendar entry */
+    pointer-events: none;
+}
+
+/* the second row is the start station/time, it should take up all the space */
 calendar-entry > .calendar-connection > div:nth-child(2){
     flex-grow: 1;
 }
