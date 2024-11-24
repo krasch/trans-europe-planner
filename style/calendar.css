@@ -43,10 +43,7 @@ calendar-grid > .calendar-grid-date{
 calendar-entry {
     --color: 0, 0, 0; /* will be set by Javascript */
 
-    padding: 5px;
-    margin: 0 5px 0 5px;
-
-    border-radius: 10px;
+    border-radius: 5px;
     overflow: hidden;
 }
 
@@ -58,7 +55,6 @@ calendar-entry.full {
 
 /* calendar entry is fully visible and being hovered*/
 calendar-entry.full:hover {
-    cursor: move;
     background-color: rgba(var(--color), 0.8);
 }
 calendar-entry.hover {
@@ -89,46 +85,54 @@ calendar-entry.preview > * { /* children should not be visible */
 }
 
 
-calendar-entry > div {
-    height: 100%;
-    display: grid;
-    grid-template-areas:
-      "icon number"
-      "start-time start-station"
-      "end-time   end-station  ";
-    grid-template-rows: 1rem 1fr auto;
-    gap: 0.15rem;
-    font-size: 0.7rem;
+/* calender entry is made of multiple rows */
+calendar-entry > .calendar-connection {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    height: 100%
 }
 
-calendar-entry .connection-icon {
-    grid-area: icon;
-    height: 1rem
+/* each row has a bunch of info */
+calendar-entry > .calendar-connection > div {
+    display: flex;
+    flex-direction: row;
+    gap: 0.25rem;
+
+    padding: 0 5px 5px 5px;
 }
 
-calendar-entry .connection-number {
-    grid-area: number;
+/* the first row is the header */
+calendar-entry > .calendar-connection > div:first-child {
+    padding-top: 5px;
+
+    background-color: rgba(var(--color), 0.8);
+    color: white;
+
+    /* should be on icon only but can't because pointer-events:none*/
+    cursor: move;
 }
 
-calendar-entry .connection-start-time {
-    grid-area: start-time;
+/* the move icon is the last child and should be at right hand of card */
+calendar-entry > .calendar-connection > div:first-child > img:last-child {
+    flex-grow: 1;
+    /* to disallow drag events firing on img rather than calendar entry */
+    pointer-events: none;
 }
 
-calendar-entry .connection-start-station {
-    grid-area: start-station;
+/* the second row is the start station/time, it should take up all the space */
+calendar-entry > .calendar-connection > div:nth-child(2){
+    flex-grow: 1;
+}
+
+calendar-entry img {
+    height: 1rem;
+    filter: invert(100%);
+}
+
+.connection-start-station,
+.connection-end-station {
     overflow: hidden;
     white-space: nowrap;
-    text-overflow: clip;
+    text-overflow: ellipsis;
 }
-
-calendar-entry .connection-end-time {
-    grid-area: end-time;
-}
-
-calendar-entry .connection-end-station {
-    grid-area: end-station;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: clip;
-}
-
