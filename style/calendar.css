@@ -108,12 +108,14 @@ calendar-entry > .calendar-connection > div:first-child {
 
     background-color: rgba(var(--color), 0.8);
     color: white;
+
+    /* should be on icon only but can't because pointer-events:none*/
+    cursor: move;
 }
 
 /* the move icon is the last child and should be at right hand of card */
 calendar-entry > .calendar-connection > div:first-child > img:last-child {
     flex-grow: 1;
-    cursor: move;
     /* to disallow drag events firing on img rather than calendar entry */
     pointer-events: none;
 }
