@@ -135,13 +135,11 @@ const mapStyles = [
     source: "cities",
     type: "symbol",
     filter: [
-      "any", // using any filter to make compatible to other filters
-      [
-        "in",
-        ["get", "id"],
-        ["literal", ["placeholder for alternative transfer cities"]],
-      ],
+      "in",
+      ["get", "id"],
+      ["literal", ["placeholder for alternative transfer cities"]],
     ],
+
     paint: textStyle.paint,
     layout: textStyle.layout,
   },
@@ -152,13 +150,11 @@ const mapStyles = [
     source: "cities",
     type: "symbol",
     filter: [
-      "any", // using any filter to make compatible to other filters
-      [
-        "in",
-        ["get", "id"],
-        ["literal", ["placeholder for active transfer cities"]],
-      ],
+      "in",
+      ["get", "id"],
+      ["literal", ["placeholder for active transfer cities"]],
     ],
+
     paint: textStyle.paint,
     layout: textStyle.layout,
   },
@@ -173,10 +169,10 @@ function updateFilterExpression(layer, filterExpression, cities) {
       filterExpression[1][1][2][1] = cities;
       break;
     case "city-name-transfer-alternative":
-      filterExpression[1][2][1] = cities;
+      filterExpression[2][1] = cities;
       break;
     case "city-name-transfer-active":
-      filterExpression[1][2][1] = cities;
+      filterExpression[2][1] = cities;
       break;
     default:
       throw new Error("Unknown layer");
