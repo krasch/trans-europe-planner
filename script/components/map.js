@@ -38,6 +38,26 @@ function asGeojsonFeatureCollection(features) {
   };
 }
 
+class Source {
+  #map;
+  #sourceName;
+
+  constructor(map, sourceName, featuresGeojson, initialFeatureState) {
+    this.#map = map;
+    this.#sourceName = sourceName;
+
+    this.#map.addSource(sourceName, {
+      type: "geojson",
+      data: featuresGeojson,
+      promoteId: "id", // otherwise can not use non-numeric ids
+    });
+
+    for (let feature of featuresGeojson.features) {
+      console.log(feature);
+    }
+  }
+}
+
 class EdgeManager {
   #map;
   #currentlyActive = [];
@@ -136,7 +156,7 @@ class EdgeManager {
         leg: edge.leg,
         journey: edge.journey,
         journeyTravelTime: edge.journeyTravelTime,
-        hover: this.#hoverState.journey === edge.journey,
+        //hover: this.#hoverState.journey === edge.journey,
       };
       this.#map.setFeatureState({ source: "edges", id: edge.id }, state);
     }
@@ -292,11 +312,18 @@ class MapWrapper {
       data: asGeojsonFeatureCollection(cities.map(cityToGeojson)),
       promoteId: "name", // otherwise can not use non-numeric ids
     });
+
     this.map.addSource("edges", {
       type: "geojson",
       data: asGeojsonFeatureCollection(edges.map(edgeToGeojson)),
       promoteId: "id", // otherwise can not use non-numeric ids
     });
+
+    // todo have a feature state manager for cities and edges
+    /*takes as input the ids and the initial feature state
+    on update it calculates a diff and puts the new feature state
+    should also allow to set initial feature attributes such as setHover    
+    (sdfsdfdsfsf )*/
 
     // add all layers
     for (let layer of mapStyles) this.map.addLayer(layer);
