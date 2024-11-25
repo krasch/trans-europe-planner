@@ -175,8 +175,25 @@ class CityManager {
   #map;
   #currentlyActive = [];
 
+  #callbacks = {
+    click: () => {},
+  };
+
   constructor(map) {
     this.#map = map;
+
+    const nameLayers = [
+      "city-name",
+      "city-name-transfer-alternative",
+      "city-name-transfer-active",
+    ];
+
+    for (let layer of nameLayers)
+      this.#map.on("click", layer, (e) => this.#callbacks["click"](e));
+  }
+
+  on(eventName, callback) {
+    this.#callbacks[eventName] = callback;
   }
 
   updateView(cities) {
@@ -240,7 +257,7 @@ class MapWrapper {
   };
 
   #edgeManager = null;
-  #cities = null;
+  #cityManager = null;
 
   constructor(containerId, center, zoom) {
     this.map = new maplibregl.Map({
@@ -286,7 +303,7 @@ class MapWrapper {
 
     // these two abstract away some of the details of dealing with the map items
     this.#edgeManager = new EdgeManager(this.map);
-    this.#cities = new CityManager(this.map);
+    this.#cityManager = new CityManager(this.map);
 
     // user has started hovering on a leg
     this.#edgeManager.on("activeLegHoverStart", (leg) => {
@@ -302,6 +319,9 @@ class MapWrapper {
     this.#edgeManager.on("alternativeJourneyClicked", (journey) => {
       this.#callbacks["journeySelected"](journey);
     });
+
+    // user has clicked on a city
+    this.#cityManager.on("click", (e) => console.log(e));
   }
 
   on(eventName, callback) {
@@ -314,7 +334,7 @@ class MapWrapper {
     // todo it might be visually more pleasing to first
     // todo remove both old legs and cities and then draw the new legs and cities
     this.#edgeManager.updateView(legs);
-    this.#cities.updateView(cities);
+    this.#cityManager.updateView(cities);
   }
 
   setHoverLeg(leg) {

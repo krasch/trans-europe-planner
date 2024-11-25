@@ -129,6 +129,7 @@ const mapStyles = [
     paint: textStyle.paint,
     layout: textStyle.layout,
   },
+
   // transfers in alternative journeys have precedence
   {
     id: "city-name-transfer-alternative",
