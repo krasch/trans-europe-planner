@@ -167,8 +167,14 @@ function createEarliestItinerary(firstConnection, connectionsForOtherLegs) {
   return itinerary;
 }
 
+// todo max length?
+const routeCache = new Map();
+
 function createStupidItineraryForRoute(legs, database) {
   if (legs.length === 0) return [];
+
+  const cacheKey = legs.map((l) => l.toString()).join(";");
+  if (routeCache.has(cacheKey)) return routeCache.get(cacheKey);
 
   // look up all necessary data from database and sort by departure time
   const connections = legs.map((l) => {
@@ -207,27 +213,10 @@ function createStupidItineraryForRoute(legs, database) {
     }
   }
 
-  return itinerary.map((c) => c.id);
-}
+  const connectionIds = itinerary.map((c) => c.id);
+  routeCache.set(cacheKey, connectionIds);
 
-function createJourneyForRoute(legs, database) {
-  const connections = createStupidItineraryForRoute(legs, database);
-
-  const map = {};
-  for (let i in legs) map[legs[i]] = connections[i];
-
-  return new Journey(map);
-}
-
-function createJourneysForRoute(routes, database) {
-  const journeys = {};
-  for (let i in routes) {
-    journeys[`journey${Number(i) + 1}`] = createJourneyForRoute(
-      routes[Number(i)],
-      database,
-    );
-  }
-  return journeys;
+  return connectionIds;
 }
 
 function pickFittingConnection(connectionIds, desiredLeg, database) {

@@ -1,7 +1,7 @@
 const {
   CustomDateTime,
   InvalidDatetimeFormatError,
-} = require("../script/types.js");
+} = require("../script/types/datetime.js");
 
 test("parseTimestringWithSeconds", function () {
   const createDate = () => new CustomDateTime("2024-10-01", "02:09:05");

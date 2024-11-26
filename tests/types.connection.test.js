@@ -1,4 +1,8 @@
-const { Connection, ConnectionId, Leg } = require("../script/types.js");
+const {
+  Connection,
+  ConnectionId,
+  Leg,
+} = require("../script/types/connection.js");
 const { createConnection } = require("../tests/data.js");
 
 test("connection", function () {

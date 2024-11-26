@@ -1,16 +1,9 @@
 function initUpdateViews(map, calendar, database) {
-  function updateViews(journeys, active) {
-    map.updateView(prepareDataForMap(journeys, active, database));
-    calendar.updateView(prepareDataForCalendar(journeys, active, database));
+  function updateViews(state) {
+    map.updateView(prepareDataForMap(state, database));
+    calendar.updateView(prepareDataForCalendar(state, database));
   }
   return updateViews;
-}
-
-function getConnectionForLeg(journey, leg, database) {
-  const connection = journey.previousConnection(leg);
-  if (connection) return connection;
-
-  return pickFittingConnection(journey.unsortedConnections, leg, database);
 }
 
 async function main(map, calendar, startDestinationSelection) {
@@ -31,26 +24,24 @@ async function main(map, calendar, startDestinationSelection) {
   const updateViews = initUpdateViews(map, calendar, database);
 
   // init state
-  let journeys = {};
-  let active = null;
+  const journeys = new JourneyCollection();
 
   // changing start/destination
   startDestinationSelection.on("startOrDestinationChanged", (target) => {
-    if (target == null) {
-      journeys = {};
-      active = null;
-      updateViews(journeys, active);
-      document
-        .getElementById("calender-details")
-        .style.setProperty("visibility", "hidden");
+    journeys.reset();
+
+    if (target === null) {
+      calendar.hide();
     } else {
-      journeys = createJourneysForRoute(ROUTES[target], database);
-      active = "journey1";
-      updateViews(journeys, active);
-      document
-        .getElementById("calender-details")
-        .style.setProperty("visibility", "visible");
+      calendar.show();
+      for (let route of ROUTES[target]) {
+        const connectionIds = createStupidItineraryForRoute(route, database);
+        journeys.addJourney(connectionIds);
+      }
+      journeys.setActive(0); // todo?
     }
+
+    updateViews(journeys);
   });
 
   // removing/adding a leg in map
@@ -65,15 +56,31 @@ async function main(map, calendar, startDestinationSelection) {
   });*/
 
   // moving things around in the calendar
-  calendar.on("legChanged", (leg, connectionId) => {
-    journeys[active].setConnectionForLeg(leg, connectionId);
-    updateViews(journeys, active);
+  calendar.on("legChanged", (connectionId) => {
+    journeys.activeJourney.updateLeg(connectionId);
+    updateViews(journeys);
   });
 
   // selecting a different journey
   map.on("journeySelected", (journeyId) => {
-    active = journeyId;
-    updateViews(journeys, active);
+    journeys.setActive(journeyId);
+    updateViews(journeys);
+  });
+
+  // clicking on a city
+  map.on("cityHover", (city) => {
+    const target = `Berlin->${city}`;
+    if (!ROUTES[target]) return;
+
+    for (let route of ROUTES[target]) {
+      const connectionIds = createStupidItineraryForRoute(route, database);
+      journeys.addJourney(connectionIds);
+    }
+    updateViews(journeys);
+  });
+  map.on("cityHoverEnd", (city) => {
+    journeys.removeJourneysWithDestination(city);
+    updateViews(journeys);
   });
 
   // hovering over map or calender

@@ -20,27 +20,30 @@
     <!-- style scripts -->
     <script src="style/map.js"></script> <!-- only contains css styles for map in js -->
 
+    <!-- types -->
+    <script src="script/types/connection.js"></script>
+    <script src="script/types/datetime.js"></script>
+    <script src="script/types/journey.js"></script>
+
+    <!-- data -->
+    <script src="data/cities.js"></script>
+    <script src="data/stations.js"></script>
+    <script src="data/connections.js"></script>
+    <script src="data/routes.js"></script>
+
     <!-- scripts -->
-    <script src="script/types.js"></script>
     <script src="script/util.js"></script>
     <script src="script/main.js"></script>
     <script src="script/routing.js"></script>
-
-    <!-- data -->
-    <script src="script/data/cities.js"></script>
-    <script src="script/data/stations.js"></script>
-    <script src="script/data/connections.js"></script>
-    <script src="script/data/routes.js"></script>
     <script src="script/database.js"></script>
-    <script src="script/componentData.js"></script>
 
     <!-- components -->
+    <script src="script/components/componentData.js"></script>
     <script src="script/components/calendar/grid.js"></script>
     <script src="script/components/calendar/entry.js"></script>
     <script src="script/components/calendar/calendar.js"></script>
     <script src="script/components/calendar/draganddrop.js"></script>
     <script src="script/components/map.js"></script>
-    <script src="script/components/journeySelection.js"></script>
     <script src="script/components/startDestinationSelection.js"></script>
 
     <title>Trans-Europe-Planner</title>
@@ -138,7 +141,7 @@
                     <option value=""></option>
                     <option value="London">London</option>
                     <option value="Roma">Rom</option>
-                    <option value="Süden" selected>Süden 🏖️</option>
+                    <option value="Süden">Süden 🏖️</option>
                     <option value="Stockholm">Stockholm</option>
                     <option value="Warszawa">Warschau</option>
                 </select>
@@ -168,6 +171,18 @@
 
 <script>
     onload = async (event) => {
+        const params = new URLSearchParams(window.location.search);
+
+        if (!params.get("start")){
+            const url = window.location.origin + window.location.pathname + "?start=Berlin";
+            window.location.replace(url); // redirect
+        }
+
+        for (let option of document.getElementById("select-start").options){
+            if (option.getAttribute("value") === params.get("start"))
+                option.setAttribute("selected", "selected");
+        }
+
         const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3);
         const calendar = document.getElementById("calendar");
         const startDestinationSelection = new StartDestinationSelection(

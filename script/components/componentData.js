@@ -1,46 +1,3 @@
-class JourneyError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "JourneyError";
-  }
-}
-
-class Journey {
-  #connections;
-  #cache;
-
-  constructor(connectionsByLegs) {
-    this.#connections = connectionsByLegs;
-    this.#cache = {};
-  }
-
-  get unsortedConnections() {
-    if (this.#connections.length === 0) return [];
-    return Object.values(this.#connections);
-  }
-
-  get unsortedLegs() {
-    return Object.keys(this.#connections);
-  }
-
-  setConnectionForLeg(leg, connection) {
-    this.#connections[leg] = connection;
-  }
-
-  removeLeg(leg) {
-    if (!this.#connections[leg])
-      throw new JourneyError(`Can not remove non-existing leg ${leg}`);
-    this.#cache[leg] = this.#connections[leg];
-    delete this.#connections[leg];
-  }
-
-  previousConnection(leg) {
-    if (this.#connections[leg])
-      throw new JourneyError(`Leg is currently active`);
-    return this.#cache[leg];
-  }
-}
-
 function getColor(i) {
   const body = document.getElementsByTagName("body")[0];
   const style = getComputedStyle(body);
@@ -68,15 +25,8 @@ function getColor(i) {
 }
 
 function sortConnectionsByDeparture(connections) {
-  // todo sorts in place
+  connections = connections.slice(); // make a copy
   connections.sort((a, b) => a.start.departure.minutesSince(b.start.departure));
-}
-
-function getSortedJourneyConnections(journey, database) {
-  const connections = journey.unsortedConnections.map((c) =>
-    database.connection(c),
-  );
-  sortConnectionsByDeparture(connections);
   return connections;
 }
 
@@ -97,8 +47,8 @@ class UniqueArray {
   }
 }
 
-function getJourneySummary(journey, database) {
-  const connections = getSortedJourneyConnections(journey, database);
+function getJourneySummary(connections) {
+  connections = sortConnectionsByDeparture(connections);
 
   const startCity = connections[0].start.cityName;
   const endCity = connections.at(-1).end.cityName;
@@ -126,15 +76,15 @@ function getJourneySummary(journey, database) {
   };
 }
 
-function prepareDataForCalendar(journeys, activeId, database) {
+function prepareDataForCalendar(state, database) {
   const data = [];
 
-  if (activeId == null) return data;
+  if (!state.activeJourney) return data;
 
-  const connections = getSortedJourneyConnections(journeys[activeId], database);
+  const connectionIds = state.activeJourney.connectionIds;
 
-  for (let i in connections) {
-    const leg = connections[i].leg;
+  for (let i in connectionIds) {
+    const leg = connectionIds[i].leg;
     const color = getColor(i);
 
     const connectionsForLeg = database.connectionsForLeg(leg);
@@ -150,30 +100,11 @@ function prepareDataForCalendar(journeys, activeId, database) {
         startDateTime: connection.start.departure,
         endStation: connection.end.stationName,
         endDateTime: connection.end.arrival,
-        active: connection.id === connections[i].id,
+        active: connection.id.toString() === connectionIds[i].toString(),
         color: color,
       });
     }
   }
-  return data;
-}
-
-function prepareDataForJourneySelection(journeys, activeId, database) {
-  const data = [];
-
-  if (activeId == null) return data;
-
-  for (let journeyId in journeys) {
-    const summary = getJourneySummary(journeys[journeyId], database);
-    const summaryString = `From ${summary.from} to ${summary.to}${summary.via}<br/>${summary.travelTime}`;
-
-    data.push({
-      id: journeyId,
-      active: journeyId === activeId,
-      summary: summaryString,
-    });
-  }
-
   return data;
 }
 
@@ -202,56 +133,60 @@ function prepareInitialDataForMap(cityInfo, connections) {
   return [cities.data, edges.data];
 }
 
-function prepareDataForMap(journeys, activeId, database) {
-  if (activeId == null) {
-    return [[], []]; // todo is correct?
+function prepareDataForMap(state, database) {
+  if (state.numJourneys === 0) {
+    return [[], []];
   }
 
+  const activeJourney = state.activeJourney;
+
   // order journeys such that the active journey is first and all other journeys follow after
-  const journeyOrder = [activeId];
-  for (let journeyId in journeys)
-    if (journeyId !== activeId) journeyOrder.push(journeyId);
+  let journeyOrder = [];
+  if (activeJourney) journeyOrder.push(activeJourney);
+  journeyOrder = journeyOrder.concat(state.alternativeJourneys);
 
   // array that only allows one item with each key and quietly rejects updates
-  // this works similar to a set but is much less cumbersome to work with
+  // this works similar to a set but is much less cumbersome to work with.
   // because we are looping through active journey first, this makes sure that edges/cities for the
   // active journey are never overwritten
   const edges = new UniqueArray((edge) => edge.id);
   const cities = new UniqueArray((city) => city.name); // todo id
 
-  for (let journeyId of journeyOrder) {
-    const journey = journeys[journeyId];
-    const connections = getSortedJourneyConnections(journey, database);
+  for (let journey of journeyOrder) {
+    const active = activeJourney !== null && journey.id === activeJourney.id;
+    const connections = journey.connectionIds.map((c) =>
+      database.connection(c),
+    );
 
-    let journeySummary = getJourneySummary(journey, database);
+    let journeySummary = getJourneySummary(connections);
 
     let edgeStatus = "alternative";
-    if (journeyId === activeId) edgeStatus = "active";
+    if (active) edgeStatus = "active";
 
     for (let i in connections) {
       let color = null;
-      if (journeyId === activeId) color = getColor(i);
+      if (active) color = getColor(i);
 
       for (let edge of connections[i].trace) {
         cities.push({
           name: edge.startCityName,
           color: color,
           transfer: edge.startCityName === connections[i].start.cityName,
-          active: journeyId === activeId,
+          active: active,
         });
 
         cities.push({
           name: edge.endCityName,
           color: color,
           transfer: edge.endCityName === connections[i].end.cityName,
-          active: journeyId === activeId,
+          active: active,
         });
 
         edges.push({
           id: edge.toAlphabeticString(),
           color: color,
           leg: connections[i].leg.toString(),
-          journey: journeyId,
+          journey: journey.id,
           journeyTravelTime: journeySummary.travelTime,
           status: edgeStatus,
         });
@@ -264,13 +199,10 @@ function prepareDataForMap(journeys, activeId, database) {
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
-  module.exports.Journey = Journey;
   module.exports.getColor = getColor;
   module.exports.sortConnectionsByDeparture = sortConnectionsByDeparture;
   module.exports.getJourneySummary = getJourneySummary;
   module.exports.prepareDataForCalendar = prepareDataForCalendar;
-  module.exports.prepareDataForJourneySelection =
-    prepareDataForJourneySelection;
   module.exports.prepareDataForMap = prepareDataForMap;
   module.exports.prepareInitialDataForMap = prepareInitialDataForMap;
 }

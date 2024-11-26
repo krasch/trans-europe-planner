@@ -38,6 +38,52 @@ function asGeojsonFeatureCollection(features) {
   };
 }
 
+class Source {
+  #map;
+  #sourceName;
+
+  constructor(map, sourceName, featuresGeojson, initialFeatureState) {
+    this.#map = map;
+    this.#sourceName = sourceName;
+
+    this.#map.addSource(sourceName, {
+      type: "geojson",
+      data: featuresGeojson,
+      promoteId: "id", // otherwise can not use non-numeric ids
+    });
+
+    for (let feature of featuresGeojson.features) {
+      console.log(feature);
+    }
+  }
+}
+
+class HoverState {
+  #callbacks = {
+    hover: () => {},
+    hoverEnd: () => {},
+  };
+
+  #hoverState = null;
+
+  on(eventName, callback) {
+    this.#callbacks[eventName] = callback;
+  }
+
+  mouseenter(e) {
+    this.#hoverState = e.features;
+    this.#callbacks["hover"](e);
+  }
+
+  mouseleave(e) {
+    if (this.#hoverState) {
+      e.features = this.#hoverState;
+      this.#callbacks["hoverEnd"](e);
+      this.#hoverState = null;
+    }
+  }
+}
+
 class EdgeManager {
   #map;
   #currentlyActive = [];
@@ -136,7 +182,7 @@ class EdgeManager {
         leg: edge.leg,
         journey: edge.journey,
         journeyTravelTime: edge.journeyTravelTime,
-        hover: this.#hoverState.journey === edge.journey,
+        //hover: this.#hoverState.journey === edge.journey,
       };
       this.#map.setFeatureState({ source: "edges", id: edge.id }, state);
     }
@@ -175,8 +221,37 @@ class CityManager {
   #map;
   #currentlyActive = [];
 
+  #callbacks = {
+    click: () => {},
+    hover: () => {},
+  };
+
   constructor(map) {
     this.#map = map;
+
+    const nameLayers = [
+      "city-name",
+      "city-name-transfer-alternative",
+      "city-name-transfer-active",
+    ];
+
+    const hoverState = new HoverState();
+
+    for (let layer of nameLayers) {
+      this.#map.on("mouseover", layer, (e) => hoverState.mouseenter(e));
+      this.#map.on("mouseleave", layer, (e) => hoverState.mouseleave(e));
+    }
+
+    hoverState.on("hover", (e) =>
+      this.#callbacks["hover"](e.features.at(-1).id),
+    );
+    hoverState.on("hoverEnd", (e) =>
+      this.#callbacks["hoverEnd"](e.features.at(-1).id),
+    );
+  }
+
+  on(eventName, callback) {
+    this.#callbacks[eventName] = callback;
   }
 
   updateView(cities) {
@@ -237,10 +312,11 @@ class MapWrapper {
     legHoverStart: () => {},
     legHoverStop: () => {},
     journeySelected: () => {},
+    citySelected: () => {},
   };
 
   #edgeManager = null;
-  #cities = null;
+  #cityManager = null;
 
   constructor(containerId, center, zoom) {
     this.map = new maplibregl.Map({
@@ -275,18 +351,25 @@ class MapWrapper {
       data: asGeojsonFeatureCollection(cities.map(cityToGeojson)),
       promoteId: "name", // otherwise can not use non-numeric ids
     });
+
     this.map.addSource("edges", {
       type: "geojson",
       data: asGeojsonFeatureCollection(edges.map(edgeToGeojson)),
       promoteId: "id", // otherwise can not use non-numeric ids
     });
 
+    // todo have a feature state manager for cities and edges
+    /*takes as input the ids and the initial feature state
+    on update it calculates a diff and puts the new feature state
+    should also allow to set initial feature attributes such as setHover    
+    (sdfsdfdsfsf )*/
+
     // add all layers
     for (let layer of mapStyles) this.map.addLayer(layer);
 
     // these two abstract away some of the details of dealing with the map items
     this.#edgeManager = new EdgeManager(this.map);
-    this.#cities = new CityManager(this.map);
+    this.#cityManager = new CityManager(this.map);
 
     // user has started hovering on a leg
     this.#edgeManager.on("activeLegHoverStart", (leg) => {
@@ -302,6 +385,13 @@ class MapWrapper {
     this.#edgeManager.on("alternativeJourneyClicked", (journey) => {
       this.#callbacks["journeySelected"](journey);
     });
+
+    // user has clicked on a city
+    this.#cityManager.on("hover", (city) => this.#callbacks["cityHover"](city));
+
+    this.#cityManager.on("hoverEnd", (city) =>
+      this.#callbacks["cityHoverEnd"](city),
+    );
   }
 
   on(eventName, callback) {
@@ -314,7 +404,7 @@ class MapWrapper {
     // todo it might be visually more pleasing to first
     // todo remove both old legs and cities and then draw the new legs and cities
     this.#edgeManager.updateView(legs);
-    this.#cities.updateView(cities);
+    this.#cityManager.updateView(cities);
   }
 
   setHoverLeg(leg) {
