@@ -75,6 +75,18 @@ class Calendar extends CalendarGrid {
   entry(id) {
     return document.getElementById(id); // todo
   }
+
+  hide() {
+    document
+      .getElementById("calender-details")
+      .style.setProperty("visibility", "hidden");
+  }
+
+  show() {
+    document
+      .getElementById("calender-details")
+      .style.setProperty("visibility", "visible");
+  }
 }
 
 customElements.define("calendar-grid", Calendar);

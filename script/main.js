@@ -30,7 +30,10 @@ async function main(map, calendar, startDestinationSelection) {
   startDestinationSelection.on("startOrDestinationChanged", (target) => {
     journeys.reset();
 
-    if (target !== null) {
+    if (target === null) {
+      calendar.hide();
+    } else {
+      calendar.show();
       for (let route of ROUTES[target]) {
         journeys.addJourney(createJourneyForRoute(route, database));
       }
@@ -38,16 +41,6 @@ async function main(map, calendar, startDestinationSelection) {
     }
 
     updateViews(journeys);
-
-    if (target == null) {
-      document
-        .getElementById("calender-details")
-        .style.setProperty("visibility", "hidden");
-    } else {
-      document
-        .getElementById("calender-details")
-        .style.setProperty("visibility", "visible");
-    }
   });
 
   // removing/adding a leg in map
