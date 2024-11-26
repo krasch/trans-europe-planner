@@ -167,8 +167,13 @@ function createEarliestItinerary(firstConnection, connectionsForOtherLegs) {
   return itinerary;
 }
 
+const routeCache = new Map();
+
 function createStupidItineraryForRoute(legs, database) {
   if (legs.length === 0) return [];
+
+  const cacheKey = legs.map((l) => l.toString()).join(";");
+  if (routeCache.has(cacheKey)) return routeCache.get(cacheKey);
 
   // look up all necessary data from database and sort by departure time
   const connections = legs.map((l) => {
@@ -207,7 +212,10 @@ function createStupidItineraryForRoute(legs, database) {
     }
   }
 
-  return itinerary.map((c) => c.id);
+  const connectionIds = itinerary.map((c) => c.id);
+  routeCache.set(cacheKey, connectionIds);
+
+  return connectionIds;
 }
 
 function pickFittingConnection(connectionIds, desiredLeg, database) {
