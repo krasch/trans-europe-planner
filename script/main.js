@@ -73,6 +73,15 @@ async function main(map, calendar, startDestinationSelection) {
     updateViews(journeys);
   });
 
+  // clicking on a city
+  map.on("citySelected", (city) => {
+    const target = `Berlin->${city}`;
+    for (let route of ROUTES[target]) {
+      journeys.addJourney(createJourneyForRoute(route, database));
+    }
+    updateViews(journeys);
+  });
+
   // hovering over map or calender
   calendar.on("entryHoverStart", (leg) => map.setHoverLeg(leg));
   calendar.on("entryHoverStop", (leg) => map.setNoHoverLeg(leg));

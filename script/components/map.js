@@ -274,6 +274,7 @@ class MapWrapper {
     legHoverStart: () => {},
     legHoverStop: () => {},
     journeySelected: () => {},
+    citySelected: () => {},
   };
 
   #edgeManager = null;
@@ -348,7 +349,9 @@ class MapWrapper {
     });
 
     // user has clicked on a city
-    this.#cityManager.on("click", (e) => console.log(e));
+    this.#cityManager.on("click", (e) =>
+      this.#callbacks["citySelected"](e.features[0].id),
+    );
   }
 
   on(eventName, callback) {
