@@ -6,7 +6,7 @@ const {
   prepareDataForCalendar,
   getColor,
 } = require("../script/components/componentData.js");
-const { Journey, JourneyCollection } = require("../script/types/journey.js");
+const { JourneyCollection } = require("../script/types/journey.js");
 const { Database } = require("../script/database.js");
 const { createConnection } = require("../tests/data.js");
 
@@ -28,8 +28,7 @@ test("prepareDataForCalendarNoActiveJourney", function () {
   const database = new Database([c1]);
 
   const journeys = new JourneyCollection();
-  journeys.activeJourney = null;
-  journeys.journeys = new Journey({ "City1->City3": c1.id });
+  journeys.addJourney({ "City1->City3": c1.id });
 
   const got = prepareDataForCalendar(journeys, database);
   expect(got).toStrictEqual([]);
@@ -57,14 +56,12 @@ test("prepareDataForCalendar", function () {
 
   // first two conns do the same leg on different days, but only first is used in the journey
   const journeys = new JourneyCollection();
-  journeys.journeys = {
-    journey1: new Journey({
-      "City1->City2": c1To2_1.id,
-      "City2->City3": c2To3.id,
-    }),
-    journey2: new Journey({ "City1->City3": c1To3.id }),
-  };
-  journeys.activeJourney = "journey1";
+  journeys.addJourney({
+    "City1->City2": c1To2_1.id,
+    "City2->City3": c2To3.id,
+  });
+  journeys.addJourney({ "City1->City3": c1To3.id });
+  journeys.activeId = 0;
 
   // only expect legs for the active journey j1
   const exp = [

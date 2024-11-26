@@ -1,19 +1,19 @@
 const { Journey, JourneyError } = require("../script/types/journey.js");
 
 test("testInit", function () {
-  const journey = new Journey({ a: 1, b: 2 });
+  const journey = new Journey(0, { a: 1, b: 2 });
   expect(journey.unsortedLegs).toStrictEqual(["a", "b"]);
   expect(journey.unsortedConnections).toStrictEqual([1, 2]);
   expect(() => journey.previousConnection("b")).toThrow(JourneyError);
 });
 
 test("testRemoveNonExistingLeg", function () {
-  const journey = new Journey({ a: 1, b: 2 });
+  const journey = new Journey(0, { a: 1, b: 2 });
   expect(() => journey.removeLeg("c")).toThrow(JourneyError);
 });
 
 test("testRemoveLeg", function () {
-  const journey = new Journey({ a: 1, b: 2, c: 3 });
+  const journey = new Journey(0, { a: 1, b: 2, c: 3 });
   journey.removeLeg("b");
 
   expect(journey.unsortedLegs).toStrictEqual(["a", "c"]);
@@ -22,7 +22,7 @@ test("testRemoveLeg", function () {
 });
 
 test("testSetConnectionUnknownLeg", function () {
-  const journey = new Journey({ a: 1, b: 2 });
+  const journey = new Journey(0, { a: 1, b: 2 });
   journey.setConnectionForLeg("c", 3);
 
   expect(journey.unsortedLegs).toStrictEqual(["a", "b", "c"]);
@@ -30,7 +30,7 @@ test("testSetConnectionUnknownLeg", function () {
 });
 
 test("testSetConnectionKnownLeg", function () {
-  const journey = new Journey({ a: 1, b: 2 });
+  const journey = new Journey(0, { a: 1, b: 2 });
   journey.setConnectionForLeg("a", 3);
 
   expect(journey.unsortedLegs).toStrictEqual(["a", "b"]);

@@ -7,7 +7,7 @@ const {
   prepareInitialDataForMap,
   getColor,
 } = require("../script/components/componentData.js");
-const { Journey, JourneyCollection } = require("../script/types/journey.js");
+const { JourneyCollection } = require("../script/types/journey.js");
 const { Database } = require("../script/database.js");
 const { createConnection, testCities } = require("../tests/data.js");
 
@@ -78,10 +78,7 @@ test("prepareDataForMapNoActiveJourney", function () {
   const database = new Database([c1]);
 
   const journeys = new JourneyCollection();
-  journeys.journeys = {
-    journey1: new Journey({ "City1->City3": c1.id }),
-  };
-  journeys.active = null;
+  const j1 = journeys.addJourney({ "City1->City3": c1.id });
 
   const expEdges = [
     {
@@ -89,7 +86,7 @@ test("prepareDataForMapNoActiveJourney", function () {
       color: null,
       leg: "City1->City3",
       status: "alternative",
-      journey: "journey1",
+      journey: j1,
       journeyTravelTime: "3h",
     },
     {
@@ -97,7 +94,7 @@ test("prepareDataForMapNoActiveJourney", function () {
       color: null,
       leg: "City1->City3",
       status: "alternative",
-      journey: "journey1",
+      journey: j1,
       journeyTravelTime: "3h",
     },
   ];
@@ -132,14 +129,12 @@ test("prepareDataForMap", function () {
   const database = new Database([c1, c2, c3]);
 
   const journeys = new JourneyCollection();
-  journeys.journeys = {
-    journey1: new Journey({
-      "City1->City2": c1.id,
-      "City2->City3": c2.id,
-    }),
-    journey2: new Journey({ "City1->City3": c3.id }),
-  };
-  journeys.activeJourney = "journey1";
+  const j1 = journeys.addJourney({
+    "City1->City2": c1.id,
+    "City2->City3": c2.id,
+  });
+  const j2 = journeys.addJourney({ "City1->City3": c3.id });
+  journeys.activeId = j1;
 
   const expCities = [
     { name: "City1", color: getColor(0), transfer: true, active: true },
@@ -155,7 +150,7 @@ test("prepareDataForMap", function () {
       color: getColor(0),
       leg: "City1->City3",
       status: "active",
-      journey: "journey1",
+      journey: j1,
       journeyTravelTime: "5h",
     },
     {
@@ -163,7 +158,7 @@ test("prepareDataForMap", function () {
       color: getColor(0),
       leg: "City1->City3",
       status: "active",
-      journey: "journey1",
+      journey: j1,
       journeyTravelTime: "5h",
     },
     {
@@ -171,7 +166,7 @@ test("prepareDataForMap", function () {
       color: getColor(1),
       leg: "City3->City4",
       status: "active",
-      journey: "journey1",
+      journey: j1,
       journeyTravelTime: "5h",
     },
     {
@@ -179,7 +174,7 @@ test("prepareDataForMap", function () {
       color: null,
       leg: "City1->City5",
       status: "alternative",
-      journey: "journey2",
+      journey: j2,
       journeyTravelTime: "2h",
     },
   ];

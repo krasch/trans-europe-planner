@@ -216,18 +216,7 @@ function createJourneyForRoute(legs, database) {
   const map = {};
   for (let i in legs) map[legs[i]] = connections[i];
 
-  return new Journey(map);
-}
-
-function createJourneysForRoute(routes, database) {
-  const journeys = {};
-  for (let i in routes) {
-    journeys[`journey${Number(i) + 1}`] = createJourneyForRoute(
-      routes[Number(i)],
-      database,
-    );
-  }
-  return journeys;
+  return map;
 }
 
 function pickFittingConnection(connectionIds, desiredLeg, database) {

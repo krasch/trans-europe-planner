@@ -9,7 +9,8 @@ class Journey {
   #connections;
   #cache;
 
-  constructor(connectionsByLegs) {
+  constructor(id, connectionsByLegs) {
+    this.id = id;
     this.#connections = connectionsByLegs;
     this.#cache = {};
   }
@@ -43,13 +44,23 @@ class Journey {
 
 class JourneyCollection {
   constructor() {
-    this.journeys = {};
-    this.activeJourney = null;
+    this.journeys = [];
+    this.activeId = null;
+  }
+
+  get hasActiveJourney() {
+    return this.activeId !== null;
+  }
+
+  addJourney(connectionsByLeg) {
+    const id = this.journeys.length; // id todo make unique
+    this.journeys.push(new Journey(id, connectionsByLeg));
+    return id;
   }
 
   reset() {
-    this.journeys = {};
-    this.activeJourney = null;
+    this.journeys = [];
+    this.activeId = null;
   }
 }
 

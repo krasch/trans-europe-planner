@@ -86,10 +86,10 @@ function getJourneySummary(journey, database) {
 function prepareDataForCalendar(state, database) {
   const data = [];
 
-  if (state.activeJourney == null) return data;
+  if (!state.hasActiveJourney) return data;
 
   const connections = getSortedJourneyConnections(
-    state.journeys[state.activeJourney],
+    state.journeys[state.activeId],
     database,
   );
 
@@ -144,15 +144,15 @@ function prepareInitialDataForMap(cityInfo, connections) {
 }
 
 function prepareDataForMap(state, database) {
-  if (Object.keys(state.journeys).length === 0) {
+  if (state.journeys.length === 0) {
     return [[], []];
   }
 
   // order journeys such that the active journey is first and all other journeys follow after
   const journeyOrder = [];
-  if (state.activeJourney !== null) journeyOrder.push(state.activeJourney);
-  for (let journeyId in state.journeys)
-    if (journeyId !== state.activeJourney) journeyOrder.push(journeyId);
+  if (state.activeId !== null) journeyOrder.push(state.activeId);
+  for (let journey of state.journeys)
+    if (journey.id !== state.activeId) journeyOrder.push(journey.id);
 
   // array that only allows one item with each key and quietly rejects updates
   // this works similar to a set but is much less cumbersome to work with
@@ -168,25 +168,25 @@ function prepareDataForMap(state, database) {
     let journeySummary = getJourneySummary(journey, database);
 
     let edgeStatus = "alternative";
-    if (journeyId === state.activeJourney) edgeStatus = "active";
+    if (journeyId === state.activeId) edgeStatus = "active";
 
     for (let i in connections) {
       let color = null;
-      if (journeyId === state.activeJourney) color = getColor(i);
+      if (journeyId === state.activeId) color = getColor(i);
 
       for (let edge of connections[i].trace) {
         cities.push({
           name: edge.startCityName,
           color: color,
           transfer: edge.startCityName === connections[i].start.cityName,
-          active: journeyId === state.activeJourney,
+          active: journeyId === state.activeId,
         });
 
         cities.push({
           name: edge.endCityName,
           color: color,
           transfer: edge.endCityName === connections[i].end.cityName,
-          active: journeyId === state.activeJourney,
+          active: journeyId === state.activeId,
         });
 
         edges.push({

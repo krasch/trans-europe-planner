@@ -28,16 +28,22 @@ async function main(map, calendar, startDestinationSelection) {
 
   // changing start/destination
   startDestinationSelection.on("startOrDestinationChanged", (target) => {
+    journeys.reset();
+
+    if (target !== null) {
+      for (let route of ROUTES[target]) {
+        journeys.addJourney(createJourneyForRoute(route, database));
+      }
+      journeys.activeId = 0; // todo
+    }
+
+    updateViews(journeys);
+
     if (target == null) {
-      this.state.reset();
-      updateViews(journeys);
       document
         .getElementById("calender-details")
         .style.setProperty("visibility", "hidden");
     } else {
-      journeys.journeys = createJourneysForRoute(ROUTES[target], database);
-      journeys.activeJourney = "journey1";
-      updateViews(journeys);
       document
         .getElementById("calender-details")
         .style.setProperty("visibility", "visible");
@@ -57,16 +63,13 @@ async function main(map, calendar, startDestinationSelection) {
 
   // moving things around in the calendar
   calendar.on("legChanged", (leg, connectionId) => {
-    journeys.journeys[journeys.activeJourney].setConnectionForLeg(
-      leg,
-      connectionId,
-    );
+    journeys.journeys[journeys.activeId].setConnectionForLeg(leg, connectionId);
     updateViews(journeys);
   });
 
   // selecting a different journey
   map.on("journeySelected", (journeyId) => {
-    journeys.activeJourney = journeyId;
+    journeys.activeId = journeyId;
     updateViews(journeys);
   });
 
