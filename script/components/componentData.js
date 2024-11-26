@@ -25,15 +25,8 @@ function getColor(i) {
 }
 
 function sortConnectionsByDeparture(connections) {
-  // todo sorts in place
+  connections = connections.slice(); // make a copy
   connections.sort((a, b) => a.start.departure.minutesSince(b.start.departure));
-}
-
-function getSortedJourneyConnections(journey, database) {
-  const connections = journey.unsortedConnections.map((c) =>
-    database.connection(c),
-  );
-  sortConnectionsByDeparture(connections);
   return connections;
 }
 
@@ -54,8 +47,8 @@ class UniqueArray {
   }
 }
 
-function getJourneySummary(journey, database) {
-  const connections = getSortedJourneyConnections(journey, database);
+function getJourneySummary(connections) {
+  connections = sortConnectionsByDeparture(connections);
 
   const startCity = connections[0].start.cityName;
   const endCity = connections.at(-1).end.cityName;
@@ -88,13 +81,10 @@ function prepareDataForCalendar(state, database) {
 
   if (!state.activeJourney) return data;
 
-  const connections = getSortedJourneyConnections(
-    state.activeJourney,
-    database,
-  );
+  const connectionIds = state.activeJourney.connectionIds;
 
-  for (let i in connections) {
-    const leg = connections[i].leg;
+  for (let i in connectionIds) {
+    const leg = connectionIds[i].leg;
     const color = getColor(i);
 
     const connectionsForLeg = database.connectionsForLeg(leg);
@@ -110,7 +100,7 @@ function prepareDataForCalendar(state, database) {
         startDateTime: connection.start.departure,
         endStation: connection.end.stationName,
         endDateTime: connection.end.arrival,
-        active: connection.id === connections[i].id,
+        active: connection.id.toString() === connectionIds[i].toString(),
         color: color,
       });
     }
@@ -164,9 +154,11 @@ function prepareDataForMap(state, database) {
 
   for (let journey of journeyOrder) {
     const active = activeJourney !== null && journey.id === activeJourney.id;
-    const connections = getSortedJourneyConnections(journey, database);
+    const connections = journey.connectionIds.map((c) =>
+      database.connection(c),
+    );
 
-    let journeySummary = getJourneySummary(journey, database);
+    let journeySummary = getJourneySummary(connections);
 
     let edgeStatus = "alternative";
     if (active) edgeStatus = "active";

@@ -210,15 +210,6 @@ function createStupidItineraryForRoute(legs, database) {
   return itinerary.map((c) => c.id);
 }
 
-function createJourneyForRoute(legs, database) {
-  const connections = createStupidItineraryForRoute(legs, database);
-
-  const map = {};
-  for (let i in legs) map[legs[i]] = connections[i];
-
-  return map;
-}
-
 function pickFittingConnection(connectionIds, desiredLeg, database) {
   const connections = connectionIds.map((i) => database.connection(i));
   connections.sort((a, b) =>

@@ -78,7 +78,7 @@ test("prepareDataForMapNoActiveJourney", function () {
   const database = new Database([c1]);
 
   const journeys = new JourneyCollection();
-  const j1 = journeys.addJourney({ "City1->City3": c1.id });
+  const j1 = journeys.addJourney([c1.id]);
 
   const expEdges = [
     {
@@ -129,11 +129,8 @@ test("prepareDataForMap", function () {
   const database = new Database([c1, c2, c3]);
 
   const journeys = new JourneyCollection();
-  const j1 = journeys.addJourney({
-    "City1->City2": c1.id,
-    "City2->City3": c2.id,
-  });
-  const j2 = journeys.addJourney({ "City1->City3": c3.id });
+  const j1 = journeys.addJourney([c1.id, c2.id]);
+  const j2 = journeys.addJourney([c3.id]);
   journeys.setActive(j1);
 
   const expCities = [

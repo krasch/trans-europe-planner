@@ -6,39 +6,34 @@ class JourneyError extends Error {
 }
 
 class Journey {
-  #connections;
-  #cache;
+  #connectionIds;
+  #legs;
 
-  constructor(id, connectionsByLegs) {
+  constructor(id, connectionIds) {
     this.id = id;
-    this.#connections = connectionsByLegs;
-    this.#cache = {};
+    this.#connectionIds = connectionIds;
+
+    this.#legs = this.#connectionIds.map((c) => c.leg);
   }
 
-  get unsortedConnections() {
-    if (this.#connections.length === 0) return [];
-    return Object.values(this.#connections);
+  get connectionIds() {
+    return this.#connectionIds;
   }
 
-  get unsortedLegs() {
-    return Object.keys(this.#connections);
+  get legs() {
+    return this.#legs;
   }
 
-  setConnectionForLeg(leg, connection) {
-    this.#connections[leg] = connection;
+  updateLeg(connectionId) {
+    const index = this.#legIndex(connectionId.leg);
+    this.#connectionIds[index] = connectionId;
   }
 
-  removeLeg(leg) {
-    if (!this.#connections[leg])
-      throw new JourneyError(`Can not remove non-existing leg ${leg}`);
-    this.#cache[leg] = this.#connections[leg];
-    delete this.#connections[leg];
-  }
-
-  previousConnection(leg) {
-    if (this.#connections[leg])
-      throw new JourneyError(`Leg is currently active`);
-    return this.#cache[leg];
+  #legIndex(leg) {
+    for (let i in this.#legs) {
+      if (this.#legs[i].toString() === leg.toString()) return Number(i);
+    }
+    throw new JourneyError(`Unknown leg ${leg}`);
   }
 }
 
@@ -61,9 +56,9 @@ class JourneyCollection {
     return this.#journeys.length;
   }
 
-  addJourney(connectionsByLeg) {
+  addJourney(connections) {
     const id = this.#journeys.length; // id todo make unique
-    this.#journeys.push(new Journey(id, connectionsByLeg));
+    this.#journeys.push(new Journey(id, connections));
     return id;
   }
 
@@ -74,6 +69,12 @@ class JourneyCollection {
   reset() {
     this.#journeys = [];
     this.#activeId = null;
+  }
+
+  removeJourneysWithDestination(destination) {
+    // todo this will not work if user has changed the order of legs
+    for (let journey of this.#journeys) {
+    }
   }
 }
 

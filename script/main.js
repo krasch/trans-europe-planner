@@ -35,7 +35,8 @@ async function main(map, calendar, startDestinationSelection) {
     } else {
       calendar.show();
       for (let route of ROUTES[target]) {
-        journeys.addJourney(createJourneyForRoute(route, database));
+        const connectionIds = createStupidItineraryForRoute(route, database);
+        journeys.addJourney(connectionIds);
       }
       journeys.setActive(0); // todo?
     }
@@ -55,8 +56,8 @@ async function main(map, calendar, startDestinationSelection) {
   });*/
 
   // moving things around in the calendar
-  calendar.on("legChanged", (leg, connectionId) => {
-    journeys.activeJourney.setConnectionForLeg(leg, connectionId);
+  calendar.on("legChanged", (connectionId) => {
+    journeys.activeJourney.updateLeg(connectionId);
     updateViews(journeys);
   });
 
@@ -70,7 +71,8 @@ async function main(map, calendar, startDestinationSelection) {
   map.on("citySelected", (city) => {
     const target = `Berlin->${city}`;
     for (let route of ROUTES[target]) {
-      journeys.addJourney(createJourneyForRoute(route, database));
+      const connectionIds = createStupidItineraryForRoute(route, database);
+      journeys.addJourney(connectionIds);
     }
     updateViews(journeys);
   });
