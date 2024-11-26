@@ -12,31 +12,6 @@ class InvalidLegFormat extends Error {
   }
 }
 
-function getPartialStops(stops, startCity, endCity) {
-  let startIndex = null;
-  let endIndex = null;
-
-  for (let i in stops) {
-    if (stops[i].cityName === startCity) {
-      if (startIndex === null || stops[i].stationIsPreferred)
-        startIndex = Number(i);
-    }
-
-    if (stops[i].cityName === endCity) {
-      if (endIndex === null || stops[i].stationIsPreferred)
-        endIndex = Number(i);
-    }
-  }
-
-  // start or end are not in the stops
-  if (startIndex === null || endIndex === null) return null;
-
-  // wrong direction
-  if (startIndex >= endIndex) return null;
-
-  return stops.slice(startIndex, endIndex + 1);
-}
-
 class Leg {
   constructor(startCityName, endCityName) {
     this.startCityName = startCityName;
@@ -99,7 +74,7 @@ class Connection {
   }
 
   slice(startCity, endCity) {
-    const sliced = getPartialStops(this.stops, startCity, endCity);
+    const sliced = this.#getPartialStops(this.stops, startCity, endCity);
     if (sliced == null) return null;
 
     return new Connection(
@@ -122,6 +97,31 @@ class Connection {
     }
 
     return directs;
+  }
+
+  #getPartialStops(stops, startCity, endCity) {
+    let startIndex = null;
+    let endIndex = null;
+
+    for (let i in stops) {
+      if (stops[i].cityName === startCity) {
+        if (startIndex === null || stops[i].stationIsPreferred)
+          startIndex = Number(i);
+      }
+
+      if (stops[i].cityName === endCity) {
+        if (endIndex === null || stops[i].stationIsPreferred)
+          endIndex = Number(i);
+      }
+    }
+
+    // start or end are not in the stops
+    if (startIndex === null || endIndex === null) return null;
+
+    // wrong direction
+    if (startIndex >= endIndex) return null;
+
+    return stops.slice(startIndex, endIndex + 1);
   }
 }
 
