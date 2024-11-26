@@ -4,9 +4,9 @@
 
 const {
   prepareDataForCalendar,
-  Journey,
   getColor,
-} = require("../script/componentData.js");
+} = require("../script/components/componentData.js");
+const { Journey } = require("../script/types/journey.js");
 const { Database } = require("../script/database.js");
 const { createConnection } = require("../tests/data.js");
 

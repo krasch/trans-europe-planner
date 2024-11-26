@@ -1,4 +1,5 @@
-const { CustomDateTime, Connection } = require("../script/types.js");
+const { Connection } = require("../script/types/connection.js");
+const { CustomDateTime } = require("../script/types/datetime.js");
 
 const testCities = {
   1: { name: "City1", latitude: 10, longitude: 10 },

@@ -6,7 +6,7 @@ const {
   pickFittingConnection,
 } = require("../script/routing.js");
 const { Database } = require("../script/database.js");
-const { Leg } = require("../script/types.js");
+const { Leg } = require("../script/types/connection.js");
 const { createConnection } = require("../tests/data.js");
 
 test("cartesianProductSingleArraySingleItem", function () {
