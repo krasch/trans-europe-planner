@@ -138,7 +138,7 @@
                     <option value=""></option>
                     <option value="London">London</option>
                     <option value="Roma">Rom</option>
-                    <option value="Süden" selected>Süden 🏖️</option>
+                    <option value="Süden">Süden 🏖️</option>
                     <option value="Stockholm">Stockholm</option>
                     <option value="Warszawa">Warschau</option>
                 </select>
@@ -168,6 +168,12 @@
 
 <script>
     onload = async (event) => {
+        const params = new URLSearchParams(window.location.search);
+        for (let option of document.getElementById("select-start").options){
+            if (option.getAttribute("value") === params.get("start"))
+                option.setAttribute("selected", "selected");
+        }
+
         const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3);
         const calendar = document.getElementById("calendar");
         const startDestinationSelection = new StartDestinationSelection(
