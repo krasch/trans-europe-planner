@@ -1,9 +1,3 @@
-/*
-
-todo currently annoying that I keep copying things to the state by listing keys
-can I just keep all the edges/cities that are in the map, calculate a diff and set that one?
- */
-
 function cityToGeojson(city) {
   return {
     type: "Feature",
@@ -38,27 +32,47 @@ function asGeojsonFeatureCollection(features) {
   };
 }
 
-class Source {
-  #map;
-  #sourceName;
+class StateChangeObserver {
+  #initialState;
 
-  constructor(map, sourceName, featuresGeojson, initialFeatureState) {
-    this.#map = map;
-    this.#sourceName = sourceName;
+  // maps id to state dict
+  #state = new Map();
 
-    this.#map.addSource(sourceName, {
-      type: "geojson",
-      data: featuresGeojson,
-      promoteId: "id", // otherwise can not use non-numeric ids
-    });
+  constructor(initialState) {
+    this.#initialState = initialState;
+  }
 
-    for (let feature of featuresGeojson.features) {
-      console.log(feature);
+  *calculateUpdates(newStates) {
+    // things that are now relevant
+    const updatedIds = [];
+    for (let update of newStates) {
+      const id = update.id;
+
+      // either get the current state or init
+      let current = this.#state.get(id) ?? this.#initialState;
+
+      // keeps all keys from current and updates them with data from update
+      const updated = { ...current, ...update };
+
+      this.#state.set(id, updated);
+      updatedIds.push(id);
+
+      yield [id, updated];
+    }
+
+    // things that are no longer relevant -> reset to initial state
+    for (let id of this.#state.keys()) {
+      if (!updatedIds.includes(id)) {
+        const updated = { ...this.#initialState };
+        this.#state.set(id, updated);
+
+        yield [id, updated];
+      }
     }
   }
 }
 
-class HoverState {
+class MouseOverHelper {
   #callbacks = {
     hover: () => {},
     hoverEnd: () => {},
@@ -86,9 +100,9 @@ class HoverState {
 
 class EdgeManager {
   #map;
-  #currentlyActive = [];
 
   #hoverState = { edge: null, leg: null, journey: null };
+  #featureStates;
 
   #callbacks = {
     activeLegHoverStart: () => {},
@@ -98,6 +112,15 @@ class EdgeManager {
 
   constructor(map) {
     this.#map = map;
+
+    this.#featureStates = new StateChangeObserver({
+      status: null,
+      color: null,
+      leg: null,
+      journey: null,
+      journeyTravelTime: null,
+      hover: false,
+    });
 
     let hoverPopup = null;
 
@@ -161,53 +184,29 @@ class EdgeManager {
   }
 
   updateView(edges) {
-    // for simplicity, unset all previous state
-    for (let edge of this.#currentlyActive) {
-      const state = {
-        status: null,
-        color: null,
-        leg: null,
-        journey: null,
-        journeyTravelTime: null,
-        hover: false,
-      };
-      this.#map.setFeatureState({ source: "edges", id: edge.id }, state);
+    for (let [id, update] of this.#featureStates.calculateUpdates(edges)) {
+      this.#map.setFeatureState({ source: "edges", id: id }, update);
     }
-
-    // set new state
-    for (let edge of edges) {
-      const state = {
-        status: edge.status,
-        color: `rgb(${edge.color})`,
-        leg: edge.leg,
-        journey: edge.journey,
-        journeyTravelTime: edge.journeyTravelTime,
-        //hover: this.#hoverState.journey === edge.journey,
-      };
-      this.#map.setFeatureState({ source: "edges", id: edge.id }, state);
-    }
-
-    this.#currentlyActive = edges;
   }
 
   startShowHover(key, value) {
-    if (!["id", "leg", "journey"].includes(key))
+    /*if (!["id", "leg", "journey"].includes(key))
       throw new Error('Please pass one of ["id", "leg", "journey"]');
 
     for (let edge of this.#currentlyActive) {
       if (value !== edge[key]) continue;
       this.#updateFeatureState(edge.id, { hover: true });
-    }
+    }*/
   }
 
   stopShowHover(key, value) {
     if (!["id", "leg", "journey"].includes(key))
       throw new Error('Please pass one of ["id", "leg", "journey"]');
 
-    for (let edge of this.#currentlyActive) {
+    /*for (let edge of this.#currentlyActive) {
       if (value !== edge[key]) continue;
       this.#updateFeatureState(edge.id, { hover: false });
-    }
+    }*/
   }
 
   #updateFeatureState(id, newState) {
@@ -219,7 +218,7 @@ class EdgeManager {
 
 class CityManager {
   #map;
-  #currentlyActive = [];
+  #featureStates;
 
   #callbacks = {
     click: () => {},
@@ -229,13 +228,19 @@ class CityManager {
   constructor(map) {
     this.#map = map;
 
+    this.#featureStates = new StateChangeObserver({
+      color: null,
+      stop: false,
+      transfer: false,
+    });
+
     const nameLayers = [
       "city-name",
       "city-name-transfer-alternative",
       "city-name-transfer-active",
     ];
 
-    const hoverState = new HoverState();
+    const hoverState = new MouseOverHelper();
 
     for (let layer of nameLayers) {
       this.#map.on("mouseover", layer, (e) => hoverState.mouseenter(e));
@@ -255,26 +260,9 @@ class CityManager {
   }
 
   updateView(cities) {
-    // for simplicity, unset previously state
-    for (let city of this.#currentlyActive) {
-      const state = {
-        color: null,
-        stop: false,
-        transfer: false,
-      };
-      this.#map.setFeatureState({ source: "cities", id: city.name }, state);
+    for (let [id, update] of this.#featureStates.calculateUpdates(cities)) {
+      this.#map.setFeatureState({ source: "cities", id: id }, update);
     }
-
-    // set new state
-    for (let city of cities) {
-      const state = {
-        color: `rgb(${city.color})`,
-        stop: true,
-        transfer: city.transfer,
-      };
-      this.#map.setFeatureState({ source: "cities", id: city.name }, state);
-    }
-    this.#currentlyActive = cities;
 
     const transfers = cities.filter((c) => c.transfer);
 
@@ -301,7 +289,7 @@ class CityManager {
     updateFilterExpression(
       layer,
       filter,
-      cities.map((c) => c.name),
+      cities.map((c) => c.id),
     );
     this.#map.setFilter(layer, filter);
   }
@@ -420,4 +408,5 @@ class MapWrapper {
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.cityToGeojson = cityToGeojson;
   module.exports.legToGeojson = edgeToGeojson;
+  module.exports.FeatureStateManager = FeatureStateManager;
 }
