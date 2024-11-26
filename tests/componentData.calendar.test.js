@@ -6,16 +6,15 @@ const {
   prepareDataForCalendar,
   getColor,
 } = require("../script/components/componentData.js");
-const { Journey } = require("../script/types/journey.js");
+const { Journey, JourneyCollection } = require("../script/types/journey.js");
 const { Database } = require("../script/database.js");
 const { createConnection } = require("../tests/data.js");
 
 test("prepareDataForCalendarEmpty", function () {
   const database = new Database([]);
-  const journeys = {};
-  const active = null;
+  const journeys = new JourneyCollection();
 
-  const got = prepareDataForCalendar(journeys, active, database);
+  const got = prepareDataForCalendar(journeys, database);
   expect(got).toStrictEqual([]);
 });
 
@@ -28,12 +27,11 @@ test("prepareDataForCalendarNoActiveJourney", function () {
 
   const database = new Database([c1]);
 
-  const journeys = {
-    journey1: new Journey({ "City1->City3": c1.id }),
-  };
-  const active = null;
+  const journeys = new JourneyCollection();
+  journeys.activeJourney = null;
+  journeys.journeys = new Journey({ "City1->City3": c1.id });
 
-  const got = prepareDataForCalendar(journeys, active, database);
+  const got = prepareDataForCalendar(journeys, database);
   expect(got).toStrictEqual([]);
 });
 
@@ -58,14 +56,15 @@ test("prepareDataForCalendar", function () {
   const database = new Database([c1To2_1, c1To2_2, c2To3, c1To3]);
 
   // first two conns do the same leg on different days, but only first is used in the journey
-  const journeys = {
+  const journeys = new JourneyCollection();
+  journeys.journeys = {
     journey1: new Journey({
       "City1->City2": c1To2_1.id,
       "City2->City3": c2To3.id,
     }),
     journey2: new Journey({ "City1->City3": c1To3.id }),
   };
-  const active = "journey1";
+  journeys.activeJourney = "journey1";
 
   // only expect legs for the active journey j1
   const exp = [
@@ -107,6 +106,6 @@ test("prepareDataForCalendar", function () {
     },
   ];
 
-  const got = prepareDataForCalendar(journeys, active, database);
+  const got = prepareDataForCalendar(journeys, database);
   expect(got).toStrictEqual(exp);
 });

@@ -83,12 +83,15 @@ function getJourneySummary(journey, database) {
   };
 }
 
-function prepareDataForCalendar(journeys, activeId, database) {
+function prepareDataForCalendar(state, database) {
   const data = [];
 
-  if (activeId == null) return data;
+  if (state.activeJourney == null) return data;
 
-  const connections = getSortedJourneyConnections(journeys[activeId], database);
+  const connections = getSortedJourneyConnections(
+    state.journeys[state.activeJourney],
+    database,
+  );
 
   for (let i in connections) {
     const leg = connections[i].leg;
@@ -140,16 +143,16 @@ function prepareInitialDataForMap(cityInfo, connections) {
   return [cities.data, edges.data];
 }
 
-function prepareDataForMap(journeys, activeId, database) {
-  if (Object.keys(journeys).length === 0) {
+function prepareDataForMap(state, database) {
+  if (Object.keys(state.journeys).length === 0) {
     return [[], []];
   }
 
   // order journeys such that the active journey is first and all other journeys follow after
   const journeyOrder = [];
-  if (activeId !== null) journeyOrder.push(activeId);
-  for (let journeyId in journeys)
-    if (journeyId !== activeId) journeyOrder.push(journeyId);
+  if (state.activeJourney !== null) journeyOrder.push(state.activeJourney);
+  for (let journeyId in state.journeys)
+    if (journeyId !== state.activeJourney) journeyOrder.push(journeyId);
 
   // array that only allows one item with each key and quietly rejects updates
   // this works similar to a set but is much less cumbersome to work with
@@ -159,31 +162,31 @@ function prepareDataForMap(journeys, activeId, database) {
   const cities = new UniqueArray((city) => city.name); // todo id
 
   for (let journeyId of journeyOrder) {
-    const journey = journeys[journeyId];
+    const journey = state.journeys[journeyId];
     const connections = getSortedJourneyConnections(journey, database);
 
     let journeySummary = getJourneySummary(journey, database);
 
     let edgeStatus = "alternative";
-    if (journeyId === activeId) edgeStatus = "active";
+    if (journeyId === state.activeJourney) edgeStatus = "active";
 
     for (let i in connections) {
       let color = null;
-      if (journeyId === activeId) color = getColor(i);
+      if (journeyId === state.activeJourney) color = getColor(i);
 
       for (let edge of connections[i].trace) {
         cities.push({
           name: edge.startCityName,
           color: color,
           transfer: edge.startCityName === connections[i].start.cityName,
-          active: journeyId === activeId,
+          active: journeyId === state.activeJourney,
         });
 
         cities.push({
           name: edge.endCityName,
           color: color,
           transfer: edge.endCityName === connections[i].end.cityName,
-          active: journeyId === activeId,
+          active: journeyId === state.activeJourney,
         });
 
         edges.push({

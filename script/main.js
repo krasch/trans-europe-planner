@@ -1,7 +1,7 @@
 function initUpdateViews(map, calendar, database) {
-  function updateViews(journeys, active) {
-    map.updateView(prepareDataForMap(journeys, active, database));
-    calendar.updateView(prepareDataForCalendar(journeys, active, database));
+  function updateViews(state) {
+    map.updateView(prepareDataForMap(state, database));
+    calendar.updateView(prepareDataForCalendar(state, database));
   }
   return updateViews;
 }
@@ -24,22 +24,20 @@ async function main(map, calendar, startDestinationSelection) {
   const updateViews = initUpdateViews(map, calendar, database);
 
   // init state
-  let journeys = {};
-  let active = null;
+  const journeys = new JourneyCollection();
 
   // changing start/destination
   startDestinationSelection.on("startOrDestinationChanged", (target) => {
     if (target == null) {
-      journeys = {};
-      active = null;
-      updateViews(journeys, active);
+      this.state.reset();
+      updateViews(journeys);
       document
         .getElementById("calender-details")
         .style.setProperty("visibility", "hidden");
     } else {
-      journeys = createJourneysForRoute(ROUTES[target], database);
-      active = "journey1";
-      updateViews(journeys, active);
+      journeys.journeys = createJourneysForRoute(ROUTES[target], database);
+      journeys.activeJourney = "journey1";
+      updateViews(journeys);
       document
         .getElementById("calender-details")
         .style.setProperty("visibility", "visible");
@@ -59,14 +57,17 @@ async function main(map, calendar, startDestinationSelection) {
 
   // moving things around in the calendar
   calendar.on("legChanged", (leg, connectionId) => {
-    journeys[active].setConnectionForLeg(leg, connectionId);
-    updateViews(journeys, active);
+    journeys.journeys[journeys.activeJourney].setConnectionForLeg(
+      leg,
+      connectionId,
+    );
+    updateViews(journeys);
   });
 
   // selecting a different journey
   map.on("journeySelected", (journeyId) => {
-    active = journeyId;
-    updateViews(journeys, active);
+    journeys.activeJourney = journeyId;
+    updateViews(journeys);
   });
 
   // hovering over map or calender

@@ -41,8 +41,21 @@ class Journey {
   }
 }
 
+class JourneyCollection {
+  constructor() {
+    this.journeys = {};
+    this.activeJourney = null;
+  }
+
+  reset() {
+    this.journeys = {};
+    this.activeJourney = null;
+  }
+}
+
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.Journey = Journey;
+  module.exports.JourneyCollection = JourneyCollection;
   module.exports.JourneyError = JourneyError;
 }

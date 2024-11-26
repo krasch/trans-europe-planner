@@ -7,7 +7,7 @@ const {
   prepareInitialDataForMap,
   getColor,
 } = require("../script/components/componentData.js");
-const { Journey } = require("../script/types/journey.js");
+const { Journey, JourneyCollection } = require("../script/types/journey.js");
 const { Database } = require("../script/database.js");
 const { createConnection, testCities } = require("../tests/data.js");
 
@@ -62,10 +62,9 @@ test("prepareInitialDataForMap", function () {
 test("prepareDataForMapEmpty", function () {
   const database = new Database([]);
 
-  const journeys = {};
-  const active = null;
+  const journeys = new JourneyCollection();
 
-  const got = prepareDataForMap(journeys, active, database);
+  const got = prepareDataForMap(journeys, database);
   expect(got).toStrictEqual([[], []]);
 });
 
@@ -78,10 +77,11 @@ test("prepareDataForMapNoActiveJourney", function () {
 
   const database = new Database([c1]);
 
-  const journeys = {
+  const journeys = new JourneyCollection();
+  journeys.journeys = {
     journey1: new Journey({ "City1->City3": c1.id }),
   };
-  const active = null;
+  journeys.active = null;
 
   const expEdges = [
     {
@@ -108,7 +108,7 @@ test("prepareDataForMapNoActiveJourney", function () {
     { name: "City3", color: null, transfer: true, active: false },
   ];
 
-  const got = prepareDataForMap(journeys, active, database);
+  const got = prepareDataForMap(journeys, database);
   expect(got).toStrictEqual([expCities, expEdges]);
 });
 
@@ -131,14 +131,15 @@ test("prepareDataForMap", function () {
 
   const database = new Database([c1, c2, c3]);
 
-  const journeys = {
+  const journeys = new JourneyCollection();
+  journeys.journeys = {
     journey1: new Journey({
       "City1->City2": c1.id,
       "City2->City3": c2.id,
     }),
     journey2: new Journey({ "City1->City3": c3.id }),
   };
-  const active = "journey1";
+  journeys.activeJourney = "journey1";
 
   const expCities = [
     { name: "City1", color: getColor(0), transfer: true, active: true },
@@ -182,6 +183,6 @@ test("prepareDataForMap", function () {
       journeyTravelTime: "2h",
     },
   ];
-  const got = prepareDataForMap(journeys, active, database);
+  const got = prepareDataForMap(journeys, database);
   expect(got).toStrictEqual([expCities, expEdges]);
 });
