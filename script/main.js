@@ -6,13 +6,6 @@ function initUpdateViews(map, calendar, database) {
   return updateViews;
 }
 
-function getConnectionForLeg(journey, leg, database) {
-  const connection = journey.previousConnection(leg);
-  if (connection) return connection;
-
-  return pickFittingConnection(journey.unsortedConnections, leg, database);
-}
-
 async function main(map, calendar, startDestinationSelection) {
   const DATES = ["2024-12-01", "2024-12-02", "2024-12-03"];
 
