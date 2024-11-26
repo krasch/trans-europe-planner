@@ -63,13 +63,13 @@ async function main(map, calendar, startDestinationSelection) {
 
   // moving things around in the calendar
   calendar.on("legChanged", (leg, connectionId) => {
-    journeys.activeJourneyId.setConnectionForLeg(leg, connectionId);
+    journeys.activeJourney.setConnectionForLeg(leg, connectionId);
     updateViews(journeys);
   });
 
   // selecting a different journey
   map.on("journeySelected", (journeyId) => {
-    journeys.activeId = journeyId;
+    journeys.setActive(journeyId);
     updateViews(journeys);
   });
 
