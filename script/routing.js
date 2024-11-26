@@ -167,6 +167,7 @@ function createEarliestItinerary(firstConnection, connectionsForOtherLegs) {
   return itinerary;
 }
 
+// todo max length?
 const routeCache = new Map();
 
 function createStupidItineraryForRoute(legs, database) {

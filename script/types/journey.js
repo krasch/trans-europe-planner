@@ -24,6 +24,14 @@ class Journey {
     return this.#legs;
   }
 
+  get start() {
+    return this.#legs[0].startCityName;
+  }
+
+  get destination() {
+    return this.#legs.at(-1).endCityName;
+  }
+
   updateLeg(connectionId) {
     const index = this.#legIndex(connectionId.leg);
     this.#connectionIds[index] = connectionId;
@@ -72,9 +80,9 @@ class JourneyCollection {
   }
 
   removeJourneysWithDestination(destination) {
-    // todo this will not work if user has changed the order of legs
-    for (let journey of this.#journeys) {
-    }
+    this.#journeys = this.#journeys.filter(
+      (j) => j.destination !== destination,
+    );
   }
 }
 

@@ -58,6 +58,32 @@ class Source {
   }
 }
 
+class HoverState {
+  #callbacks = {
+    hover: () => {},
+    hoverEnd: () => {},
+  };
+
+  #hoverState = null;
+
+  on(eventName, callback) {
+    this.#callbacks[eventName] = callback;
+  }
+
+  mouseenter(e) {
+    this.#hoverState = e.features;
+    this.#callbacks["hover"](e);
+  }
+
+  mouseleave(e) {
+    if (this.#hoverState) {
+      e.features = this.#hoverState;
+      this.#callbacks["hoverEnd"](e);
+      this.#hoverState = null;
+    }
+  }
+}
+
 class EdgeManager {
   #map;
   #currentlyActive = [];
@@ -197,6 +223,7 @@ class CityManager {
 
   #callbacks = {
     click: () => {},
+    hover: () => {},
   };
 
   constructor(map) {
@@ -208,8 +235,19 @@ class CityManager {
       "city-name-transfer-active",
     ];
 
-    for (let layer of nameLayers)
-      this.#map.on("click", layer, (e) => this.#callbacks["click"](e));
+    const hoverState = new HoverState();
+
+    for (let layer of nameLayers) {
+      this.#map.on("mouseover", layer, (e) => hoverState.mouseenter(e));
+      this.#map.on("mouseleave", layer, (e) => hoverState.mouseleave(e));
+    }
+
+    hoverState.on("hover", (e) =>
+      this.#callbacks["hover"](e.features.at(-1).id),
+    );
+    hoverState.on("hoverEnd", (e) =>
+      this.#callbacks["hoverEnd"](e.features.at(-1).id),
+    );
   }
 
   on(eventName, callback) {
@@ -349,8 +387,10 @@ class MapWrapper {
     });
 
     // user has clicked on a city
-    this.#cityManager.on("click", (e) =>
-      this.#callbacks["citySelected"](e.features[0].id),
+    this.#cityManager.on("hover", (city) => this.#callbacks["cityHover"](city));
+
+    this.#cityManager.on("hoverEnd", (city) =>
+      this.#callbacks["cityHoverEnd"](city),
     );
   }
 

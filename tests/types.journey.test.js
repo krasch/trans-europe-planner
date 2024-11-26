@@ -15,6 +15,8 @@ test("testInit", function () {
 
   expect(journey.legs).toStrictEqual([c1.leg, c2.leg]);
   expect(journey.connectionIds).toStrictEqual([c1.id, c2.id]);
+  expect(journey.start).toBe("City1");
+  expect(journey.destination).toBe("City3");
 });
 
 test("testSetConnectionUnknownLeg", function () {

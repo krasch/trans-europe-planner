@@ -68,12 +68,18 @@ async function main(map, calendar, startDestinationSelection) {
   });
 
   // clicking on a city
-  map.on("citySelected", (city) => {
+  map.on("cityHover", (city) => {
     const target = `Berlin->${city}`;
+    if (!ROUTES[target]) return;
+
     for (let route of ROUTES[target]) {
       const connectionIds = createStupidItineraryForRoute(route, database);
       journeys.addJourney(connectionIds);
     }
+    updateViews(journeys);
+  });
+  map.on("cityHoverEnd", (city) => {
+    journeys.removeJourneysWithDestination(city);
     updateViews(journeys);
   });
 
