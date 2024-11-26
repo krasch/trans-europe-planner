@@ -86,10 +86,10 @@ function getJourneySummary(journey, database) {
 function prepareDataForCalendar(state, database) {
   const data = [];
 
-  if (!state.hasActiveJourney) return data;
+  if (!state.activeJourney) return data;
 
   const connections = getSortedJourneyConnections(
-    state.journeys[state.activeId],
+    state.activeJourney,
     database,
   );
 
@@ -144,56 +144,57 @@ function prepareInitialDataForMap(cityInfo, connections) {
 }
 
 function prepareDataForMap(state, database) {
-  if (state.journeys.length === 0) {
+  if (state.numJourneys === 0) {
     return [[], []];
   }
 
+  const activeJourney = state.activeJourney;
+
   // order journeys such that the active journey is first and all other journeys follow after
-  const journeyOrder = [];
-  if (state.activeId !== null) journeyOrder.push(state.activeId);
-  for (let journey of state.journeys)
-    if (journey.id !== state.activeId) journeyOrder.push(journey.id);
+  let journeyOrder = [];
+  if (activeJourney) journeyOrder.push(activeJourney);
+  journeyOrder = journeyOrder.concat(state.alternativeJourneys);
 
   // array that only allows one item with each key and quietly rejects updates
-  // this works similar to a set but is much less cumbersome to work with
+  // this works similar to a set but is much less cumbersome to work with.
   // because we are looping through active journey first, this makes sure that edges/cities for the
   // active journey are never overwritten
   const edges = new UniqueArray((edge) => edge.id);
   const cities = new UniqueArray((city) => city.name); // todo id
 
-  for (let journeyId of journeyOrder) {
-    const journey = state.journeys[journeyId];
+  for (let journey of journeyOrder) {
+    const active = activeJourney !== null && journey.id === activeJourney.id;
     const connections = getSortedJourneyConnections(journey, database);
 
     let journeySummary = getJourneySummary(journey, database);
 
     let edgeStatus = "alternative";
-    if (journeyId === state.activeId) edgeStatus = "active";
+    if (active) edgeStatus = "active";
 
     for (let i in connections) {
       let color = null;
-      if (journeyId === state.activeId) color = getColor(i);
+      if (active) color = getColor(i);
 
       for (let edge of connections[i].trace) {
         cities.push({
           name: edge.startCityName,
           color: color,
           transfer: edge.startCityName === connections[i].start.cityName,
-          active: journeyId === state.activeId,
+          active: active,
         });
 
         cities.push({
           name: edge.endCityName,
           color: color,
           transfer: edge.endCityName === connections[i].end.cityName,
-          active: journeyId === state.activeId,
+          active: active,
         });
 
         edges.push({
           id: edge.toAlphabeticString(),
           color: color,
           leg: connections[i].leg.toString(),
-          journey: journeyId,
+          journey: journey.id,
           journeyTravelTime: journeySummary.travelTime,
           status: edgeStatus,
         });

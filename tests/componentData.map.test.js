@@ -134,7 +134,7 @@ test("prepareDataForMap", function () {
     "City2->City3": c2.id,
   });
   const j2 = journeys.addJourney({ "City1->City3": c3.id });
-  journeys.activeId = j1;
+  journeys.setActive(j1);
 
   const expCities = [
     { name: "City1", color: getColor(0), transfer: true, active: true },

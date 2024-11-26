@@ -56,12 +56,12 @@ test("prepareDataForCalendar", function () {
 
   // first two conns do the same leg on different days, but only first is used in the journey
   const journeys = new JourneyCollection();
-  journeys.addJourney({
+  const j1 = journeys.addJourney({
     "City1->City2": c1To2_1.id,
     "City2->City3": c2To3.id,
   });
-  journeys.addJourney({ "City1->City3": c1To3.id });
-  journeys.activeId = 0;
+  const j2 = journeys.addJourney({ "City1->City3": c1To3.id });
+  journeys.setActive(j1);
 
   // only expect legs for the active journey j1
   const exp = [

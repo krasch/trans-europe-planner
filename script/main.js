@@ -34,7 +34,7 @@ async function main(map, calendar, startDestinationSelection) {
       for (let route of ROUTES[target]) {
         journeys.addJourney(createJourneyForRoute(route, database));
       }
-      journeys.activeId = 0; // todo
+      journeys.setActive(0); // todo?
     }
 
     updateViews(journeys);
@@ -63,7 +63,7 @@ async function main(map, calendar, startDestinationSelection) {
 
   // moving things around in the calendar
   calendar.on("legChanged", (leg, connectionId) => {
-    journeys.journeys[journeys.activeId].setConnectionForLeg(leg, connectionId);
+    journeys.activeJourneyId.setConnectionForLeg(leg, connectionId);
     updateViews(journeys);
   });
 

@@ -43,24 +43,37 @@ class Journey {
 }
 
 class JourneyCollection {
-  constructor() {
-    this.journeys = [];
-    this.activeId = null;
+  #journeys = [];
+  #activeId = null;
+
+  get activeJourney() {
+    if (this.#activeId === null) return null;
+    for (let j of this.#journeys) if (j.id === this.#activeId) return j;
   }
 
-  get hasActiveJourney() {
-    return this.activeId !== null;
+  get alternativeJourneys() {
+    const result = [];
+    for (let j of this.#journeys) if (j.id !== this.#activeId) result.push(j);
+    return result;
+  }
+
+  get numJourneys() {
+    return this.#journeys.length;
   }
 
   addJourney(connectionsByLeg) {
-    const id = this.journeys.length; // id todo make unique
-    this.journeys.push(new Journey(id, connectionsByLeg));
+    const id = this.#journeys.length; // id todo make unique
+    this.#journeys.push(new Journey(id, connectionsByLeg));
     return id;
   }
 
+  setActive(journeyId) {
+    this.#activeId = journeyId;
+  }
+
   reset() {
-    this.journeys = [];
-    this.activeId = null;
+    this.#journeys = [];
+    this.#activeId = null;
   }
 }
 
