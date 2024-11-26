@@ -69,6 +69,49 @@ test("prepareDataForMapEmpty", function () {
   expect(got).toStrictEqual([[], []]);
 });
 
+test("prepareDataForMapNoActiveJourney", function () {
+  const c1 = createConnection([
+    ["2024-10-15", "06:00", "city1MainStationId"],
+    ["2024-10-15", "08:00", "city2MainStationId"],
+    ["2024-10-15", "09:00", "city3MainStationId"],
+  ]);
+
+  const database = new Database([c1]);
+
+  const journeys = {
+    journey1: new Journey({ "City1->City3": c1.id }),
+  };
+  const active = null;
+
+  const expEdges = [
+    {
+      id: "City1->City2",
+      color: null,
+      leg: "City1->City3",
+      status: "alternative",
+      journey: "journey1",
+      journeyTravelTime: "3h",
+    },
+    {
+      id: "City2->City3",
+      color: null,
+      leg: "City1->City3",
+      status: "alternative",
+      journey: "journey1",
+      journeyTravelTime: "3h",
+    },
+  ];
+
+  const expCities = [
+    { name: "City1", color: null, transfer: true, active: false },
+    { name: "City2", color: null, transfer: false, active: false },
+    { name: "City3", color: null, transfer: true, active: false },
+  ];
+
+  const got = prepareDataForMap(journeys, active, database);
+  expect(got).toStrictEqual([expCities, expEdges]);
+});
+
 test("prepareDataForMap", function () {
   const c1 = createConnection([
     ["2024-10-15", "06:00", "city1MainStationId"],

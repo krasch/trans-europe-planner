@@ -19,6 +19,24 @@ test("prepareDataForCalendarEmpty", function () {
   expect(got).toStrictEqual([]);
 });
 
+test("prepareDataForCalendarNoActiveJourney", function () {
+  const c1 = createConnection([
+    ["2024-10-15", "06:00", "city1MainStationId"],
+    ["2024-10-15", "08:00", "city2MainStationId"],
+    ["2024-10-15", "09:00", "city3MainStationId"],
+  ]);
+
+  const database = new Database([c1]);
+
+  const journeys = {
+    journey1: new Journey({ "City1->City3": c1.id }),
+  };
+  const active = null;
+
+  const got = prepareDataForCalendar(journeys, active, database);
+  expect(got).toStrictEqual([]);
+});
+
 test("prepareDataForCalendar", function () {
   const c1To2_1 = createConnection([
     ["2024-10-15", "06:00", "city1MainStationId"],

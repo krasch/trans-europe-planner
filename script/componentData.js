@@ -203,12 +203,13 @@ function prepareInitialDataForMap(cityInfo, connections) {
 }
 
 function prepareDataForMap(journeys, activeId, database) {
-  if (activeId == null) {
-    return [[], []]; // todo is correct?
+  if (Object.keys(journeys).length === 0) {
+    return [[], []];
   }
 
   // order journeys such that the active journey is first and all other journeys follow after
-  const journeyOrder = [activeId];
+  const journeyOrder = [];
+  if (activeId !== null) journeyOrder.push(activeId);
   for (let journeyId in journeys)
     if (journeyId !== activeId) journeyOrder.push(journeyId);
 
