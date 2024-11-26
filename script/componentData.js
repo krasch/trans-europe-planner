@@ -158,25 +158,6 @@ function prepareDataForCalendar(journeys, activeId, database) {
   return data;
 }
 
-function prepareDataForJourneySelection(journeys, activeId, database) {
-  const data = [];
-
-  if (activeId == null) return data;
-
-  for (let journeyId in journeys) {
-    const summary = getJourneySummary(journeys[journeyId], database);
-    const summaryString = `From ${summary.from} to ${summary.to}${summary.via}<br/>${summary.travelTime}`;
-
-    data.push({
-      id: journeyId,
-      active: journeyId === activeId,
-      summary: summaryString,
-    });
-  }
-
-  return data;
-}
-
 function prepareInitialDataForMap(cityInfo, connections) {
   const cityNameToId = {};
   for (let id in cityInfo) cityNameToId[cityInfo[id].name] = id;
@@ -270,8 +251,6 @@ if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.sortConnectionsByDeparture = sortConnectionsByDeparture;
   module.exports.getJourneySummary = getJourneySummary;
   module.exports.prepareDataForCalendar = prepareDataForCalendar;
-  module.exports.prepareDataForJourneySelection =
-    prepareDataForJourneySelection;
   module.exports.prepareDataForMap = prepareDataForMap;
   module.exports.prepareInitialDataForMap = prepareInitialDataForMap;
 }
