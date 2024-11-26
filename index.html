@@ -169,6 +169,12 @@
 <script>
     onload = async (event) => {
         const params = new URLSearchParams(window.location.search);
+
+        if (!params.get("start")){
+            const url = window.location.origin + window.location.pathname + "?start=Berlin";
+            window.location.replace(url); // redirect
+        }
+
         for (let option of document.getElementById("select-start").options){
             if (option.getAttribute("value") === params.get("start"))
                 option.setAttribute("selected", "selected");
