@@ -331,6 +331,30 @@ class MapWrapper {
     // add all layers
     for (let layer of mapStyles) this.map.addLayer(layer);
 
+    const destinations = [
+      "Berlin",
+      "Marseille",
+      "London",
+      "Roma",
+      "Stockholm",
+      "Warszawa",
+    ];
+
+    for (let city of cities) {
+      if (!destinations.includes(city.name)) continue;
+
+      // create a DOM element for the marker
+      const el = document.createElement("div");
+      el.classList.add("marker");
+
+      let marker = new maplibregl.Marker({
+        element: el,
+        anchor: "bottom-left",
+        offset: [-2, 0],
+      });
+      marker.setLngLat([city.longitude, city.latitude]).addTo(this.map);
+    }
+
     // initialise features states for cities and edge sources
     this.#featureStates = {
       edges: new FeatureStateManager(this.map, "edges", EDGE_DEFAULT_STATE),

@@ -5,3 +5,12 @@ body {
     --color4: 231,41,138;
     --color5: 102,166,30;
 }
+
+.marker {
+  /*background-image: url('http://localhost:8000/images/train.svg');*/
+  background-image: url("/images/embassy.svg");
+  background-size: cover;
+  width: 30px;
+  height: 30px;
+  cursor: default;
+}
