@@ -100,9 +100,9 @@ test("prepareDataForMapNoActiveJourney", function () {
   ];
 
   const expCities = [
-    { name: "City1", color: null, transfer: true, active: false },
-    { name: "City2", color: null, transfer: false, active: false },
-    { name: "City3", color: null, transfer: true, active: false },
+    { id: "City1", color: null, transfer: true, active: false, stop: true },
+    { id: "City2", color: null, transfer: false, active: false, stop: true },
+    { id: "City3", color: null, transfer: true, active: false, stop: true },
   ];
 
   const got = prepareDataForMap(journeys, database);
@@ -134,17 +134,41 @@ test("prepareDataForMap", function () {
   journeys.setActive(j1);
 
   const expCities = [
-    { name: "City1", color: getColor(0), transfer: true, active: true },
-    { name: "City2", color: getColor(0), transfer: false, active: true },
-    { name: "City3", color: getColor(0), transfer: true, active: true },
-    { name: "City4", color: getColor(1), transfer: true, active: true },
-    { name: "City5", color: null, transfer: true, active: false },
+    {
+      id: "City1",
+      color: `rgb(${getColor(0)})`,
+      transfer: true,
+      active: true,
+      stop: true,
+    },
+    {
+      id: "City2",
+      color: `rgb(${getColor(0)})`,
+      transfer: false,
+      active: true,
+      stop: true,
+    },
+    {
+      id: "City3",
+      color: `rgb(${getColor(0)})`,
+      transfer: true,
+      active: true,
+      stop: true,
+    },
+    {
+      id: "City4",
+      color: `rgb(${getColor(1)})`,
+      transfer: true,
+      active: true,
+      stop: true,
+    },
+    { id: "City5", color: null, transfer: true, active: false, stop: true },
   ];
 
   const expEdges = [
     {
       id: "City1->City2",
-      color: getColor(0),
+      color: `rgb(${getColor(0)})`,
       leg: "City1->City3",
       status: "active",
       journey: j1,
@@ -152,7 +176,7 @@ test("prepareDataForMap", function () {
     },
     {
       id: "City2->City3",
-      color: getColor(0),
+      color: `rgb(${getColor(0)})`,
       leg: "City1->City3",
       status: "active",
       journey: j1,
@@ -160,7 +184,7 @@ test("prepareDataForMap", function () {
     },
     {
       id: "City3->City4",
-      color: getColor(1),
+      color: `rgb(${getColor(1)})`,
       leg: "City3->City4",
       status: "active",
       journey: j1,
