@@ -150,7 +150,7 @@ function prepareDataForMap(state, database) {
   // because we are looping through active journey first, this makes sure that edges/cities for the
   // active journey are never overwritten
   const edges = new UniqueArray((edge) => edge.id);
-  const cities = new UniqueArray((city) => city.name); // todo id
+  const cities = new UniqueArray((city) => city.id);
 
   for (let journey of journeyOrder) {
     const active = activeJourney !== null && journey.id === activeJourney.id;
@@ -165,19 +165,21 @@ function prepareDataForMap(state, database) {
 
     for (let i in connections) {
       let color = null;
-      if (active) color = getColor(i);
+      if (active) color = `rgb(${getColor(i)})`;
 
       for (let edge of connections[i].trace) {
         cities.push({
-          name: edge.startCityName,
+          id: edge.startCityName,
           color: color,
+          stop: true,
           transfer: edge.startCityName === connections[i].start.cityName,
           active: active,
         });
 
         cities.push({
-          name: edge.endCityName,
+          id: edge.endCityName,
           color: color,
+          stop: true,
           transfer: edge.endCityName === connections[i].end.cityName,
           active: active,
         });

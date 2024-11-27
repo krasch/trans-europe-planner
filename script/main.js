@@ -62,13 +62,13 @@ async function main(map, calendar, startDestinationSelection) {
   });
 
   // selecting a different journey
-  map.on("journeySelected", (journeyId) => {
+  map.on("alternativeJourneyClicked", (journeyId) => {
     journeys.setActive(journeyId);
     updateViews(journeys);
   });
 
   // clicking on a city
-  map.on("cityHover", (city) => {
+  map.on("cityHoverStart", (city) => {
     const target = `Berlin->${city}`;
     if (!ROUTES[target]) return;
 
@@ -84,8 +84,8 @@ async function main(map, calendar, startDestinationSelection) {
   });
 
   // hovering over map or calender
-  calendar.on("entryHoverStart", (leg) => map.setHoverLeg(leg));
-  calendar.on("entryHoverStop", (leg) => map.setNoHoverLeg(leg));
+  calendar.on("entryHoverStart", (leg) => map.setHoverState("leg", leg, true));
+  calendar.on("entryHoverStop", (leg) => map.setHoverState("leg", leg, false));
   //map.on("legHoverStart", (leg) => calendar.setHoverEntry(leg));
   //map.on("legHoverStop", (leg) => calendar.setNoHoverEntry(leg));
 
