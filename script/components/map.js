@@ -4,6 +4,14 @@ const CITY_NAME_LAYERS = [
   "city-name-transfer-active",
 ];
 
+// todo this sucks :-(
+const CITY_FILTER_UPDATE_FUNCTIONS = {
+  "city-circle": (filter, ids) => (filter[1][2][1] = ids),
+  "city-name": (filter, ids) => (filter[1][1][2][1] = ids),
+  "city-name-transfer-alternative": (filter, ids) => (filter[2][1] = ids),
+  "city-name-transfer-active": (filter, ids) => (filter[2][1] = ids),
+};
+
 const EDGE_LAYERS = ["edges"];
 
 const CITY_DEFAULT_STATE = {
@@ -179,6 +187,7 @@ class MouseEventHelper {
   }
 }
 
+// this class shows/hides popups and keeps popup state
 class PopupHelper {
   constructor(map, getIdFn, htmlFn) {
     let currentId = null;
@@ -246,9 +255,9 @@ class MapWrapper {
   }
 
   init(data) {
-    const [cities, edges] = data;
-
     this.map.getCanvas().style.cursor = "default";
+
+    const [cities, edges] = data;
 
     // add cities and legs sources
     this.map.addSource("cities", {
@@ -292,7 +301,7 @@ class MapWrapper {
       this.#callbacks["cityHoverEnd"](e.feature.id),
     );
 
-    // set up mouse events for edges
+    // set up mouse events for interacting with edges
     mouseEvents.edges.on("mouseOver", (e) => {
       journeySummaryPopup.show(e);
       this.setHoverState("journey", e.featureState.journey, true);
@@ -316,34 +325,20 @@ class MapWrapper {
     this.#featureStates.cities.setNewState(cities);
     this.#featureStates.edges.setNewState(edges);
 
+    // transfers in active/alternative journeys
     const transfers = cities.filter((c) => c.transfer);
+    const activeTransfers = transfers.filter((c) => c.active);
+    const altTransfers = transfers.filter((c) => !c.active);
 
     // all stops should have visible circle
-    this.#updateFilter("city-circle", cities);
-
+    this.#updateCityFilter("city-circle", cities);
     // for displaying names, non-transfer cities have lowest priority
     // (need to give transfer cities because of !in query)
-    this.#updateFilter("city-name", transfers);
+    this.#updateCityFilter("city-name", transfers);
     // next highest priority to transfers in alternative journeys
-    this.#updateFilter(
-      "city-name-transfer-alternative",
-      transfers.filter((c) => !c.active),
-    );
+    this.#updateCityFilter("city-name-transfer-alternative", altTransfers);
     // highest priority to transfers in active journey
-    this.#updateFilter(
-      "city-name-transfer-active",
-      transfers.filter((c) => c.active),
-    );
-  }
-
-  #updateFilter(layer, cities) {
-    const filter = this.map.getFilter(layer);
-    updateFilterExpression(
-      layer,
-      filter,
-      cities.map((c) => c.id),
-    );
-    this.map.setFilter(layer, filter);
+    this.#updateCityFilter("city-name-transfer-active", activeTransfers);
   }
 
   setHoverState(level, value, state) {
@@ -354,6 +349,13 @@ class MapWrapper {
     const update = { hover: state };
 
     this.#featureStates.edges.updateSelected(filter, update);
+  }
+
+  #updateCityFilter(layer, cities) {
+    const ids = cities.map((c) => c.id);
+    const filter = this.map.getFilter(layer);
+    CITY_FILTER_UPDATE_FUNCTIONS[layer](filter, ids);
+    this.map.setFilter(layer, filter);
   }
 }
 

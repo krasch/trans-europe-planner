@@ -160,22 +160,3 @@ const mapStyles = [
     layout: textStyle.layout,
   },
 ];
-
-function updateFilterExpression(layer, filterExpression, cities) {
-  switch (layer) {
-    case "city-circle":
-      filterExpression[1][2][1] = cities;
-      break;
-    case "city-name":
-      filterExpression[1][1][2][1] = cities;
-      break;
-    case "city-name-transfer-alternative":
-      filterExpression[2][1] = cities;
-      break;
-    case "city-name-transfer-active":
-      filterExpression[2][1] = cities;
-      break;
-    default:
-      throw new Error("Unknown layer");
-  }
-}
