@@ -179,6 +179,41 @@ class MouseEventHelper {
   }
 }
 
+class PopupHelper {
+  constructor(map, getIdFn, htmlFn) {
+    let currentId = null;
+    let currentPopup = null;
+
+    this.show = (e) => {
+      const id = getIdFn(e);
+
+      // popup is currently being shown for this item, nothing to do
+      if (currentId === id) return;
+
+      // just in case a popup is currently being shown for some other item (should not happen)
+      this.hide();
+
+      // show
+      currentId = id;
+      currentPopup = new maplibregl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+        anchor: "left",
+        offset: [10, 0],
+      });
+      currentPopup.setLngLat(e.lngLat).setHTML(htmlFn(e)).addTo(map);
+    };
+
+    this.hide = (e) => {
+      if (currentPopup) {
+        currentPopup.remove();
+        currentPopup = null;
+        currentId = null;
+      }
+    };
+  }
+}
+
 class MapWrapper {
   #callbacks = {
     alternativeJourneyClicked: () => {},
@@ -187,8 +222,6 @@ class MapWrapper {
   };
 
   #featureStates = null;
-
-  #journeyHoverPopup = { popup: null, journeyId: null };
 
   constructor(containerId, center, zoom) {
     this.map = new maplibregl.Map({
@@ -244,6 +277,13 @@ class MapWrapper {
       edges: new MouseEventHelper(this.map, EDGE_LAYERS, true),
     };
 
+    // this will be shown when user hovers over a journey
+    const journeySummaryPopup = new PopupHelper(
+      this.map,
+      (e) => e.featureState.journey,
+      (e) => e.featureState.journeyTravelTime,
+    );
+
     // set up mouse events for interacting with city names
     mouseEvents.cityNames.on("mouseOver", (e) => {
       this.#callbacks["cityHoverStart"](e.feature.id);
@@ -254,11 +294,11 @@ class MapWrapper {
 
     // set up mouse events for edges
     mouseEvents.edges.on("mouseOver", (e) => {
-      this.#showJourneySummaryPopup(e);
+      journeySummaryPopup.show(e);
       this.setHoverState("journey", e.featureState.journey, true);
     });
     mouseEvents.edges.on("mouseLeave", (e) => {
-      this.#hideJourneySummaryPopup();
+      journeySummaryPopup.hide(e);
       this.setHoverState("journey", e.featureState.journey, false);
     });
     mouseEvents.edges.on("click", (e) => {
@@ -314,33 +354,6 @@ class MapWrapper {
     const update = { hover: state };
 
     this.#featureStates.edges.updateSelected(filter, update);
-  }
-
-  #showJourneySummaryPopup(e) {
-    // popup is currently being shown for this journey
-    if (this.#journeyHoverPopup.journeyId === e.featureState.journey) return;
-
-    // just in case a popup is currently being shown for some other journey (should not happen)
-    this.#hideJourneySummaryPopup();
-
-    this.#journeyHoverPopup.journeyId = e.featureState.journey;
-    this.#journeyHoverPopup.popup = new maplibregl.Popup({
-      closeButton: false,
-      closeOnClick: false,
-      anchor: "left",
-      offset: [10, 0],
-    });
-    this.#journeyHoverPopup.popup
-      .setLngLat(e.lngLat)
-      .setHTML(e.featureState.journeyTravelTime)
-      .addTo(this.map);
-  }
-
-  #hideJourneySummaryPopup() {
-    if (this.#journeyHoverPopup.popup) {
-      this.#journeyHoverPopup.popup.remove();
-      this.#journeyHoverPopup.journeyId = null;
-    }
   }
 }
 
