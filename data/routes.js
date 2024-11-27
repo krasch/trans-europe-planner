@@ -28,6 +28,7 @@ const ROUTES = {
     ["Berlin->Zürich", "Zürich->Milano", "Milano->Roma"],
     ["Berlin->Karlsruhe", "Karlsruhe->Marseille"],
   ],
+  "Berlin->Marseille": [["Berlin->Karlsruhe", "Karlsruhe->Marseille"]],
   // München
   "München->Roma": [["München->Verona", "Verona->Roma"]],
   "München->Warszawa": [["München->Berlin", "Berlin->Warszawa"]],
@@ -51,6 +52,7 @@ const ROUTES = {
     ["München->Verona", "Verona->Roma"],
     ["München->Karlsruhe", "Karlsruhe->Marseille"],
   ],
+  "München->Marseille": [["München->Karlsruhe", "Karlsruhe->Marseille"]],
   // Hamburg
   "Hamburg->Roma": [["Hamburg->München", "München->Verona", "Verona->Roma"]],
   "Hamburg->Warszawa": [["Hamburg->Berlin", "Berlin->Warszawa"]],
@@ -67,6 +69,9 @@ const ROUTES = {
   ],
   "Hamburg->Süden": [
     ["Hamburg->München", "München->Verona", "Verona->Roma"],
+    ["Hamburg->Göttingen", "Göttingen->Karlsruhe", "Karlsruhe->Marseille"],
+  ],
+  "Hamburg->Marseille": [
     ["Hamburg->Göttingen", "Göttingen->Karlsruhe", "Karlsruhe->Marseille"],
   ],
   // Köln
@@ -87,4 +92,5 @@ const ROUTES = {
     ["Köln->Stuttgart", "Stuttgart->Zürich", "Zürich->Milano", "Milano->Roma"],
     ["Köln->Karlsruhe", "Karlsruhe->Marseille"],
   ],
+  "Köln->Marseille": [["Köln->Karlsruhe", "Karlsruhe->Marseille"]],
 };
