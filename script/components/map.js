@@ -1,3 +1,24 @@
+const CITY_NAME_LAYERS = [
+  "city-name",
+  "city-name-transfer-alternative",
+  "city-name-transfer-active",
+];
+
+const EDGE_DEFAULT_FEATURE_STATE = {
+  status: null,
+  color: null,
+  leg: null,
+  journey: null,
+  journeyTravelTime: null,
+  hover: false,
+};
+
+const CITY_DEFAULT_FEATURE_STATE = {
+  color: null,
+  stop: false,
+  transfer: false,
+};
+
 function cityToGeojson(city) {
   return {
     type: "Feature",
@@ -42,7 +63,7 @@ class StateChangeObserver {
     this.#initialState = initialState;
   }
 
-  *calculateUpdates(newStates) {
+  *updateAll(newStates) {
     // things that are now relevant
     const updatedIds = [];
     for (let update of newStates) {
@@ -70,31 +91,52 @@ class StateChangeObserver {
       }
     }
   }
+
+  *updateSelected(filterFn, update) {
+    for (let [id, entry] of this.#state.entries()) {
+      if (!filterFn(entry)) continue;
+
+      // keeps all keys from current entry and updates them with data from update
+      const updated = { ...entry, ...update };
+
+      this.#state.set(id, updated);
+      yield [id, updated];
+    }
+  }
 }
 
-class MouseOverHelper {
+class MouseEventHelper {
   #callbacks = {
-    hover: () => {},
-    hoverEnd: () => {},
+    mouseOver: () => {},
+    mouseLeave: () => {},
+    click: () => {},
   };
 
-  #hoverState = null;
+  constructor(map, layerNames) {
+    let mouseOverState = null;
+
+    const mouseOver = (e) => {
+      mouseOverState = e.features;
+      this.#callbacks["mouseOver"](e);
+    };
+
+    const mouseLeave = (e) => {
+      if (mouseOverState) {
+        e.features = mouseOverState; // these are not provided by maplibre
+        this.#callbacks["mouseLeave"](e);
+        mouseOverState = null;
+      }
+    };
+
+    for (let layer of layerNames) {
+      map.on("mouseover", layer, (e) => mouseOver(e));
+      map.on("mouseleave", layer, (e) => mouseLeave(e));
+      map.on("click", layer, (e) => this.#callbacks["click"](e));
+    }
+  }
 
   on(eventName, callback) {
     this.#callbacks[eventName] = callback;
-  }
-
-  mouseenter(e) {
-    this.#hoverState = e.features;
-    this.#callbacks["hover"](e);
-  }
-
-  mouseleave(e) {
-    if (this.#hoverState) {
-      e.features = this.#hoverState;
-      this.#callbacks["hoverEnd"](e);
-      this.#hoverState = null;
-    }
   }
 }
 
@@ -113,14 +155,7 @@ class EdgeManager {
   constructor(map) {
     this.#map = map;
 
-    this.#featureStates = new StateChangeObserver({
-      status: null,
-      color: null,
-      leg: null,
-      journey: null,
-      journeyTravelTime: null,
-      hover: false,
-    });
+    this.#featureStates = new StateChangeObserver(EDGE_DEFAULT_FEATURE_STATE);
 
     let hoverPopup = null;
 
@@ -184,35 +219,35 @@ class EdgeManager {
   }
 
   updateView(edges) {
-    for (let [id, update] of this.#featureStates.calculateUpdates(edges)) {
+    for (let [id, update] of this.#featureStates.updateAll(edges)) {
       this.#map.setFeatureState({ source: "edges", id: id }, update);
     }
   }
 
   startShowHover(key, value) {
-    /*if (!["id", "leg", "journey"].includes(key))
+    if (!["id", "leg", "journey"].includes(key))
       throw new Error('Please pass one of ["id", "leg", "journey"]');
 
-    for (let edge of this.#currentlyActive) {
-      if (value !== edge[key]) continue;
-      this.#updateFeatureState(edge.id, { hover: true });
-    }*/
+    const filter = (entry) => entry[key] === value;
+    const update = { hover: true };
+    const updates = this.#featureStates.updateSelected(filter, update);
+
+    for (let [id, update] of updates) {
+      this.#map.setFeatureState({ source: "edges", id: id }, update);
+    }
   }
 
   stopShowHover(key, value) {
     if (!["id", "leg", "journey"].includes(key))
       throw new Error('Please pass one of ["id", "leg", "journey"]');
 
-    /*for (let edge of this.#currentlyActive) {
-      if (value !== edge[key]) continue;
-      this.#updateFeatureState(edge.id, { hover: false });
-    }*/
-  }
+    const filter = (entry) => entry[key] === value;
+    const update = { hover: false };
+    const updates = this.#featureStates.updateSelected(filter, update);
 
-  #updateFeatureState(id, newState) {
-    const state = this.#map.getFeatureState({ source: "edges", id: id });
-    for (let key in newState) state[key] = newState[key];
-    this.#map.setFeatureState({ source: "edges", id: id }, state);
+    for (let [id, update] of updates) {
+      this.#map.setFeatureState({ source: "edges", id: id }, update);
+    }
   }
 }
 
@@ -228,29 +263,14 @@ class CityManager {
   constructor(map) {
     this.#map = map;
 
-    this.#featureStates = new StateChangeObserver({
-      color: null,
-      stop: false,
-      transfer: false,
-    });
+    this.#featureStates = new StateChangeObserver(CITY_DEFAULT_FEATURE_STATE);
 
-    const nameLayers = [
-      "city-name",
-      "city-name-transfer-alternative",
-      "city-name-transfer-active",
-    ];
+    const mouseEvents = new MouseEventHelper(this.#map, CITY_NAME_LAYERS);
 
-    const hoverState = new MouseOverHelper();
-
-    for (let layer of nameLayers) {
-      this.#map.on("mouseover", layer, (e) => hoverState.mouseenter(e));
-      this.#map.on("mouseleave", layer, (e) => hoverState.mouseleave(e));
-    }
-
-    hoverState.on("hover", (e) =>
+    mouseEvents.on("mouseOver", (e) =>
       this.#callbacks["hover"](e.features.at(-1).id),
     );
-    hoverState.on("hoverEnd", (e) =>
+    mouseEvents.on("mouseLeave", (e) =>
       this.#callbacks["hoverEnd"](e.features.at(-1).id),
     );
   }
@@ -260,7 +280,7 @@ class CityManager {
   }
 
   updateView(cities) {
-    for (let [id, update] of this.#featureStates.calculateUpdates(cities)) {
+    for (let [id, update] of this.#featureStates.updateAll(cities)) {
       this.#map.setFeatureState({ source: "cities", id: id }, update);
     }
 
