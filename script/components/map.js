@@ -4,6 +4,14 @@ const CITY_NAME_LAYERS = [
   "city-name-transfer-active",
 ];
 
+const EDGE_LAYERS = ["edges"];
+
+const CITY_DEFAULT_FEATURE_STATE = {
+  color: null,
+  stop: false,
+  transfer: false,
+};
+
 const EDGE_DEFAULT_FEATURE_STATE = {
   status: null,
   color: null,
@@ -11,12 +19,6 @@ const EDGE_DEFAULT_FEATURE_STATE = {
   journey: null,
   journeyTravelTime: null,
   hover: false,
-};
-
-const CITY_DEFAULT_FEATURE_STATE = {
-  color: null,
-  stop: false,
-  transfer: false,
 };
 
 function cityToGeojson(city) {
@@ -53,58 +55,74 @@ function asGeojsonFeatureCollection(features) {
   };
 }
 
-class StateChangeObserver {
+// utility class to for dealing with FeatureStates of a map source
+class FeatureStateManager {
+  #map;
+  #source;
   #initialState;
 
-  // maps id to state dict
-  #state = new Map();
+  // keeping a mirror of the feature state so that
+  // don't need to do getFeatureState all the time
+  #mirror = new Map();
 
-  constructor(initialState) {
+  constructor(map, source, initialState) {
+    this.#map = map;
+    this.#source = source;
     this.#initialState = initialState;
   }
 
-  *updateAll(newStates) {
+  // sets feature state for all items
+  // if items are not in newStates, they are reset to the initial state
+  setNewState(newStates) {
     // things that are now relevant
     const updatedIds = [];
     for (let update of newStates) {
       const id = update.id;
 
       // either get the current state or init
-      let current = this.#state.get(id) ?? this.#initialState;
+      let current = this.#mirror.get(id) ?? this.#initialState;
 
       // keeps all keys from current and updates them with data from update
       const updated = { ...current, ...update };
 
-      this.#state.set(id, updated);
-      updatedIds.push(id);
+      // apply update
+      this.#mirror.set(id, updated);
+      this.#map.setFeatureState({ source: this.#source, id: id }, update);
 
-      yield [id, updated];
+      updatedIds.push(id);
     }
 
     // things that are no longer relevant -> reset to initial state
-    for (let id of this.#state.keys()) {
+    for (let id of this.#mirror.keys()) {
       if (!updatedIds.includes(id)) {
         const updated = { ...this.#initialState };
-        this.#state.set(id, updated);
 
-        yield [id, updated];
+        // apply update
+        this.#mirror.set(id, updated);
+        this.#map.setFeatureState({ source: this.#source, id: id }, updated);
       }
     }
   }
 
-  *updateSelected(filterFn, update) {
-    for (let [id, entry] of this.#state.entries()) {
+  // updates only selected items, does not touch items that do not match the filter
+  updateSelected(filterFn, update) {
+    for (let [id, entry] of this.#mirror.entries()) {
       if (!filterFn(entry)) continue;
 
       // keeps all keys from current entry and updates them with data from update
       const updated = { ...entry, ...update };
 
-      this.#state.set(id, updated);
-      yield [id, updated];
+      // apply update
+      this.#mirror.set(id, updated);
+      this.#map.setFeatureState({ source: this.#source, id: id }, update);
     }
   }
 }
 
+// this class abstracts away following issues
+// 1. We want to react on multiple layers (e.g. all city layers) with the same event handlers
+// 2. The maplibre mouseLeave event does not contain the feature that was left -> need to keep state
+// 3. Maplibre does not attach the feature state to the event
 class MouseEventHelper {
   #callbacks = {
     mouseOver: () => {},
@@ -112,26 +130,47 @@ class MouseEventHelper {
     click: () => {},
   };
 
-  constructor(map, layerNames) {
-    let mouseOverState = null;
+  constructor(map, layerNames, attachFeatureState = false) {
+    let currentFeature = null;
 
-    const mouseOver = (e) => {
-      mouseOverState = e.features;
-      this.#callbacks["mouseOver"](e);
-    };
+    const enrichEvent = (layer, e) => {
+      e.feature = currentFeature;
+      e.layer = layer;
 
-    const mouseLeave = (e) => {
-      if (mouseOverState) {
-        e.features = mouseOverState; // these are not provided by maplibre
-        this.#callbacks["mouseLeave"](e);
-        mouseOverState = null;
+      if (attachFeatureState) {
+        e.featureState = map.getFeatureState({
+          source: e.feature.source,
+          id: e.feature.id,
+        });
       }
     };
 
+    const mouseOver = (layer, e) => {
+      if (e.features.length < 1) return;
+      currentFeature = e.features.at(-1); // todo currently only looking at last event
+
+      enrichEvent(layer, e);
+      this.#callbacks["mouseOver"](e);
+    };
+
+    const mouseLeave = (layer, e) => {
+      if (currentFeature) {
+        enrichEvent(layer, e);
+        this.#callbacks["mouseLeave"](e);
+
+        currentFeature = null;
+      }
+    };
+
+    const click = (layer, e) => {
+      enrichEvent(layer, e);
+      this.#callbacks["click"](e);
+    };
+
     for (let layer of layerNames) {
-      map.on("mouseover", layer, (e) => mouseOver(e));
-      map.on("mouseleave", layer, (e) => mouseLeave(e));
-      map.on("click", layer, (e) => this.#callbacks["click"](e));
+      map.on("mouseover", layer, (e) => mouseOver(layer, e));
+      map.on("mouseleave", layer, (e) => mouseLeave(layer, e));
+      map.on("click", layer, (e) => click(layer, e));
     }
   }
 
@@ -143,7 +182,6 @@ class MouseEventHelper {
 class EdgeManager {
   #map;
 
-  #hoverState = { edge: null, leg: null, journey: null };
   #featureStates;
 
   #callbacks = {
@@ -155,28 +193,24 @@ class EdgeManager {
   constructor(map) {
     this.#map = map;
 
-    this.#featureStates = new StateChangeObserver(EDGE_DEFAULT_FEATURE_STATE);
+    this.#featureStates = new FeatureStateManager(
+      map,
+      "edges",
+      EDGE_DEFAULT_FEATURE_STATE,
+    );
+
+    const mouseEvents = new MouseEventHelper(this.#map, EDGE_LAYERS, true);
 
     let hoverPopup = null;
+    let hoveredJourney = null;
 
-    // hover start
-    this.#map.on("mouseover", "edges", (e) => {
-      const edgeId = e.features.at(-1).id;
-      const state = this.#map.getFeatureState({ source: "edges", id: edgeId });
-
-      // check what changed
-      const changed = {
-        edge: this.#hoverState.edge !== edgeId,
-        leg: this.#hoverState.leg !== state.leg,
-        journey: this.#hoverState.journey !== state.journey,
-      };
-
-      // update hover state
-      this.#hoverState = { id: edgeId, leg: state.leg, journey: state.journey };
+    mouseEvents.on("mouseOver", (e) => {
+      const state = e.featureState;
 
       // react to changes
-      if (changed.journey) {
-        this.startShowHover("journey", state.journey);
+      if (!hoveredJourney || e.featureState.journey !== hoveredJourney) {
+        const filter = (entry) => entry.journey === e.featureState.journey;
+        this.#featureStates.updateSelected(filter, { hover: true });
 
         hoverPopup = new maplibregl.Popup({
           closeButton: false,
@@ -192,11 +226,9 @@ class EdgeManager {
     });
 
     // hover done
-    this.#map.on("mouseleave", "edges", (e) => {
-      if (this.#hoverState.journey)
-        this.stopShowHover("journey", this.#hoverState.journey);
-
-      this.#hoverState = { edge: null, leg: null, journey: null };
+    mouseEvents.on("mouseLeave", (e) => {
+      const filter = (entry) => entry.journey === e.featureState.journey;
+      this.#featureStates.updateSelected(filter, { hover: false });
 
       if (hoverPopup) {
         hoverPopup.remove();
@@ -205,12 +237,9 @@ class EdgeManager {
     });
 
     // click
-    this.#map.on("click", "edges", (e) => {
-      const edgeId = e.features.at(-1).id;
-      const state = this.#map.getFeatureState({ source: "edges", id: edgeId });
-
-      if (state.status === "alternative")
-        this.#callbacks["alternativeJourneyClicked"](state.journey);
+    mouseEvents.on("click", (e) => {
+      if (e.featureState.status === "alternative")
+        this.#callbacks["alternativeJourneyClicked"](e.featureState.journey);
     });
   }
 
@@ -219,9 +248,7 @@ class EdgeManager {
   }
 
   updateView(edges) {
-    for (let [id, update] of this.#featureStates.updateAll(edges)) {
-      this.#map.setFeatureState({ source: "edges", id: id }, update);
-    }
+    this.#featureStates.setNewState(edges);
   }
 
   startShowHover(key, value) {
@@ -230,11 +257,7 @@ class EdgeManager {
 
     const filter = (entry) => entry[key] === value;
     const update = { hover: true };
-    const updates = this.#featureStates.updateSelected(filter, update);
-
-    for (let [id, update] of updates) {
-      this.#map.setFeatureState({ source: "edges", id: id }, update);
-    }
+    this.#featureStates.updateSelected(filter, update);
   }
 
   stopShowHover(key, value) {
@@ -243,11 +266,7 @@ class EdgeManager {
 
     const filter = (entry) => entry[key] === value;
     const update = { hover: false };
-    const updates = this.#featureStates.updateSelected(filter, update);
-
-    for (let [id, update] of updates) {
-      this.#map.setFeatureState({ source: "edges", id: id }, update);
-    }
+    this.#featureStates.updateSelected(filter, update);
   }
 }
 
@@ -263,15 +282,19 @@ class CityManager {
   constructor(map) {
     this.#map = map;
 
-    this.#featureStates = new StateChangeObserver(CITY_DEFAULT_FEATURE_STATE);
+    this.#featureStates = new FeatureStateManager(
+      map,
+      "cities",
+      CITY_DEFAULT_FEATURE_STATE,
+    );
 
     const mouseEvents = new MouseEventHelper(this.#map, CITY_NAME_LAYERS);
 
-    mouseEvents.on("mouseOver", (e) =>
-      this.#callbacks["hover"](e.features.at(-1).id),
-    );
+    mouseEvents.on("mouseOver", (e) => {
+      this.#callbacks["hover"](e.feature.id);
+    });
     mouseEvents.on("mouseLeave", (e) =>
-      this.#callbacks["hoverEnd"](e.features.at(-1).id),
+      this.#callbacks["hoverEnd"](e.feature.id),
     );
   }
 
@@ -280,9 +303,7 @@ class CityManager {
   }
 
   updateView(cities) {
-    for (let [id, update] of this.#featureStates.updateAll(cities)) {
-      this.#map.setFeatureState({ source: "cities", id: id }, update);
-    }
+    this.#featureStates.setNewState(cities);
 
     const transfers = cities.filter((c) => c.transfer);
 
@@ -359,18 +380,11 @@ class MapWrapper {
       data: asGeojsonFeatureCollection(cities.map(cityToGeojson)),
       promoteId: "name", // otherwise can not use non-numeric ids
     });
-
     this.map.addSource("edges", {
       type: "geojson",
       data: asGeojsonFeatureCollection(edges.map(edgeToGeojson)),
       promoteId: "id", // otherwise can not use non-numeric ids
     });
-
-    // todo have a feature state manager for cities and edges
-    /*takes as input the ids and the initial feature state
-    on update it calculates a diff and puts the new feature state
-    should also allow to set initial feature attributes such as setHover    
-    (sdfsdfdsfsf )*/
 
     // add all layers
     for (let layer of mapStyles) this.map.addLayer(layer);
