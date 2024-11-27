@@ -11,8 +11,12 @@ const textStyle = {
     "text-field": ["get", "name"],
     "text-max-width": 8,
     "text-line-height": 1.55,
-    "text-offset": [-0.4, 0],
+    "icon-image": ["get", "icon"],
+    "text-offset": [0.4, 0],
+    "icon-size": 0.8,
     "text-variable-anchor": ["left", "right"],
+    "icon-allow-overlap": true,
+    "text-allow-overlap": false,
   },
   paint: {
     "text-color": "#333",
@@ -59,7 +63,7 @@ const mapStyles = [
   // despite this having a lot of the same repeated checks for transfer,
   // it is still nicer to have this all in one layer and avoid having the same circle
   // in multiple layers, because those tend to shine through
-  {
+  /*{
     id: "city-circle",
     source: "cities",
     filter: [
@@ -102,7 +106,7 @@ const mapStyles = [
         1.0, // all other
       ],
     },
-  },
+  },*/
 
   // ################################
   //           city names
@@ -114,24 +118,25 @@ const mapStyles = [
     filter: [
       "all",
       // transfers get excluded here because they are in next layer
-      [
-        "!",
-        ["in", ["get", "id"], ["literal", ["placeholder for transfer cities"]]],
-      ],
+      //[
+      //  "!",
+      //  ["in", ["get", "id"], ["literal", ["placeholder for transfer cities"]]],
+      //],
       [
         "any",
         // important hubs are always visible
-        ["==", ["get", "rank"], 1],
+        [">", ["get", "rank"], 1],
         // other cities only visible in higher zoom levels
         [">=", ["zoom"], 5],
       ],
     ],
+    symbolSortKey: ["get", "rank"],
     paint: textStyle.paint,
     layout: textStyle.layout,
   },
 
   // transfers in alternative journeys have precedence
-  {
+  /*{
     id: "city-name-transfer-alternative",
     source: "cities",
     type: "symbol",
@@ -158,5 +163,5 @@ const mapStyles = [
 
     paint: textStyle.paint,
     layout: textStyle.layout,
-  },
+  }*/
 ];

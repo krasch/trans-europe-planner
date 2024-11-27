@@ -18,6 +18,8 @@ const CITY_DEFAULT_STATE = {
   color: null,
   stop: false,
   transfer: false,
+  rank: 1,
+  icon: null,
 };
 
 const EDGE_DEFAULT_STATE = {
@@ -37,7 +39,12 @@ function cityToGeojson(city) {
       coordinates: [city.longitude, city.latitude],
     },
     // use this instead of outer-level 'id' field because those ids must be numeric
-    properties: { name: city.name, id: city.name, rank: city.rank },
+    properties: {
+      name: city.name,
+      id: city.name,
+      rank: city.rank,
+      icon: null,
+    },
   };
 }
 
@@ -82,48 +89,98 @@ class FeatureStateManager {
   // sets feature state for all items
   // if items are not in newStates, they are reset to the initial state
   setNewState(newStates) {
+    const updates = new Map();
+
     // things that are now relevant
-    const updatedIds = [];
     for (let update of newStates) {
       const id = update.id;
 
       // either get the current state or init
-      let current = this.#mirror.get(id) ?? this.#initialState;
+      let current = this.#mirror.get(id) ?? this.#getInitialState(id);
 
       // keeps all keys from current and updates them with data from update
       const updated = { ...current, ...update };
 
-      // apply update
       this.#mirror.set(id, updated);
-      this.#map.setFeatureState({ source: this.#source, id: id }, update);
-
-      updatedIds.push(id);
+      updates.set(id, updated);
     }
 
     // things that are no longer relevant -> reset to initial state
     for (let id of this.#mirror.keys()) {
-      if (!updatedIds.includes(id)) {
-        const updated = { ...this.#initialState };
-
-        // apply update
-        this.#mirror.set(id, updated);
-        this.#map.setFeatureState({ source: this.#source, id: id }, updated);
+      if (!updates.has(id)) {
+        const updated = { ...this.#getInitialState(id) };
+        updates.set(id, updated);
       }
     }
+
+    this.#applyUpdatesToMap(updates);
   }
 
   // updates only selected items, does not touch items that do not match the filter
   updateSelected(filterFn, update) {
+    const updates = new Map();
+
     for (let [id, entry] of this.#mirror.entries()) {
       if (!filterFn(entry)) continue;
 
       // keeps all keys from current entry and updates them with data from update
       const updated = { ...entry, ...update };
 
-      // apply update
       this.#mirror.set(id, updated);
-      this.#map.setFeatureState({ source: this.#source, id: id }, update);
+      updates.set(id, updated);
     }
+  }
+
+  #getInitialState(id) {
+    const state = { ...this.#initialState };
+    if (
+      [
+        "Amsterdam",
+        "Roma",
+        "Berlin",
+        "Bratislava",
+        "Bruxelles",
+        "Budapest",
+        "Göteborg",
+        "Hamburg",
+        "Köln",
+        "København",
+        "London",
+        "Marseille",
+        "Milano",
+        "München",
+        "Paris",
+        "Praha",
+        "Stockholm",
+        "Warszawa",
+        "Wien",
+        "Zürich",
+      ].includes(id)
+    )
+      state["rank"] = 2;
+    return state;
+  }
+
+  #applyUpdatesToMap(updates) {
+    const updateRequest = { update: [] };
+
+    for (let [id, updated] of updates) {
+      this.#map.setFeatureState({ source: this.#source, id: id }, updated);
+
+      const update = [];
+      if (updated["rank"]) update.push({ key: "rank", value: updated["rank"] });
+      if (Object.keys(updated).includes("icon"))
+        update.push({ key: "icon", value: updated["icon"] });
+
+      if (update.length > 0)
+        updateRequest.update.push({
+          id: id,
+          addOrUpdateProperties: update,
+        });
+    }
+
+    if (updateRequest.update.length > 0)
+      this.#map.getSource("cities").updateData(updateRequest);
   }
 }
 
@@ -282,7 +339,7 @@ class MapWrapper {
 
     // initialise mouse event helper for cities and edge layers
     const mouseEvents = {
-      cityNames: new MouseEventHelper(this.map, CITY_NAME_LAYERS),
+      cityNames: new MouseEventHelper(this.map, ["city-name"]),
       edges: new MouseEventHelper(this.map, EDGE_LAYERS, true),
     };
 
@@ -325,6 +382,8 @@ class MapWrapper {
     this.#featureStates.cities.setNewState(cities);
     this.#featureStates.edges.setNewState(edges);
 
+    /*
+
     // transfers in active/alternative journeys
     const transfers = cities.filter((c) => c.transfer);
     const activeTransfers = transfers.filter((c) => c.active);
@@ -338,7 +397,7 @@ class MapWrapper {
     // next highest priority to transfers in alternative journeys
     this.#updateCityFilter("city-name-transfer-alternative", altTransfers);
     // highest priority to transfers in active journey
-    this.#updateCityFilter("city-name-transfer-active", activeTransfers);
+    this.#updateCityFilter("city-name-transfer-active", activeTransfers);*/
   }
 
   setHoverState(level, value, state) {

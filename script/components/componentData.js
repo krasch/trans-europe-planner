@@ -168,21 +168,31 @@ function prepareDataForMap(state, database) {
       if (active) color = `rgb(${getColor(i)})`;
 
       for (let edge of connections[i].trace) {
-        cities.push({
+        const city = {
           id: edge.startCityName,
           color: color,
           stop: true,
           transfer: edge.startCityName === connections[i].start.cityName,
           active: active,
-        });
+        };
+        if (city.transfer) {
+          city.rank = 3;
+          city.icon = "star_11";
+        }
+        cities.push(city);
 
-        cities.push({
+        const city2 = {
           id: edge.endCityName,
           color: color,
           stop: true,
           transfer: edge.endCityName === connections[i].end.cityName,
           active: active,
-        });
+        };
+        if (city2.transfer) {
+          city2.rank = 3;
+          city2.icon = "star_11";
+        }
+        cities.push(city2);
 
         edges.push({
           id: edge.toAlphabeticString(),
