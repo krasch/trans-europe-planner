@@ -6,13 +6,13 @@ const CITY_NAME_LAYERS = [
 
 const EDGE_LAYERS = ["edges"];
 
-const CITY_DEFAULT_FEATURE_STATE = {
+const CITY_DEFAULT_STATE = {
   color: null,
   stop: false,
   transfer: false,
 };
 
-const EDGE_DEFAULT_FEATURE_STATE = {
+const EDGE_DEFAULT_STATE = {
   status: null,
   color: null,
   leg: null,
@@ -179,173 +179,16 @@ class MouseEventHelper {
   }
 }
 
-class EdgeManager {
-  #map;
-
-  #featureStates;
-
-  #callbacks = {
-    activeLegHoverStart: () => {},
-    activeLegHoverStop: () => {},
-    alternativeJourneyClicked: () => {},
-  };
-
-  constructor(map) {
-    this.#map = map;
-
-    this.#featureStates = new FeatureStateManager(
-      map,
-      "edges",
-      EDGE_DEFAULT_FEATURE_STATE,
-    );
-
-    const mouseEvents = new MouseEventHelper(this.#map, EDGE_LAYERS, true);
-
-    let hoverPopup = null;
-    let hoveredJourney = null;
-
-    mouseEvents.on("mouseOver", (e) => {
-      const state = e.featureState;
-
-      // react to changes
-      if (!hoveredJourney || e.featureState.journey !== hoveredJourney) {
-        const filter = (entry) => entry.journey === e.featureState.journey;
-        this.#featureStates.updateSelected(filter, { hover: true });
-
-        hoverPopup = new maplibregl.Popup({
-          closeButton: false,
-          closeOnClick: false,
-          anchor: "left",
-          offset: [10, 0],
-        });
-        hoverPopup
-          .setLngLat(e.lngLat)
-          .setHTML(state.journeyTravelTime)
-          .addTo(map);
-      }
-    });
-
-    // hover done
-    mouseEvents.on("mouseLeave", (e) => {
-      const filter = (entry) => entry.journey === e.featureState.journey;
-      this.#featureStates.updateSelected(filter, { hover: false });
-
-      if (hoverPopup) {
-        hoverPopup.remove();
-        hoverPopup = null;
-      }
-    });
-
-    // click
-    mouseEvents.on("click", (e) => {
-      if (e.featureState.status === "alternative")
-        this.#callbacks["alternativeJourneyClicked"](e.featureState.journey);
-    });
-  }
-
-  on(eventName, callback) {
-    this.#callbacks[eventName] = callback;
-  }
-
-  updateView(edges) {
-    this.#featureStates.setNewState(edges);
-  }
-
-  startShowHover(key, value) {
-    if (!["id", "leg", "journey"].includes(key))
-      throw new Error('Please pass one of ["id", "leg", "journey"]');
-
-    const filter = (entry) => entry[key] === value;
-    const update = { hover: true };
-    this.#featureStates.updateSelected(filter, update);
-  }
-
-  stopShowHover(key, value) {
-    if (!["id", "leg", "journey"].includes(key))
-      throw new Error('Please pass one of ["id", "leg", "journey"]');
-
-    const filter = (entry) => entry[key] === value;
-    const update = { hover: false };
-    this.#featureStates.updateSelected(filter, update);
-  }
-}
-
-class CityManager {
-  #map;
-  #featureStates;
-
-  #callbacks = {
-    click: () => {},
-    hover: () => {},
-  };
-
-  constructor(map) {
-    this.#map = map;
-
-    this.#featureStates = new FeatureStateManager(
-      map,
-      "cities",
-      CITY_DEFAULT_FEATURE_STATE,
-    );
-
-    const mouseEvents = new MouseEventHelper(this.#map, CITY_NAME_LAYERS);
-
-    mouseEvents.on("mouseOver", (e) => {
-      this.#callbacks["hover"](e.feature.id);
-    });
-    mouseEvents.on("mouseLeave", (e) =>
-      this.#callbacks["hoverEnd"](e.feature.id),
-    );
-  }
-
-  on(eventName, callback) {
-    this.#callbacks[eventName] = callback;
-  }
-
-  updateView(cities) {
-    this.#featureStates.setNewState(cities);
-
-    const transfers = cities.filter((c) => c.transfer);
-
-    // all stops should have visible circle
-    this.#updateFilter("city-circle", cities);
-
-    // for displaying names, non-transfer cities have lowest priority
-    // (need to give transfer cities because of !in query)
-    this.#updateFilter("city-name", transfers);
-    // next highest priority to transfers in alternative journeys
-    this.#updateFilter(
-      "city-name-transfer-alternative",
-      transfers.filter((c) => !c.active),
-    );
-    // highest priority to transfers in active journey
-    this.#updateFilter(
-      "city-name-transfer-active",
-      transfers.filter((c) => c.active),
-    );
-  }
-
-  #updateFilter(layer, cities) {
-    const filter = this.#map.getFilter(layer);
-    updateFilterExpression(
-      layer,
-      filter,
-      cities.map((c) => c.id),
-    );
-    this.#map.setFilter(layer, filter);
-  }
-}
-
 class MapWrapper {
   #callbacks = {
-    legHoverStart: () => {},
-    legHoverStop: () => {},
-    journeySelected: () => {},
-    citySelected: () => {},
+    alternativeJourneyClicked: () => {},
+    cityHoverStart: () => {},
+    cityHoverEnd: () => {},
   };
 
-  #edgeManager = null;
-  #cityManager = null;
+  #featureStates = null;
+
+  #journeyHoverPopup = { popup: null, journeyId: null };
 
   constructor(containerId, center, zoom) {
     this.map = new maplibregl.Map({
@@ -374,7 +217,7 @@ class MapWrapper {
 
     this.map.getCanvas().style.cursor = "default";
 
-    // add cities and legs data
+    // add cities and legs sources
     this.map.addSource("cities", {
       type: "geojson",
       data: asGeojsonFeatureCollection(cities.map(cityToGeojson)),
@@ -389,52 +232,115 @@ class MapWrapper {
     // add all layers
     for (let layer of mapStyles) this.map.addLayer(layer);
 
-    // these two abstract away some of the details of dealing with the map items
-    this.#edgeManager = new EdgeManager(this.map);
-    this.#cityManager = new CityManager(this.map);
+    // initialise features states for cities and edge sources
+    this.#featureStates = {
+      edges: new FeatureStateManager(this.map, "edges", EDGE_DEFAULT_STATE),
+      cities: new FeatureStateManager(this.map, "cities", CITY_DEFAULT_STATE),
+    };
 
-    // user has started hovering on a leg
-    this.#edgeManager.on("activeLegHoverStart", (leg) => {
-      this.#callbacks["legHoverStart"](leg);
-      this.#edgeManager.setHoverLeg(leg);
+    // initialise mouse event helper for cities and edge layers
+    const mouseEvents = {
+      cityNames: new MouseEventHelper(this.map, CITY_NAME_LAYERS),
+      edges: new MouseEventHelper(this.map, EDGE_LAYERS, true),
+    };
+
+    // set up mouse events for interacting with city names
+    mouseEvents.cityNames.on("mouseOver", (e) => {
+      this.#callbacks["cityHoverStart"](e.feature.id);
     });
-    this.#edgeManager.on("activeLegHoverStop", (leg) => {
-      this.#callbacks["legHoverStop"](leg);
-      this.#edgeManager.setNoHoverLeg(leg);
-    });
-
-    // user has clicked on an alternative journey
-    this.#edgeManager.on("alternativeJourneyClicked", (journey) => {
-      this.#callbacks["journeySelected"](journey);
-    });
-
-    // user has clicked on a city
-    this.#cityManager.on("hover", (city) => this.#callbacks["cityHover"](city));
-
-    this.#cityManager.on("hoverEnd", (city) =>
-      this.#callbacks["cityHoverEnd"](city),
+    mouseEvents.cityNames.on("mouseLeave", (e) =>
+      this.#callbacks["cityHoverEnd"](e.feature.id),
     );
+
+    // set up mouse events for edges
+    mouseEvents.edges.on("mouseOver", (e) => {
+      this.#showJourneySummaryPopup(e);
+      this.setHoverState("journey", e.featureState.journey, true);
+    });
+    mouseEvents.edges.on("mouseLeave", (e) => {
+      this.#hideJourneySummaryPopup();
+      this.setHoverState("journey", e.featureState.journey, false);
+    });
+    mouseEvents.edges.on("click", (e) => {
+      if (e.featureState.status === "alternative")
+        this.#callbacks["alternativeJourneyClicked"](e.featureState.journey);
+    });
   }
 
   on(eventName, callback) {
-    this.#callbacks[eventName] = callback; // todo check if name is valid
+    this.#callbacks[eventName] = callback;
   }
 
   updateView(data) {
-    const [cities, legs] = data;
+    const [cities, edges] = data;
+    this.#featureStates.cities.setNewState(cities);
+    this.#featureStates.edges.setNewState(edges);
 
-    // todo it might be visually more pleasing to first
-    // todo remove both old legs and cities and then draw the new legs and cities
-    this.#edgeManager.updateView(legs);
-    this.#cityManager.updateView(cities);
+    const transfers = cities.filter((c) => c.transfer);
+
+    // all stops should have visible circle
+    this.#updateFilter("city-circle", cities);
+
+    // for displaying names, non-transfer cities have lowest priority
+    // (need to give transfer cities because of !in query)
+    this.#updateFilter("city-name", transfers);
+    // next highest priority to transfers in alternative journeys
+    this.#updateFilter(
+      "city-name-transfer-alternative",
+      transfers.filter((c) => !c.active),
+    );
+    // highest priority to transfers in active journey
+    this.#updateFilter(
+      "city-name-transfer-active",
+      transfers.filter((c) => c.active),
+    );
   }
 
-  setHoverLeg(leg) {
-    this.#edgeManager.startShowHover("leg", leg);
+  #updateFilter(layer, cities) {
+    const filter = this.map.getFilter(layer);
+    updateFilterExpression(
+      layer,
+      filter,
+      cities.map((c) => c.id),
+    );
+    this.map.setFilter(layer, filter);
   }
 
-  setNoHoverLeg(leg) {
-    this.#edgeManager.stopShowHover("leg", leg);
+  setHoverState(level, value, state) {
+    if (!["leg", "journey"].includes(level))
+      throw new Error('Please pass one of ["leg", "journey"]');
+
+    const filter = (entry) => entry[level] === value;
+    const update = { hover: state };
+
+    this.#featureStates.edges.updateSelected(filter, update);
+  }
+
+  #showJourneySummaryPopup(e) {
+    // popup is currently being shown for this journey
+    if (this.#journeyHoverPopup.journeyId === e.featureState.journey) return;
+
+    // just in case a popup is currently being shown for some other journey (should not happen)
+    this.#hideJourneySummaryPopup();
+
+    this.#journeyHoverPopup.journeyId = e.featureState.journey;
+    this.#journeyHoverPopup.popup = new maplibregl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+      anchor: "left",
+      offset: [10, 0],
+    });
+    this.#journeyHoverPopup.popup
+      .setLngLat(e.lngLat)
+      .setHTML(e.featureState.journeyTravelTime)
+      .addTo(this.map);
+  }
+
+  #hideJourneySummaryPopup() {
+    if (this.#journeyHoverPopup.popup) {
+      this.#journeyHoverPopup.popup.remove();
+      this.#journeyHoverPopup.journeyId = null;
+    }
   }
 }
 
