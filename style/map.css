@@ -1,0 +1,17 @@
+.marker-destination {
+  background-image: url("/images/marker_flag.svg");
+  background-size: contain;
+  height:1.5rem;
+  width: calc(1.5rem * 0.64);
+  cursor: default;
+  filter: invert(19%) sepia(96%) saturate(1482%) hue-rotate(201deg) brightness(84%) contrast(100%);
+}
+
+.marker-home {
+  background-image: url("/images/marker_home.svg");
+  background-size: contain;
+  height:2.5rem;
+  width: calc(2.5rem * 0.64);
+  cursor: default;
+  filter: invert(19%) sepia(96%) saturate(1482%) hue-rotate(201deg) brightness(84%) contrast(100%);
+}

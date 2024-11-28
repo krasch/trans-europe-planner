@@ -341,16 +341,17 @@ class MapWrapper {
     ];
 
     for (let city of cities) {
-      if (!destinations.includes(city.name)) continue;
+      if (city.rank === 1) continue;
 
       // create a DOM element for the marker
       const el = document.createElement("div");
-      el.classList.add("marker");
+      if (city.name === "Berlin") el.classList.add("marker-home");
+      else el.classList.add("marker-destination");
 
       let marker = new maplibregl.Marker({
         element: el,
-        anchor: "bottom-left",
-        offset: [-2, 0],
+        anchor: "bottom",
+        offset: [2, 0],
       });
       marker.setLngLat([city.longitude, city.latitude]).addTo(this.map);
     }
