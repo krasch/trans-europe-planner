@@ -113,6 +113,31 @@
     </div>
 </template>
 
+<template id="template-city-marker-home">
+    <div class="marker-home"></div>
+</template>
+
+<template id="template-city-marker-destination">
+    <div class="marker-destination"></div>
+</template>
+
+<template id="template-city-menu">
+    <!-- the outer-level div will get eaten when setting up the popup -->
+    <div>
+        <div class="city-menu">
+            <div class="city"></div>
+            <div class="row">
+                <input type="checkbox" id="network" name="show" value="network">
+                <label for="network">Was fährt hier?</label>
+            </div>
+            <div class="row">
+                <input type="checkbox" id="routes" name="show" value="routes">
+                <label for="routes">Routen hierher</label>
+            </div>
+        </div>
+    </div>
+</template>
+
 
 <div id="sidebar">
     <div id="logo">
@@ -174,12 +199,12 @@
     onload = async (event) => {
         const params = new URLSearchParams(window.location.search);
 
-        if (!params.get("start")){
+        if (!params.get("start")) {
             const url = window.location.origin + window.location.pathname + "?start=Berlin";
             window.location.replace(url); // redirect
         }
 
-        for (let option of document.getElementById("select-start").options){
+        for (let option of document.getElementById("select-start").options) {
             if (option.getAttribute("value") === params.get("start"))
                 option.setAttribute("selected", "selected");
         }

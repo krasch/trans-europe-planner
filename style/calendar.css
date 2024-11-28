@@ -127,7 +127,7 @@ calendar-entry > .calendar-connection > div:nth-child(2){
 
 calendar-entry img {
     height: 1rem;
-    filter: invert(100%);
+    filter: var(--filter-white);
 }
 
 .connection-start-station,

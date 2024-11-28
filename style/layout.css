@@ -14,10 +14,6 @@ body {
 }
 
 #sidebar {
-    --color-background: #81a0be;
-    --color-dark: #2f4f69;
-    --color-light: #f9f3ea;
-
     height: 100%;
     width: 500px;
 

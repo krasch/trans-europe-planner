@@ -300,7 +300,7 @@ class MapWrapper {
 
   async load(cities, legs) {
     return new Promise((fulfilled, rejected) => {
-      this.map.on("load", () => {
+      this.map.on("load", async () => {
         try {
           this.init(cities, legs);
           fulfilled();
@@ -344,17 +344,57 @@ class MapWrapper {
       if (city.rank === 1) continue;
 
       // create a DOM element for the marker
-      const el = document.createElement("div");
-      if (city.name === "Berlin") el.classList.add("marker-home");
-      else el.classList.add("marker-destination");
+      let template = "template-city-marker-destination";
+      if (city.name === "Berlin") template = "template-city-marker-home";
+
+      const el1 = createElementFromTemplate(template);
+      const el2 = createElementFromTemplate("template-city-menu", {
+        ".city": { innerText: city.name },
+      });
+      el2.id = `city-menu-${city.name}`;
+      for (let c of el2.querySelectorAll("input")) {
+        c.id = `city-menu-${city.name}-${c.id}`;
+        c.name = city.name;
+      }
+      for (let c of el2.querySelectorAll("label")) {
+        c.setAttribute(
+          "for",
+          `city-menu-${city.name}-${c.getAttribute("for")}`,
+        );
+      }
+
+      const popup = new maplibregl.Popup({
+        anchor: "left",
+        offset: [5, -20],
+        closeButton: false,
+      }).setHTML(el2.innerHTML);
 
       let marker = new maplibregl.Marker({
-        element: el,
+        element: el1,
         anchor: "bottom",
         offset: [2, 0],
       });
       marker.setLngLat([city.longitude, city.latitude]).addTo(this.map);
+      marker.setPopup(popup);
+
+      marker.getElement().addEventListener("mouseenter", () => {
+        marker.getElement().classList.add("marker-dark");
+      });
+      marker.getElement().addEventListener("mouseleave", () => {
+        marker.getElement().classList.remove("marker-dark");
+      });
+
+      //el.onclick((e) => console.log(e));
+      //el.onclick((e) => console.log(e));
     }
+
+    document.getElementById("map").addEventListener("change", (e) => {
+      if (e.target.value !== "routes") return;
+
+      if (e.target.checked)
+        this.#callbacks["cityHoverStart"](e.target.getAttribute("name"));
+      else this.#callbacks["cityHoverEnd"](e.target.getAttribute("name"));
+    });
 
     // initialise features states for cities and edge sources
     this.#featureStates = {
@@ -376,12 +416,12 @@ class MapWrapper {
     );
 
     // set up mouse events for interacting with city names
-    mouseEvents.cityNames.on("mouseOver", (e) => {
+    /*mouseEvents.cityNames.on("mouseOver", (e) => {
       this.#callbacks["cityHoverStart"](e.feature.id);
     });
     mouseEvents.cityNames.on("mouseLeave", (e) =>
       this.#callbacks["cityHoverEnd"](e.feature.id),
-    );
+    );*/
 
     // set up mouse events for interacting with edges
     mouseEvents.edges.on("mouseOver", (e) => {
@@ -404,6 +444,7 @@ class MapWrapper {
 
   updateView(data) {
     const [cities, edges] = data;
+
     this.#featureStates.cities.setNewState(cities);
     this.#featureStates.edges.setNewState(edges);
 
