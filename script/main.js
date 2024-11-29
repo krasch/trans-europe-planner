@@ -75,4 +75,6 @@ async function main(map, calendar) {
 
   // now have done all we can do without having the map ready
   await mapLoadedPromise;
+
+  updateViews(state);
 }

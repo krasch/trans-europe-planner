@@ -62,7 +62,7 @@ test("prepareDataForMapEmpty", function () {
     journeys: new JourneyCollection(),
   };
 
-  const got = prepareDataForMap(state.journeys, database);
+  const got = prepareDataForMap(state, database);
   expect(got).toStrictEqual([[], []]);
 });
 

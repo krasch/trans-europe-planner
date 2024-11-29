@@ -134,17 +134,6 @@ function prepareInitialDataForMap(cityInfo, connections) {
 }
 
 function prepareDataForMap(state, database) {
-  if (state.numJourneys === 0) {
-    return [[], []];
-  }
-
-  const activeJourney = state.journeys.activeJourney;
-
-  // order journeys such that the active journey is first and all other journeys follow after
-  let journeyOrder = [];
-  if (activeJourney) journeyOrder.push(activeJourney);
-  journeyOrder = journeyOrder.concat(state.journeys.alternativeJourneys);
-
   // array that only allows one item with each key and quietly rejects updates
   // this works similar to a set but is much less cumbersome to work with.
   // because we are looping through active journey first, this makes sure that edges/cities for the
@@ -152,54 +141,63 @@ function prepareDataForMap(state, database) {
   const edges = new UniqueArray((edge) => edge.id);
   const cities = new UniqueArray((city) => city.id);
 
-  for (let journey of journeyOrder) {
-    const active = activeJourney !== null && journey.id === activeJourney.id;
-    const connections = journey.connectionIds.map((c) =>
-      database.connection(c),
-    );
+  if (state.journeys.numJourneys > 0) {
+    const activeJourney = state.journeys.activeJourney;
 
-    let journeySummary = getJourneySummary(connections);
+    // order journeys such that the active journey is first and all other journeys follow after
+    let journeyOrder = [];
+    if (activeJourney) journeyOrder.push(activeJourney);
+    journeyOrder = journeyOrder.concat(state.journeys.alternativeJourneys);
 
-    let edgeStatus = "alternative";
-    if (active) edgeStatus = "active";
+    for (let journey of journeyOrder) {
+      const active = activeJourney !== null && journey.id === activeJourney.id;
+      const connections = journey.connectionIds.map((c) =>
+        database.connection(c),
+      );
 
-    for (let i in connections) {
-      let color = null;
-      if (active) color = `rgb(${getColor(i)})`;
+      let journeySummary = getJourneySummary(connections);
 
-      for (let edge of connections[i].trace) {
-        const city = {
-          id: edge.startCityName,
-          color: color,
-          stop: true,
-          transfer: edge.startCityName === connections[i].start.cityName,
-          active: active,
-        };
-        if (city.transfer) {
-          city.rank = 3;
+      let edgeStatus = "alternative";
+      if (active) edgeStatus = "active";
+
+      for (let i in connections) {
+        let color = null;
+        if (active) color = `rgb(${getColor(i)})`;
+
+        for (let edge of connections[i].trace) {
+          const city = {
+            id: edge.startCityName,
+            color: color,
+            stop: true,
+            transfer: edge.startCityName === connections[i].start.cityName,
+            active: active,
+          };
+          if (city.transfer) {
+            city.rank = 3;
+          }
+          cities.push(city);
+
+          const city2 = {
+            id: edge.endCityName,
+            color: color,
+            stop: true,
+            transfer: edge.endCityName === connections[i].end.cityName,
+            active: active,
+          };
+          if (city2.transfer) {
+            city2.rank = 3;
+          }
+          cities.push(city2);
+
+          edges.push({
+            id: edge.toAlphabeticString(),
+            color: color,
+            leg: connections[i].leg.toString(),
+            journey: journey.id,
+            journeyTravelTime: journeySummary.travelTime,
+            status: edgeStatus,
+          });
         }
-        cities.push(city);
-
-        const city2 = {
-          id: edge.endCityName,
-          color: color,
-          stop: true,
-          transfer: edge.endCityName === connections[i].end.cityName,
-          active: active,
-        };
-        if (city2.transfer) {
-          city2.rank = 3;
-        }
-        cities.push(city2);
-
-        edges.push({
-          id: edge.toAlphabeticString(),
-          color: color,
-          leg: connections[i].leg.toString(),
-          journey: journey.id,
-          journeyTravelTime: journeySummary.travelTime,
-          status: edgeStatus,
-        });
       }
     }
   }
