@@ -100,9 +100,31 @@ test("prepareDataForMapNoActiveJourney", function () {
   ];
 
   const expCities = [
-    { id: "City1", color: null, transfer: true, active: false, stop: true },
-    { id: "City2", color: null, transfer: false, active: false, stop: true },
-    { id: "City3", color: null, transfer: true, active: false, stop: true },
+    {
+      id: "City1",
+      color: null,
+      icon: "star_11",
+      rank: 3,
+      transfer: true,
+      active: false,
+      stop: true,
+    },
+    {
+      id: "City2",
+      color: null,
+      transfer: false,
+      active: false,
+      stop: true,
+    },
+    {
+      id: "City3",
+      color: null,
+      icon: "star_11",
+      rank: 3,
+      transfer: true,
+      active: false,
+      stop: true,
+    },
   ];
 
   const got = prepareDataForMap(journeys, database);
@@ -137,6 +159,8 @@ test("prepareDataForMap", function () {
     {
       id: "City1",
       color: `rgb(${getColor(0)})`,
+      icon: "star_11",
+      rank: 3,
       transfer: true,
       active: true,
       stop: true,
@@ -152,17 +176,29 @@ test("prepareDataForMap", function () {
       id: "City3",
       color: `rgb(${getColor(0)})`,
       transfer: true,
+      icon: "star_11",
+      rank: 3,
       active: true,
       stop: true,
     },
     {
       id: "City4",
       color: `rgb(${getColor(1)})`,
+      icon: "star_11",
+      rank: 3,
       transfer: true,
       active: true,
       stop: true,
     },
-    { id: "City5", color: null, transfer: true, active: false, stop: true },
+    {
+      id: "City5",
+      color: null,
+      icon: "star_11",
+      rank: 3,
+      transfer: true,
+      active: false,
+      stop: true,
+    },
   ];
 
   const expEdges = [
