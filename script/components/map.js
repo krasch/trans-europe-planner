@@ -1,9 +1,3 @@
-const CITY_NAME_LAYERS = [
-  "city-name",
-  "city-name-transfer-alternative",
-  "city-name-transfer-active",
-];
-
 // todo this sucks :-(
 const CITY_FILTER_UPDATE_FUNCTIONS = {
   "city-circle": (filter, ids) => (filter[1][2][1] = ids),
@@ -280,6 +274,91 @@ class PopupHelper {
   }
 }
 
+// todo update function
+class CityMenus {
+  #popups = {};
+  #callbacks = { change: () => {} };
+
+  constructor(map, cities) {
+    for (let city of cities) {
+      const popupEl = createElementFromTemplate("template-city-menu", {
+        ".city": { innerText: city.name },
+      });
+      popupEl.id = `city-menu-${city.name}`;
+      for (let c of popupEl.querySelectorAll("input")) {
+        c.id = `city-menu-${city.name}-${c.id}`;
+        if (c.value === "routes") {
+          c.disabled = !city.routes_available;
+        }
+
+        c.name = city.name;
+      }
+      for (let c of popupEl.querySelectorAll("label")) {
+        c.setAttribute(
+          "for",
+          `city-menu-${city.name}-${c.getAttribute("for")}`,
+        );
+      }
+
+      this.#popups[city.name] = new maplibregl.Popup({
+        anchor: "left",
+        offset: [5, -20],
+        closeButton: false,
+      }).setHTML(popupEl.innerHTML);
+    }
+
+    map._container.addEventListener("change", (e) => {
+      const city = e.target.getAttribute("name");
+      this.#callbacks["change"](city, e.target.value, e.target.checked);
+    });
+  }
+
+  on(eventName, callback) {
+    this.#callbacks[eventName] = callback;
+  }
+
+  get(city) {
+    return this.#popups[city];
+  }
+}
+
+// todo update function
+class CityMarkers {
+  #markers = {};
+
+  constructor(map, cities) {
+    for (let city of cities) {
+      if (city.rank === 1) continue;
+
+      // create a DOM element for the marker
+      let template = "template-city-marker-destination";
+      if (city.name === "Berlin") template = "template-city-marker-home";
+      const markerEl = createElementFromTemplate(template);
+
+      let marker = new maplibregl.Marker({
+        element: markerEl,
+        anchor: "bottom",
+        offset: [2, 0],
+      });
+      marker.setLngLat([city.longitude, city.latitude]).addTo(map);
+
+      // todo should not be for every item
+      marker.getElement().addEventListener("mouseenter", () => {
+        marker.getElement().classList.add("marker-dark");
+      });
+      marker.getElement().addEventListener("mouseleave", () => {
+        marker.getElement().classList.remove("marker-dark");
+      });
+
+      this.#markers[city.name] = marker;
+    }
+  }
+
+  setPopup(city, popup) {
+    if (this.#markers[city]) this.#markers[city].setPopup(popup);
+  }
+}
+
 class MapWrapper {
   #callbacks = {
     selectJourney: () => {},
@@ -333,70 +412,9 @@ class MapWrapper {
     // add all layers
     for (let layer of mapStyles) this.map.addLayer(layer);
 
-    for (let city of cities) {
-      if (city.rank === 1) continue;
-
-      // create a DOM element for the marker
-      let template = "template-city-marker-destination";
-      if (city.name === "Berlin") template = "template-city-marker-home";
-
-      const el1 = createElementFromTemplate(template);
-      const el2 = createElementFromTemplate("template-city-menu", {
-        ".city": { innerText: city.name },
-      });
-      el2.id = `city-menu-${city.name}`;
-      for (let c of el2.querySelectorAll("input")) {
-        c.id = `city-menu-${city.name}-${c.id}`;
-        if (c.value === "routes") {
-          c.disabled = !city.routes_available;
-        }
-
-        c.name = city.name;
-      }
-      for (let c of el2.querySelectorAll("label")) {
-        c.setAttribute(
-          "for",
-          `city-menu-${city.name}-${c.getAttribute("for")}`,
-        );
-      }
-
-      const popup = new maplibregl.Popup({
-        anchor: "left",
-        offset: [5, -20],
-        closeButton: false,
-      }).setHTML(el2.innerHTML);
-
-      let marker = new maplibregl.Marker({
-        element: el1,
-        anchor: "bottom",
-        offset: [2, 0],
-      });
-      marker.setLngLat([city.longitude, city.latitude]).addTo(this.map);
-      marker.setPopup(popup);
-
-      marker.getElement().addEventListener("mouseenter", () => {
-        marker.getElement().classList.add("marker-dark");
-      });
-      marker.getElement().addEventListener("mouseleave", () => {
-        marker.getElement().classList.remove("marker-dark");
-      });
-
-      //el.onclick((e) => console.log(e));
-      //el.onclick((e) => console.log(e));
-    }
-
-    document.getElementById("map").addEventListener("change", (e) => {
-      if (e.target.value === "network") {
-        if (e.target.checked)
-          this.#callbacks["showCityNetwork"](e.target.getAttribute("name"));
-        else this.#callbacks["hideCityNetwork"](e.target.getAttribute("name"));
-      }
-      if (e.target.value === "routes") {
-        if (e.target.checked)
-          this.#callbacks["showCityRoutes"](e.target.getAttribute("name"));
-        else this.#callbacks["hideCityRoutes"](e.target.getAttribute("name"));
-      }
-    });
+    const popups = new CityMenus(this.map, cities);
+    const markers = new CityMarkers(this.map, cities);
+    for (let city of cities) markers.setPopup(city.name, popups.get(city.name));
 
     // initialise features states for cities and edge sources
     this.#featureStates = {
@@ -437,6 +455,16 @@ class MapWrapper {
     mouseEvents.edges.on("click", (e) => {
       if (e.featureState.status === "alternative")
         this.#callbacks["selectJourney"](e.featureState.journey);
+    });
+
+    // set up menu events
+    popups.on("change", (city, key, value) => {
+      if (key === "network")
+        if (value) this.#callbacks["showCityNetwork"](city);
+        else this.#callbacks["showCityNetwork"](city);
+      else if (key === "routes")
+        if (value) this.#callbacks["showCityRoutes"](city);
+        else this.#callbacks["showCityRoutes"](city);
     });
   }
 
