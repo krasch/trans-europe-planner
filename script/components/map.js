@@ -461,10 +461,10 @@ class MapWrapper {
     popups.on("change", (city, key, value) => {
       if (key === "network")
         if (value) this.#callbacks["showCityNetwork"](city);
-        else this.#callbacks["showCityNetwork"](city);
+        else this.#callbacks["hideCityNetwork"](city);
       else if (key === "routes")
         if (value) this.#callbacks["showCityRoutes"](city);
-        else this.#callbacks["showCityRoutes"](city);
+        else this.#callbacks["hideCityRoutes"](city);
     });
   }
 
