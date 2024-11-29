@@ -116,21 +116,3 @@ calendar-grid {
     width: 95%
 }
 
-#share {
-    position: absolute;
-    right: 1rem;
-    top: 1rem;
-    background-color: darkred;
-    border-radius: 10px;
-    padding: 0.75rem;
-}
-
-#share a {
-    color: white;
-    font-size: 1.2rem;
-}
-
-
-.maplibregl-popup-tip {
-    visibility: hidden;
-}

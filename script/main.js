@@ -2,6 +2,9 @@ function initUpdateViews(map, calendar, database) {
   function updateViews(state) {
     map.updateView(prepareDataForMap(state.journeys, database));
     calendar.updateView(prepareDataForCalendar(state.journeys, database));
+
+    if (state.home && state.journeys.activeJourney) calendar.show();
+    else calendar.hide();
   }
   return updateViews;
 }
@@ -63,7 +66,4 @@ async function main(map, calendar) {
 
   // now have done all we can do without having the map ready
   await mapLoadedPromise;
-
-  // read the current start/destination values and fill all views
-  startDestinationSelection.triggerChangeEvent();
 }

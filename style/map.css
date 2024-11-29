@@ -29,6 +29,10 @@
   padding: 0;
 }
 
+.maplibregl-popup-tip {
+    visibility: hidden;
+}
+
 
 .city-menu {
   display: flex;
