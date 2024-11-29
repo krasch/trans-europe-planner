@@ -58,9 +58,11 @@ test("prepareInitialDataForMap", function () {
 test("prepareDataForMapEmpty", function () {
   const database = new Database([]);
 
-  const journeys = new JourneyCollection();
+  const state = {
+    journeys: new JourneyCollection(),
+  };
 
-  const got = prepareDataForMap(journeys, database);
+  const got = prepareDataForMap(state.journeys, database);
   expect(got).toStrictEqual([[], []]);
 });
 
@@ -73,8 +75,11 @@ test("prepareDataForMapNoActiveJourney", function () {
 
   const database = new Database([c1]);
 
-  const journeys = new JourneyCollection();
-  const j1 = journeys.addJourney([c1.id]);
+  const state = {
+    journeys: new JourneyCollection(),
+  };
+
+  const j1 = state.journeys.addJourney([c1.id]);
 
   const expEdges = [
     {
@@ -123,7 +128,7 @@ test("prepareDataForMapNoActiveJourney", function () {
     },
   ];
 
-  const got = prepareDataForMap(journeys, database);
+  const got = prepareDataForMap(state, database);
   expect(got).toStrictEqual([expCities, expEdges]);
 });
 
@@ -146,10 +151,12 @@ test("prepareDataForMap", function () {
 
   const database = new Database([c1, c2, c3]);
 
-  const journeys = new JourneyCollection();
-  const j1 = journeys.addJourney([c1.id, c2.id]);
-  const j2 = journeys.addJourney([c3.id]);
-  journeys.setActive(j1);
+  const state = {
+    journeys: new JourneyCollection(),
+  };
+  const j1 = state.journeys.addJourney([c1.id, c2.id]);
+  const j2 = state.journeys.addJourney([c3.id]);
+  state.journeys.setActive(j1);
 
   const expCities = [
     {
@@ -231,6 +238,6 @@ test("prepareDataForMap", function () {
       journeyTravelTime: "2h",
     },
   ];
-  const got = prepareDataForMap(journeys, database);
+  const got = prepareDataForMap(state, database);
   expect(got).toStrictEqual([expCities, expEdges]);
 });

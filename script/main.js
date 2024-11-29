@@ -1,9 +1,9 @@
 function initUpdateViews(map, calendar, database) {
   function updateViews(state) {
-    map.updateView(prepareDataForMap(state.journeys, database));
-    calendar.updateView(prepareDataForCalendar(state.journeys, database));
+    map.updateView(prepareDataForMap(state, database));
+    calendar.updateView(prepareDataForCalendar(state, database));
 
-    if (state.home && state.journeys.activeJourney) calendar.show();
+    if (state.journeys.activeJourney) calendar.show();
     else calendar.hide();
   }
   return updateViews;
@@ -51,7 +51,8 @@ async function main(map, calendar) {
 
     for (let route of ROUTES[target]) {
       const connectionIds = createStupidItineraryForRoute(route, database);
-      state.journeys.addJourney(connectionIds);
+      let id = state.journeys.addJourney(connectionIds);
+      if (!state.journeys.activeJourney) state.journeys.setActive(id);
     }
     updateViews(state);
   });

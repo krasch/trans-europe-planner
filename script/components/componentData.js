@@ -79,9 +79,9 @@ function getJourneySummary(connections) {
 function prepareDataForCalendar(state, database) {
   const data = [];
 
-  if (!state.activeJourney) return data;
+  if (!state.journeys.activeJourney) return data;
 
-  const connectionIds = state.activeJourney.connectionIds;
+  const connectionIds = state.journeys.activeJourney.connectionIds;
 
   for (let i in connectionIds) {
     const leg = connectionIds[i].leg;
@@ -138,12 +138,12 @@ function prepareDataForMap(state, database) {
     return [[], []];
   }
 
-  const activeJourney = state.activeJourney;
+  const activeJourney = state.journeys.activeJourney;
 
   // order journeys such that the active journey is first and all other journeys follow after
   let journeyOrder = [];
   if (activeJourney) journeyOrder.push(activeJourney);
-  journeyOrder = journeyOrder.concat(state.alternativeJourneys);
+  journeyOrder = journeyOrder.concat(state.journeys.alternativeJourneys);
 
   // array that only allows one item with each key and quietly rejects updates
   // this works similar to a set but is much less cumbersome to work with.
