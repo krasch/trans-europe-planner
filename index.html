@@ -197,6 +197,8 @@
 
 <script>
     onload = async (event) => {
+        initColors();
+
         const params = new URLSearchParams(window.location.search);
 
         if (!params.get("start")) {
