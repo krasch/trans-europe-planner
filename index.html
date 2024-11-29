@@ -47,6 +47,14 @@
     <script src="script/components/map.js"></script>
     <script src="script/components/startDestinationSelection.js"></script>
 
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        if (!params.get("start")) {
+            const url = window.location.origin + window.location.pathname + "?start=Berlin";
+            window.location.replace(url); // redirect
+        }
+    </script>
+
     <title>Trans-Europe-Planner</title>
 
 </head>
@@ -198,18 +206,6 @@
 <script>
     onload = async (event) => {
         initColors();
-
-        const params = new URLSearchParams(window.location.search);
-
-        if (!params.get("start")) {
-            const url = window.location.origin + window.location.pathname + "?start=Berlin";
-            window.location.replace(url); // redirect
-        }
-
-        for (let option of document.getElementById("select-start").options) {
-            if (option.getAttribute("value") === params.get("start"))
-                option.setAttribute("selected", "selected");
-        }
 
         const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3);
         const calendar = document.getElementById("calendar");

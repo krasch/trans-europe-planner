@@ -1,34 +1,37 @@
 function initUpdateViews(map, calendar, database) {
   function updateViews(state) {
-    map.updateView(prepareDataForMap(state, database));
-    calendar.updateView(prepareDataForCalendar(state, database));
+    map.updateView(prepareDataForMap(state.journeys, database));
+    calendar.updateView(prepareDataForCalendar(state.journeys, database));
   }
   return updateViews;
 }
 
 async function main(map, calendar, startDestinationSelection) {
-  const DATES = ["2024-12-01", "2024-12-02", "2024-12-03"];
+  // init state
+  const params = new URLSearchParams(window.location.search);
+  const state = {
+    home: params.get("start"),
+    journeys: new JourneyCollection(),
+    temporaryNetwork: null, // todo better name
+  };
 
   // prepare database
+  const DATES = ["2024-12-01", "2024-12-02", "2024-12-03"];
   const connections = CONNECTIONS.flatMap((c) =>
     enrichAndTemporalizeConnection(c, STATIONS, CITIES, DATES),
   );
   const database = new Database(connections);
 
   // initial drawing of all necessary geo information
-  const mapLoadedPromise = map.load(
-    prepareInitialDataForMap(CITIES, connections),
-  );
+  const initialMapData = prepareInitialDataForMap(CITIES, connections);
+  const mapLoadedPromise = map.load(initialMapData);
 
   // init update views
   const updateViews = initUpdateViews(map, calendar, database);
 
-  // init state
-  const journeys = new JourneyCollection();
-
   // changing start/destination
   startDestinationSelection.on("startOrDestinationChanged", (target) => {
-    journeys.reset();
+    state.journeys.reset();
 
     if (target === null) {
       calendar.hide();
@@ -36,58 +39,45 @@ async function main(map, calendar, startDestinationSelection) {
       calendar.show();
       for (let route of ROUTES[target]) {
         const connectionIds = createStupidItineraryForRoute(route, database);
-        journeys.addJourney(connectionIds);
+        state.journeys.addJourney(connectionIds);
       }
-      journeys.setActive(0); // todo?
+      state.journeys.setActive(0); // todo?
     }
 
-    updateViews(journeys);
+    updateViews(state);
   });
-
-  // removing/adding a leg in map
-  /*map.on("legAdded", (leg) => {
-    const connection = getConnectionForLeg(journeys[active], leg, database);
-    journeys[active].setConnectionForLeg(leg, connection);
-    updateViews(journeys, active);
-  });
-  map.on("legRemoved", (leg) => {
-    journeys[active].removeLeg(leg);
-    updateViews(journeys, active);
-  });*/
 
   // moving things around in the calendar
   calendar.on("legChanged", (connectionId) => {
-    journeys.activeJourney.updateLeg(connectionId);
-    updateViews(journeys);
+    state.journeys.activeJourney.updateLeg(connectionId);
+    updateViews(state);
   });
 
   // selecting a different journey
   map.on("alternativeJourneyClicked", (journeyId) => {
-    journeys.setActive(journeyId);
-    updateViews(journeys);
+    state.journeys.setActive(journeyId);
+    updateViews(state);
   });
 
   // clicking on a city
   map.on("cityHoverStart", (city) => {
-    const target = `Berlin->${city}`;
+    const target = `${state.home}->${city}`; // todo assumes home is set
     if (!ROUTES[target]) return;
 
     for (let route of ROUTES[target]) {
       const connectionIds = createStupidItineraryForRoute(route, database);
-      journeys.addJourney(connectionIds);
+      state.journeys.addJourney(connectionIds);
     }
-    updateViews(journeys);
+    updateViews(state);
   });
   map.on("cityHoverEnd", (city) => {
-    journeys.removeJourneysWithDestination(city);
-    updateViews(journeys);
+    state.journeys.removeJourneysWithDestination(city);
+    updateViews(state);
   });
 
   // hovering over map or calender
   calendar.on("entryHoverStart", (leg) => map.setHoverState("leg", leg, true));
   calendar.on("entryHoverStop", (leg) => map.setHoverState("leg", leg, false));
-  //map.on("legHoverStart", (leg) => calendar.setHoverEntry(leg));
-  //map.on("legHoverStop", (leg) => calendar.setNoHoverEntry(leg));
 
   // now have done all we can do without having the map ready
   await mapLoadedPromise;
