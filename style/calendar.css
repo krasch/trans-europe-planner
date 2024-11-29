@@ -6,7 +6,7 @@ calendar-grid {
     --num-rows: calc(24*var(--resolution) + 8);
 
     grid-auto-flow: column;
-    grid-template-rows: repeat(var(--num-rows), 0.3rem); /* todo instead set total height?*/
+    grid-template-rows: repeat(var(--num-rows), 0.4rem); /* todo instead set total height?*/
     grid-template-columns: 3rem repeat(var(--num-days), 1fr);
 
     border: 1px solid var(--color-background);

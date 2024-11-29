@@ -155,17 +155,16 @@
     </div>
 
     <!-- All calendar elements will be added into the container below dynamically -->
-    <details id="calender-details" open="open">
-        <summary class="legend">Reisevorschlag anpassen</summary>
-        <fieldset id="calender-fieldset" role="presentation">
-
-            <div class="explanation"> Hier kannst du Zugverbindungen einfach <strong>hin und her schieben</strong> um
-                Umsteigezeiten anzupassen oder die Reise
-                auf mehrere Tage zu verteilen.
-            </div>
-            <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
-        </fieldset>
-    </details>
+    <div id="calender-container">
+        <div class="title">Reisevorschlag anpassen</div>
+        <div class="explanation">
+             Hier kannst du Zugverbindungen einfach
+             <strong>hin und her schieben</strong> um
+             Umsteigezeiten anzupassen oder die Reise
+             auf mehrere Tage zu verteilen.
+        </div>
+        <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
+    </div>
 </div>
 <div id="map"></div>
 
