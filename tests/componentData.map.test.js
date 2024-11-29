@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 const {
   prepareDataForMap,
   prepareInitialDataForMap,
@@ -62,9 +58,11 @@ test("prepareInitialDataForMap", function () {
 test("prepareDataForMapEmpty", function () {
   const database = new Database([]);
 
-  const journeys = new JourneyCollection();
+  const state = {
+    journeys: new JourneyCollection(),
+  };
 
-  const got = prepareDataForMap(journeys, database);
+  const got = prepareDataForMap(state, database);
   expect(got).toStrictEqual([[], []]);
 });
 
@@ -77,8 +75,11 @@ test("prepareDataForMapNoActiveJourney", function () {
 
   const database = new Database([c1]);
 
-  const journeys = new JourneyCollection();
-  const j1 = journeys.addJourney([c1.id]);
+  const state = {
+    journeys: new JourneyCollection(),
+  };
+
+  const j1 = state.journeys.addJourney([c1.id]);
 
   const expEdges = [
     {
@@ -100,12 +101,32 @@ test("prepareDataForMapNoActiveJourney", function () {
   ];
 
   const expCities = [
-    { id: "City1", color: null, transfer: true, active: false, stop: true },
-    { id: "City2", color: null, transfer: false, active: false, stop: true },
-    { id: "City3", color: null, transfer: true, active: false, stop: true },
+    {
+      id: "City1",
+      color: null,
+      rank: 3,
+      transfer: true,
+      active: false,
+      stop: true,
+    },
+    {
+      id: "City2",
+      color: null,
+      transfer: false,
+      active: false,
+      stop: true,
+    },
+    {
+      id: "City3",
+      color: null,
+      rank: 3,
+      transfer: true,
+      active: false,
+      stop: true,
+    },
   ];
 
-  const got = prepareDataForMap(journeys, database);
+  const got = prepareDataForMap(state, database);
   expect(got).toStrictEqual([expCities, expEdges]);
 });
 
@@ -128,15 +149,18 @@ test("prepareDataForMap", function () {
 
   const database = new Database([c1, c2, c3]);
 
-  const journeys = new JourneyCollection();
-  const j1 = journeys.addJourney([c1.id, c2.id]);
-  const j2 = journeys.addJourney([c3.id]);
-  journeys.setActive(j1);
+  const state = {
+    journeys: new JourneyCollection(),
+  };
+  const j1 = state.journeys.addJourney([c1.id, c2.id]);
+  const j2 = state.journeys.addJourney([c3.id]);
+  state.journeys.setActive(j1);
 
   const expCities = [
     {
       id: "City1",
       color: `rgb(${getColor(0)})`,
+      rank: 3,
       transfer: true,
       active: true,
       stop: true,
@@ -152,17 +176,26 @@ test("prepareDataForMap", function () {
       id: "City3",
       color: `rgb(${getColor(0)})`,
       transfer: true,
+      rank: 3,
       active: true,
       stop: true,
     },
     {
       id: "City4",
       color: `rgb(${getColor(1)})`,
+      rank: 3,
       transfer: true,
       active: true,
       stop: true,
     },
-    { id: "City5", color: null, transfer: true, active: false, stop: true },
+    {
+      id: "City5",
+      color: null,
+      rank: 3,
+      transfer: true,
+      active: false,
+      stop: true,
+    },
   ];
 
   const expEdges = [
@@ -199,6 +232,6 @@ test("prepareDataForMap", function () {
       journeyTravelTime: "2h",
     },
   ];
-  const got = prepareDataForMap(journeys, database);
+  const got = prepareDataForMap(state, database);
   expect(got).toStrictEqual([expCities, expEdges]);
 });

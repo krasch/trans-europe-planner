@@ -1,9 +1,3 @@
-const CITY_NAME_LAYERS = [
-  "city-name",
-  "city-name-transfer-alternative",
-  "city-name-transfer-active",
-];
-
 // todo this sucks :-(
 const CITY_FILTER_UPDATE_FUNCTIONS = {
   "city-circle": (filter, ids) => (filter[1][2][1] = ids),
@@ -18,6 +12,8 @@ const CITY_DEFAULT_STATE = {
   color: null,
   stop: false,
   transfer: false,
+  rank: 1,
+  icon: null,
 };
 
 const EDGE_DEFAULT_STATE = {
@@ -37,7 +33,12 @@ function cityToGeojson(city) {
       coordinates: [city.longitude, city.latitude],
     },
     // use this instead of outer-level 'id' field because those ids must be numeric
-    properties: { name: city.name, id: city.name, rank: city.rank },
+    properties: {
+      name: city.name,
+      id: city.name,
+      rank: city.rank,
+      icon: null,
+    },
   };
 }
 
@@ -82,48 +83,98 @@ class FeatureStateManager {
   // sets feature state for all items
   // if items are not in newStates, they are reset to the initial state
   setNewState(newStates) {
+    const updates = new Map();
+
     // things that are now relevant
-    const updatedIds = [];
     for (let update of newStates) {
       const id = update.id;
 
       // either get the current state or init
-      let current = this.#mirror.get(id) ?? this.#initialState;
+      let current = this.#mirror.get(id) ?? this.#getInitialState(id);
 
       // keeps all keys from current and updates them with data from update
       const updated = { ...current, ...update };
 
-      // apply update
       this.#mirror.set(id, updated);
-      this.#map.setFeatureState({ source: this.#source, id: id }, update);
-
-      updatedIds.push(id);
+      updates.set(id, updated);
     }
 
     // things that are no longer relevant -> reset to initial state
     for (let id of this.#mirror.keys()) {
-      if (!updatedIds.includes(id)) {
-        const updated = { ...this.#initialState };
-
-        // apply update
-        this.#mirror.set(id, updated);
-        this.#map.setFeatureState({ source: this.#source, id: id }, updated);
+      if (!updates.has(id)) {
+        const updated = { ...this.#getInitialState(id) };
+        updates.set(id, updated);
       }
     }
+
+    this.#applyUpdatesToMap(updates);
   }
 
   // updates only selected items, does not touch items that do not match the filter
   updateSelected(filterFn, update) {
+    const updates = new Map();
+
     for (let [id, entry] of this.#mirror.entries()) {
       if (!filterFn(entry)) continue;
 
       // keeps all keys from current entry and updates them with data from update
       const updated = { ...entry, ...update };
 
-      // apply update
       this.#mirror.set(id, updated);
-      this.#map.setFeatureState({ source: this.#source, id: id }, update);
+      updates.set(id, updated);
     }
+  }
+
+  #getInitialState(id) {
+    const state = { ...this.#initialState };
+    if (
+      [
+        "Amsterdam",
+        "Roma",
+        "Berlin",
+        "Bratislava",
+        "Bruxelles",
+        "Budapest",
+        "Göteborg",
+        "Hamburg",
+        "Köln",
+        "København",
+        "London",
+        "Marseille",
+        "Milano",
+        "München",
+        "Paris",
+        "Praha",
+        "Stockholm",
+        "Warszawa",
+        "Wien",
+        "Zürich",
+      ].includes(id)
+    )
+      state["rank"] = 2;
+    return state;
+  }
+
+  #applyUpdatesToMap(updates) {
+    const updateRequest = { update: [] };
+
+    for (let [id, updated] of updates) {
+      this.#map.setFeatureState({ source: this.#source, id: id }, updated);
+
+      const update = [];
+      if (updated["rank"]) update.push({ key: "rank", value: updated["rank"] });
+      if (Object.keys(updated).includes("icon"))
+        update.push({ key: "icon", value: updated["icon"] });
+
+      if (update.length > 0)
+        updateRequest.update.push({
+          id: id,
+          addOrUpdateProperties: update,
+        });
+    }
+
+    if (updateRequest.update.length > 0)
+      this.#map.getSource("cities").updateData(updateRequest);
   }
 }
 
@@ -223,11 +274,98 @@ class PopupHelper {
   }
 }
 
+// todo update function
+class CityMenus {
+  #popups = {};
+  #callbacks = { change: () => {} };
+
+  constructor(map, cities) {
+    for (let city of cities) {
+      const popupEl = createElementFromTemplate("template-city-menu", {
+        ".city": { innerText: city.name },
+      });
+      popupEl.id = `city-menu-${city.name}`;
+      for (let c of popupEl.querySelectorAll("input")) {
+        c.id = `city-menu-${city.name}-${c.id}`;
+        if (c.value === "routes") {
+          c.disabled = !city.routes_available;
+        }
+
+        c.name = city.name;
+      }
+      for (let c of popupEl.querySelectorAll("label")) {
+        c.setAttribute(
+          "for",
+          `city-menu-${city.name}-${c.getAttribute("for")}`,
+        );
+      }
+
+      this.#popups[city.name] = new maplibregl.Popup({
+        anchor: "left",
+        offset: [5, -20],
+        closeButton: false,
+      }).setHTML(popupEl.innerHTML);
+    }
+
+    map._container.addEventListener("change", (e) => {
+      const city = e.target.getAttribute("name");
+      this.#callbacks["change"](city, e.target.value, e.target.checked);
+    });
+  }
+
+  on(eventName, callback) {
+    this.#callbacks[eventName] = callback;
+  }
+
+  get(city) {
+    return this.#popups[city];
+  }
+}
+
+// todo update function
+class CityMarkers {
+  #markers = {};
+
+  constructor(map, cities) {
+    for (let city of cities) {
+      if (city.rank === 1) continue;
+
+      // create a DOM element for the marker
+      let template = "template-city-marker-destination";
+      if (city.name === "Berlin") template = "template-city-marker-home";
+      const markerEl = createElementFromTemplate(template);
+
+      let marker = new maplibregl.Marker({
+        element: markerEl,
+        anchor: "bottom",
+        offset: [2, 0],
+      });
+      marker.setLngLat([city.longitude, city.latitude]).addTo(map);
+
+      // todo should not be for every item
+      marker.getElement().addEventListener("mouseenter", () => {
+        marker.getElement().classList.add("marker-dark");
+      });
+      marker.getElement().addEventListener("mouseleave", () => {
+        marker.getElement().classList.remove("marker-dark");
+      });
+
+      this.#markers[city.name] = marker;
+    }
+  }
+
+  setPopup(city, popup) {
+    if (this.#markers[city]) this.#markers[city].setPopup(popup);
+  }
+}
+
 class MapWrapper {
   #callbacks = {
-    alternativeJourneyClicked: () => {},
-    cityHoverStart: () => {},
-    cityHoverEnd: () => {},
+    selectJourney: () => {},
+    showCityRoutes: () => {},
+    hideCityRoutes: () => {},
+    showCityNetwork: () => {},
+    hideCityNetwork: () => {},
   };
 
   #featureStates = null;
@@ -243,7 +381,7 @@ class MapWrapper {
 
   async load(cities, legs) {
     return new Promise((fulfilled, rejected) => {
-      this.map.on("load", () => {
+      this.map.on("load", async () => {
         try {
           this.init(cities, legs);
           fulfilled();
@@ -274,6 +412,10 @@ class MapWrapper {
     // add all layers
     for (let layer of mapStyles) this.map.addLayer(layer);
 
+    const popups = new CityMenus(this.map, cities);
+    const markers = new CityMarkers(this.map, cities);
+    for (let city of cities) markers.setPopup(city.name, popups.get(city.name));
+
     // initialise features states for cities and edge sources
     this.#featureStates = {
       edges: new FeatureStateManager(this.map, "edges", EDGE_DEFAULT_STATE),
@@ -282,7 +424,7 @@ class MapWrapper {
 
     // initialise mouse event helper for cities and edge layers
     const mouseEvents = {
-      cityNames: new MouseEventHelper(this.map, CITY_NAME_LAYERS),
+      cityNames: new MouseEventHelper(this.map, ["city-name"]),
       edges: new MouseEventHelper(this.map, EDGE_LAYERS, true),
     };
 
@@ -294,12 +436,12 @@ class MapWrapper {
     );
 
     // set up mouse events for interacting with city names
-    mouseEvents.cityNames.on("mouseOver", (e) => {
+    /*mouseEvents.cityNames.on("mouseOver", (e) => {
       this.#callbacks["cityHoverStart"](e.feature.id);
     });
     mouseEvents.cityNames.on("mouseLeave", (e) =>
       this.#callbacks["cityHoverEnd"](e.feature.id),
-    );
+    );*/
 
     // set up mouse events for interacting with edges
     mouseEvents.edges.on("mouseOver", (e) => {
@@ -312,7 +454,17 @@ class MapWrapper {
     });
     mouseEvents.edges.on("click", (e) => {
       if (e.featureState.status === "alternative")
-        this.#callbacks["alternativeJourneyClicked"](e.featureState.journey);
+        this.#callbacks["selectJourney"](e.featureState.journey);
+    });
+
+    // set up menu events
+    popups.on("change", (city, key, value) => {
+      if (key === "network")
+        if (value) this.#callbacks["showCityNetwork"](city);
+        else this.#callbacks["hideCityNetwork"](city);
+      else if (key === "routes")
+        if (value) this.#callbacks["showCityRoutes"](city);
+        else this.#callbacks["hideCityRoutes"](city);
     });
   }
 
@@ -322,8 +474,11 @@ class MapWrapper {
 
   updateView(data) {
     const [cities, edges] = data;
+
     this.#featureStates.cities.setNewState(cities);
     this.#featureStates.edges.setNewState(edges);
+
+    /*
 
     // transfers in active/alternative journeys
     const transfers = cities.filter((c) => c.transfer);
@@ -338,7 +493,7 @@ class MapWrapper {
     // next highest priority to transfers in alternative journeys
     this.#updateCityFilter("city-name-transfer-alternative", altTransfers);
     // highest priority to transfers in active journey
-    this.#updateCityFilter("city-name-transfer-active", activeTransfers);
+    this.#updateCityFilter("city-name-transfer-active", activeTransfers);*/
   }
 
   setHoverState(level, value, state) {

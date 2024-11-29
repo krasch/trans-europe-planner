@@ -12,6 +12,15 @@ class InvalidLegFormat extends Error {
   }
 }
 
+class SlicingError extends Error {
+  constructor(connectionId, startCity, endCity) {
+    super(
+      `Slice ${startCity} -> ${endCity} not available for connection ${connectionId}`,
+    );
+    this.name = "SlicingError";
+  }
+}
+
 class Leg {
   constructor(startCityName, endCityName) {
     this.startCityName = startCityName;
@@ -75,7 +84,6 @@ class Connection {
 
   slice(startCity, endCity) {
     const sliced = this.#getPartialStops(this.stops, startCity, endCity);
-    if (sliced == null) return null;
 
     return new Connection(
       this.id.train,
@@ -87,19 +95,34 @@ class Connection {
   }
 
   get trace() {
+    return this.partialTrace(this.start.cityName, this.end.cityName);
+  }
+
+  hasStop(city) {
+    for (let stop of this.stops) if (stop.cityName === city) return true;
+    return false;
+  }
+
+  partialTrace(startCity, endCity) {
+    const slice = this.#getPartialStops(this.stops, startCity, endCity);
+
     const directs = [];
 
-    for (let i in this.stops) {
+    for (let i in slice) {
       if (i === "0") continue;
-      if (this.stops[i - 1].cityId === this.stops[i].cityId) continue;
+      if (slice[i - 1].cityId === slice[i].cityId) continue;
 
-      directs.push(new Leg(this.stops[i - 1].cityName, this.stops[i].cityName));
+      directs.push(new Leg(slice[i - 1].cityName, slice[i].cityName));
     }
 
     return directs;
   }
 
   #getPartialStops(stops, startCity, endCity) {
+    // nothing to be done
+    if (startCity === this.start.cityName && endCity === this.end.cityName)
+      return stops;
+
     let startIndex = null;
     let endIndex = null;
 
@@ -116,10 +139,12 @@ class Connection {
     }
 
     // start or end are not in the stops
-    if (startIndex === null || endIndex === null) return null;
+    if (startIndex === null || endIndex === null)
+      throw new SlicingError(this.id, startCity, endCity);
 
     // wrong direction
-    if (startIndex >= endIndex) return null;
+    if (startIndex >= endIndex)
+      throw new SlicingError(this.id, startCity, endCity);
 
     return stops.slice(startIndex, endIndex + 1);
   }
@@ -130,4 +155,5 @@ if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.Connection = Connection;
   module.exports.ConnectionId = ConnectionId;
   module.exports.Leg = Leg;
+  module.exports.SlicingError = SlicingError;
 }

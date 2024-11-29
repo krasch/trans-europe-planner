@@ -80,13 +80,13 @@ class Calendar extends CalendarGrid {
 
   hide() {
     document
-      .getElementById("calender-details")
+      .getElementById("calender-container")
       .style.setProperty("visibility", "hidden");
   }
 
   show() {
     document
-      .getElementById("calender-details")
+      .getElementById("calender-container")
       .style.setProperty("visibility", "visible");
   }
 }

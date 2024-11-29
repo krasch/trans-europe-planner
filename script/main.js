@@ -2,96 +2,79 @@ function initUpdateViews(map, calendar, database) {
   function updateViews(state) {
     map.updateView(prepareDataForMap(state, database));
     calendar.updateView(prepareDataForCalendar(state, database));
+
+    if (state.journeys.activeJourney) calendar.show();
+    else calendar.hide();
   }
   return updateViews;
 }
 
-async function main(map, calendar, startDestinationSelection) {
-  const DATES = ["2024-12-01", "2024-12-02", "2024-12-03"];
+async function main(map, calendar) {
+  // init state
+  const params = new URLSearchParams(window.location.search);
+  const state = {
+    home: "Berlin", //params.get("start"),
+    journeys: new JourneyCollection(),
+    temporaryNetwork: null, // todo better name
+  };
 
   // prepare database
+  const DATES = ["2024-12-01", "2024-12-02", "2024-12-03"];
   const connections = CONNECTIONS.flatMap((c) =>
     enrichAndTemporalizeConnection(c, STATIONS, CITIES, DATES),
   );
   const database = new Database(connections);
 
   // initial drawing of all necessary geo information
-  const mapLoadedPromise = map.load(
-    prepareInitialDataForMap(CITIES, connections),
-  );
+  const initialMapData = prepareInitialDataForMap(CITIES, connections);
+  const mapLoadedPromise = map.load(initialMapData);
 
   // init update views
   const updateViews = initUpdateViews(map, calendar, database);
 
-  // init state
-  const journeys = new JourneyCollection();
-
-  // changing start/destination
-  startDestinationSelection.on("startOrDestinationChanged", (target) => {
-    journeys.reset();
-
-    if (target === null) {
-      calendar.hide();
-    } else {
-      calendar.show();
-      for (let route of ROUTES[target]) {
-        const connectionIds = createStupidItineraryForRoute(route, database);
-        journeys.addJourney(connectionIds);
-      }
-      journeys.setActive(0); // todo?
-    }
-
-    updateViews(journeys);
-  });
-
-  // removing/adding a leg in map
-  /*map.on("legAdded", (leg) => {
-    const connection = getConnectionForLeg(journeys[active], leg, database);
-    journeys[active].setConnectionForLeg(leg, connection);
-    updateViews(journeys, active);
-  });
-  map.on("legRemoved", (leg) => {
-    journeys[active].removeLeg(leg);
-    updateViews(journeys, active);
-  });*/
-
   // moving things around in the calendar
   calendar.on("legChanged", (connectionId) => {
-    journeys.activeJourney.updateLeg(connectionId);
-    updateViews(journeys);
+    state.journeys.activeJourney.updateLeg(connectionId);
+    updateViews(state);
   });
 
   // selecting a different journey
-  map.on("alternativeJourneyClicked", (journeyId) => {
-    journeys.setActive(journeyId);
-    updateViews(journeys);
+  map.on("selectJourney", (journeyId) => {
+    state.journeys.setActive(journeyId);
+    updateViews(state);
   });
 
   // clicking on a city
-  map.on("cityHoverStart", (city) => {
-    const target = `Berlin->${city}`;
+  map.on("showCityRoutes", (city) => {
+    const target = `${state.home}->${city}`; // todo assumes home is set
     if (!ROUTES[target]) return;
 
     for (let route of ROUTES[target]) {
       const connectionIds = createStupidItineraryForRoute(route, database);
-      journeys.addJourney(connectionIds);
+      let id = state.journeys.addJourney(connectionIds);
+      if (!state.journeys.activeJourney) state.journeys.setActive(id);
     }
-    updateViews(journeys);
+    updateViews(state);
   });
-  map.on("cityHoverEnd", (city) => {
-    journeys.removeJourneysWithDestination(city);
-    updateViews(journeys);
+  map.on("hideCityRoutes", (city) => {
+    state.journeys.removeJourneysWithDestination(city);
+    updateViews(state);
+  });
+  map.on("showCityNetwork", (city) => {
+    state.temporaryNetwork = database.localNetwork(city);
+    updateViews(state);
+  });
+  map.on("hideCityNetwork", (city) => {
+    state.temporaryNetwork = null;
+    updateViews(state);
   });
 
   // hovering over map or calender
   calendar.on("entryHoverStart", (leg) => map.setHoverState("leg", leg, true));
   calendar.on("entryHoverStop", (leg) => map.setHoverState("leg", leg, false));
-  //map.on("legHoverStart", (leg) => calendar.setHoverEntry(leg));
-  //map.on("legHoverStop", (leg) => calendar.setNoHoverEntry(leg));
 
   // now have done all we can do without having the map ready
   await mapLoadedPromise;
 
-  // read the current start/destination values and fill all views
-  startDestinationSelection.triggerChangeEvent();
+  updateViews(state);
 }

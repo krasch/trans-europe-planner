@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="style/layout.css">
     <link rel="stylesheet" href="style/colors.css">
     <link rel="stylesheet" href="style/calendar.css">
-    <link rel="stylesheet" href="style/journey-selection.css">
+    <link rel="stylesheet" href="style/map.css">
     <link rel="stylesheet" href="style/header.css">
 
     <!-- style scripts -->
@@ -44,7 +44,14 @@
     <script src="script/components/calendar/calendar.js"></script>
     <script src="script/components/calendar/draganddrop.js"></script>
     <script src="script/components/map.js"></script>
-    <script src="script/components/startDestinationSelection.js"></script>
+
+    <script>
+        /*const params = new URLSearchParams(window.location.search);
+        if (!params.get("start")) {
+            const url = window.location.origin + window.location.pathname + "?start=Berlin";
+            window.location.replace(url); // redirect
+        }*/
+    </script>
 
     <title>Trans-Europe-Planner</title>
 
@@ -90,25 +97,28 @@
     </div>
 </template>
 
-<!-- less info about the connection because of less space -->
-<template id="template-calendar-connection-short">
-    <div class="calendar-connection">
-        <img class="connection-icon">
-        <span class="connection-number"></span>
-    </div>
+<template id="template-city-marker-home">
+    <div class="marker-home"></div>
 </template>
 
-<!-- even less info about the connection -->
-<template id="template-calendar-connection-tiny">
-    <div class="calendar-connection"></span>
-    </div>
+<template id="template-city-marker-destination">
+    <div class="marker-destination"></div>
 </template>
 
-
-<template id="template-journey-info">
-    <div class="journey-info">
-        <input type="radio" name="journey"/>
-        <label></label>
+<template id="template-city-menu">
+    <!-- the outer-level div will get eaten when setting up the popup -->
+    <div>
+        <div class="city-menu">
+            <div class="city"></div>
+            <div class="row">
+                <input type="checkbox" id="network" name="show" value="network">
+                <label for="network">Was fährt hier?</label>
+            </div>
+            <div class="row">
+                <input type="checkbox" id="routes" name="show" value="routes">
+                <label for="routes">Routen hierher</label>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -122,75 +132,30 @@
         </div>
     </div>
 
-    <details id="controls" open>
-        <summary class="legend">Reisedaten konfigurieren</summary>
-        <fieldset>
-            <div class="select-box">
-                <label for="select-start">Ich bin in </label>
-                <select name="start" id="select-start">
-                    <option value=""></option>
-                    <option value="Berlin">Berlin</option>
-                    <option value="Hamburg" selected>Hamburg</option>
-                    <option value="Köln">Köln</option>
-                    <option value="München">München</option>
-                </select>
-            </div>
-            <div class="select-box">
-                <label for="select-end">Ich will nach </label>
-                <select name="end" id="select-end">
-                    <option value=""></option>
-                    <option value="London">London</option>
-                    <option value="Roma">Rom</option>
-                    <option value="Süden">Süden 🏖️</option>
-                    <option value="Stockholm">Stockholm</option>
-                    <option value="Warszawa">Warschau</option>
-                </select>
-            </div>
-            <div class="select-box">
-                <label for="select-end">Am <em style="font-size: 0.6rem">(noch nicht änderbar)</em> </label>
-                <input type="date" id="date" value="2024-12-01" disabled="disabled"/>
-            </div>
-        </fieldset>
-    </details>
-
     <!-- All calendar elements will be added into the container below dynamically -->
-    <details id="calender-details" open="open">
-        <summary class="legend">Reisevorschlag anpassen</summary>
-        <fieldset id="calender-fieldset" role="presentation">
-
-            <div class="explanation"> Hier kannst du Zugverbindungen einfach <strong>hin und her schieben</strong> um
-                Umsteigezeiten anzupassen oder die Reise
-                auf mehrere Tage zu verteilen.
-            </div>
-            <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
-        </fieldset>
-    </details>
+    <div id="calender-container">
+        <div class="title">Reisevorschlag anpassen</div>
+        <div class="explanation">
+             Hier kannst du Zugverbindungen einfach
+             <strong>hin und her schieben</strong> um
+             Umsteigezeiten anzupassen oder die Reise
+             auf mehrere Tage zu verteilen.
+        </div>
+        <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
+    </div>
 </div>
 <div id="map"></div>
 
 
 <script>
     onload = async (event) => {
-        const params = new URLSearchParams(window.location.search);
-
-        if (!params.get("start")){
-            const url = window.location.origin + window.location.pathname + "?start=Berlin";
-            window.location.replace(url); // redirect
-        }
-
-        for (let option of document.getElementById("select-start").options){
-            if (option.getAttribute("value") === params.get("start"))
-                option.setAttribute("selected", "selected");
-        }
+        initColors();
 
         const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3);
         const calendar = document.getElementById("calendar");
-        const startDestinationSelection = new StartDestinationSelection(
-            document.getElementById("select-start"),
-            document.getElementById("select-end"));
 
         try {
-            main(map, calendar, startDestinationSelection);
+            main(map, calendar);
         } catch (error) {
             console.error(error);
         }

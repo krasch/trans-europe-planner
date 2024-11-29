@@ -1,27 +1,27 @@
-function getColor(i) {
+let COLORS = [
+  // backup colors (mostly for tests)
+  "0, 255, 0",
+  "255, 0, 0",
+  "0, 0, 255",
+  "255, 255, 0",
+  "255, 0, 255",
+];
+
+function initColors() {
   const body = document.getElementsByTagName("body")[0];
   const style = getComputedStyle(body);
 
-  const colors = [
+  COLORS = [
     style.getPropertyValue("--color1"),
     style.getPropertyValue("--color2"),
     style.getPropertyValue("--color3"),
     style.getPropertyValue("--color4"),
     style.getPropertyValue("--color5"),
   ];
+}
 
-  // for unit tests mostly todo could be nicer
-  // can not use ?? above because style.getPropertyValue returns an empty string
-  const backupColors = [
-    "0, 255, 0",
-    "255, 0, 0",
-    "0, 0, 255",
-    "255, 255, 0",
-    "255, 0, 255",
-  ];
-  for (let j in colors) if (colors[j].length === 0) colors[j] = backupColors[j];
-
-  return colors[i % colors.length];
+function getColor(i) {
+  return COLORS[i % COLORS.length];
 }
 
 function sortConnectionsByDeparture(connections) {
@@ -79,9 +79,9 @@ function getJourneySummary(connections) {
 function prepareDataForCalendar(state, database) {
   const data = [];
 
-  if (!state.activeJourney) return data;
+  if (!state.journeys.activeJourney) return data;
 
-  const connectionIds = state.activeJourney.connectionIds;
+  const connectionIds = state.journeys.activeJourney.connectionIds;
 
   for (let i in connectionIds) {
     const leg = connectionIds[i].leg;
@@ -134,17 +134,6 @@ function prepareInitialDataForMap(cityInfo, connections) {
 }
 
 function prepareDataForMap(state, database) {
-  if (state.numJourneys === 0) {
-    return [[], []];
-  }
-
-  const activeJourney = state.activeJourney;
-
-  // order journeys such that the active journey is first and all other journeys follow after
-  let journeyOrder = [];
-  if (activeJourney) journeyOrder.push(activeJourney);
-  journeyOrder = journeyOrder.concat(state.alternativeJourneys);
-
   // array that only allows one item with each key and quietly rejects updates
   // this works similar to a set but is much less cumbersome to work with.
   // because we are looping through active journey first, this makes sure that edges/cities for the
@@ -152,45 +141,74 @@ function prepareDataForMap(state, database) {
   const edges = new UniqueArray((edge) => edge.id);
   const cities = new UniqueArray((city) => city.id);
 
-  for (let journey of journeyOrder) {
-    const active = activeJourney !== null && journey.id === activeJourney.id;
-    const connections = journey.connectionIds.map((c) =>
-      database.connection(c),
-    );
+  if (state.journeys.numJourneys > 0) {
+    const activeJourney = state.journeys.activeJourney;
 
-    let journeySummary = getJourneySummary(connections);
+    // order journeys such that the active journey is first and all other journeys follow after
+    let journeyOrder = [];
+    if (activeJourney) journeyOrder.push(activeJourney);
+    journeyOrder = journeyOrder.concat(state.journeys.alternativeJourneys);
 
-    let edgeStatus = "alternative";
-    if (active) edgeStatus = "active";
+    for (let journey of journeyOrder) {
+      const active = activeJourney !== null && journey.id === activeJourney.id;
+      const connections = journey.connectionIds.map((c) =>
+        database.connection(c),
+      );
 
-    for (let i in connections) {
-      let color = null;
-      if (active) color = `rgb(${getColor(i)})`;
+      let journeySummary = getJourneySummary(connections);
 
-      for (let edge of connections[i].trace) {
-        cities.push({
-          id: edge.startCityName,
-          color: color,
-          stop: true,
-          transfer: edge.startCityName === connections[i].start.cityName,
-          active: active,
-        });
+      let edgeStatus = "alternative";
+      if (active) edgeStatus = "active";
 
-        cities.push({
-          id: edge.endCityName,
-          color: color,
-          stop: true,
-          transfer: edge.endCityName === connections[i].end.cityName,
-          active: active,
-        });
+      for (let i in connections) {
+        let color = null;
+        if (active) color = `rgb(${getColor(i)})`;
 
+        for (let edge of connections[i].trace) {
+          const city = {
+            id: edge.startCityName,
+            color: color,
+            stop: true,
+            transfer: edge.startCityName === connections[i].start.cityName,
+            active: active,
+          };
+          if (city.transfer) {
+            city.rank = 3;
+          }
+          cities.push(city);
+
+          const city2 = {
+            id: edge.endCityName,
+            color: color,
+            stop: true,
+            transfer: edge.endCityName === connections[i].end.cityName,
+            active: active,
+          };
+          if (city2.transfer) {
+            city2.rank = 3;
+          }
+          cities.push(city2);
+
+          edges.push({
+            id: edge.toAlphabeticString(),
+            color: color,
+            leg: connections[i].leg.toString(),
+            journey: journey.id,
+            journeyTravelTime: journeySummary.travelTime,
+            status: edgeStatus,
+          });
+        }
+      }
+    }
+  }
+
+  if (state.temporaryNetwork) {
+    for (let route of state.temporaryNetwork) {
+      for (let edge of route) {
         edges.push({
           id: edge.toAlphabeticString(),
-          color: color,
-          leg: connections[i].leg.toString(),
-          journey: journey.id,
-          journeyTravelTime: journeySummary.travelTime,
-          status: edgeStatus,
+          color: null,
+          status: "alternative",
         });
       }
     }

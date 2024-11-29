@@ -70,14 +70,45 @@ class Database {
     return connectionIds.map((c) => this.connection(c));
   }
 
+  localNetwork(city) {
+    const result = new Map();
+
+    for (let connection of this.#fullConnections) {
+      if (!connection.hasStop(city)) continue;
+
+      // from start of connection to desired city
+      if (connection.start.cityName !== city) {
+        const trace = connection.partialTrace(connection.start.cityName, city);
+        const key = trace.map((l) => l.toString()).join(";");
+
+        if (!result.has(key)) result.set(key, trace);
+      }
+
+      // from desired city to end of connection
+      if (connection.end.cityName !== city) {
+        const trace = connection.partialTrace(city, connection.end.cityName);
+        const key = trace.map((l) => l.toString()).join(";");
+
+        if (!result.has(key)) result.set(key, trace);
+      }
+    }
+
+    return Array.from(result.values());
+  }
+
   #indexLeg(leg) {
     this.#slicedConnectionIdsByLeg[leg] = [];
 
     for (let connection of this.#fullConnections) {
-      const sliced = connection.slice(leg.startCityName, leg.endCityName);
+      let sliced;
 
-      // there is no such slice -> can not fulfill this leg with this connection
-      if (sliced === null) continue;
+      try {
+        sliced = connection.slice(leg.startCityName, leg.endCityName);
+      } catch (Error) {
+        // can not use specific error because of issue with testing setup (imports)
+        // there is no such slice -> can not fulfill this leg with this connection
+        continue;
+      }
 
       this.#slicedConnectionIdsByLeg[leg].push(sliced.id);
       this.#slicedConnectionsById[sliced.id] = sliced;

@@ -65,7 +65,8 @@ class JourneyCollection {
   }
 
   addJourney(connections) {
-    const id = this.#journeys.length; // id todo make unique
+    const legs = connections.map((c) => c.leg.toString());
+    const id = legs.join(";");
     this.#journeys.push(new Journey(id, connections));
     return id;
   }

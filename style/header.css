@@ -1,36 +1,3 @@
-details {
-    color: var(--color-dark);
-    border: 0;
-    border-radius: 10px;
-    background-color: white;
-}
-
-fieldset {
-    border: 0;
-}
-
-.select-box label {
-    margin-left: 1rem;
-}
-
-.select-box select, .select-box input {
-    margin-right: 1rem;
-    background-color: white;
-    color: var(--color-dark);
-    border: 1px solid var(--color-background);
-    border-radius: 5px;
-    width: calc(100% - 10rem);
-    height: 1.5rem;
-
-}
-
-.select-box input {
-    font-family: helvetica, arial, sans-serif;
-    padding: 0;
-    color: grey;
-    cursor: not-allowed;
-}
-
 #logo {
     display: flex;
     flex-direction: row;
@@ -40,6 +7,6 @@ fieldset {
 
 #logo img {
     /* https://codepen.io/sosuke/pen/Pjoqqp */
-    filter: invert(100%) sepia(10%) saturate(1000%) hue-rotate(307deg) brightness(99%) contrast(97%);
+    filter: var(--filter-beige);
     height: 100%;
 }
