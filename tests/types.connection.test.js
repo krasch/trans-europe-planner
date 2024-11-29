@@ -2,6 +2,7 @@ const {
   Connection,
   ConnectionId,
   Leg,
+  SlicingError,
 } = require("../script/types/connection.js");
 const { createConnection } = require("../tests/data.js");
 
@@ -92,24 +93,22 @@ test("sliceMultipleStationsPerCity", function () {
   expect(got).toStrictEqual(exp);
 });
 
-test("sliceStartStationNotIncluded", function () {
+test("sliceStartStationNotInConnection", function () {
   const connection = createConnection([
     ["2024-10-15", "08:00", "city1MainStationId"],
     ["2024-10-15", "09:00", "city2MainStationId"],
   ]);
 
-  const got = connection.slice("City3", "City1");
-  expect(got).toBe(null);
+  expect(() => connection.slice("City3", "City1")).toThrow(SlicingError);
 });
 
-test("sliceEndStationNotIncluded", function () {
+test("sliceEndStationNotInConnection", function () {
   const connection = createConnection([
     ["2024-10-15", "08:00", "city1MainStationId"],
     ["2024-10-15", "09:00", "city2MainStationId"],
   ]);
 
-  const got = connection.slice("City1", "City3");
-  expect(got).toBe(null);
+  expect(() => connection.slice("City3", "City1")).toThrow(SlicingError);
 });
 
 test("sliceWrongDirection", function () {
@@ -118,11 +117,40 @@ test("sliceWrongDirection", function () {
     ["2024-10-16", "09:00", "city2MainStationId"],
   ]);
 
-  const got = connection.slice("City2", "City1");
-  expect(got).toBe(null);
+  expect(() => connection.slice("City2", "City1")).toThrow(SlicingError);
 });
 
-test("testTrace", function () {
+test("hasStop", function () {
+  const connection = createConnection([
+    ["2024-10-15", "08:00", "city1MainStationId"],
+    ["2024-10-15", "09:00", "city1ExtraStationId"],
+    ["2024-10-15", "10:00", "city2MainStationId"],
+    ["2024-10-15", "11:00", "city3MainStationId"],
+    ["2024-10-15", "12:00", "city3ExtraStationId"],
+  ]);
+
+  expect(connection.hasStop("City1")).toBe(true);
+  expect(connection.hasStop("City2")).toBe(true);
+  expect(connection.hasStop("City3")).toBe(true);
+  expect(connection.hasStop("City4")).toBe(false);
+});
+
+test("testTraceFull", function () {
+  const connection = createConnection([
+    ["2024-10-15", "08:00", "city1MainStationId"],
+    ["2024-10-15", "09:00", "city1ExtraStationId"],
+    ["2024-10-15", "10:00", "city2MainStationId"],
+    ["2024-10-15", "11:00", "city3MainStationId"],
+    ["2024-10-15", "12:00", "city3ExtraStationId"],
+  ]);
+
+  const got = connection.trace;
+  const exp = [new Leg("City1", "City2"), new Leg("City2", "City3")];
+
+  expect(got).toStrictEqual(exp);
+});
+
+test("testTracePartial", function () {
   const connection = createConnection([
     ["2024-10-15", "08:00", "city1MainStationId"],
     ["2024-10-15", "09:00", "city1ExtraStationId"],
