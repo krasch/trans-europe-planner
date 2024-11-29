@@ -6,7 +6,7 @@ function initUpdateViews(map, calendar, database) {
   return updateViews;
 }
 
-async function main(map, calendar, startDestinationSelection) {
+async function main(map, calendar) {
   // init state
   const params = new URLSearchParams(window.location.search);
   const state = {
@@ -28,24 +28,6 @@ async function main(map, calendar, startDestinationSelection) {
 
   // init update views
   const updateViews = initUpdateViews(map, calendar, database);
-
-  // changing start/destination
-  startDestinationSelection.on("startOrDestinationChanged", (target) => {
-    state.journeys.reset();
-
-    if (target === null) {
-      calendar.hide();
-    } else {
-      calendar.show();
-      for (let route of ROUTES[target]) {
-        const connectionIds = createStupidItineraryForRoute(route, database);
-        state.journeys.addJourney(connectionIds);
-      }
-      state.journeys.setActive(0); // todo?
-    }
-
-    updateViews(state);
-  });
 
   // moving things around in the calendar
   calendar.on("legChanged", (connectionId) => {

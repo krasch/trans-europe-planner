@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="style/colors.css">
     <link rel="stylesheet" href="style/calendar.css">
     <link rel="stylesheet" href="style/map.css">
-    <link rel="stylesheet" href="style/journey-selection.css">
     <link rel="stylesheet" href="style/header.css">
 
     <!-- style scripts -->
@@ -45,7 +44,6 @@
     <script src="script/components/calendar/calendar.js"></script>
     <script src="script/components/calendar/draganddrop.js"></script>
     <script src="script/components/map.js"></script>
-    <script src="script/components/startDestinationSelection.js"></script>
 
     <script>
         const params = new URLSearchParams(window.location.search);
@@ -156,37 +154,6 @@
         </div>
     </div>
 
-    <details id="controls" open>
-        <summary class="legend">Reisedaten konfigurieren</summary>
-        <fieldset>
-            <div class="select-box">
-                <label for="select-start">Ich bin in </label>
-                <select name="start" id="select-start">
-                    <option value=""></option>
-                    <option value="Berlin">Berlin</option>
-                    <option value="Hamburg" selected>Hamburg</option>
-                    <option value="Köln">Köln</option>
-                    <option value="München">München</option>
-                </select>
-            </div>
-            <div class="select-box">
-                <label for="select-end">Ich will nach </label>
-                <select name="end" id="select-end">
-                    <option value=""></option>
-                    <option value="London">London</option>
-                    <option value="Roma">Rom</option>
-                    <option value="Süden">Süden 🏖️</option>
-                    <option value="Stockholm">Stockholm</option>
-                    <option value="Warszawa">Warschau</option>
-                </select>
-            </div>
-            <div class="select-box">
-                <label for="select-end">Am <em style="font-size: 0.6rem">(noch nicht änderbar)</em> </label>
-                <input type="date" id="date" value="2024-12-01" disabled="disabled"/>
-            </div>
-        </fieldset>
-    </details>
-
     <!-- All calendar elements will be added into the container below dynamically -->
     <details id="calender-details" open="open">
         <summary class="legend">Reisevorschlag anpassen</summary>
@@ -209,12 +176,9 @@
 
         const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3);
         const calendar = document.getElementById("calendar");
-        const startDestinationSelection = new StartDestinationSelection(
-            document.getElementById("select-start"),
-            document.getElementById("select-end"));
 
         try {
-            main(map, calendar, startDestinationSelection);
+            main(map, calendar);
         } catch (error) {
             console.error(error);
         }
