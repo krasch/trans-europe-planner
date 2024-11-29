@@ -7,6 +7,6 @@
 
 #logo img {
     /* https://codepen.io/sosuke/pen/Pjoqqp */
-    filter: invert(100%) sepia(10%) saturate(1000%) hue-rotate(307deg) brightness(99%) contrast(97%);
+    filter: var(--filter-beige);
     height: 100%;
 }

@@ -11,6 +11,8 @@ body {
 
     /* https://codepen.io/sosuke/pen/Pjoqqp */
     --filter-white: invert(100%);
+    /* #f9f3ea */
+    --filter-beige: invert(95%) sepia(9%) saturate(656%) hue-rotate(315deg) brightness(105%) contrast(95%);
     --filter-darkgrey: invert(73%) sepia(0%) saturate(0%) hue-rotate(158deg) brightness(94%) contrast(89%);
     /* 2f4f69 */
     --filter-dark-blue:  invert(26%) sepia(17%) saturate(1428%) hue-rotate(165deg) brightness(98%) contrast(88%);
