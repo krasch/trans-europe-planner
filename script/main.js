@@ -39,13 +39,13 @@ async function main(map, calendar) {
   });
 
   // selecting a different journey
-  map.on("alternativeJourneyClicked", (journeyId) => {
+  map.on("selectJourney", (journeyId) => {
     state.journeys.setActive(journeyId);
     updateViews(state);
   });
 
   // clicking on a city
-  map.on("cityHoverStart", (city) => {
+  map.on("showCityRoutes", (city) => {
     const target = `${state.home}->${city}`; // todo assumes home is set
     if (!ROUTES[target]) return;
 
@@ -56,7 +56,7 @@ async function main(map, calendar) {
     }
     updateViews(state);
   });
-  map.on("cityHoverEnd", (city) => {
+  map.on("hideCityRoutes", (city) => {
     state.journeys.removeJourneysWithDestination(city);
     updateViews(state);
   });

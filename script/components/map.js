@@ -282,9 +282,9 @@ class PopupHelper {
 
 class MapWrapper {
   #callbacks = {
-    alternativeJourneyClicked: () => {},
-    cityHoverStart: () => {},
-    cityHoverEnd: () => {},
+    selectJourney: () => {},
+    showCityRoutes: () => {},
+    hideCityRoutes: () => {},
   };
 
   #featureStates = null;
@@ -384,11 +384,16 @@ class MapWrapper {
     }
 
     document.getElementById("map").addEventListener("change", (e) => {
-      if (e.target.value !== "routes") return;
-
-      if (e.target.checked)
-        this.#callbacks["cityHoverStart"](e.target.getAttribute("name"));
-      else this.#callbacks["cityHoverEnd"](e.target.getAttribute("name"));
+      /*if (e.target.value === "network") {
+        if (e.target.checked)
+          this.#callbacks["cityHoverStart"](e.target.getAttribute("name"));
+        else this.#callbacks["cityHoverEnd"](e.target.getAttribute("name"));
+      }*/
+      if (e.target.value === "routes") {
+        if (e.target.checked)
+          this.#callbacks["showCityRoutes"](e.target.getAttribute("name"));
+        else this.#callbacks["hideCityRoutes"](e.target.getAttribute("name"));
+      }
     });
 
     // initialise features states for cities and edge sources
@@ -429,7 +434,7 @@ class MapWrapper {
     });
     mouseEvents.edges.on("click", (e) => {
       if (e.featureState.status === "alternative")
-        this.#callbacks["alternativeJourneyClicked"](e.featureState.journey);
+        this.#callbacks["selectJourney"](e.featureState.journey);
     });
   }
 
