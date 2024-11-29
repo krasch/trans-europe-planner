@@ -11,7 +11,6 @@ const textStyle = {
     "text-field": ["get", "name"],
     "text-max-width": 8,
     "text-line-height": 1.55,
-    "icon-image": ["get", "icon"],
     "text-offset": [0.4, 0],
     "icon-size": 0.5,
     "text-variable-anchor": ["left", "right"],

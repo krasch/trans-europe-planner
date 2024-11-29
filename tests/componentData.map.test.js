@@ -104,7 +104,6 @@ test("prepareDataForMapNoActiveJourney", function () {
     {
       id: "City1",
       color: null,
-      icon: "star_11",
       rank: 3,
       transfer: true,
       active: false,
@@ -120,7 +119,6 @@ test("prepareDataForMapNoActiveJourney", function () {
     {
       id: "City3",
       color: null,
-      icon: "star_11",
       rank: 3,
       transfer: true,
       active: false,
@@ -162,7 +160,6 @@ test("prepareDataForMap", function () {
     {
       id: "City1",
       color: `rgb(${getColor(0)})`,
-      icon: "star_11",
       rank: 3,
       transfer: true,
       active: true,
@@ -179,7 +176,6 @@ test("prepareDataForMap", function () {
       id: "City3",
       color: `rgb(${getColor(0)})`,
       transfer: true,
-      icon: "star_11",
       rank: 3,
       active: true,
       stop: true,
@@ -187,7 +183,6 @@ test("prepareDataForMap", function () {
     {
       id: "City4",
       color: `rgb(${getColor(1)})`,
-      icon: "star_11",
       rank: 3,
       transfer: true,
       active: true,
@@ -196,7 +191,6 @@ test("prepareDataForMap", function () {
     {
       id: "City5",
       color: null,
-      icon: "star_11",
       rank: 3,
       transfer: true,
       active: false,

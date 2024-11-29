@@ -177,7 +177,6 @@ function prepareDataForMap(state, database) {
         };
         if (city.transfer) {
           city.rank = 3;
-          city.icon = "star_11";
         }
         cities.push(city);
 
@@ -190,7 +189,6 @@ function prepareDataForMap(state, database) {
         };
         if (city2.transfer) {
           city2.rank = 3;
-          city2.icon = "star_11";
         }
         cities.push(city2);
 
