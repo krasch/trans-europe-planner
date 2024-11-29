@@ -49,7 +49,7 @@ body {
 }
 
 #calender-container {
-    /*visibility: hidden; /* on first load */
+    visibility: hidden; /* on first load */
 
     width: 95%;
 

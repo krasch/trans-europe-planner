@@ -68,6 +68,9 @@ class JourneyCollection {
     const legs = connections.map((c) => c.leg.toString());
     const id = legs.join(";");
     this.#journeys.push(new Journey(id, connections));
+
+    if (!this.#activeId) this.setActive(id);
+
     return id;
   }
 
