@@ -1,5 +1,5 @@
 .marker-destination {
-  background-image: url("/images/marker_flag.svg");
+  background-image: url("../images/marker_flag.svg");
   background-size: contain;
   cursor: pointer;
 
@@ -10,7 +10,7 @@
 }
 
 .marker-home {
-  background-image: url("/images/marker_home.svg");
+  background-image: url("../images/marker_home.svg");
   background-size: contain;
   cursor: pointer;
 
