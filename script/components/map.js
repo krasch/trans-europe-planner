@@ -331,15 +331,6 @@ class MapWrapper {
     // add all layers
     for (let layer of mapStyles) this.map.addLayer(layer);
 
-    const destinations = [
-      "Berlin",
-      "Marseille",
-      "London",
-      "Roma",
-      "Stockholm",
-      "Warszawa",
-    ];
-
     for (let city of cities) {
       if (city.rank === 1) continue;
 
@@ -354,6 +345,10 @@ class MapWrapper {
       el2.id = `city-menu-${city.name}`;
       for (let c of el2.querySelectorAll("input")) {
         c.id = `city-menu-${city.name}-${c.id}`;
+        if (c.value === "routes") {
+          c.disabled = !city.routes_available;
+        }
+
         c.name = city.name;
       }
       for (let c of el2.querySelectorAll("label")) {
