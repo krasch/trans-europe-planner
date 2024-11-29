@@ -285,6 +285,8 @@ class MapWrapper {
     selectJourney: () => {},
     showCityRoutes: () => {},
     hideCityRoutes: () => {},
+    showCityNetwork: () => {},
+    hideCityNetwork: () => {},
   };
 
   #featureStates = null;
@@ -384,11 +386,11 @@ class MapWrapper {
     }
 
     document.getElementById("map").addEventListener("change", (e) => {
-      /*if (e.target.value === "network") {
+      if (e.target.value === "network") {
         if (e.target.checked)
-          this.#callbacks["cityHoverStart"](e.target.getAttribute("name"));
-        else this.#callbacks["cityHoverEnd"](e.target.getAttribute("name"));
-      }*/
+          this.#callbacks["showCityNetwork"](e.target.getAttribute("name"));
+        else this.#callbacks["hideCityNetwork"](e.target.getAttribute("name"));
+      }
       if (e.target.value === "routes") {
         if (e.target.checked)
           this.#callbacks["showCityRoutes"](e.target.getAttribute("name"));

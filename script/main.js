@@ -60,6 +60,14 @@ async function main(map, calendar) {
     state.journeys.removeJourneysWithDestination(city);
     updateViews(state);
   });
+  map.on("showCityNetwork", (city) => {
+    state.temporaryNetwork = database.localNetwork(city);
+    updateViews(state);
+  });
+  map.on("hideCityNetwork", (city) => {
+    state.temporaryNetwork = null;
+    updateViews(state);
+  });
 
   // hovering over map or calender
   calendar.on("entryHoverStart", (leg) => map.setHoverState("leg", leg, true));

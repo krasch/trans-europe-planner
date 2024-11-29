@@ -204,6 +204,18 @@ function prepareDataForMap(state, database) {
     }
   }
 
+  if (state.temporaryNetwork) {
+    for (let route of state.temporaryNetwork) {
+      for (let edge of route) {
+        edges.push({
+          id: edge.toAlphabeticString(),
+          color: null,
+          status: "alternative",
+        });
+      }
+    }
+  }
+
   return [cities.data, edges.data];
 }
 
