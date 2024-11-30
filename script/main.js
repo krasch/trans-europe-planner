@@ -1,7 +1,7 @@
 function initUpdateViews(map, calendar, database) {
   function updateViews(state) {
-    map.updateView(prepareDataForMap(state, database));
-    calendar.updateView(prepareDataForCalendar(state, database));
+    map.updateView(prepareDataForMap(state.journeys, database));
+    calendar.updateView(prepareDataForCalendar(state.journeys, database));
 
     if (state.journeys.activeJourney) calendar.show();
     else calendar.hide();
@@ -15,7 +15,6 @@ async function main(map, calendar) {
   const state = {
     home: "Berlin", //params.get("start"),
     journeys: new JourneyCollection(),
-    temporaryNetwork: null, // todo better name
   };
 
   // prepare database
@@ -58,14 +57,6 @@ async function main(map, calendar) {
   });
   map.on("hideCityRoutes", (city) => {
     state.journeys.removeJourneysWithDestination(city);
-    updateViews(state);
-  });
-  map.on("showCityNetwork", (city) => {
-    state.temporaryNetwork = database.localNetwork(city);
-    updateViews(state);
-  });
-  map.on("hideCityNetwork", (city) => {
-    state.temporaryNetwork = null;
     updateViews(state);
   });
 

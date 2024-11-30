@@ -95,27 +95,21 @@ class Connection {
   }
 
   get trace() {
-    return this.partialTrace(this.start.cityName, this.end.cityName);
+    const directs = [];
+
+    for (let i in this.stops) {
+      if (i === "0") continue;
+      if (this.stops[i - 1].cityId === this.stops[i].cityId) continue;
+
+      directs.push(new Leg(this.stops[i - 1].cityName, this.stops[i].cityName));
+    }
+
+    return directs;
   }
 
   hasStop(city) {
     for (let stop of this.stops) if (stop.cityName === city) return true;
     return false;
-  }
-
-  partialTrace(startCity, endCity) {
-    const slice = this.#getPartialStops(this.stops, startCity, endCity);
-
-    const directs = [];
-
-    for (let i in slice) {
-      if (i === "0") continue;
-      if (slice[i - 1].cityId === slice[i].cityId) continue;
-
-      directs.push(new Leg(slice[i - 1].cityName, slice[i].cityName));
-    }
-
-    return directs;
   }
 
   #getPartialStops(stops, startCity, endCity) {

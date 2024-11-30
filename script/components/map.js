@@ -281,6 +281,8 @@ class CityMenus {
 
   constructor(map, cities) {
     for (let city of cities) {
+      if (!city.routes_available) continue;
+
       const popupEl = createElementFromTemplate("template-city-menu", {
         ".city": { innerText: city.name },
       });
@@ -328,7 +330,7 @@ class CityMarkers {
 
   constructor(map, cities) {
     for (let city of cities) {
-      if (city.rank === 1) continue;
+      if (!city.routes_available && city.name !== "Berlin") continue;
 
       // create a DOM element for the marker
       let template = "template-city-marker-destination";
@@ -459,10 +461,7 @@ class MapWrapper {
 
     // set up menu events
     popups.on("change", (city, key, value) => {
-      if (key === "network")
-        if (value) this.#callbacks["showCityNetwork"](city);
-        else this.#callbacks["hideCityNetwork"](city);
-      else if (key === "routes")
+      if (key === "routes")
         if (value) this.#callbacks["showCityRoutes"](city);
         else this.#callbacks["hideCityRoutes"](city);
     });
