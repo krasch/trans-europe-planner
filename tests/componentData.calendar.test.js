@@ -9,11 +9,9 @@ const { createConnection } = require("../tests/data.js");
 test("prepareDataForCalendarEmpty", function () {
   const database = new Database([]);
 
-  const state = {
-    journeys: new JourneyCollection(),
-  };
+  const journeys = new JourneyCollection();
 
-  const got = prepareDataForCalendar(state, database);
+  const got = prepareDataForCalendar(journeys, database);
   expect(got).toStrictEqual([]);
 });
 
@@ -26,12 +24,10 @@ test("prepareDataForCalendarNoActiveJourney", function () {
 
   const database = new Database([c1]);
 
-  const state = {
-    journeys: new JourneyCollection(),
-  };
-  state.journeys.addJourney([c1.id]);
+  const journeys = new JourneyCollection();
+  journeys.addJourney([c1.id]);
 
-  const got = prepareDataForCalendar(state, database);
+  const got = prepareDataForCalendar(journeys, database);
   expect(got).toStrictEqual([]);
 });
 
@@ -56,12 +52,10 @@ test("prepareDataForCalendar", function () {
   const database = new Database([c1To2_1, c1To2_2, c2To3, c1To3]);
 
   // first two conns do the same leg on different days, but only first is used in the journey
-  const state = {
-    journeys: new JourneyCollection(),
-  };
-  const j1 = state.journeys.addJourney([c1To2_1.id, c2To3.id]);
-  const j2 = state.journeys.addJourney([c1To3.id]);
-  state.journeys.setActive(j1);
+  const journeys = new JourneyCollection();
+  const j1 = journeys.addJourney([c1To2_1.id, c2To3.id]);
+  const j2 = journeys.addJourney([c1To3.id]);
+  journeys.setActive(j1);
 
   // only expect legs for the active journey j1
   const exp = [
@@ -103,6 +97,6 @@ test("prepareDataForCalendar", function () {
     },
   ];
 
-  const got = prepareDataForCalendar(state, database);
+  const got = prepareDataForCalendar(journeys, database);
   expect(got).toStrictEqual(exp);
 });

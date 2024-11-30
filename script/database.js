@@ -70,32 +70,6 @@ class Database {
     return connectionIds.map((c) => this.connection(c));
   }
 
-  localNetwork(city) {
-    const result = new Map();
-
-    for (let connection of this.#fullConnections) {
-      if (!connection.hasStop(city)) continue;
-
-      // from start of connection to desired city
-      if (connection.start.cityName !== city) {
-        const trace = connection.partialTrace(connection.start.cityName, city);
-        const key = trace.map((l) => l.toString()).join(";");
-
-        if (!result.has(key)) result.set(key, trace);
-      }
-
-      // from desired city to end of connection
-      if (connection.end.cityName !== city) {
-        const trace = connection.partialTrace(city, connection.end.cityName);
-        const key = trace.map((l) => l.toString()).join(";");
-
-        if (!result.has(key)) result.set(key, trace);
-      }
-    }
-
-    return Array.from(result.values());
-  }
-
   #indexLeg(leg) {
     this.#slicedConnectionIdsByLeg[leg] = [];
 

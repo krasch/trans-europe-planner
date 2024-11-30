@@ -76,12 +76,12 @@ function getJourneySummary(connections) {
   };
 }
 
-function prepareDataForCalendar(state, database) {
+function prepareDataForCalendar(journeys, database) {
   const data = [];
 
-  if (!state.journeys.activeJourney) return data;
+  if (!journeys.activeJourney) return data;
 
-  const connectionIds = state.journeys.activeJourney.connectionIds;
+  const connectionIds = journeys.activeJourney.connectionIds;
 
   for (let i in connectionIds) {
     const leg = connectionIds[i].leg;
@@ -133,7 +133,7 @@ function prepareInitialDataForMap(cityInfo, connections) {
   return [cities.data, edges.data];
 }
 
-function prepareDataForMap(state, database) {
+function prepareDataForMap(journeys, database) {
   // array that only allows one item with each key and quietly rejects updates
   // this works similar to a set but is much less cumbersome to work with.
   // because we are looping through active journey first, this makes sure that edges/cities for the
@@ -141,13 +141,13 @@ function prepareDataForMap(state, database) {
   const edges = new UniqueArray((edge) => edge.id);
   const cities = new UniqueArray((city) => city.id);
 
-  if (state.journeys.numJourneys > 0) {
-    const activeJourney = state.journeys.activeJourney;
+  if (journeys.numJourneys > 0) {
+    const activeJourney = journeys.activeJourney;
 
     // order journeys such that the active journey is first and all other journeys follow after
     let journeyOrder = [];
     if (activeJourney) journeyOrder.push(activeJourney);
-    journeyOrder = journeyOrder.concat(state.journeys.alternativeJourneys);
+    journeyOrder = journeyOrder.concat(journeys.alternativeJourneys);
 
     for (let journey of journeyOrder) {
       const active = activeJourney !== null && journey.id === activeJourney.id;
@@ -198,18 +198,6 @@ function prepareDataForMap(state, database) {
             status: edgeStatus,
           });
         }
-      }
-    }
-  }
-
-  if (state.temporaryNetwork) {
-    for (let route of state.temporaryNetwork) {
-      for (let edge of route) {
-        edges.push({
-          id: edge.toAlphabeticString(),
-          color: null,
-          status: "alternative",
-        });
       }
     }
   }

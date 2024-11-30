@@ -45,7 +45,7 @@ const CITIES = {
     name: "Amsterdam",
     latitude: 52.378638,
     longitude: 4.900825,
-    rank: 2,
+    rank: 1,
   },
   17540: {
     name: "Amstetten NÖ",
@@ -345,7 +345,7 @@ const CITIES = {
     name: "Bratislava",
     latitude: 48.14816,
     longitude: 17.10674,
-    rank: 2,
+    rank: 1,
   },
   29296: {
     name: "Braunschweig",
@@ -423,7 +423,7 @@ const CITIES = {
     name: "Bruxelles",
     latitude: 50.84652,
     longitude: 4.351739,
-    rank: 2,
+    rank: 1,
   },
   7546: {
     name: "Buchloe",
@@ -435,7 +435,7 @@ const CITIES = {
     name: "Budapest",
     latitude: 47.51955,
     longitude: 19.054084,
-    rank: 2,
+    rank: 1,
   },
   63310: {
     name: "Burlöv station",
@@ -933,7 +933,7 @@ const CITIES = {
     name: "Göteborg",
     latitude: 57.709308,
     longitude: 11.973424,
-    rank: 2,
+    rank: 1,
   },
   7613: {
     name: "Göttingen",
@@ -999,7 +999,7 @@ const CITIES = {
     name: "Hamburg",
     latitude: 53.563816,
     longitude: 9.965836,
-    rank: 2,
+    rank: 1,
   },
   7741: {
     name: "Hamm (Westf)",
@@ -1365,7 +1365,7 @@ const CITIES = {
     name: "Köln",
     latitude: 50.941312,
     longitude: 6.967206,
-    rank: 2,
+    rank: 1,
   },
   7560: {
     name: "Köln Messe/Deutz",
@@ -1389,7 +1389,7 @@ const CITIES = {
     name: "København",
     latitude: 55.672721,
     longitude: 12.564618,
-    rank: 2,
+    rank: 1,
   },
   19118: {
     name: "Laholm station",
@@ -1715,7 +1715,7 @@ const CITIES = {
     name: "Milano",
     latitude: 45.466632,
     longitude: 9.1906,
-    rank: 2,
+    rank: 1,
   },
   7744: {
     name: "Minden (Westf)",
@@ -1787,7 +1787,7 @@ const CITIES = {
     name: "München",
     latitude: 48.140228,
     longitude: 11.558338,
-    rank: 2,
+    rank: 1,
   },
   7480: {
     name: "München Hbf",
@@ -2015,7 +2015,7 @@ const CITIES = {
     name: "Paris",
     latitude: 48.85341,
     longitude: 2.3488,
-    rank: 2,
+    rank: 1,
   },
   8514: {
     name: "Parma",
@@ -2117,7 +2117,7 @@ const CITIES = {
     name: "Praha",
     latitude: 50.081925,
     longitude: 14.451481,
-    rank: 2,
+    rank: 1,
   },
   18582: {
     name: "Praha-Holešovice",
@@ -2912,7 +2912,7 @@ const CITIES = {
     name: "Wien",
     latitude: 48.2082,
     longitude: 16.3738,
-    rank: 2,
+    rank: 1,
   },
   23591: {
     name: "Wiener Neustadt Hbf",
@@ -3008,7 +3008,7 @@ const CITIES = {
     name: "Zürich",
     latitude: 47.378968,
     longitude: 8.540534,
-    rank: 2,
+    rank: 1,
   },
   14496: {
     name: "Züssow",
