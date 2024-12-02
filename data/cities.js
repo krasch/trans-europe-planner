@@ -1576,7 +1576,7 @@ const CITIES = {
     latitude: 51.504692,
     longitude: -0.07846,
     rank: 2,
-    routes_available: true,
+    routesAvailable: true,
   },
   7677: {
     name: "Lubeck",
@@ -1697,7 +1697,7 @@ const CITIES = {
     latitude: 43.29641,
     longitude: 5.371,
     rank: 2,
-    routes_available: true,
+    routesAvailable: true,
   },
   7102: {
     name: "Memmingen",
@@ -2238,7 +2238,7 @@ const CITIES = {
     latitude: 41.893223,
     longitude: 12.48292,
     rank: 2,
-    routes_available: true,
+    routesAvailable: true,
   },
   35341: {
     name: "Ronneby",
@@ -2563,7 +2563,7 @@ const CITIES = {
     latitude: 59.330009,
     longitude: 18.057629,
     rank: 2,
-    routes_available: true,
+    routesAvailable: true,
   },
   29024: {
     name: "Stralsund",
@@ -2858,7 +2858,7 @@ const CITIES = {
     latitude: 52.232855,
     longitude: 20.921112,
     rank: 2,
-    routes_available: true,
+    routesAvailable: true,
   },
   7385: {
     name: "Weinheim (Bergstr)",

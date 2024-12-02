@@ -94,17 +94,29 @@ class Connection {
     );
   }
 
-  get trace() {
-    const directs = [];
+  get edges() {
+    const edges = [];
+
+    const cities = this.cities;
+    for (let i in cities) {
+      if (i === "0") continue;
+
+      edges.push(new Leg(cities[i - 1], cities[i]));
+    }
+
+    return edges;
+  }
+
+  get cities() {
+    const cities = [this.stops[0].cityName];
 
     for (let i in this.stops) {
       if (i === "0") continue;
       if (this.stops[i - 1].cityId === this.stops[i].cityId) continue;
-
-      directs.push(new Leg(this.stops[i - 1].cityName, this.stops[i].cityName));
+      cities.push(this.stops[i].cityName);
     }
 
-    return directs;
+    return cities;
   }
 
   hasStop(city) {

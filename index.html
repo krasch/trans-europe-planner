@@ -43,7 +43,8 @@
     <script src="script/components/calendar/entry.js"></script>
     <script src="script/components/calendar/calendar.js"></script>
     <script src="script/components/calendar/draganddrop.js"></script>
-    <script src="script/components/map.js"></script>
+    <script src="script/components/map/map.js"></script>
+    <script src="script/components/map/mapObjects.js"></script>
 
     <script>
         /*const params = new URLSearchParams(window.location.search);
@@ -97,23 +98,17 @@
     </div>
 </template>
 
-<template id="template-city-marker-home">
-    <div class="marker-home"></div>
-</template>
-
-<template id="template-city-marker-destination">
-    <div class="marker-destination"></div>
+<template id="template-city-marker">
+    <div class="city-marker city-marker-empty city-marker-small city-marker-light"></div>
 </template>
 
 <template id="template-city-menu">
-    <!-- the outer-level div will get eaten when setting up the popup -->
-    <div>
-        <div class="city-menu">
-            <div class="city"></div>
-            <div class="row">
-                <input type="checkbox" id="routes" name="show" value="routes">
-                <label for="routes">Routen hierher</label>
-            </div>
+    <div class="city-menu">
+        <div class="city"></div>
+        <div class="row">
+            <!-- id, name and for will be made unique when instantiating the template -->
+            <input type="checkbox" id="routes" name="show" value="routes">
+            <label for="routes">Routen hierher</label>
         </div>
     </div>
 </template>
@@ -132,10 +127,10 @@
     <div id="calender-container">
         <div class="title">Reisevorschlag anpassen</div>
         <div class="explanation">
-             Hier kannst du Zugverbindungen einfach
-             <strong>hin und her schieben</strong> um
-             Umsteigezeiten anzupassen oder die Reise
-             auf mehrere Tage zu verteilen.
+            Hier kannst du Zugverbindungen einfach
+            <strong>hin und her schieben</strong> um
+            Umsteigezeiten anzupassen oder die Reise
+            auf mehrere Tage zu verteilen.
         </div>
         <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
     </div>
@@ -146,6 +141,7 @@
 <script>
     onload = async (event) => {
         initColors();
+        initCityNameToId(CITIES);
 
         const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3);
         const calendar = document.getElementById("calendar");

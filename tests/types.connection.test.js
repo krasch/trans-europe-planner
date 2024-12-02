@@ -135,7 +135,7 @@ test("hasStop", function () {
   expect(connection.hasStop("City4")).toBe(false);
 });
 
-test("testTraceFull", function () {
+test("testEdges", function () {
   const connection = createConnection([
     ["2024-10-15", "08:00", "city1MainStationId"],
     ["2024-10-15", "09:00", "city1ExtraStationId"],
@@ -144,13 +144,13 @@ test("testTraceFull", function () {
     ["2024-10-15", "12:00", "city3ExtraStationId"],
   ]);
 
-  const got = connection.trace;
+  const got = connection.edges;
   const exp = [new Leg("City1", "City2"), new Leg("City2", "City3")];
 
   expect(got).toStrictEqual(exp);
 });
 
-test("testTracePartial", function () {
+test("testCities", function () {
   const connection = createConnection([
     ["2024-10-15", "08:00", "city1MainStationId"],
     ["2024-10-15", "09:00", "city1ExtraStationId"],
@@ -159,8 +159,8 @@ test("testTracePartial", function () {
     ["2024-10-15", "12:00", "city3ExtraStationId"],
   ]);
 
-  const got = connection.trace;
-  const exp = [new Leg("City1", "City2"), new Leg("City2", "City3")];
+  const got = connection.cities;
+  const exp = ["City1", "City2", "City3"];
 
   expect(got).toStrictEqual(exp);
 });

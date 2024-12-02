@@ -20,6 +20,12 @@ function initColors() {
   ];
 }
 
+let CITY_NAME_TO_ID = {};
+
+function initCityNameToId(cities) {
+  for (let id in cities) CITY_NAME_TO_ID[cities[id].name] = id;
+}
+
 function getColor(i) {
   return COLORS[i % COLORS.length];
 }
@@ -30,26 +36,12 @@ function sortConnectionsByDeparture(connections) {
   return connections;
 }
 
-class UniqueArray {
-  #doneKeys = [];
-
-  constructor(uniqueKeyFn) {
-    this.uniqueKeyFn = uniqueKeyFn;
-    this.data = [];
-  }
-
-  push(item) {
-    const key = this.uniqueKeyFn(item);
-    if (!this.#doneKeys.includes(key)) {
-      this.data.push(item);
-      this.#doneKeys.push(key);
-    }
-  }
+function getSortedJourneyConnections(journey, database) {
+  const connections = journey.connectionIds.map((c) => database.connection(c));
+  return sortConnectionsByDeparture(connections);
 }
 
 function getJourneySummary(connections) {
-  connections = sortConnectionsByDeparture(connections);
-
   const startCity = connections[0].start.cityName;
   const endCity = connections.at(-1).end.cityName;
 
@@ -87,8 +79,8 @@ function prepareDataForCalendar(journeys, database) {
     const leg = connectionIds[i].leg;
     const color = getColor(i);
 
-    const connectionsForLeg = database.connectionsForLeg(leg);
-    sortConnectionsByDeparture(connectionsForLeg);
+    let connectionsForLeg = database.connectionsForLeg(leg);
+    connectionsForLeg = sortConnectionsByDeparture(connectionsForLeg);
 
     for (let connection of connectionsForLeg) {
       data.push({
@@ -109,105 +101,109 @@ function prepareDataForCalendar(journeys, database) {
 }
 
 function prepareInitialDataForMap(cityInfo, connections) {
-  const cityNameToId = {};
-  for (let id in cityInfo) cityNameToId[cityInfo[id].name] = id;
-
-  // array that only allows one item with each key and quietly rejects updates
-  // this works similar to a set but is much less cumbersome to work with
-  const edges = new UniqueArray((edge) => edge.id);
-  const cities = new UniqueArray((city) => city.name); // todo id
+  const cities = { geo: {}, defaults: {} };
+  const edges = { geo: {}, defaults: {} };
 
   for (let c of connections) {
-    for (let edge of c.trace) {
-      cities.push(cityInfo[cityNameToId[edge.startCityName]]);
-      cities.push(cityInfo[cityNameToId[edge.endCityName]]);
+    for (let cityName of c.cities) {
+      const id = CITY_NAME_TO_ID[cityName];
+      if (cities.geo[cityName] !== undefined) continue; // already done this city
 
-      edges.push({
-        id: edge.toAlphabeticString(),
-        startCity: cityInfo[cityNameToId[edge.startCityName]],
-        endCity: cityInfo[cityNameToId[edge.endCityName]],
-      });
+      cities.geo[cityName] = {
+        name: cityInfo[id].name,
+        lngLat: [cityInfo[id].longitude, cityInfo[id].latitude],
+      };
+      cities.defaults[cityName] = {
+        rank: cityInfo[id].rank,
+      };
+
+      if (cityInfo[id].routesAvailable) {
+        cities.defaults[cityName].markerIcon = "destination";
+        cities.defaults[cityName].markerSize = "small";
+        cities.defaults[cityName].markerColor = "light";
+      }
+    }
+
+    for (let edge of c.edges) {
+      const id = edge.toAlphabeticString();
+      if (edges.geo[id] !== undefined) continue; // already done this edge
+
+      const start = cityInfo[CITY_NAME_TO_ID[edge.startCityName]];
+      const end = cityInfo[CITY_NAME_TO_ID[edge.endCityName]];
+
+      edges.geo[id] = {
+        startLngLat: [start.longitude, start.latitude],
+        endLngLat: [end.longitude, end.latitude],
+      };
+      edges.defaults[id] = {};
     }
   }
 
-  return [cities.data, edges.data];
+  return [cities, edges];
 }
 
 function prepareDataForMap(journeys, database) {
-  // array that only allows one item with each key and quietly rejects updates
-  // this works similar to a set but is much less cumbersome to work with.
-  // because we are looping through active journey first, this makes sure that edges/cities for the
-  // active journey are never overwritten
-  const edges = new UniqueArray((edge) => edge.id);
-  const cities = new UniqueArray((city) => city.id);
+  const cities = {};
+  const edges = {};
 
-  if (journeys.numJourneys > 0) {
-    const activeJourney = journeys.activeJourney;
+  const activeJourney = journeys.activeJourney; // might be null
+  for (let journey of journeys.journeys) {
+    const active = activeJourney !== null && journey.id === activeJourney.id;
+    const edgeStatus = active ? "active" : "alternative";
 
-    // order journeys such that the active journey is first and all other journeys follow after
-    let journeyOrder = [];
-    if (activeJourney) journeyOrder.push(activeJourney);
-    journeyOrder = journeyOrder.concat(journeys.alternativeJourneys);
+    const connections = getSortedJourneyConnections(journey, database); // only needs to be sorted for journey summary
+    const journeySummary = getJourneySummary(connections);
 
-    for (let journey of journeyOrder) {
-      const active = activeJourney !== null && journey.id === activeJourney.id;
-      const connections = journey.connectionIds.map((c) =>
-        database.connection(c),
-      );
+    for (let i in connections) {
+      const color = active ? `rgb(${getColor(i)})` : null;
 
-      let journeySummary = getJourneySummary(connections);
+      for (let city of connections[i].cities) {
+        const transfer =
+          city === connections[i].start.cityName ||
+          city === connections[i].end.cityName;
+        const destination = journey.destination === city;
 
-      let edgeStatus = "alternative";
-      if (active) edgeStatus = "active";
+        // get current data for this city or init new if first time we see this city
+        const data = cities[city] ?? {};
 
-      for (let i in connections) {
-        let color = null;
-        if (active) color = `rgb(${getColor(i)})`;
+        // carefully update, making sure to not overwrite e.g. that city is active
+        data.stop = true;
+        data.transfer = data.transfer || transfer;
+        data.active = data.active || active;
+        data.color = data.color ?? color;
 
-        for (let edge of connections[i].trace) {
-          const city = {
-            id: edge.startCityName,
-            color: color,
-            stop: true,
-            transfer: edge.startCityName === connections[i].start.cityName,
-            active: active,
-          };
-          if (city.transfer) {
-            city.rank = 3;
-          }
-          cities.push(city);
-
-          const city2 = {
-            id: edge.endCityName,
-            color: color,
-            stop: true,
-            transfer: edge.endCityName === connections[i].end.cityName,
-            active: active,
-          };
-          if (city2.transfer) {
-            city2.rank = 3;
-          }
-          cities.push(city2);
-
-          edges.push({
-            id: edge.toAlphabeticString(),
-            color: color,
-            leg: connections[i].leg.toString(),
-            journey: journey.id,
-            journeyTravelTime: journeySummary.travelTime,
-            status: edgeStatus,
-          });
+        if (destination) {
+          data.markerSize = "large";
         }
+
+        cities[city] = data;
+      }
+
+      for (let edge of connections[i].edges) {
+        const id = edge.toAlphabeticString();
+
+        // we already have data for this edge and the current journey is not an active one
+        // -> don't overwrite data, just move on
+        if (edges[id] !== undefined && !active) continue;
+
+        edges[id] = {
+          color: color,
+          leg: connections[i].leg.toString(),
+          journey: journey.id,
+          journeyTravelTime: journeySummary.travelTime,
+          status: edgeStatus,
+        };
       }
     }
   }
 
-  return [cities.data, edges.data];
+  return [cities, edges];
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.getColor = getColor;
+  module.exports.initCityNameToId = initCityNameToId;
   module.exports.sortConnectionsByDeparture = sortConnectionsByDeparture;
   module.exports.getJourneySummary = getJourneySummary;
   module.exports.prepareDataForCalendar = prepareDataForCalendar;
