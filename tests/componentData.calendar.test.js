@@ -49,7 +49,8 @@ test("prepareDataForCalendar", function () {
     ["2024-10-16", "10:00", "city3MainStationId"],
   ]);
 
-  const database = new Database([c1To2_1, c1To2_2, c2To3, c1To3]);
+  // switching order of the two c1 to make sure that connections get properly sorted
+  const database = new Database([c1To2_2, c1To2_1, c2To3, c1To3]);
 
   // first two conns do the same leg on different days, but only first is used in the journey
   const journeys = new JourneyCollection();
