@@ -60,6 +60,10 @@ class JourneyCollection {
     return result;
   }
 
+  get journeys() {
+    return this.#journeys;
+  }
+
   get numJourneys() {
     return this.#journeys.length;
   }
