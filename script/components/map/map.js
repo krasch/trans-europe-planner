@@ -176,7 +176,7 @@ class MapWrapper {
     // only updates concerning these keys will be sent to the update() method
     this.#observedKeys = {
       // cities
-      cityMarkers: ["markerIcon", "markerSize", "markerColors"],
+      cityMarkers: ["markerIcon", "markerSize", "markerColor"],
       cityMenus: [],
       citySourceData: ["rank"],
       cityFeatureState: [],

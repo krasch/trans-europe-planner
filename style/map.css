@@ -45,8 +45,12 @@
   filter: var(--filter-dark-blue2);
 }
 
-.city-marker:hover {
+.city-marker-light:hover {
   filter: var(--filter-dark-blue2);
+}
+
+.city-marker-dark:hover {
+  filter: var(--filter-dark-blue2-hover);
 }
 
 

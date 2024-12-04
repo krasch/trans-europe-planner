@@ -142,9 +142,17 @@ function prepareInitialDataForMap(cityInfo, connections) {
   return [cities, edges];
 }
 
-function prepareDataForMap(journeys, database) {
+function prepareDataForMap(home, journeys, database) {
   const cities = {};
   const edges = {};
+
+  if (home) {
+    cities[home] = {
+      markerIcon: "home",
+      markerSize: "large",
+      markerColor: "dark",
+    };
+  }
 
   const activeJourney = journeys.activeJourney; // might be null
   for (let journey of journeys.journeys) {

@@ -88,7 +88,7 @@ test("prepareDataForMapEmpty", function () {
 
   const journeys = new JourneyCollection();
 
-  const got = prepareDataForMap(journeys, database);
+  const got = prepareDataForMap(null, journeys, database);
   expect(got).toStrictEqual([{}, {}]);
 });
 
@@ -111,6 +111,9 @@ test("prepareDataForMapNoActiveJourney", function () {
       transfer: true,
       active: false,
       stop: true,
+      markerIcon: "home",
+      markerSize: "large",
+      markerColor: "dark",
     },
     City2: {
       color: null,
@@ -144,7 +147,7 @@ test("prepareDataForMapNoActiveJourney", function () {
     },
   };
 
-  const got = prepareDataForMap(journeys, database);
+  const got = prepareDataForMap("City1", journeys, database);
   expect(got).toStrictEqual([expCities, expEdges]);
 });
 
@@ -178,6 +181,9 @@ test("prepareDataForMap", function () {
       transfer: true,
       active: true,
       stop: true,
+      markerIcon: "home",
+      markerSize: "large",
+      markerColor: "dark",
     },
     City2: {
       color: `rgb(${getColor(0)})`,
@@ -238,6 +244,6 @@ test("prepareDataForMap", function () {
     },
   };
 
-  const got = prepareDataForMap(journeys, database);
+  const got = prepareDataForMap("City1", journeys, database);
   expect(got).toStrictEqual([expCities, expEdges]);
 });

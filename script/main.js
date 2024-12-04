@@ -1,6 +1,6 @@
 function initUpdateViews(map, calendar, database) {
   function updateViews(state) {
-    map.updateView(prepareDataForMap(state.journeys, database));
+    map.updateView(prepareDataForMap(state.home, state.journeys, database));
     calendar.updateView(prepareDataForCalendar(state.journeys, database));
 
     if (state.journeys.activeJourney) calendar.show();
