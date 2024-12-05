@@ -3,53 +3,53 @@ const { Connection } = require("../script/types/connection.js");
 const { CustomDateTime } = require("../script/types/datetime.js");
 
 const testCities = {
-  1: { name: "City1", latitude: 10, longitude: 10, rank: 1 },
-  2: { name: "City2", latitude: 20, longitude: 20, rank: 2 },
-  3: {
+  cityId1: { name: "City1", latitude: 10, longitude: 10, rank: 1 },
+  cityId2: { name: "City2", latitude: 20, longitude: 20, rank: 2 },
+  cityId3: {
     name: "City3",
     latitude: 30,
     longitude: 30,
     rank: 3,
     routesAvailable: true,
   },
-  4: { name: "City4", latitude: 40, longitude: 40, rank: 4 },
-  5: { name: "City5", latitude: 50, longitude: 50, rank: 5 },
+  cityId4: { name: "City4", latitude: 40, longitude: 40, rank: 4 },
+  cityId5: { name: "City5", latitude: 50, longitude: 50, rank: 5 },
 };
 
 const testStations = {
   city1MainStationId: {
     name: "City 1 Main Station",
-    city: 1,
+    city: "cityId1",
     preferred: true,
   },
   city1ExtraStationId: {
     name: "City 1 Extra Station",
-    city: 1,
+    city: "cityId1",
     preferred: false,
   },
   city2MainStationId: {
     name: "City 2 Main Station",
-    city: 2,
+    city: "cityId2",
     preferred: true,
   },
   city3MainStationId: {
     name: "City 3 Main Station",
-    city: 3,
+    city: "cityId3",
     preferred: true,
   },
   city3ExtraStationId: {
     name: "City 3 Extra Station",
-    city: 3,
+    city: "cityId3",
     preferred: false,
   },
   city4MainStationId: {
     name: "City 4 Main Station",
-    city: 4,
+    city: "cityId4",
     preferred: true,
   },
   city5MainStationId: {
     name: "City 5 Main Station",
-    city: 5,
+    city: "cityId5",
     preferred: true,
   },
 };

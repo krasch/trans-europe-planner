@@ -85,9 +85,13 @@ class JourneyCollection {
   }
 
   removeJourneysWithDestination(destination) {
-    this.#journeys = this.#journeys.filter(
-      (j) => j.destination !== destination,
-    );
+    const toRemove = this.#journeys
+      .filter((j) => j.destination === destination)
+      .map((j) => j.id);
+
+    if (toRemove.includes(this.#activeId)) this.#activeId = null;
+
+    this.#journeys = this.#journeys.filter((j) => !toRemove.includes(j.id));
   }
 }
 

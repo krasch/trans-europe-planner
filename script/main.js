@@ -13,7 +13,7 @@ async function main(map, calendar) {
   // init state
   const params = new URLSearchParams(window.location.search);
   const state = {
-    home: "Berlin", //params.get("start"),
+    home: params.get("start"),
     journeys: new JourneyCollection(),
   };
 

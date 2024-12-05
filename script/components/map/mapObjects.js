@@ -39,15 +39,14 @@ class CityMarker {
   #markerElement; // the html element
   marker; // the actual maplibre marker object
 
-  constructor(cityLngLat) {
+  constructor(lngLat) {
     this.#markerElement = createElementFromTemplate("template-city-marker");
 
     this.marker = new maplibregl.Marker({
       element: this.#markerElement,
       anchor: "bottom",
-      offset: [2, 0],
     });
-    this.marker.setLngLat(cityLngLat);
+    this.marker.setLngLat(lngLat);
   }
 
   update(diff) {
@@ -113,29 +112,17 @@ class CityMenu {
   popup; // the actual maplibre popup object
 
   // input elements to make it easier to change menu items
-  #inputs = {};
+  #entries = {};
 
-  constructor(cityName, cityLngLat) {
+  constructor(id, name, lngLat) {
     this.#popupElement = createElementFromTemplate("template-city-menu", {
-      ".city": { innerText: cityName },
+      ".city": { innerText: name },
     });
-    this.#popupElement.id = `city-menu-${cityName}`;
+    this.#popupElement.id = `city-menu-${id}`;
 
-    // fix input name and ids
-    for (let input of this.#popupElement.querySelectorAll("input")) {
-      input.data = { type: "city", city: cityName, entry: input.value };
-      // make unique across document
-      input.name = `city-menu-${cityName}`;
-      input.id = `city-menu-${cityName}-${input.id}`;
-      this.#inputs[input.value] = input;
-    }
-    // fix label "for"
-    for (let label of this.#popupElement.querySelectorAll("label")) {
-      // "for" should match id of corresponding input
-      label.setAttribute(
-        "for",
-        `city-menu-${cityName}-${label.getAttribute("for")}`,
-      );
+    for (let entryContainer of this.#popupElement.querySelectorAll(".row")) {
+      const entryName = this.#initMenuEntry(entryContainer, id, name);
+      this.#entries[entryName] = entryContainer;
     }
 
     this.popup = new maplibregl.Popup({
@@ -144,14 +131,38 @@ class CityMenu {
       closeButton: false,
     });
 
-    this.popup.setDOMContent(this.#popupElement).setLngLat(cityLngLat);
+    this.popup.setDOMContent(this.#popupElement).setLngLat(lngLat);
   }
 
   update(diff) {
-    // not actually used right now, left to show how to update
-    //if (state["menuRoutesDisabled"] !== undefined) {
-    //  this.#inputs["routes"].disabled = state["menuRoutesDisabled"];
-    //}
+    if (diff.key === "menuDestination") {
+      if (diff.newValue === true)
+        this.#entries["routes"].style.setProperty("display", "flex");
+      else this.#entries["routes"].style.setProperty("display", "none");
+    }
+  }
+
+  #initMenuEntry(element, cityId, cityName) {
+    const input = element.querySelector("input");
+    const label = element.querySelector("label");
+
+    // make unique across document by adding city to strings
+    input.name = `city-menu-${cityId}`;
+    input.id = `city-menu-${cityId}-${input.id}`;
+    label.setAttribute(
+      "for",
+      `city-menu-${cityId}-${label.getAttribute("for")}`,
+    );
+
+    // needed for reacting when entry is chosen
+    input.data = {
+      type: "city",
+      cityName: cityName,
+      cityId: cityId,
+      entry: input.value,
+    };
+
+    return input.value; // what is the "name" of this entry?
   }
 }
 
@@ -160,7 +171,7 @@ class CityMenuCollection {
 
   constructor(cities) {
     for (let id in cities) {
-      this.popups[id] = new CityMenu(cities[id].name, cities[id].lngLat);
+      this.popups[id] = new CityMenu(id, cities[id].name, cities[id].lngLat);
     }
   }
 
@@ -203,7 +214,7 @@ class MapSourceDataUpdater {
     }
 
     if (updates.length > 0)
-      map.getSource("cities").updateData({ update: updates });
+      map.getSource(this.#sourceName).updateData({ update: updates });
   }
 }
 
@@ -229,7 +240,7 @@ class FeatureStateUpdater {
         if (diff.kind === "updated" || diff.kind === "added")
           current[diff.key] = diff.newValue;
         else if (diff.kind === "removed") {
-          delete current[diff.key];
+          current[diff.key] = null; // don't delete key because maplibre does not notice deletes
         }
       }
 

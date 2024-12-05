@@ -23,7 +23,7 @@ function initColors() {
 let CITY_NAME_TO_ID = {};
 
 function initCityNameToId(cities) {
-  for (let id in cities) CITY_NAME_TO_ID[cities[id].name] = id;
+  for (let id in cities) CITY_NAME_TO_ID[cities[id].name] = String(id);
 }
 
 function getColor(i) {
@@ -109,18 +109,20 @@ function prepareInitialDataForMap(cityInfo, connections) {
       const id = CITY_NAME_TO_ID[cityName];
       if (cities.geo[cityName] !== undefined) continue; // already done this city
 
-      cities.geo[cityName] = {
+      cities.geo[id] = {
         name: cityInfo[id].name,
         lngLat: [cityInfo[id].longitude, cityInfo[id].latitude],
       };
-      cities.defaults[cityName] = {
+      cities.defaults[id] = {
         rank: cityInfo[id].rank,
+        menuDestination: false,
       };
 
       if (cityInfo[id].routesAvailable) {
-        cities.defaults[cityName].markerIcon = "destination";
-        cities.defaults[cityName].markerSize = "small";
-        cities.defaults[cityName].markerColor = "light";
+        cities.defaults[id].menuDestination = true;
+        cities.defaults[id].markerIcon = "destination";
+        cities.defaults[id].markerSize = "small";
+        cities.defaults[id].markerColor = "light";
       }
     }
 
@@ -147,7 +149,7 @@ function prepareDataForMap(home, journeys, database) {
   const edges = {};
 
   if (home) {
-    cities[home] = {
+    cities[CITY_NAME_TO_ID[home]] = {
       markerIcon: "home",
       markerSize: "large",
       markerColor: "dark",
@@ -165,26 +167,22 @@ function prepareDataForMap(home, journeys, database) {
     for (let i in connections) {
       const color = active ? `rgb(${getColor(i)})` : null;
 
-      for (let city of connections[i].cities) {
-        const transfer =
-          city === connections[i].start.cityName ||
-          city === connections[i].end.cityName;
-        const destination = journey.destination === city;
+      for (let cityName of connections[i].cities) {
+        const id = CITY_NAME_TO_ID[cityName];
+        const destination = journey.destination === cityName;
 
         // get current data for this city or init new if first time we see this city
-        const data = cities[city] ?? {};
+        const data = cities[id] ?? {};
 
-        // carefully update, making sure to not overwrite e.g. that city is active
-        data.stop = true;
-        data.transfer = data.transfer || transfer;
-        data.active = data.active || active;
-        data.color = data.color ?? color;
+        // updated carefully to make sure we don't overwrite data from active journey
+        if (!data.symbol || active) data.symbol = "circle";
+        if (!data.symbolColor && active) data.symbolColor = color; // && sic only active has set color
 
         if (destination) {
           data.markerSize = "large";
         }
 
-        cities[city] = data;
+        cities[id] = data;
       }
 
       for (let edge of connections[i].edges) {

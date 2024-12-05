@@ -120,6 +120,9 @@ class MapWrapper {
     return new Promise((fulfilled, rejected) => {
       this.map.on("load", async () => {
         try {
+          const image = await this.map.loadImage("images/circle.sdf.png");
+          this.map.addImage("circle", image.data, { sdf: true });
+
           this.init(cities, legs);
           fulfilled();
         } catch (error) {
@@ -140,7 +143,7 @@ class MapWrapper {
       data: asGeojsonFeatureCollection(
         Object.entries(cities.geo).map(cityToGeojson),
       ),
-      promoteId: "name", // otherwise can not use non-numeric ids
+      promoteId: "id", // otherwise can not use non-numeric ids
     });
     this.map.addSource("edges", {
       type: "geojson",
@@ -177,9 +180,9 @@ class MapWrapper {
     this.#observedKeys = {
       // cities
       cityMarkers: ["markerIcon", "markerSize", "markerColor"],
-      cityMenus: [],
-      citySourceData: ["rank"],
-      cityFeatureState: [],
+      cityMenus: ["menuDestination"],
+      citySourceData: ["rank", "symbol"], // slow to update
+      cityFeatureState: ["symbolColor"],
       // edges
       edgeFeatureState: ["color", "status", "journey", "journeyTravelTime"],
     };
@@ -190,7 +193,7 @@ class MapWrapper {
 
     // initialise mouse event helper for cities and edge layers
     const layerMouseEvents = {
-      cityNames: new MouseEventHelper(this.map, ["city-name"]),
+      cityNames: new MouseEventHelper(this.map, ["city-name", "city-circle"]),
       edges: new MouseEventHelper(this.map, ["edges"], true),
     };
 
@@ -230,10 +233,10 @@ class MapWrapper {
 
       // show/hide routes for a city
       if (data.type === "city" && data.entry === "routes") {
-        this.#objects.cityMenus.hide(data.city);
+        this.#objects.cityMenus.hide(data.cityId);
 
-        if (e.target.checked) this.#callbacks["showCityRoutes"](data.city);
-        else this.#callbacks["hideCityRoutes"](data.city);
+        if (e.target.checked) this.#callbacks["showCityRoutes"](data.cityName);
+        else this.#callbacks["hideCityRoutes"](data.cityName);
       }
     });
   }
@@ -245,7 +248,7 @@ class MapWrapper {
   updateView(data) {
     const [cities, edges] = data;
 
-    const cityDiffs = this.#states.edges.update(cities);
+    const cityDiffs = this.#states.cities.update(cities);
     this.#updateCities(cityDiffs);
 
     const edgeDiffs = this.#states.edges.update(edges);
