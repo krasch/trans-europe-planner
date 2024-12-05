@@ -75,9 +75,9 @@ test("prepareInitialDataForMap", function () {
       },
     },
     defaults: {
-      "City1->City2": {},
-      "City2->City3": {},
-      "City1->City3": {},
+      "City1->City2": { status: "inactive" },
+      "City2->City3": { status: "inactive" },
+      "City1->City3": { status: "inactive" },
     },
   };
   expect(got).toStrictEqual([expCities, expEdges]);

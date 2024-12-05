@@ -85,10 +85,13 @@ class JourneyCollection {
   }
 
   removeJourneysWithDestination(destination) {
-    this.#journeys = this.#journeys.filter(
-      (j) => j.destination !== destination,
-    );
-    // todo unset active journey
+    const toRemove = this.#journeys
+      .filter((j) => j.destination === destination)
+      .map((j) => j.id);
+
+    if (toRemove.includes(this.activeJourney)) this.activeJourney = null;
+
+    this.#journeys = this.#journeys.filter((j) => !toRemove.includes(j.id));
   }
 }
 
