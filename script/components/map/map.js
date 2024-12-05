@@ -292,7 +292,7 @@ class MapWrapper {
     }));
 
     // todo not actually updating #states.edges, is that bad?
-    //this.#objects.edgeFeatureState.update(this.map, diffs);
+    this.#objects.edgeFeatureState.update(this.map, diffs);
   }
 }
 
