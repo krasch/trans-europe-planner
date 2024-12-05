@@ -1,27 +1,3 @@
-const textStyle = {
-  layout: {
-    "text-font": ["Stadia Semibold"],
-    "text-size": {
-      base: 1.4,
-      stops: [
-        [7, 14],
-        [11, 24],
-      ],
-    },
-    "text-field": ["get", "name"],
-    "text-max-width": 8,
-    "text-line-height": 1.55,
-    "text-offset": [0.4, 0],
-    "text-variable-anchor": ["left", "right"],
-    "icon-allow-overlap": true,
-    "text-allow-overlap": false,
-  },
-  paint: {
-    "text-halo-width": 1.2,
-    "text-halo-color": "rgba(255,255,255,0.8)",
-  },
-};
-
 const mapStyles = [
   // ################################
   //           edges (subLegs)
@@ -90,7 +66,26 @@ const mapStyles = [
       [">=", ["zoom"], 5],
     ],
     symbolSortKey: ["get", "rank"],
-    paint: textStyle.paint,
-    layout: textStyle.layout,
+    layout: {
+      "text-font": ["Stadia Semibold"],
+      "text-size": {
+        base: 1.4,
+        stops: [
+          [7, 14],
+          [11, 24],
+        ],
+      },
+      "text-field": ["get", "name"],
+      "text-max-width": 8,
+      "text-line-height": 1.55,
+      "text-offset": [0.4, 0],
+      "text-variable-anchor": ["left", "right"],
+      "icon-allow-overlap": true,
+      "text-allow-overlap": false,
+    },
+    paint: {
+      "text-halo-width": 1.2,
+      "text-halo-color": "rgba(255,255,255,0.8)",
+    },
   },
 ];
