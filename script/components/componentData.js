@@ -116,7 +116,6 @@ function prepareInitialDataForMap(cityInfo, connections) {
       cities.defaults[id] = {
         rank: cityInfo[id].rank,
         menuDestination: false,
-        symbolColor: null, // see explanation for edges below
       };
 
       if (cityInfo[id].routesAvailable) {
@@ -138,11 +137,7 @@ function prepareInitialDataForMap(cityInfo, connections) {
         startLngLat: [start.longitude, start.latitude],
         endLngLat: [end.longitude, end.latitude],
       };
-      edges.defaults[id] = {
-        // it seems that edges are not getting re-drawn when feature state keys are removed
-        // so just set it to something that will trigger fallback edge-width of 0
-        status: "inactive",
-      };
+      edges.defaults[id] = {};
     }
   }
 

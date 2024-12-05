@@ -240,7 +240,7 @@ class FeatureStateUpdater {
         if (diff.kind === "updated" || diff.kind === "added")
           current[diff.key] = diff.newValue;
         else if (diff.kind === "removed") {
-          delete current[diff.key];
+          current[diff.key] = null; // don't delete key because maplibre does not notice deletes
         }
       }
 

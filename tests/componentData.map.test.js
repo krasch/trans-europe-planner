@@ -48,12 +48,10 @@ test("prepareInitialDataForMap", function () {
       cityId1: {
         rank: 1,
         menuDestination: false,
-        symbolColor: null,
       },
       cityId2: {
         rank: 2,
         menuDestination: false,
-        symbolColor: null,
       },
       cityId3: {
         rank: 3,
@@ -61,7 +59,6 @@ test("prepareInitialDataForMap", function () {
         markerIcon: "destination",
         markerSize: "small",
         markerColor: "light",
-        symbolColor: null,
       },
     },
   };
@@ -81,9 +78,9 @@ test("prepareInitialDataForMap", function () {
       },
     },
     defaults: {
-      "City1->City2": { status: "inactive" },
-      "City2->City3": { status: "inactive" },
-      "City1->City3": { status: "inactive" },
+      "City1->City2": {},
+      "City2->City3": {},
+      "City1->City3": {},
     },
   };
   expect(got).toStrictEqual([expCities, expEdges]);

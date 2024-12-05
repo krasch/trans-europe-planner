@@ -65,6 +65,7 @@ const mapStyles = [
       "icon-image": ["get", "symbol"],
       "icon-size": 0.5,
       "icon-allow-overlap": true,
+      "text-allow-overlap": true, // perhaps speed up redrawing?
     },
     paint: {
       "icon-color": "white",
@@ -83,8 +84,7 @@ const mapStyles = [
     type: "symbol",
     filter: [
       "any",
-      // important hubs: rank = 2
-      // transfers: rank = 3
+      // important hubs always shown
       [">", ["get", "rank"], 1],
       // other cities only visible in higher zoom levels
       [">=", ["zoom"], 5],
