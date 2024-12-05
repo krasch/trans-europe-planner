@@ -12,13 +12,11 @@ const textStyle = {
     "text-max-width": 8,
     "text-line-height": 1.55,
     "text-offset": [0.4, 0],
-    "icon-size": 0.5,
     "text-variable-anchor": ["left", "right"],
     "icon-allow-overlap": true,
     "text-allow-overlap": false,
   },
   paint: {
-    "text-color": "#333",
     "text-halo-width": 1.2,
     "text-halo-color": "rgba(255,255,255,0.8)",
   },
@@ -59,53 +57,22 @@ const mapStyles = [
   //           city circles
   // ################################
 
-  // despite this having a lot of the same repeated checks for transfer,
-  // it is still nicer to have this all in one layer and avoid having the same circle
-  // in multiple layers, because those tend to shine through
-  /*{
+  {
     id: "city-circle",
     source: "cities",
-    filter: [
-      "any",
-      // stops and transfers are always visible
-      ["in", ["get", "id"], ["literal", ["placeholder for stops/transfers"]]],
-      // important hubs are always visible
-      ["==", ["get", "rank"], 1],
-      // other cities only visible in higher zoom levels
-      [">=", ["zoom"], 5],
-    ],
-    type: "circle",
-    paint: {
-      "circle-radius": [
-        "case",
-        ["boolean", ["feature-state", "transfer"], false],
-        4, // transfer
-        3, // all other
-      ],
-      "circle-color": "white",
-      "circle-opacity": [
-        "case",
-        ["boolean", ["feature-state", "transfer"], false],
-        1.0, // transfer
-        0.4, // all other
-      ],
-      "circle-stroke-width": [
-        "case",
-        ["boolean", ["feature-state", "transfer"], false],
-        2, // transfer
-        1, // all other
-      ],
-      "circle-stroke-color": ["to-color", ["feature-state", "color"], "#aaa"],
-      "circle-stroke-opacity": [
-        "case",
-        ["boolean", ["feature-state", "transfer"], false],
-        0.6, // transfer
-        ["boolean", ["feature-state", "stop"], false],
-        0.2, // stops
-        1.0, // all other
-      ],
+    type: "symbol",
+    layout: {
+      "icon-image": ["get", "symbol"],
+      "icon-size": 0.5,
+      "icon-allow-overlap": true,
     },
-  },*/
+    paint: {
+      "icon-color": "white",
+      "icon-opacity": 0.6,
+      "icon-halo-color": ["to-color", ["feature-state", "symbolColor"], "#aaa"],
+      "icon-halo-width": 1,
+    },
+  },
 
   // ################################
   //           city names
@@ -115,52 +82,15 @@ const mapStyles = [
     source: "cities",
     type: "symbol",
     filter: [
-      "all",
-      // transfers get excluded here because they are in next layer
-      //[
-      //  "!",
-      //  ["in", ["get", "id"], ["literal", ["placeholder for transfer cities"]]],
-      //],
-      [
-        "any",
-        // important hubs are always visible
-        [">", ["get", "rank"], 1],
-        // other cities only visible in higher zoom levels
-        [">=", ["zoom"], 5],
-      ],
+      "any",
+      // important hubs: rank = 2
+      // transfers: rank = 3
+      [">", ["get", "rank"], 1],
+      // other cities only visible in higher zoom levels
+      [">=", ["zoom"], 5],
     ],
     symbolSortKey: ["get", "rank"],
     paint: textStyle.paint,
     layout: textStyle.layout,
   },
-
-  // transfers in alternative journeys have precedence
-  /*{
-    id: "city-name-transfer-alternative",
-    source: "cities",
-    type: "symbol",
-    filter: [
-      "in",
-      ["get", "id"],
-      ["literal", ["placeholder for alternative transfer cities"]],
-    ],
-
-    paint: textStyle.paint,
-    layout: textStyle.layout,
-  },
-
-  // transfers in active city have highest precedence
-  {
-    id: "city-name-transfer-active",
-    source: "cities",
-    type: "symbol",
-    filter: [
-      "in",
-      ["get", "id"],
-      ["literal", ["placeholder for active transfer cities"]],
-    ],
-
-    paint: textStyle.paint,
-    layout: textStyle.layout,
-  }*/
 ];

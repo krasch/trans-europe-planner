@@ -120,6 +120,9 @@ class MapWrapper {
     return new Promise((fulfilled, rejected) => {
       this.map.on("load", async () => {
         try {
+          const image = await this.map.loadImage("images/circle.sdf.png");
+          this.map.addImage("circle", image.data, { sdf: true });
+
           this.init(cities, legs);
           fulfilled();
         } catch (error) {
@@ -178,8 +181,8 @@ class MapWrapper {
       // cities
       cityMarkers: ["markerIcon", "markerSize", "markerColor"],
       cityMenus: [],
-      citySourceData: ["rank"],
-      cityFeatureState: [],
+      citySourceData: ["rank", "symbol"],
+      cityFeatureState: ["symbolColor"],
       // edges
       edgeFeatureState: ["color", "status", "journey", "journeyTravelTime"],
     };
@@ -190,7 +193,7 @@ class MapWrapper {
 
     // initialise mouse event helper for cities and edge layers
     const layerMouseEvents = {
-      cityNames: new MouseEventHelper(this.map, ["city-name"]),
+      cityNames: new MouseEventHelper(this.map, ["city-name", "city-circle"]),
       edges: new MouseEventHelper(this.map, ["edges"], true),
     };
 

@@ -107,25 +107,14 @@ test("prepareDataForMapNoActiveJourney", function () {
 
   const expCities = {
     City1: {
-      color: null,
-      transfer: true,
-      active: false,
-      stop: true,
+      symbol: "circle",
       markerIcon: "home",
       markerSize: "large",
       markerColor: "dark",
     },
-    City2: {
-      color: null,
-      transfer: false,
-      active: false,
-      stop: true,
-    },
+    City2: { symbol: "circle" },
     City3: {
-      color: null,
-      transfer: true,
-      active: false,
-      stop: true,
+      symbol: "circle",
       markerSize: "large",
     },
   };
@@ -177,39 +166,28 @@ test("prepareDataForMap", function () {
 
   const expCities = {
     City1: {
-      color: `rgb(${getColor(0)})`,
-      transfer: true,
-      active: true,
-      stop: true,
+      symbol: "circle",
+      symbolColor: `rgb(${getColor(0)})`,
       markerIcon: "home",
       markerSize: "large",
       markerColor: "dark",
     },
     City2: {
-      color: `rgb(${getColor(0)})`,
-      transfer: false,
-      active: true,
-      stop: true,
+      symbol: "circle",
+      symbolColor: `rgb(${getColor(0)})`,
     },
     City3: {
-      color: `rgb(${getColor(0)})`,
-      transfer: true,
-      active: true,
-      stop: true,
+      symbol: "circle",
+      symbolColor: `rgb(${getColor(0)})`,
     },
     City4: {
-      color: `rgb(${getColor(1)})`,
-      transfer: true,
-      active: true,
-      stop: true,
+      symbol: "circle",
+      symbolColor: `rgb(${getColor(1)})`,
       markerSize: "large",
     },
     City5: {
-      color: null,
-      transfer: true,
-      active: false,
-      stop: true,
       markerSize: "large",
+      symbol: "circle",
     },
   };
 

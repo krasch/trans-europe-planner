@@ -166,19 +166,14 @@ function prepareDataForMap(home, journeys, database) {
       const color = active ? `rgb(${getColor(i)})` : null;
 
       for (let city of connections[i].cities) {
-        const transfer =
-          city === connections[i].start.cityName ||
-          city === connections[i].end.cityName;
         const destination = journey.destination === city;
 
         // get current data for this city or init new if first time we see this city
         const data = cities[city] ?? {};
 
-        // carefully update, making sure to not overwrite e.g. that city is active
-        data.stop = true;
-        data.transfer = data.transfer || transfer;
-        data.active = data.active || active;
-        data.color = data.color ?? color;
+        // updated carefully to make sure we don't overwrite data from active journey
+        if (!data.symbol || active) data.symbol = "circle";
+        if (!data.symbolColor && active) data.symbolColor = color;
 
         if (destination) {
           data.markerSize = "large";
