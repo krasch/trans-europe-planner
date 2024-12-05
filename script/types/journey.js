@@ -88,6 +88,7 @@ class JourneyCollection {
     this.#journeys = this.#journeys.filter(
       (j) => j.destination !== destination,
     );
+    // todo unset active journey
   }
 }
 

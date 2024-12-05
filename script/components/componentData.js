@@ -135,7 +135,11 @@ function prepareInitialDataForMap(cityInfo, connections) {
         startLngLat: [start.longitude, start.latitude],
         endLngLat: [end.longitude, end.latitude],
       };
-      edges.defaults[id] = {};
+      edges.defaults[id] = {
+        // it seems that edges are not getting re-drawn when feature state keys are removed
+        // so just set it to something that will trigger fallback edge-width of 0
+        status: "inactive",
+      };
     }
   }
 
@@ -173,7 +177,7 @@ function prepareDataForMap(home, journeys, database) {
 
         // updated carefully to make sure we don't overwrite data from active journey
         if (!data.symbol || active) data.symbol = "circle";
-        if (!data.symbolColor && active) data.symbolColor = color;
+        if (!data.symbolColor && active) data.symbolColor = color; // && sic only active has set color
 
         if (destination) {
           data.markerSize = "large";

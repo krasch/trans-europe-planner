@@ -248,7 +248,7 @@ class MapWrapper {
   updateView(data) {
     const [cities, edges] = data;
 
-    const cityDiffs = this.#states.edges.update(cities);
+    const cityDiffs = this.#states.cities.update(cities);
     this.#updateCities(cityDiffs);
 
     const edgeDiffs = this.#states.edges.update(edges);
@@ -292,7 +292,7 @@ class MapWrapper {
     }));
 
     // todo not actually updating #states.edges, is that bad?
-    this.#objects.edgeFeatureState.update(this.map, diffs);
+    //this.#objects.edgeFeatureState.update(this.map, diffs);
   }
 }
 
