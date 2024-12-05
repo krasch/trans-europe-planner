@@ -45,7 +45,6 @@ class CityMarker {
     this.marker = new maplibregl.Marker({
       element: this.#markerElement,
       anchor: "bottom",
-      offset: [2, 0],
     });
     this.marker.setLngLat(lngLat);
   }
