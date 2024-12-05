@@ -180,7 +180,7 @@ class MapWrapper {
     this.#observedKeys = {
       // cities
       cityMarkers: ["markerIcon", "markerSize", "markerColor"],
-      cityMenus: [],
+      cityMenus: ["menuDestination"],
       citySourceData: ["rank", "symbol"], // slow to update
       cityFeatureState: ["symbolColor"],
       // edges

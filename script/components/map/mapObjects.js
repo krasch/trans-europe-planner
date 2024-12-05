@@ -112,7 +112,7 @@ class CityMenu {
   popup; // the actual maplibre popup object
 
   // input elements to make it easier to change menu items
-  #inputs = {};
+  #entries = {};
 
   constructor(id, name, lngLat) {
     this.#popupElement = createElementFromTemplate("template-city-menu", {
@@ -120,23 +120,9 @@ class CityMenu {
     });
     this.#popupElement.id = `city-menu-${id}`;
 
-    // fix input name and ids
-    for (let input of this.#popupElement.querySelectorAll("input")) {
-      input.data = {
-        type: "city",
-        cityName: name,
-        cityId: id,
-        entry: input.value,
-      };
-      // make unique across document
-      input.name = `city-menu-${id}`;
-      input.id = `city-menu-${id}-${input.id}`;
-      this.#inputs[input.value] = input;
-    }
-    // fix label "for"
-    for (let label of this.#popupElement.querySelectorAll("label")) {
-      // "for" should match id of corresponding input
-      label.setAttribute("for", `city-menu-${id}-${label.getAttribute("for")}`);
+    for (let entryContainer of this.#popupElement.querySelectorAll(".row")) {
+      const entryName = this.#initMenuEntry(entryContainer, id, name);
+      this.#entries[entryName] = entryContainer;
     }
 
     this.popup = new maplibregl.Popup({
@@ -149,10 +135,34 @@ class CityMenu {
   }
 
   update(diff) {
-    // not actually used right now, left to show how to update
-    //if (state["menuRoutesDisabled"] !== undefined) {
-    //  this.#inputs["routes"].disabled = state["menuRoutesDisabled"];
-    //}
+    if (diff.key === "menuDestination") {
+      if (diff.newValue === true)
+        this.#entries["routes"].style.setProperty("display", "flex");
+      else this.#entries["routes"].style.setProperty("display", "none");
+    }
+  }
+
+  #initMenuEntry(element, cityId, cityName) {
+    const input = element.querySelector("input");
+    const label = element.querySelector("label");
+
+    // make unique across document by adding city to strings
+    input.name = `city-menu-${cityId}`;
+    input.id = `city-menu-${cityId}-${input.id}`;
+    label.setAttribute(
+      "for",
+      `city-menu-${cityId}-${label.getAttribute("for")}`,
+    );
+
+    // needed for reacting when entry is chosen
+    input.data = {
+      type: "city",
+      cityName: cityName,
+      cityId: cityId,
+      entry: input.value,
+    };
+
+    return input.value; // what is the "name" of this entry?
   }
 }
 
@@ -202,8 +212,6 @@ class MapSourceDataUpdater {
         })),
       });
     }
-
-    console.log(updates);
 
     if (updates.length > 0)
       map.getSource(this.#sourceName).updateData({ update: updates });

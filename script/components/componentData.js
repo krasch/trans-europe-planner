@@ -115,9 +115,11 @@ function prepareInitialDataForMap(cityInfo, connections) {
       };
       cities.defaults[id] = {
         rank: cityInfo[id].rank,
+        menuDestination: false,
       };
 
       if (cityInfo[id].routesAvailable) {
+        cities.defaults[id].menuDestination = true;
         cities.defaults[id].markerIcon = "destination";
         cities.defaults[id].markerSize = "small";
         cities.defaults[id].markerColor = "light";

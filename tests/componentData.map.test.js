@@ -47,12 +47,15 @@ test("prepareInitialDataForMap", function () {
     defaults: {
       cityId1: {
         rank: 1,
+        menuDestination: false,
       },
       cityId2: {
         rank: 2,
+        menuDestination: false,
       },
       cityId3: {
         rank: 3,
+        menuDestination: true,
         markerIcon: "destination",
         markerSize: "small",
         markerColor: "light",
