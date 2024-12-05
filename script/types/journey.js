@@ -89,7 +89,7 @@ class JourneyCollection {
       .filter((j) => j.destination === destination)
       .map((j) => j.id);
 
-    if (toRemove.includes(this.activeJourney)) this.activeJourney = null;
+    if (toRemove.includes(this.#activeId)) this.#activeId = null;
 
     this.#journeys = this.#journeys.filter((j) => !toRemove.includes(j.id));
   }
