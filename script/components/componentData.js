@@ -116,6 +116,7 @@ function prepareInitialDataForMap(cityInfo, connections) {
       cities.defaults[id] = {
         rank: cityInfo[id].rank,
         menuDestination: false,
+        symbolColor: null, // see explanation for edges below
       };
 
       if (cityInfo[id].routesAvailable) {

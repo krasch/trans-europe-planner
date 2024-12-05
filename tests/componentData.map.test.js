@@ -48,10 +48,12 @@ test("prepareInitialDataForMap", function () {
       cityId1: {
         rank: 1,
         menuDestination: false,
+        symbolColor: null,
       },
       cityId2: {
         rank: 2,
         menuDestination: false,
+        symbolColor: null,
       },
       cityId3: {
         rank: 3,
@@ -59,6 +61,7 @@ test("prepareInitialDataForMap", function () {
         markerIcon: "destination",
         markerSize: "small",
         markerColor: "light",
+        symbolColor: null,
       },
     },
   };
