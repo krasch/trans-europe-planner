@@ -135,26 +135,34 @@ class StateManager {
 
     for (let i in diffs) {
       const diff = diffs[i];
+      const id = diff.id;
+      const key = diff.key;
 
       // first time we are seeing this id
-      if (this.#states[diff.id] === undefined) this.#states[diff.id] = {};
+      if (this.#states[id] === undefined) this.#states[id] = {};
 
       // apply update to the state
       if (diff.kind === "updated" || diff.kind === "added")
-        this.#states[diff.id][diff.key] = diff.newValue;
+        this.#states[id][key] = diff.newValue;
       else if (diff.kind === "removed") {
         // need to fall back to a default value -> rewrite "removed" as "updated"
-        if (this.#hasDefault(diff.id, diff.key)) {
-          diffs[i].kind = "updated";
-          diffs[i].newValue = this.#defaults[diff.id][diff.key];
-          this.#states[diff.id][diff.key] = diff.newValue;
+        if (this.#hasDefault(id, key)) {
+          // already at default, this is not actually a diff
+          // todo there are quite a bunch of these, perhaps just integrate diff calc here to avoid?
+          if (this.#states[id][key] === this.#defaults[id][key])
+            diffs[i].kind = "____"; // filter these out later
+          else {
+            diffs[i].kind = "updated";
+            diffs[i].newValue = this.#defaults[diff.id][diff.key];
+            this.#states[diff.id][diff.key] = diff.newValue;
+          }
         }
         // no default value -> remove from state
         else delete this.#states[diff.id][diff.key];
       }
     }
 
-    return diffs;
+    return diffs.filter((d) => d.kind !== "____");
   }
 
   getMatches(filterFn) {

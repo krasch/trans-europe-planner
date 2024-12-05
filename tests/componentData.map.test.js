@@ -31,27 +31,27 @@ test("prepareInitialDataForMap", function () {
   const got = prepareInitialDataForMap(testCities, [c1, c2, c3]);
   const expCities = {
     geo: {
-      City1: {
+      cityId1: {
         name: "City1",
         lngLat: [10, 10],
       },
-      City2: {
+      cityId2: {
         name: "City2",
         lngLat: [20, 20],
       },
-      City3: {
+      cityId3: {
         name: "City3",
         lngLat: [30, 30],
       },
     },
     defaults: {
-      City1: {
+      cityId1: {
         rank: 1,
       },
-      City2: {
+      cityId2: {
         rank: 2,
       },
-      City3: {
+      cityId3: {
         rank: 3,
         markerIcon: "destination",
         markerSize: "small",
@@ -106,14 +106,14 @@ test("prepareDataForMapNoActiveJourney", function () {
   const j1 = journeys.addJourney([c1.id]);
 
   const expCities = {
-    City1: {
+    cityId1: {
       symbol: "circle",
       markerIcon: "home",
       markerSize: "large",
       markerColor: "dark",
     },
-    City2: { symbol: "circle" },
-    City3: {
+    cityId2: { symbol: "circle" },
+    cityId3: {
       symbol: "circle",
       markerSize: "large",
     },
@@ -165,27 +165,27 @@ test("prepareDataForMap", function () {
   journeys.setActive(j1);
 
   const expCities = {
-    City1: {
+    cityId1: {
       symbol: "circle",
       symbolColor: `rgb(${getColor(0)})`,
       markerIcon: "home",
       markerSize: "large",
       markerColor: "dark",
     },
-    City2: {
+    cityId2: {
       symbol: "circle",
       symbolColor: `rgb(${getColor(0)})`,
     },
-    City3: {
+    cityId3: {
       symbol: "circle",
       symbolColor: `rgb(${getColor(0)})`,
     },
-    City4: {
+    cityId4: {
       symbol: "circle",
       symbolColor: `rgb(${getColor(1)})`,
       markerSize: "large",
     },
-    City5: {
+    cityId5: {
       markerSize: "large",
       symbol: "circle",
     },

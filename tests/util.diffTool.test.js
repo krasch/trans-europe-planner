@@ -214,4 +214,9 @@ test("stateDefaults", () => {
   got = state.update({ 1: { a: 7 } });
   exp = [];
   expect(got).toStrictEqual(exp);
+
+  // unset (=reset to default) but are already at default
+  got = state.update({});
+  exp = [];
+  expect(got).toStrictEqual(exp);
 });

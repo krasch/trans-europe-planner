@@ -143,7 +143,7 @@ class MapWrapper {
       data: asGeojsonFeatureCollection(
         Object.entries(cities.geo).map(cityToGeojson),
       ),
-      promoteId: "name", // otherwise can not use non-numeric ids
+      promoteId: "id", // otherwise can not use non-numeric ids
     });
     this.map.addSource("edges", {
       type: "geojson",
@@ -181,7 +181,7 @@ class MapWrapper {
       // cities
       cityMarkers: ["markerIcon", "markerSize", "markerColor"],
       cityMenus: [],
-      citySourceData: ["rank", "symbol"],
+      citySourceData: ["rank", "symbol"], // slow to update
       cityFeatureState: ["symbolColor"],
       // edges
       edgeFeatureState: ["color", "status", "journey", "journeyTravelTime"],
@@ -233,10 +233,10 @@ class MapWrapper {
 
       // show/hide routes for a city
       if (data.type === "city" && data.entry === "routes") {
-        this.#objects.cityMenus.hide(data.city);
+        this.#objects.cityMenus.hide(data.cityId);
 
-        if (e.target.checked) this.#callbacks["showCityRoutes"](data.city);
-        else this.#callbacks["hideCityRoutes"](data.city);
+        if (e.target.checked) this.#callbacks["showCityRoutes"](data.cityName);
+        else this.#callbacks["hideCityRoutes"](data.cityName);
       }
     });
   }

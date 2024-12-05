@@ -39,7 +39,7 @@ class CityMarker {
   #markerElement; // the html element
   marker; // the actual maplibre marker object
 
-  constructor(cityLngLat) {
+  constructor(lngLat) {
     this.#markerElement = createElementFromTemplate("template-city-marker");
 
     this.marker = new maplibregl.Marker({
@@ -47,7 +47,7 @@ class CityMarker {
       anchor: "bottom",
       offset: [2, 0],
     });
-    this.marker.setLngLat(cityLngLat);
+    this.marker.setLngLat(lngLat);
   }
 
   update(diff) {
@@ -115,27 +115,29 @@ class CityMenu {
   // input elements to make it easier to change menu items
   #inputs = {};
 
-  constructor(cityName, cityLngLat) {
+  constructor(id, name, lngLat) {
     this.#popupElement = createElementFromTemplate("template-city-menu", {
-      ".city": { innerText: cityName },
+      ".city": { innerText: name },
     });
-    this.#popupElement.id = `city-menu-${cityName}`;
+    this.#popupElement.id = `city-menu-${id}`;
 
     // fix input name and ids
     for (let input of this.#popupElement.querySelectorAll("input")) {
-      input.data = { type: "city", city: cityName, entry: input.value };
+      input.data = {
+        type: "city",
+        cityName: name,
+        cityId: id,
+        entry: input.value,
+      };
       // make unique across document
-      input.name = `city-menu-${cityName}`;
-      input.id = `city-menu-${cityName}-${input.id}`;
+      input.name = `city-menu-${id}`;
+      input.id = `city-menu-${id}-${input.id}`;
       this.#inputs[input.value] = input;
     }
     // fix label "for"
     for (let label of this.#popupElement.querySelectorAll("label")) {
       // "for" should match id of corresponding input
-      label.setAttribute(
-        "for",
-        `city-menu-${cityName}-${label.getAttribute("for")}`,
-      );
+      label.setAttribute("for", `city-menu-${id}-${label.getAttribute("for")}`);
     }
 
     this.popup = new maplibregl.Popup({
@@ -144,7 +146,7 @@ class CityMenu {
       closeButton: false,
     });
 
-    this.popup.setDOMContent(this.#popupElement).setLngLat(cityLngLat);
+    this.popup.setDOMContent(this.#popupElement).setLngLat(lngLat);
   }
 
   update(diff) {
@@ -160,7 +162,7 @@ class CityMenuCollection {
 
   constructor(cities) {
     for (let id in cities) {
-      this.popups[id] = new CityMenu(cities[id].name, cities[id].lngLat);
+      this.popups[id] = new CityMenu(id, cities[id].name, cities[id].lngLat);
     }
   }
 
@@ -202,8 +204,10 @@ class MapSourceDataUpdater {
       });
     }
 
+    console.log(updates);
+
     if (updates.length > 0)
-      map.getSource("cities").updateData({ update: updates });
+      map.getSource(this.#sourceName).updateData({ update: updates });
   }
 }
 
