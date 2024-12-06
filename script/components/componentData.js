@@ -151,7 +151,7 @@ function prepareInitialDataForMap(cityInfo, connections) {
 
 function prepareDataForMap(home, journeys, database) {
   const cities = {};
-  const edges = {};
+  const edges = { state: {}, mapping: {} };
   const journeyInfo = {};
 
   if (home) {
@@ -192,19 +192,27 @@ function prepareDataForMap(home, journeys, database) {
 
       for (let edge of connections[i].edges) {
         const id = edge.toAlphabeticString();
+        const leg = connections[i].leg.toString();
 
-        // we already have data for this edge and the current journey is not an active one
-        // -> don't overwrite data, just move on
-        if (edges[id] !== undefined && !active) continue;
+        // get current state data for this edge or init new if first time we see this edge
+        const state = edges.state[id] ?? {};
 
-        edges[id] = {
-          visible: true,
-          active: active,
-          leg: connections[i].leg.toString(),
-          journey: journey.id,
-        };
+        // update carefully to make sure we don't overwrite data from active journey
+        state.active = state.active || active;
+        state.visible = true;
+        if (active) state.color = color;
+        // todo it it is not nice that I need this here and in mapping
+        if (!state.leg || active) state.leg = leg;
+        if (!state.journey || active) state.journey = journey.id;
 
-        if (active) edges[id].color = color;
+        // same for mapping
+        const mapping = edges.mapping[id] ?? { legs: [], journeys: [] };
+        if (!mapping.legs.includes(leg)) mapping.legs.push(leg);
+        if (!mapping.journeys.includes(mapping.id))
+          mapping.journeys.push(journey.id);
+
+        edges.state[id] = state;
+        edges.mapping[id] = mapping;
       }
     }
   }

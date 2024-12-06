@@ -93,7 +93,7 @@ test("prepareDataForMapEmpty", function () {
   const journeys = new JourneyCollection();
 
   const got = prepareDataForMap(null, journeys, database);
-  expect(got).toStrictEqual([{}, {}, {}]);
+  expect(got).toStrictEqual([{}, { mapping: {}, state: {} }, {}]);
 });
 
 test("prepareDataForMapNoActiveJourney", function () {
@@ -124,17 +124,29 @@ test("prepareDataForMapNoActiveJourney", function () {
   };
 
   const expEdges = {
-    "City1->City2": {
-      visible: true,
-      active: false,
-      leg: "City1->City3",
-      journey: j1,
+    state: {
+      "City1->City2": {
+        visible: true,
+        active: false,
+        leg: "City1->City3",
+        journey: j1,
+      },
+      "City2->City3": {
+        visible: true,
+        active: false,
+        leg: "City1->City3",
+        journey: j1,
+      },
     },
-    "City2->City3": {
-      visible: true,
-      active: false,
-      leg: "City1->City3",
-      journey: j1,
+    mapping: {
+      "City1->City2": {
+        journeys: ["City1->City3"],
+        legs: ["City1->City3"],
+      },
+      "City2->City3": {
+        journeys: ["City1->City3"],
+        legs: ["City1->City3"],
+      },
     },
   };
 
@@ -196,32 +208,52 @@ test("prepareDataForMap", function () {
   };
 
   const expEdges = {
-    "City1->City2": {
-      visible: true,
-      active: true,
-      color: `rgb(${getColor(0)})`,
-      leg: "City1->City3",
-      journey: j1,
+    state: {
+      "City1->City2": {
+        visible: true,
+        active: true,
+        color: `rgb(${getColor(0)})`,
+        leg: "City1->City3",
+        journey: j1,
+      },
+      "City2->City3": {
+        visible: true,
+        active: true,
+        color: `rgb(${getColor(0)})`,
+        leg: "City1->City3",
+        journey: j1,
+      },
+      "City3->City4": {
+        visible: true,
+        active: true,
+        color: `rgb(${getColor(1)})`,
+        leg: "City3->City4",
+        journey: j1,
+      },
+      "City2->City5": {
+        visible: true,
+        active: false,
+        leg: "City1->City5",
+        journey: j2,
+      },
     },
-    "City2->City3": {
-      visible: true,
-      active: true,
-      color: `rgb(${getColor(0)})`,
-      leg: "City1->City3",
-      journey: j1,
-    },
-    "City3->City4": {
-      visible: true,
-      active: true,
-      color: `rgb(${getColor(1)})`,
-      leg: "City3->City4",
-      journey: j1,
-    },
-    "City2->City5": {
-      visible: true,
-      active: false,
-      leg: "City1->City5",
-      journey: j2,
+    mapping: {
+      "City1->City2": {
+        journeys: ["City1->City3;City3->City4", "City1->City5"],
+        legs: ["City1->City3", "City1->City5"],
+      },
+      "City2->City3": {
+        journeys: ["City1->City3;City3->City4"],
+        legs: ["City1->City3"],
+      },
+      "City2->City5": {
+        journeys: ["City1->City5"],
+        legs: ["City1->City5"],
+      },
+      "City3->City4": {
+        journeys: ["City1->City3;City3->City4"],
+        legs: ["City3->City4"],
+      },
     },
   };
 

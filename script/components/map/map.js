@@ -106,8 +106,10 @@ class MapWrapper {
   #states;
   #objects;
   #observedKeys;
+
   #journeys;
   #journeyMenu;
+  #mapping;
 
   constructor(containerId, center, zoom) {
     this.map = new maplibregl.Map({
@@ -220,15 +222,13 @@ class MapWrapper {
 
     // set up mouse events for interacting with edges
     layerMouseEvents.edges.on("mouseOver", (e) => {
-      //journeySummaryPopup.show(e);
-      // todo this is broken because have only one journey in state
       this.map.getCanvas().style.cursor = "pointer";
-      this.setEdgeHoverState("journey", e.featureState.journey, true);
+      this.setJourneyHoverState(e.featureState.journey, true);
     });
     layerMouseEvents.edges.on("mouseLeave", (e) => {
       // todo this is broken because have only one journey in state
       this.map.getCanvas().style.cursor = "default";
-      this.setEdgeHoverState("journey", e.featureState.journey, false);
+      this.setJourneyHoverState(e.featureState.journey, false);
     });
     layerMouseEvents.edges.on("click", (e) => {
       if (!e.featureState.active) {
@@ -269,10 +269,13 @@ class MapWrapper {
     const cityDiffs = this.#states.cities.update(cities);
     this.#updateCities(cityDiffs);
 
-    const edgeDiffs = this.#states.edges.update(edges);
+    const edgeDiffs = this.#states.edges.update(edges.state);
     this.#updateEdges(edgeDiffs);
 
     this.#journeys = journeys;
+    this.#mapping = {
+      edges: edges.mapping,
+    };
   }
 
   #updateCities(cityDiffs) {
@@ -297,15 +300,17 @@ class MapWrapper {
     }
   }
 
-  setEdgeHoverState(level, value, state) {
-    if (!["leg", "journey"].includes(level))
-      throw new Error('Please pass one of ["leg", "journey"]');
+  setLegHoverState(leg, state) {
+    for (let id in this.#mapping.edges) {
+      if (this.#mapping.edges[id].legs.includes(leg))
+        this.#objects.edgeFeatureState.set(this.map, id, "hover", state);
+    }
+  }
 
-    const filter = (entry) => entry[level] === value;
-    const ids = this.#states.edges.getMatches(filter);
-
-    for (let id of ids) {
-      this.#objects.edgeFeatureState.set(this.map, id, "hover", state);
+  setJourneyHoverState(journey, state) {
+    for (let id in this.#mapping.edges) {
+      if (this.#mapping.edges[id].journeys.includes(journey))
+        this.#objects.edgeFeatureState.set(this.map, id, "hover", state);
     }
   }
 

@@ -61,12 +61,8 @@ async function main(map, calendar) {
   });
 
   // hovering over map or calender
-  calendar.on("entryHoverStart", (leg) =>
-    map.setEdgeHoverState("leg", leg, true),
-  );
-  calendar.on("entryHoverStop", (leg) =>
-    map.setEdgeHoverState("leg", leg, false),
-  );
+  calendar.on("entryHoverStart", (leg) => map.setLegHoverState(leg, true));
+  calendar.on("entryHoverStop", (leg) => map.setLegHoverState(leg, false));
 
   // now have done all we can do without having the map ready
   await mapLoadedPromise;

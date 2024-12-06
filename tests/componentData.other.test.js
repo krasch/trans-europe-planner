@@ -31,9 +31,10 @@ test("getJourneySummaryNoVias", function () {
   // no VIA's
   const exp = {
     from: "City1",
+    numTransfer: "direkt (ohne Umstieg)",
     to: "City2",
-    via: "",
     travelTime: "9min",
+    via: "",
   };
   expect(getJourneySummary([c])).toStrictEqual(exp);
 });
@@ -51,9 +52,10 @@ test("getJourneySummaryOneVia", function () {
 
   const exp = {
     from: "City1",
+    numTransfer: "1 Umstieg: ",
     to: "City3",
-    via: " via City2",
     travelTime: "1h 9min",
+    via: "City2",
   };
   expect(getJourneySummary([c1, c2])).toStrictEqual(exp);
 });
@@ -76,9 +78,10 @@ test("getJourneySummaryTwoVias", function () {
 
   const exp = {
     from: "City1",
+    numTransfer: "2 Umstiege: ",
     to: "City4",
-    via: " via City2, City3",
     travelTime: "2h 9min",
+    via: "City2, City3",
   };
   expect(getJourneySummary([c1, c2, c3])).toStrictEqual(exp);
 });
