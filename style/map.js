@@ -2,6 +2,47 @@ const mapStyles = [
   // ################################
   //           edges (subLegs)
   // ################################
+  // extra wide line to allow users to interact with edges even when not hovering directly over them
+  {
+    id: "edges-hover",
+    source: "edges",
+    type: "line",
+    paint: {
+      "line-opacity": 0.0,
+      "line-width": [
+        "case",
+        ["boolean", ["feature-state", "visible"], false],
+        40,
+        0,
+      ],
+    },
+  },
+  // additional border to highlight the line when hovering
+  {
+    id: "edges-border",
+    source: "edges",
+    type: "line",
+    layout: {
+      "line-join": "round",
+      "line-cap": "round",
+    },
+    paint: {
+      "line-color": ["to-color", ["feature-state", "color"], "#aaa"],
+      "line-width": [
+        "case",
+        ["boolean", ["feature-state", "visible"], false],
+        2,
+        0,
+      ],
+      "line-opacity": [
+        "case",
+        ["boolean", ["feature-state", "hover"], false],
+        1.0,
+        0.0,
+      ],
+      "line-gap-width": 6, // -> line center is not highlighted
+    },
+  },
   {
     id: "edges",
     source: "edges",
@@ -14,18 +55,15 @@ const mapStyles = [
       "line-color": ["to-color", ["feature-state", "color"], "#aaa"],
       "line-opacity": [
         "case",
-        ["boolean", ["feature-state", "hover"], false],
-        0.8,
-        0.4,
+        ["boolean", ["feature-state", "active"], false],
+        0.6,
+        0.3,
       ],
       "line-width": [
-        "match",
-        ["feature-state", "status"],
-        "active",
-        6, // line width for active
-        "alternative",
-        6, // line width for alternative
-        0, // fallback
+        "case",
+        ["boolean", ["feature-state", "visible"], false],
+        8,
+        0,
       ],
     },
   },

@@ -184,7 +184,7 @@ class MapWrapper {
       citySourceData: ["rank", "symbol"], // slow to update
       cityFeatureState: ["symbolColor"],
       // edges
-      edgeFeatureState: ["color", "status", "journey", "journeyTravelTime"],
+      edgeFeatureState: ["visible", "active", "color", "leg", "journey"],
     };
 
     // apply initial state (setToDefaults generates the necessary diffs)
@@ -194,7 +194,7 @@ class MapWrapper {
     // initialise mouse event helper for cities and edge layers
     const layerMouseEvents = {
       cityNames: new MouseEventHelper(this.map, ["city-name", "city-circle"]),
-      edges: new MouseEventHelper(this.map, ["edges"], true),
+      edges: new MouseEventHelper(this.map, ["edges-hover"], true),
     };
 
     // this will be shown when user hovers over a journey
@@ -212,7 +212,7 @@ class MapWrapper {
 
     // set up mouse events for interacting with edges
     layerMouseEvents.edges.on("mouseOver", (e) => {
-      journeySummaryPopup.show(e);
+      //journeySummaryPopup.show(e);
       // todo this is broken because have only one journey in state
       this.setHoverState("journey", e.featureState.journey, true);
     });

@@ -159,7 +159,6 @@ function prepareDataForMap(home, journeys, database) {
   const activeJourney = journeys.activeJourney; // might be null
   for (let journey of journeys.journeys) {
     const active = activeJourney !== null && journey.id === activeJourney.id;
-    const edgeStatus = active ? "active" : "alternative";
 
     const connections = getSortedJourneyConnections(journey, database); // only needs to be sorted for journey summary
     const journeySummary = getJourneySummary(connections);
@@ -193,11 +192,12 @@ function prepareDataForMap(home, journeys, database) {
         if (edges[id] !== undefined && !active) continue;
 
         edges[id] = {
+          visible: true,
+          active: active,
           color: color,
           leg: connections[i].leg.toString(),
           journey: journey.id,
           journeyTravelTime: journeySummary.travelTime,
-          status: edgeStatus,
         };
       }
     }
