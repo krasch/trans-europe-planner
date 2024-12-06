@@ -3,7 +3,7 @@
 }
 
 .maplibregl-popup-tip {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 /***********************************************
@@ -28,12 +28,12 @@
 }
 
 .city-marker-small {
-  height:1.5rem;
+  height: 1.5rem;
   width: calc(1.5rem * 0.64);
 }
 
 .city-marker-large {
-  height:2.5rem;
+  height: 2.5rem;
   width: calc(2.5rem * 0.64);
 }
 
@@ -53,98 +53,51 @@
   filter: var(--filter-dark-blue2-hover);
 }
 
-
 /***********************************************
   city context menu
 ************************************************/
 
 .city-menu {
-  display: flex;
-  flex-direction: column;
-
-  border-radius: 5px;
-  border: 1px solid var(--color-background);
+  border-color: var(--color-background);
 }
 
-/* all rows in the menu */
-.city-menu > div {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    padding: 0 2px 2px 2px;
-
-    color: var(--color-dark);
+.city-menu .title {
+  background-color: var(--color-dark);
+  color: white;
 }
 
-.city-menu > div > label {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.25rem;
-    cursor: pointer;
-}
-
-.city-menu label img {
-    filter: var(--filter-dark-blue)
-}
-
-
-/* city is the header */
-.city-menu .city {
-    padding: 2px;
-    padding-left: 6px; /* todo why is this necessary */
-
-    background-color: var(--color-dark);
-    color: white;
-}
-
-.city-menu img {
-    height: 0.8rem;
-}
-
-/* don't show circle from radio button */
-.city-menu input {
-    visibility: hidden;
-    padding: 0;
-    margin: 0;
-    width: 0;
-}
-
-/*make whole row clickable*/
 .city-menu label {
-    width: 100%;
-    display: inline-block;
+  /* whole width should be clickable */
+  width: 100%;
+  /* should also look clickable*/
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
+
+  color: var(--color-dark);
 }
 
-.city-menu .row:hover {
-    background-color: var(--color-background);
+/* checkboxes should not be visible */
+.city-menu input {
+  visibility: hidden;
+  padding: 0;
+  margin: 0;
+  width: 0;
 }
 
-.city-menu input:checked+label {
-    color: var(--color-dark);
-}
-
-.city-menu input:checked+label img {
-    filter: var(--filter-dark-blue);
-}
-
-.city-menu input:disabled+label {
-    text-decoration: line-through;
-    cursor: default;
-    background-color: white;
-    color: darkgray;
-}
-
-.city-menu input:disabled:hover {
-    background-color: white;
-}
-
-input + label:before {
+/* instead, the 👁 symbol works as visual indicator */
+.city-menu input + label:before {
   content: "👁";
-  color: darkgray;
+  color: darkgray; /* light when unchecked */
+}
+.city-menu input:checked + label:before {
+  color: var(--color-dark); /* dark when checked */
 }
 
-input:checked + label:before {
-  color: var(--color-dark)
+/* when hovering the background color changes */
+.city-menu .row:hover {
+  background-color: var(--color-background);
 }

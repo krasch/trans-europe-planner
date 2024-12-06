@@ -218,6 +218,7 @@ class MapWrapper {
       this.setCityHoverState(e.feature.id, false);
     });
     layerMouseEvents.cities.on("click", (e) => {
+      if (e.layer === "city-circle" && !e.featureState.circleVisible) return;
       // when clicking on city name, popup should show
       this.#objects.cityMenus.show(this.map, e.feature.id);
     });

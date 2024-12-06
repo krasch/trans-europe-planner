@@ -116,7 +116,7 @@ class CityMenu {
 
   constructor(id, name, lngLat) {
     this.#popupElement = createElementFromTemplate("template-city-menu", {
-      ".city": { innerText: name },
+      ".title": { innerText: name },
     });
     this.#popupElement.id = `city-menu-${id}`;
 
