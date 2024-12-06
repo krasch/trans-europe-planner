@@ -57,13 +57,18 @@ function getJourneySummary(connections) {
     }
   }
 
-  let viasString = "";
-  if (vias.length > 0) viasString = ` via ${vias.join(", ")}`;
+  let numTransfer = "direkt (ohne Umstieg)";
+  if (vias.length === 1) {
+    numTransfer = `${vias.length} Umstieg: `;
+  } else if (vias.length > 1) {
+    numTransfer = `${vias.length} Umstiege: `;
+  }
 
   return {
     from: startCity,
     to: endCity,
-    via: viasString,
+    via: vias.join(", "),
+    numTransfer: numTransfer,
     travelTime: travelTime,
   };
 }
@@ -147,6 +152,7 @@ function prepareInitialDataForMap(cityInfo, connections) {
 function prepareDataForMap(home, journeys, database) {
   const cities = {};
   const edges = {};
+  const journeyInfo = {};
 
   if (home) {
     cities[CITY_NAME_TO_ID[home]] = {
@@ -159,9 +165,9 @@ function prepareDataForMap(home, journeys, database) {
   const activeJourney = journeys.activeJourney; // might be null
   for (let journey of journeys.journeys) {
     const active = activeJourney !== null && journey.id === activeJourney.id;
-
     const connections = getSortedJourneyConnections(journey, database); // only needs to be sorted for journey summary
-    const journeySummary = getJourneySummary(connections);
+
+    journeyInfo[journey.id] = getJourneySummary(connections);
 
     for (let i in connections) {
       const color = active ? `rgb(${getColor(i)})` : null;
@@ -196,7 +202,6 @@ function prepareDataForMap(home, journeys, database) {
           active: active,
           leg: connections[i].leg.toString(),
           journey: journey.id,
-          journeyTravelTime: journeySummary.travelTime,
         };
 
         if (active) edges[id].color = color;
@@ -204,7 +209,7 @@ function prepareDataForMap(home, journeys, database) {
     }
   }
 
-  return [cities, edges];
+  return [cities, edges, journeyInfo];
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)

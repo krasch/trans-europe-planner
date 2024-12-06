@@ -66,38 +66,24 @@
   color: white;
 }
 
-.city-menu label {
-  /* whole width should be clickable */
-  width: 100%;
-  /* should also look clickable*/
-  cursor: pointer;
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.25rem;
-
+.city-menu .menu-entry {
   color: var(--color-dark);
 }
 
-/* checkboxes should not be visible */
-.city-menu input {
-  visibility: hidden;
-  padding: 0;
-  margin: 0;
-  width: 0;
-}
-
-/* instead, the 👁 symbol works as visual indicator */
-.city-menu input + label:before {
-  content: "👁";
-  color: darkgray; /* light when unchecked */
-}
-.city-menu input:checked + label:before {
-  color: var(--color-dark); /* dark when checked */
-}
-
 /* when hovering the background color changes */
-.city-menu .row:hover {
+.city-menu .menu-entry:hover {
   background-color: var(--color-background);
+}
+
+/***********************************************
+  edge context menu
+************************************************/
+
+.edge-menu {
+  border-color: var(--color-background);
+}
+
+.edge-menu .title {
+  background-color: var(--color-dark);
+  color: white;
 }

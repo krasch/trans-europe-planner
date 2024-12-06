@@ -105,11 +105,26 @@
 <template id="template-city-menu">
     <div class="city-menu card">
         <div class="title"></div>
-        <div class="row">
+        <div class="row menu-entry">
             <!-- id, name and for will be made unique when instantiating the template -->
             <input type="checkbox" id="routes" name="show" value="routes">
             <label for="routes">Routen hierher</label>
         </div>
+    </div>
+</template>
+
+<template id="template-edge-menu">
+    <div class="edge-menu card">
+        <div class="title">
+            <span class="from"></span> &nbsp;⮕&nbsp;<span class="to"></span>
+        </div>
+        <div class="row"><span class="num-transfer"></span>&nbsp;<span class="via"></span></div>
+        <div class="row">Reisezeit: &nbsp; <strong class="travel-time"></strong></div>
+        <!--div class="row menu-entry"-->
+        <!-- id, name and for will be made unique when instantiating the template -->
+        <!--input type="checkbox" id="showJourneyCalendar" name="show" value="journey">
+        <label for="showJourneyCalendar">Reisekalender anzeigen</label>
+    </div-->
     </div>
 </template>
 

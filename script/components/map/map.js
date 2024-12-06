@@ -106,6 +106,8 @@ class MapWrapper {
   #states;
   #objects;
   #observedKeys;
+  #journeys;
+  #journeyMenu;
 
   constructor(containerId, center, zoom) {
     this.map = new maplibregl.Map({
@@ -198,13 +200,6 @@ class MapWrapper {
       edges: new MouseEventHelper(this.map, ["edges-interact"], true),
     };
 
-    // this will be shown when user hovers over a journey
-    const journeySummaryPopup = new PopupHelper(
-      this.map,
-      (e) => e.featureState.journey,
-      (e) => e.featureState.journeyTravelTime,
-    );
-
     // when clicking on city marker popup should show
     this.#objects.cityMarkers.setPopups(this.#objects.cityMenus);
 
@@ -231,15 +226,23 @@ class MapWrapper {
       this.setEdgeHoverState("journey", e.featureState.journey, true);
     });
     layerMouseEvents.edges.on("mouseLeave", (e) => {
-      journeySummaryPopup.hide(e);
       // todo this is broken because have only one journey in state
       this.map.getCanvas().style.cursor = "default";
       this.setEdgeHoverState("journey", e.featureState.journey, false);
     });
     layerMouseEvents.edges.on("click", (e) => {
-      if (e.featureState.status === "alternative") {
+      if (!e.featureState.active) {
         this.#callbacks["selectJourney"](e.featureState.journey);
       }
+
+      // todo don't re-instantiate every time
+      if (this.#journeyMenu) this.#journeyMenu.remove();
+      this.#journeyMenu = new JourneyMenu(
+        e.featureState.journey,
+        this.#journeys[e.featureState.journey],
+        e.lngLat,
+      );
+      this.#journeyMenu.popup.addTo(this.map);
     });
 
     // set up menu events
@@ -261,13 +264,15 @@ class MapWrapper {
   }
 
   updateView(data) {
-    const [cities, edges] = data;
+    const [cities, edges, journeys] = data;
 
     const cityDiffs = this.#states.cities.update(cities);
     this.#updateCities(cityDiffs);
 
     const edgeDiffs = this.#states.edges.update(edges);
     this.#updateEdges(edgeDiffs);
+
+    this.#journeys = journeys;
   }
 
   #updateCities(cityDiffs) {

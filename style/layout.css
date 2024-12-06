@@ -111,3 +111,32 @@ calendar-grid {
 .card img {
   height: 0.8rem;
 }
+
+.card label {
+  /* whole width should be clickable */
+  width: 100%;
+  /* should also look clickable*/
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* checkboxes should not be visible */
+.card input {
+  visibility: hidden;
+  padding: 0;
+  margin: 0;
+  width: 0;
+}
+
+/* instead, the 👁 symbol works as visual indicator */
+.card input + label:before {
+  content: "👁";
+  color: darkgray; /* light when unchecked */
+}
+.card input:checked + label:before {
+  color: var(--color-dark); /* dark when checked */
+}
