@@ -2,6 +2,7 @@ const {
   getColor,
   prepareDataForMap,
   prepareInitialDataForMap,
+  getJourneySummary,
 } = require("../script/components/componentData.js");
 const { JourneyCollection } = require("../script/types/journey.js");
 const { Database } = require("../script/database.js");
@@ -92,7 +93,7 @@ test("prepareDataForMapEmpty", function () {
   const journeys = new JourneyCollection();
 
   const got = prepareDataForMap(null, journeys, database);
-  expect(got).toStrictEqual([{}, {}]);
+  expect(got).toStrictEqual([{}, {}, {}]);
 });
 
 test("prepareDataForMapNoActiveJourney", function () {
@@ -128,19 +129,19 @@ test("prepareDataForMapNoActiveJourney", function () {
       active: false,
       leg: "City1->City3",
       journey: j1,
-      journeyTravelTime: "3h",
     },
     "City2->City3": {
       visible: true,
       active: false,
       leg: "City1->City3",
       journey: j1,
-      journeyTravelTime: "3h",
     },
   };
 
+  const expJourneys = { "City1->City3": getJourneySummary([c1]) };
+
   const got = prepareDataForMap("City1", journeys, database);
-  expect(got).toStrictEqual([expCities, expEdges]);
+  expect(got).toStrictEqual([expCities, expEdges, expJourneys]);
 });
 
 test("prepareDataForMap", function () {
@@ -201,7 +202,6 @@ test("prepareDataForMap", function () {
       color: `rgb(${getColor(0)})`,
       leg: "City1->City3",
       journey: j1,
-      journeyTravelTime: "5h",
     },
     "City2->City3": {
       visible: true,
@@ -209,7 +209,6 @@ test("prepareDataForMap", function () {
       color: `rgb(${getColor(0)})`,
       leg: "City1->City3",
       journey: j1,
-      journeyTravelTime: "5h",
     },
     "City3->City4": {
       visible: true,
@@ -217,17 +216,20 @@ test("prepareDataForMap", function () {
       color: `rgb(${getColor(1)})`,
       leg: "City3->City4",
       journey: j1,
-      journeyTravelTime: "5h",
     },
     "City2->City5": {
       visible: true,
       active: false,
       leg: "City1->City5",
       journey: j2,
-      journeyTravelTime: "2h",
     },
   };
 
+  const expJourneys = {
+    "City1->City3;City3->City4": getJourneySummary([c1, c2]),
+    "City1->City5": getJourneySummary([c3]),
+  };
+
   const got = prepareDataForMap("City1", journeys, database);
-  expect(got).toStrictEqual([expCities, expEdges]);
+  expect(got).toStrictEqual([expCities, expEdges, expJourneys]);
 });
