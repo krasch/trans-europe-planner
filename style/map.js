@@ -87,6 +87,8 @@ const mapStyles = [
         "case",
         ["boolean", ["feature-state", "circleVisible"], false],
         0.6,
+        ["boolean", ["feature-state", "hover"], false],
+        1.0, // todo does not appear to have effect
         0,
       ],
       "icon-halo-color": ["to-color", ["feature-state", "circleColor"], "#aaa"],
