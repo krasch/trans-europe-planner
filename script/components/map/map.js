@@ -107,8 +107,9 @@ class MapWrapper {
   #objects;
   #observedKeys;
 
-  #journeys;
   #journeyMenu;
+  #cityTooltip;
+  #journeys;
   #mapping;
 
   constructor(containerId, center, zoom) {
@@ -205,13 +206,21 @@ class MapWrapper {
     // when clicking on city marker popup should show
     this.#objects.cityMarkers.setPopups(this.#objects.cityMenus);
 
+    // when hovering over city circle a small tooltip should show up
+    this.#cityTooltip = new maplibregl.Popup({ closeButton: false });
+
     // set up mouse events for interacting with cities
     layerMouseEvents.cities.on("mouseOver", (e) => {
       if (!e.featureState.circleVisible) return;
+      this.#cityTooltip
+        .setLngLat(e.lngLat)
+        .setText(e.feature.properties.name)
+        .addTo(this.map);
       this.setCityHoverState(e.feature.id, true);
     });
     layerMouseEvents.cities.on("mouseLeave", (e) => {
       if (!e.featureState.circleVisible) return;
+      this.#cityTooltip.remove();
       this.setCityHoverState(e.feature.id, false);
     });
     layerMouseEvents.cities.on("click", (e) => {
@@ -226,7 +235,6 @@ class MapWrapper {
       this.setJourneyHoverState(e.featureState.journey, true);
     });
     layerMouseEvents.edges.on("mouseLeave", (e) => {
-      // todo this is broken because have only one journey in state
       this.map.getCanvas().style.cursor = "default";
       this.setJourneyHoverState(e.featureState.journey, false);
     });
