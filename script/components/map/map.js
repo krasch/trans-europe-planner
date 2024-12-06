@@ -227,11 +227,13 @@ class MapWrapper {
     layerMouseEvents.edges.on("mouseOver", (e) => {
       //journeySummaryPopup.show(e);
       // todo this is broken because have only one journey in state
+      this.map.getCanvas().style.cursor = "pointer";
       this.setEdgeHoverState("journey", e.featureState.journey, true);
     });
     layerMouseEvents.edges.on("mouseLeave", (e) => {
       journeySummaryPopup.hide(e);
       // todo this is broken because have only one journey in state
+      this.map.getCanvas().style.cursor = "default";
       this.setEdgeHoverState("journey", e.featureState.journey, false);
     });
     layerMouseEvents.edges.on("click", (e) => {
