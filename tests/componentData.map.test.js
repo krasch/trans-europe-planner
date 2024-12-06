@@ -110,14 +110,14 @@ test("prepareDataForMapNoActiveJourney", function () {
 
   const expCities = {
     cityId1: {
-      symbol: "circle",
+      circleVisible: true,
       markerIcon: "home",
       markerSize: "large",
       markerColor: "dark",
     },
-    cityId2: { symbol: "circle" },
+    cityId2: { circleVisible: true },
     cityId3: {
-      symbol: "circle",
+      circleVisible: true,
       markerSize: "large",
     },
   };
@@ -171,28 +171,28 @@ test("prepareDataForMap", function () {
 
   const expCities = {
     cityId1: {
-      symbol: "circle",
-      symbolColor: `rgb(${getColor(0)})`,
+      circleVisible: true,
+      circleColor: `rgb(${getColor(0)})`,
       markerIcon: "home",
       markerSize: "large",
       markerColor: "dark",
     },
     cityId2: {
-      symbol: "circle",
-      symbolColor: `rgb(${getColor(0)})`,
+      circleVisible: true,
+      circleColor: `rgb(${getColor(0)})`,
     },
     cityId3: {
-      symbol: "circle",
-      symbolColor: `rgb(${getColor(0)})`,
+      circleVisible: true,
+      circleColor: `rgb(${getColor(0)})`,
     },
     cityId4: {
-      symbol: "circle",
-      symbolColor: `rgb(${getColor(1)})`,
+      circleVisible: true,
+      circleColor: `rgb(${getColor(1)})`,
       markerSize: "large",
     },
     cityId5: {
       markerSize: "large",
-      symbol: "circle",
+      circleVisible: true,
     },
   };
 

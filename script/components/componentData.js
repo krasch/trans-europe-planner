@@ -174,8 +174,8 @@ function prepareDataForMap(home, journeys, database) {
         const data = cities[id] ?? {};
 
         // updated carefully to make sure we don't overwrite data from active journey
-        if (!data.symbol || active) data.symbol = "circle";
-        if (!data.symbolColor && active) data.symbolColor = color; // && sic only active has set color
+        data.circleVisible = true;
+        if (active && !data.circleColor) data.circleColor = color;
 
         if (destination) {
           data.markerSize = "large";

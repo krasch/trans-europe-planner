@@ -181,8 +181,8 @@ class MapWrapper {
       // cities
       cityMarkers: ["markerIcon", "markerSize", "markerColor"],
       cityMenus: ["menuDestination"],
-      citySourceData: ["rank", "symbol"], // slow to update
-      cityFeatureState: ["symbolColor"],
+      citySourceData: ["rank"], // slow to update
+      cityFeatureState: ["circleVisible", "circleColor"],
       // edges
       edgeFeatureState: ["visible", "active", "color", "leg", "journey"],
     };
@@ -193,7 +193,7 @@ class MapWrapper {
 
     // initialise mouse event helper for cities and edge layers
     const layerMouseEvents = {
-      cityNames: new MouseEventHelper(this.map, ["city-name", "city-circle"]),
+      cities: new MouseEventHelper(this.map, ["city-name", "city-circle"]),
       edges: new MouseEventHelper(this.map, ["edges-hover"], true),
     };
 
@@ -204,9 +204,15 @@ class MapWrapper {
       (e) => e.featureState.journeyTravelTime,
     );
 
-    // when clicking on city marker or city name, the city menu should pop up
+    // when clicking on city marker popup should show
     this.#objects.cityMarkers.setPopups(this.#objects.cityMenus);
-    layerMouseEvents.cityNames.on("click", (e) => {
+
+    // set up mouse events for interacting with cities
+    layerMouseEvents.cities.on("mouseOver", (e) => {
+      if (e.layer === "city-circle") return;
+    });
+    layerMouseEvents.cities.on("click", (e) => {
+      // when clicking on city name, popup should show
       this.#objects.cityMenus.show(this.map, e.feature.id);
     });
 

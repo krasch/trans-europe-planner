@@ -23,7 +23,7 @@ const mapStyles = [
     source: "edges",
     type: "line",
     layout: {
-      "line-join": "round",
+      "line-join": "miter",
       "line-cap": "round",
     },
     paint: {
@@ -43,12 +43,13 @@ const mapStyles = [
       "line-gap-width": 6, // -> line center is not highlighted
     },
   },
+  // the actual lines
   {
     id: "edges",
     source: "edges",
     type: "line",
     layout: {
-      "line-join": "round",
+      "line-join": "miter",
       "line-cap": "round",
     },
     paint: {
@@ -76,15 +77,20 @@ const mapStyles = [
     source: "cities",
     type: "symbol",
     layout: {
-      "icon-image": ["get", "symbol"],
+      "icon-image": "circle",
       "icon-size": 0.5,
       "icon-allow-overlap": true,
       "text-allow-overlap": true, // perhaps speed up redrawing?
     },
     paint: {
       "icon-color": "white",
-      "icon-opacity": 0.6,
-      "icon-halo-color": ["to-color", ["feature-state", "symbolColor"], "#aaa"],
+      "icon-opacity": [
+        "case",
+        ["boolean", ["feature-state", "circleVisible"], false],
+        0.8,
+        0,
+      ],
+      "icon-halo-color": ["to-color", ["feature-state", "circleColor"], "#aaa"],
       "icon-halo-width": 1,
     },
   },
