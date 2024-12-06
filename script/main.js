@@ -50,8 +50,7 @@ async function main(map, calendar) {
 
     for (let route of ROUTES[target]) {
       const connectionIds = createStupidItineraryForRoute(route, database);
-      let id = state.journeys.addJourney(connectionIds);
-      if (!state.journeys.activeJourney) state.journeys.setActive(id);
+      state.journeys.addJourney(connectionIds);
     }
     updateViews(state);
   });
