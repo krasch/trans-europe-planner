@@ -126,7 +126,6 @@ test("prepareDataForMapNoActiveJourney", function () {
     "City1->City2": {
       visible: true,
       active: false,
-      color: null,
       leg: "City1->City3",
       journey: j1,
       journeyTravelTime: "3h",
@@ -134,7 +133,6 @@ test("prepareDataForMapNoActiveJourney", function () {
     "City2->City3": {
       visible: true,
       active: false,
-      color: null,
       leg: "City1->City3",
       journey: j1,
       journeyTravelTime: "3h",
@@ -224,7 +222,6 @@ test("prepareDataForMap", function () {
     "City2->City5": {
       visible: true,
       active: false,
-      color: null,
       leg: "City1->City5",
       journey: j2,
       journeyTravelTime: "2h",

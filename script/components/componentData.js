@@ -194,11 +194,12 @@ function prepareDataForMap(home, journeys, database) {
         edges[id] = {
           visible: true,
           active: active,
-          color: color,
           leg: connections[i].leg.toString(),
           journey: journey.id,
           journeyTravelTime: journeySummary.travelTime,
         };
+
+        if (active) edges[id].color = color;
       }
     }
   }
