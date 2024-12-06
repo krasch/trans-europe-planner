@@ -124,16 +124,18 @@ test("prepareDataForMapNoActiveJourney", function () {
 
   const expEdges = {
     "City1->City2": {
+      visible: true,
+      active: false,
       color: null,
       leg: "City1->City3",
-      status: "alternative",
       journey: j1,
       journeyTravelTime: "3h",
     },
     "City2->City3": {
+      visible: true,
+      active: false,
       color: null,
       leg: "City1->City3",
-      status: "alternative",
       journey: j1,
       journeyTravelTime: "3h",
     },
@@ -196,30 +198,34 @@ test("prepareDataForMap", function () {
 
   const expEdges = {
     "City1->City2": {
+      visible: true,
+      active: true,
       color: `rgb(${getColor(0)})`,
       leg: "City1->City3",
-      status: "active",
       journey: j1,
       journeyTravelTime: "5h",
     },
     "City2->City3": {
+      visible: true,
+      active: true,
       color: `rgb(${getColor(0)})`,
       leg: "City1->City3",
-      status: "active",
       journey: j1,
       journeyTravelTime: "5h",
     },
     "City3->City4": {
+      visible: true,
+      active: true,
       color: `rgb(${getColor(1)})`,
       leg: "City3->City4",
-      status: "active",
       journey: j1,
       journeyTravelTime: "5h",
     },
     "City2->City5": {
+      visible: true,
+      active: false,
       color: null,
       leg: "City1->City5",
-      status: "alternative",
       journey: j2,
       journeyTravelTime: "2h",
     },
