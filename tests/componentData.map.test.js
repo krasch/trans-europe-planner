@@ -120,6 +120,7 @@ test("prepareDataForMapNoActiveJourney", function () {
     cityId3: {
       circleVisible: true,
       markerSize: "large",
+      markerColor: "dark",
     },
   };
 
@@ -200,9 +201,11 @@ test("prepareDataForMap", function () {
       circleVisible: true,
       circleColor: `rgb(${getColor(1)})`,
       markerSize: "large",
+      markerColor: "dark",
     },
     cityId5: {
       markerSize: "large",
+      markerColor: "dark",
       circleVisible: true,
     },
   };

@@ -185,6 +185,7 @@ function prepareDataForMap(home, journeys, database) {
 
         if (destination) {
           data.markerSize = "large";
+          data.markerColor = "dark";
         }
 
         cities[id] = data;
