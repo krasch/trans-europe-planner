@@ -220,6 +220,7 @@ class MapSourceDataUpdater {
 
 class FeatureStateUpdater {
   #sourceName;
+  #mirror = {};
 
   constructor(sourceName) {
     this.#sourceName = sourceName;
@@ -231,10 +232,7 @@ class FeatureStateUpdater {
     const grouped = groupDiffsById(diffs);
 
     for (let id in grouped) {
-      const current = map.getFeatureState({
-        source: this.#sourceName,
-        id: id,
-      });
+      let current = this.#mirror[id] ?? {};
 
       for (let diff of grouped[id]) {
         if (diff.kind === "updated" || diff.kind === "added")
@@ -245,6 +243,15 @@ class FeatureStateUpdater {
       }
 
       map.setFeatureState({ source: this.#sourceName, id: id }, current);
+      this.#mirror[id] = current;
     }
+  }
+
+  set(map, id, key, value) {
+    let current = this.#mirror[id] ?? {};
+    current[key] = value;
+
+    map.setFeatureState({ source: this.#sourceName, id: id }, current);
+    this.#mirror[id] = current;
   }
 }

@@ -4,7 +4,7 @@ const mapStyles = [
   // ################################
   // extra wide line to allow users to interact with edges even when not hovering directly over them
   {
-    id: "edges-hover",
+    id: "edges-interact",
     source: "edges",
     type: "line",
     paint: {
@@ -12,7 +12,7 @@ const mapStyles = [
       "line-width": [
         "case",
         ["boolean", ["feature-state", "visible"], false],
-        40,
+        20,
         0,
       ],
     },
@@ -24,7 +24,7 @@ const mapStyles = [
     type: "line",
     layout: {
       "line-join": "miter",
-      "line-cap": "round",
+      //"line-cap": "round",
     },
     paint: {
       "line-color": ["to-color", ["feature-state", "color"], "#aaa"],
@@ -40,7 +40,7 @@ const mapStyles = [
         1.0,
         0.0,
       ],
-      "line-gap-width": 6, // -> line center is not highlighted
+      "line-gap-width": 4, // -> line center is not highlighted
     },
   },
   // the actual lines
@@ -50,7 +50,6 @@ const mapStyles = [
     type: "line",
     layout: {
       "line-join": "miter",
-      "line-cap": "round",
     },
     paint: {
       "line-color": ["to-color", ["feature-state", "color"], "#aaa"],
@@ -87,11 +86,16 @@ const mapStyles = [
       "icon-opacity": [
         "case",
         ["boolean", ["feature-state", "circleVisible"], false],
-        0.8,
+        0.6,
         0,
       ],
       "icon-halo-color": ["to-color", ["feature-state", "circleColor"], "#aaa"],
-      "icon-halo-width": 1,
+      "icon-halo-width": [
+        "case",
+        ["boolean", ["feature-state", "hover"], false],
+        1,
+        1,
+      ],
     },
   },
 

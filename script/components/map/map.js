@@ -192,9 +192,10 @@ class MapWrapper {
     this.#updateEdges(this.#states.edges.setToDefaults());
 
     // initialise mouse event helper for cities and edge layers
+    const cityLayers = ["city-name", "city-circle"];
     const layerMouseEvents = {
-      cities: new MouseEventHelper(this.map, ["city-name", "city-circle"]),
-      edges: new MouseEventHelper(this.map, ["edges-hover"], true),
+      cities: new MouseEventHelper(this.map, cityLayers, true),
+      edges: new MouseEventHelper(this.map, ["edges-interact"], true),
     };
 
     // this will be shown when user hovers over a journey
@@ -209,7 +210,12 @@ class MapWrapper {
 
     // set up mouse events for interacting with cities
     layerMouseEvents.cities.on("mouseOver", (e) => {
-      if (e.layer === "city-circle") return;
+      if (!e.featureState.circleVisible) return;
+      this.setCityHoverState(e.feature.id, true);
+    });
+    layerMouseEvents.cities.on("mouseLeave", (e) => {
+      if (!e.featureState.circleVisible) return;
+      this.setCityHoverState(e.feature.id, false);
     });
     layerMouseEvents.cities.on("click", (e) => {
       // when clicking on city name, popup should show
@@ -220,12 +226,12 @@ class MapWrapper {
     layerMouseEvents.edges.on("mouseOver", (e) => {
       //journeySummaryPopup.show(e);
       // todo this is broken because have only one journey in state
-      this.setHoverState("journey", e.featureState.journey, true);
+      this.setEdgeHoverState("journey", e.featureState.journey, true);
     });
     layerMouseEvents.edges.on("mouseLeave", (e) => {
       journeySummaryPopup.hide(e);
       // todo this is broken because have only one journey in state
-      this.setHoverState("journey", e.featureState.journey, false);
+      this.setEdgeHoverState("journey", e.featureState.journey, false);
     });
     layerMouseEvents.edges.on("click", (e) => {
       if (e.featureState.status === "alternative") {
@@ -283,22 +289,20 @@ class MapWrapper {
     }
   }
 
-  setHoverState(level, value, state) {
+  setEdgeHoverState(level, value, state) {
     if (!["leg", "journey"].includes(level))
       throw new Error('Please pass one of ["leg", "journey"]');
 
     const filter = (entry) => entry[level] === value;
     const ids = this.#states.edges.getMatches(filter);
 
-    const diffs = ids.map((id) => ({
-      kind: "updated",
-      id: id,
-      key: "hover",
-      newValue: state,
-    }));
+    for (let id of ids) {
+      this.#objects.edgeFeatureState.set(this.map, id, "hover", state);
+    }
+  }
 
-    // todo not actually updating #states.edges, is that bad?
-    this.#objects.edgeFeatureState.update(this.map, diffs);
+  setCityHoverState(cityId, state) {
+    this.#objects.cityFeatureState.set(this.map, cityId, "hover", state);
   }
 }
 
