@@ -107,6 +107,11 @@ class MapWrapper {
   #objects;
   #observedKeys;
 
+  #journeyMenu;
+  #cityTooltip;
+  #journeys;
+  #mapping;
+
   constructor(containerId, center, zoom) {
     this.map = new maplibregl.Map({
       container: containerId,
@@ -181,10 +186,10 @@ class MapWrapper {
       // cities
       cityMarkers: ["markerIcon", "markerSize", "markerColor"],
       cityMenus: ["menuDestination"],
-      citySourceData: ["rank", "symbol"], // slow to update
-      cityFeatureState: ["symbolColor"],
+      citySourceData: ["rank"], // slow to update
+      cityFeatureState: ["circleVisible", "circleColor"],
       // edges
-      edgeFeatureState: ["color", "status", "journey", "journeyTravelTime"],
+      edgeFeatureState: ["visible", "active", "color", "leg", "journey"],
     };
 
     // apply initial state (setToDefaults generates the necessary diffs)
@@ -192,39 +197,60 @@ class MapWrapper {
     this.#updateEdges(this.#states.edges.setToDefaults());
 
     // initialise mouse event helper for cities and edge layers
+    const cityLayers = ["city-name", "city-circle"];
     const layerMouseEvents = {
-      cityNames: new MouseEventHelper(this.map, ["city-name", "city-circle"]),
-      edges: new MouseEventHelper(this.map, ["edges"], true),
+      cities: new MouseEventHelper(this.map, cityLayers, true),
+      edges: new MouseEventHelper(this.map, ["edges-interact"], true),
     };
 
-    // this will be shown when user hovers over a journey
-    const journeySummaryPopup = new PopupHelper(
-      this.map,
-      (e) => e.featureState.journey,
-      (e) => e.featureState.journeyTravelTime,
-    );
-
-    // when clicking on city marker or city name, the city menu should pop up
+    // when clicking on city marker popup should show
     this.#objects.cityMarkers.setPopups(this.#objects.cityMenus);
-    layerMouseEvents.cityNames.on("click", (e) => {
+
+    // when hovering over city circle a small tooltip should show up
+    this.#cityTooltip = new maplibregl.Popup({ closeButton: false });
+
+    // set up mouse events for interacting with cities
+    layerMouseEvents.cities.on("mouseOver", (e) => {
+      if (!e.featureState.circleVisible) return;
+      this.#cityTooltip
+        .setLngLat(e.lngLat)
+        .setText(e.feature.properties.name)
+        .addTo(this.map);
+      this.setCityHoverState(e.feature.id, true);
+    });
+    layerMouseEvents.cities.on("mouseLeave", (e) => {
+      if (!e.featureState.circleVisible) return;
+      this.#cityTooltip.remove();
+      this.setCityHoverState(e.feature.id, false);
+    });
+    layerMouseEvents.cities.on("click", (e) => {
+      if (e.layer === "city-circle" && !e.featureState.circleVisible) return;
+      // when clicking on city name, popup should show
       this.#objects.cityMenus.show(this.map, e.feature.id);
     });
 
     // set up mouse events for interacting with edges
     layerMouseEvents.edges.on("mouseOver", (e) => {
-      journeySummaryPopup.show(e);
-      // todo this is broken because have only one journey in state
-      this.setHoverState("journey", e.featureState.journey, true);
+      this.map.getCanvas().style.cursor = "pointer";
+      this.setJourneyHoverState(e.featureState.journey, true);
     });
     layerMouseEvents.edges.on("mouseLeave", (e) => {
-      journeySummaryPopup.hide(e);
-      // todo this is broken because have only one journey in state
-      this.setHoverState("journey", e.featureState.journey, false);
+      this.map.getCanvas().style.cursor = "default";
+      this.setJourneyHoverState(e.featureState.journey, false);
     });
     layerMouseEvents.edges.on("click", (e) => {
-      if (e.featureState.status === "alternative") {
+      if (!e.featureState.active) {
         this.#callbacks["selectJourney"](e.featureState.journey);
       }
+
+      // todo don't re-instantiate every time
+      if (this.#journeyMenu) this.#journeyMenu.remove();
+      this.#journeyMenu = new JourneyMenu(
+        e.featureState.journey,
+        this.#journeys[e.featureState.journey],
+        e.lngLat,
+      );
+      this.#journeyMenu.popup.addTo(this.map);
     });
 
     // set up menu events
@@ -246,13 +272,18 @@ class MapWrapper {
   }
 
   updateView(data) {
-    const [cities, edges] = data;
+    const [cities, edges, journeys] = data;
 
     const cityDiffs = this.#states.cities.update(cities);
     this.#updateCities(cityDiffs);
 
-    const edgeDiffs = this.#states.edges.update(edges);
+    const edgeDiffs = this.#states.edges.update(edges.state);
     this.#updateEdges(edgeDiffs);
+
+    this.#journeys = journeys;
+    this.#mapping = {
+      edges: edges.mapping,
+    };
   }
 
   #updateCities(cityDiffs) {
@@ -277,22 +308,22 @@ class MapWrapper {
     }
   }
 
-  setHoverState(level, value, state) {
-    if (!["leg", "journey"].includes(level))
-      throw new Error('Please pass one of ["leg", "journey"]');
+  setLegHoverState(leg, state) {
+    for (let id in this.#mapping.edges) {
+      if (this.#mapping.edges[id].legs.includes(leg))
+        this.#objects.edgeFeatureState.set(this.map, id, "hover", state);
+    }
+  }
 
-    const filter = (entry) => entry[level] === value;
-    const ids = this.#states.edges.getMatches(filter);
+  setJourneyHoverState(journey, state) {
+    for (let id in this.#mapping.edges) {
+      if (this.#mapping.edges[id].journeys.includes(journey))
+        this.#objects.edgeFeatureState.set(this.map, id, "hover", state);
+    }
+  }
 
-    const diffs = ids.map((id) => ({
-      kind: "updated",
-      id: id,
-      key: "hover",
-      newValue: state,
-    }));
-
-    // todo not actually updating #states.edges, is that bad?
-    this.#objects.edgeFeatureState.update(this.map, diffs);
+  setCityHoverState(cityId, state) {
+    this.#objects.cityFeatureState.set(this.map, cityId, "hover", state);
   }
 }
 

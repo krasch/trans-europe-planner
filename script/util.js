@@ -5,17 +5,21 @@ function createElementFromTemplate(templateId, templateData) {
   const element = template.content.firstElementChild.cloneNode(true);
 
   // fill in data
-  for (let selector in templateData) {
+  updateElement(element, templateData);
+
+  return element;
+}
+
+function updateElement(element, data) {
+  for (let selector in data) {
     const children = element.querySelectorAll(selector);
 
     for (let child of children) {
-      for (let key in templateData[selector]) {
-        child[key] = templateData[selector][key];
+      for (let key in data[selector]) {
+        child[key] = data[selector][key];
       }
     }
   }
-
-  return element;
 }
 
 function* calculateDiffs(oldObjectOfObjects, newObjectOfObjects) {
@@ -163,10 +167,6 @@ class StateManager {
     }
 
     return diffs.filter((d) => d.kind !== "____");
-  }
-
-  getMatches(filterFn) {
-    return Object.keys(this.#states).filter((id) => filterFn(this.#states[id]));
   }
 
   #hasDefault(id, key) {

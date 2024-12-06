@@ -1,40 +1,3 @@
-// this class shows/hides popups and keeps popup state
-// todo replace with CityMenu when doing EdgeMenus
-class PopupHelper {
-  constructor(map, getIdFn, htmlFn) {
-    let currentId = null;
-    let currentPopup = null;
-
-    this.show = (e) => {
-      const id = getIdFn(e);
-
-      // popup is currently being shown for this item, nothing to do
-      if (currentId === id) return;
-
-      // just in case a popup is currently being shown for some other item (should not happen)
-      this.hide();
-
-      // show
-      currentId = id;
-      currentPopup = new maplibregl.Popup({
-        closeButton: false,
-        closeOnClick: false,
-        anchor: "left",
-        offset: [10, 0],
-      });
-      currentPopup.setLngLat(e.lngLat).setHTML(htmlFn(e)).addTo(map);
-    };
-
-    this.hide = (e) => {
-      if (currentPopup) {
-        currentPopup.remove();
-        currentPopup = null;
-        currentId = null;
-      }
-    };
-  }
-}
-
 class CityMarker {
   #markerElement; // the html element
   marker; // the actual maplibre marker object
@@ -116,11 +79,13 @@ class CityMenu {
 
   constructor(id, name, lngLat) {
     this.#popupElement = createElementFromTemplate("template-city-menu", {
-      ".city": { innerText: name },
+      ".title": { innerText: name },
     });
     this.#popupElement.id = `city-menu-${id}`;
 
-    for (let entryContainer of this.#popupElement.querySelectorAll(".row")) {
+    for (let entryContainer of this.#popupElement.querySelectorAll(
+      ".menu-entry",
+    )) {
       const entryName = this.#initMenuEntry(entryContainer, id, name);
       this.#entries[entryName] = entryContainer;
     }
@@ -163,6 +128,66 @@ class CityMenu {
     };
 
     return input.value; // what is the "name" of this entry?
+  }
+}
+
+class JourneyMenu {
+  #popupElement; // the html element
+  popup; // the actual maplibre popup object
+
+  // input elements to make it easier to change menu items
+  #entries = {};
+
+  constructor(id, journey, lngLat) {
+    this.#popupElement = createElementFromTemplate("template-edge-menu", {
+      ".from": { innerText: journey.from },
+      ".to": { innerText: journey.to },
+      ".travel-time": { innerText: journey.travelTime },
+      ".via": { innerText: journey.via },
+      ".num-transfer": { innerText: journey.numTransfer },
+    });
+    this.#popupElement.id = `edge-menu-${id}`;
+
+    for (let entryContainer of this.#popupElement.querySelectorAll(
+      ".menu-entry",
+    )) {
+      const entryName = this.#initMenuEntry(entryContainer, id, name);
+      this.#entries[entryName] = entryContainer;
+    }
+
+    this.popup = new maplibregl.Popup({
+      anchor: "left",
+      offset: [5, -20],
+      closeButton: false,
+    });
+
+    this.popup.setDOMContent(this.#popupElement).setLngLat(lngLat);
+  }
+
+  update(diff) {}
+
+  #initMenuEntry(element, id) {
+    const input = element.querySelector("input");
+    const label = element.querySelector("label");
+
+    // make unique across document by adding id to strings
+    input.name = `edge-menu-${id}`;
+    input.id = `edge-menu-${id}-${input.id}`;
+    label.setAttribute("for", `edge-menu-${id}-${label.getAttribute("for")}`);
+
+    // needed for reacting when entry is chosen
+    input.data = {
+      type: "edge",
+      id: id,
+      entry: input.value,
+    };
+
+    return input.value; // what is the "name" of this entry?
+  }
+
+  remove() {
+    this.popup.remove();
+    this.#popupElement.remove();
   }
 }
 
@@ -220,6 +245,7 @@ class MapSourceDataUpdater {
 
 class FeatureStateUpdater {
   #sourceName;
+  #mirror = {};
 
   constructor(sourceName) {
     this.#sourceName = sourceName;
@@ -231,10 +257,7 @@ class FeatureStateUpdater {
     const grouped = groupDiffsById(diffs);
 
     for (let id in grouped) {
-      const current = map.getFeatureState({
-        source: this.#sourceName,
-        id: id,
-      });
+      let current = this.#mirror[id] ?? {};
 
       for (let diff of grouped[id]) {
         if (diff.kind === "updated" || diff.kind === "added")
@@ -245,6 +268,15 @@ class FeatureStateUpdater {
       }
 
       map.setFeatureState({ source: this.#sourceName, id: id }, current);
+      this.#mirror[id] = current;
     }
+  }
+
+  set(map, id, key, value) {
+    let current = this.#mirror[id] ?? {};
+    current[key] = value;
+
+    map.setFeatureState({ source: this.#sourceName, id: id }, current);
+    this.#mirror[id] = current;
   }
 }

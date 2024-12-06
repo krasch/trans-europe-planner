@@ -2,6 +2,7 @@ const {
   getColor,
   prepareDataForMap,
   prepareInitialDataForMap,
+  getJourneySummary,
 } = require("../script/components/componentData.js");
 const { JourneyCollection } = require("../script/types/journey.js");
 const { Database } = require("../script/database.js");
@@ -92,7 +93,7 @@ test("prepareDataForMapEmpty", function () {
   const journeys = new JourneyCollection();
 
   const got = prepareDataForMap(null, journeys, database);
-  expect(got).toStrictEqual([{}, {}]);
+  expect(got).toStrictEqual([{}, { mapping: {}, state: {} }, {}]);
 });
 
 test("prepareDataForMapNoActiveJourney", function () {
@@ -110,37 +111,50 @@ test("prepareDataForMapNoActiveJourney", function () {
 
   const expCities = {
     cityId1: {
-      symbol: "circle",
+      circleVisible: true,
       markerIcon: "home",
       markerSize: "large",
       markerColor: "dark",
     },
-    cityId2: { symbol: "circle" },
+    cityId2: { circleVisible: true },
     cityId3: {
-      symbol: "circle",
+      circleVisible: true,
       markerSize: "large",
+      markerColor: "dark",
     },
   };
 
   const expEdges = {
-    "City1->City2": {
-      color: null,
-      leg: "City1->City3",
-      status: "alternative",
-      journey: j1,
-      journeyTravelTime: "3h",
+    state: {
+      "City1->City2": {
+        visible: true,
+        active: false,
+        leg: "City1->City3",
+        journey: j1,
+      },
+      "City2->City3": {
+        visible: true,
+        active: false,
+        leg: "City1->City3",
+        journey: j1,
+      },
     },
-    "City2->City3": {
-      color: null,
-      leg: "City1->City3",
-      status: "alternative",
-      journey: j1,
-      journeyTravelTime: "3h",
+    mapping: {
+      "City1->City2": {
+        journeys: ["City1->City3"],
+        legs: ["City1->City3"],
+      },
+      "City2->City3": {
+        journeys: ["City1->City3"],
+        legs: ["City1->City3"],
+      },
     },
   };
 
+  const expJourneys = { "City1->City3": getJourneySummary([c1]) };
+
   const got = prepareDataForMap("City1", journeys, database);
-  expect(got).toStrictEqual([expCities, expEdges]);
+  expect(got).toStrictEqual([expCities, expEdges, expJourneys]);
 });
 
 test("prepareDataForMap", function () {
@@ -169,62 +183,88 @@ test("prepareDataForMap", function () {
 
   const expCities = {
     cityId1: {
-      symbol: "circle",
-      symbolColor: `rgb(${getColor(0)})`,
+      circleVisible: true,
+      circleColor: `rgb(${getColor(0)})`,
       markerIcon: "home",
       markerSize: "large",
       markerColor: "dark",
     },
     cityId2: {
-      symbol: "circle",
-      symbolColor: `rgb(${getColor(0)})`,
+      circleVisible: true,
+      circleColor: `rgb(${getColor(0)})`,
     },
     cityId3: {
-      symbol: "circle",
-      symbolColor: `rgb(${getColor(0)})`,
+      circleVisible: true,
+      circleColor: `rgb(${getColor(0)})`,
     },
     cityId4: {
-      symbol: "circle",
-      symbolColor: `rgb(${getColor(1)})`,
+      circleVisible: true,
+      circleColor: `rgb(${getColor(1)})`,
       markerSize: "large",
+      markerColor: "dark",
     },
     cityId5: {
       markerSize: "large",
-      symbol: "circle",
+      markerColor: "dark",
+      circleVisible: true,
     },
   };
 
   const expEdges = {
-    "City1->City2": {
-      color: `rgb(${getColor(0)})`,
-      leg: "City1->City3",
-      status: "active",
-      journey: j1,
-      journeyTravelTime: "5h",
+    state: {
+      "City1->City2": {
+        visible: true,
+        active: true,
+        color: `rgb(${getColor(0)})`,
+        leg: "City1->City3",
+        journey: j1,
+      },
+      "City2->City3": {
+        visible: true,
+        active: true,
+        color: `rgb(${getColor(0)})`,
+        leg: "City1->City3",
+        journey: j1,
+      },
+      "City3->City4": {
+        visible: true,
+        active: true,
+        color: `rgb(${getColor(1)})`,
+        leg: "City3->City4",
+        journey: j1,
+      },
+      "City2->City5": {
+        visible: true,
+        active: false,
+        leg: "City1->City5",
+        journey: j2,
+      },
     },
-    "City2->City3": {
-      color: `rgb(${getColor(0)})`,
-      leg: "City1->City3",
-      status: "active",
-      journey: j1,
-      journeyTravelTime: "5h",
-    },
-    "City3->City4": {
-      color: `rgb(${getColor(1)})`,
-      leg: "City3->City4",
-      status: "active",
-      journey: j1,
-      journeyTravelTime: "5h",
-    },
-    "City2->City5": {
-      color: null,
-      leg: "City1->City5",
-      status: "alternative",
-      journey: j2,
-      journeyTravelTime: "2h",
+    mapping: {
+      "City1->City2": {
+        journeys: ["City1->City3;City3->City4", "City1->City5"],
+        legs: ["City1->City3", "City1->City5"],
+      },
+      "City2->City3": {
+        journeys: ["City1->City3;City3->City4"],
+        legs: ["City1->City3"],
+      },
+      "City2->City5": {
+        journeys: ["City1->City5"],
+        legs: ["City1->City5"],
+      },
+      "City3->City4": {
+        journeys: ["City1->City3;City3->City4"],
+        legs: ["City3->City4"],
+      },
     },
   };
 
+  const expJourneys = {
+    "City1->City3;City3->City4": getJourneySummary([c1, c2]),
+    "City1->City5": getJourneySummary([c3]),
+  };
+
   const got = prepareDataForMap("City1", journeys, database);
-  expect(got).toStrictEqual([expCities, expEdges]);
+  expect(got).toStrictEqual([expCities, expEdges, expJourneys]);
 });

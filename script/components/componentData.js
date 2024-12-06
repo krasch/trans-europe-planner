@@ -57,13 +57,18 @@ function getJourneySummary(connections) {
     }
   }
 
-  let viasString = "";
-  if (vias.length > 0) viasString = ` via ${vias.join(", ")}`;
+  let numTransfer = "direkt (ohne Umstieg)";
+  if (vias.length === 1) {
+    numTransfer = `${vias.length} Umstieg: `;
+  } else if (vias.length > 1) {
+    numTransfer = `${vias.length} Umstiege: `;
+  }
 
   return {
     from: startCity,
     to: endCity,
-    via: viasString,
+    via: vias.join(", "),
+    numTransfer: numTransfer,
     travelTime: travelTime,
   };
 }
@@ -146,7 +151,8 @@ function prepareInitialDataForMap(cityInfo, connections) {
 
 function prepareDataForMap(home, journeys, database) {
   const cities = {};
-  const edges = {};
+  const edges = { state: {}, mapping: {} };
+  const journeyInfo = {};
 
   if (home) {
     cities[CITY_NAME_TO_ID[home]] = {
@@ -159,10 +165,9 @@ function prepareDataForMap(home, journeys, database) {
   const activeJourney = journeys.activeJourney; // might be null
   for (let journey of journeys.journeys) {
     const active = activeJourney !== null && journey.id === activeJourney.id;
-    const edgeStatus = active ? "active" : "alternative";
-
     const connections = getSortedJourneyConnections(journey, database); // only needs to be sorted for journey summary
-    const journeySummary = getJourneySummary(connections);
+
+    journeyInfo[journey.id] = getJourneySummary(connections);
 
     for (let i in connections) {
       const color = active ? `rgb(${getColor(i)})` : null;
@@ -175,11 +180,12 @@ function prepareDataForMap(home, journeys, database) {
         const data = cities[id] ?? {};
 
         // updated carefully to make sure we don't overwrite data from active journey
-        if (!data.symbol || active) data.symbol = "circle";
-        if (!data.symbolColor && active) data.symbolColor = color; // && sic only active has set color
+        data.circleVisible = true;
+        if (active && !data.circleColor) data.circleColor = color;
 
         if (destination) {
           data.markerSize = "large";
+          data.markerColor = "dark";
         }
 
         cities[id] = data;
@@ -187,23 +193,32 @@ function prepareDataForMap(home, journeys, database) {
 
       for (let edge of connections[i].edges) {
         const id = edge.toAlphabeticString();
+        const leg = connections[i].leg.toString();
 
-        // we already have data for this edge and the current journey is not an active one
-        // -> don't overwrite data, just move on
-        if (edges[id] !== undefined && !active) continue;
+        // get current state data for this edge or init new if first time we see this edge
+        const state = edges.state[id] ?? {};
 
-        edges[id] = {
-          color: color,
-          leg: connections[i].leg.toString(),
-          journey: journey.id,
-          journeyTravelTime: journeySummary.travelTime,
-          status: edgeStatus,
-        };
+        // update carefully to make sure we don't overwrite data from active journey
+        state.active = state.active || active;
+        state.visible = true;
+        if (active) state.color = color;
+        // todo it it is not nice that I need this here and in mapping
+        if (!state.leg || active) state.leg = leg;
+        if (!state.journey || active) state.journey = journey.id;
+
+        // same for mapping
+        const mapping = edges.mapping[id] ?? { legs: [], journeys: [] };
+        if (!mapping.legs.includes(leg)) mapping.legs.push(leg);
+        if (!mapping.journeys.includes(mapping.id))
+          mapping.journeys.push(journey.id);
+
+        edges.state[id] = state;
+        edges.mapping[id] = mapping;
       }
     }
   }
 
-  return [cities, edges];
+  return [cities, edges, journeyInfo];
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)

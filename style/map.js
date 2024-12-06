@@ -2,30 +2,68 @@ const mapStyles = [
   // ################################
   //           edges (subLegs)
   // ################################
+  // extra wide line to allow users to interact with edges even when not hovering directly over them
+  {
+    id: "edges-interact",
+    source: "edges",
+    type: "line",
+    paint: {
+      "line-opacity": 0.0,
+      "line-width": [
+        "case",
+        ["boolean", ["feature-state", "visible"], false],
+        20,
+        0,
+      ],
+    },
+  },
+  // additional border to highlight the line when hovering
+  {
+    id: "edges-border",
+    source: "edges",
+    type: "line",
+    layout: {
+      "line-join": "miter",
+      //"line-cap": "round",
+    },
+    paint: {
+      "line-color": ["to-color", ["feature-state", "color"], "#aaa"],
+      "line-width": [
+        "case",
+        ["boolean", ["feature-state", "visible"], false],
+        2,
+        0,
+      ],
+      "line-opacity": [
+        "case",
+        ["boolean", ["feature-state", "hover"], false],
+        1.0,
+        0.0,
+      ],
+      "line-gap-width": 4, // -> line center is not highlighted
+    },
+  },
+  // the actual lines
   {
     id: "edges",
     source: "edges",
     type: "line",
     layout: {
-      "line-join": "round",
-      "line-cap": "round",
+      "line-join": "miter",
     },
     paint: {
       "line-color": ["to-color", ["feature-state", "color"], "#aaa"],
       "line-opacity": [
         "case",
-        ["boolean", ["feature-state", "hover"], false],
-        0.8,
-        0.4,
+        ["boolean", ["feature-state", "active"], false],
+        0.6,
+        0.3,
       ],
       "line-width": [
-        "match",
-        ["feature-state", "status"],
-        "active",
-        6, // line width for active
-        "alternative",
-        6, // line width for alternative
-        0, // fallback
+        "case",
+        ["boolean", ["feature-state", "visible"], false],
+        8,
+        0,
       ],
     },
   },
@@ -38,16 +76,28 @@ const mapStyles = [
     source: "cities",
     type: "symbol",
     layout: {
-      "icon-image": ["get", "symbol"],
+      "icon-image": "circle",
       "icon-size": 0.5,
       "icon-allow-overlap": true,
       "text-allow-overlap": true, // perhaps speed up redrawing?
     },
     paint: {
       "icon-color": "white",
-      "icon-opacity": 0.6,
-      "icon-halo-color": ["to-color", ["feature-state", "symbolColor"], "#aaa"],
-      "icon-halo-width": 1,
+      "icon-opacity": [
+        "case",
+        ["boolean", ["feature-state", "circleVisible"], false],
+        0.6,
+        ["boolean", ["feature-state", "hover"], false],
+        1.0, // todo does not appear to have effect
+        0,
+      ],
+      "icon-halo-color": ["to-color", ["feature-state", "circleColor"], "#aaa"],
+      "icon-halo-width": [
+        "case",
+        ["boolean", ["feature-state", "hover"], false],
+        1,
+        1,
+      ],
     },
   },
 
