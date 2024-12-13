@@ -9,6 +9,17 @@ function initUpdateViews(map, calendar, database) {
   return updateViews;
 }
 
+function addIsDestinationInfo(CITIES, ROUTES) {
+  const destinations = Object.keys(ROUTES).map((k) => k.split("->")[1]);
+
+  for (let id in CITIES) {
+    if (destinations.includes(CITIES[id].name)) {
+      CITIES[id].routesAvailable = true;
+      CITIES[id].rank = 2;
+    }
+  }
+}
+
 async function main(map, calendar) {
   // init state
   const params = new URLSearchParams(window.location.search);
@@ -16,6 +27,8 @@ async function main(map, calendar) {
     home: params.get("start"),
     journeys: new JourneyCollection(),
   };
+
+  addIsDestinationInfo(CITIES, ROUTES); // hack
 
   // prepare database
   const DATES = ["2024-12-01", "2024-12-02", "2024-12-03"];
@@ -45,10 +58,11 @@ async function main(map, calendar) {
 
   // clicking on a city
   map.on("showCityRoutes", (city) => {
-    const target = `${state.home}->${city}`; // todo assumes home is set
+    const target = `${state.home}->${city}`;
     if (!ROUTES[target]) return;
 
     for (let route of ROUTES[target]) {
+      if (typeof route === "string") continue; // inline "comments" in routes file
       const connectionIds = createStupidItineraryForRoute(route, database);
       state.journeys.addJourney(connectionIds);
     }
