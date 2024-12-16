@@ -11,14 +11,16 @@
     <script src="external/maplibre-gl@4.6.0/maplibre-gl.js"></script>
 
     <!-- styles -->
-    <link rel="stylesheet" href="style/layout.css">
     <link rel="stylesheet" href="style/colors.css">
+    <link rel="stylesheet" href="style/layout.css">
+    <link rel="stylesheet" href="style/modal.css">
+    <link rel="stylesheet" href="style/sidebar.css">
     <link rel="stylesheet" href="style/calendar.css">
-    <link rel="stylesheet" href="style/map.css">
-    <link rel="stylesheet" href="style/header.css">
+    <link rel="stylesheet" href="style/map/map.css">
+    <!--link rel="stylesheet" href="style/card.css"-->
 
     <!-- style scripts -->
-    <script src="style/map.js"></script> <!-- only contains css styles for map in js -->
+    <script src="style/map/layers.js"></script> <!-- only contains css styles for map in js -->
 
     <!-- types -->
     <script src="script/types/connection.js"></script>
@@ -46,15 +48,8 @@
     <script src="script/components/map/map.js"></script>
     <script src="script/components/map/mapObjects.js"></script>
 
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        if (!params.get("start")) {
-            const url = window.location.origin + window.location.pathname + "?start=Berlin";
-            window.location.replace(url); // redirect
-        }
-    </script>
-
     <title>Trans-Europe-Planner</title>
+    <link rel="stylesheet" href="style/sidebar.css">
 
 </head>
 
@@ -150,21 +145,62 @@
         <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
     </div>
 </div>
+
 <div id="map"></div>
+
+<div id="modal" class="card">
+    <img class="logo" src="images/logo.svg" alt="logo for the trans-europe-planner">
+    <div class="title">
+        <h1>Willkommen beim Trans Europa Planer</h1>
+        <h3><em>Einfacher mit dem Zug quer durch Europa</em></h3>
+    </div>
+    <div>
+        <img src="images/marker_home.svg" alt="map marker depicting a house">
+        <div id="choose-home">
+            <h1>Wo soll die Reise starten?</h1>
+            <div>
+                <button onclick="redirect('Berlin')">Berlin</button>
+                <button onclick="redirect('Hamburg')">Hamburg</button>
+                <button onclick="redirect('Köln')">Köln</button>
+                <button onclick="redirect('München')">München</button>
+            </div>
+            <em>(Weitere Startpunkte bald verfügbar)</em>
+        </div>
+    </div>
+    <div class="bottom"></div>
+</div>
 
 
 <script>
+
+    function redirect(city) {
+        const url = window.location.origin + window.location.pathname + `?start=${city}`;
+        window.location.replace(url); // redirect
+    }
+
     onload = async (event) => {
         initColors();
         initCityNameToId(CITIES);
 
-        const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3);
+        const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3); // starts async loading map
         const calendar = document.getElementById("calendar");
 
-        try {
-            main(map, calendar);
-        } catch (error) {
-            console.error(error);
+        // all necessary data is there, let's go!
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("start")) {
+
+            document.getElementsByTagName("body")[0].style.setProperty("--sidebar-width", "500px"); // todo
+
+            try {
+                main(map, calendar);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        // necessary data missing, ask the user
+        else {
+            document.getElementById("map").style.setProperty("opacity", "30%");
+            document.getElementById("modal").style.setProperty("visibility", "visible");
         }
     };
 </script>

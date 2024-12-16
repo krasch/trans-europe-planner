@@ -115,7 +115,7 @@ class MapWrapper {
   constructor(containerId, center, zoom) {
     this.map = new maplibregl.Map({
       container: containerId,
-      style: "style/outdoors-modified.json",
+      style: "style/map/outdoors-modified.json",
       center: center,
       zoom: zoom,
     });

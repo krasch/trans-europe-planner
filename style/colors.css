@@ -9,6 +9,10 @@ body {
     --color-dark: #2f4f69;
     --color-light: #f9f3ea;
 
+    --color-map-beige: #F6F0E6;
+    --color-map-blue: #B3CFEB;
+    --color-map-green: #DDE9CC;
+
     /* https://codepen.io/sosuke/pen/Pjoqqp */
     --filter-white: invert(100%);
     /* #f9f3ea */

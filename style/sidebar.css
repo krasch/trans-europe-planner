@@ -1,0 +1,72 @@
+#sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3rem;
+
+  background-color: var(--color-background);
+  color: var(--color-light);
+}
+
+#logo {
+  padding-top: 2rem;
+  height: 3rem;
+
+  font-size: 1.5rem;
+}
+
+#logo {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+#logo img {
+    /* https://codepen.io/sosuke/pen/Pjoqqp */
+    filter: var(--filter-beige);
+    height: 100%;
+}
+
+
+#logo div {
+  flex-direction: row;
+  align-content: center;
+}
+
+#logo .claim {
+  font-size: 1rem;
+}
+
+#calender-container {
+  visibility: hidden; /* on first load */
+
+  width: 95%;
+
+  padding: 0.5rem 0 0.5rem 0;
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  color: var(--color-dark);
+  background-color: white;
+}
+
+#calender-container .title {
+  font-size: 1.2rem;
+  text-align: center;
+}
+#calender-container .explanation {
+  text-align: center;
+  font-size: 0.8rem;
+  font-style: italic;
+  margin-top: -0.5rem;
+}
+
+calendar-grid {
+  width: 95%;
+}
