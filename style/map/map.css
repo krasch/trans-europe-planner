@@ -16,15 +16,15 @@
 }
 
 .city-marker-empty {
-  background-image: url("../images/marker_empty.svg");
+  background-image: url("../../images/marker_empty.svg");
 }
 
 .city-marker-home {
-  background-image: url("../images/marker_home.svg");
+  background-image: url("../../images/marker_home.svg");
 }
 
 .city-marker-destination {
-  background-image: url("../images/marker_flag.svg");
+  background-image: url("../../images/marker_flag.svg");
 }
 
 .city-marker-small {

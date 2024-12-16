@@ -1,5 +1,6 @@
 calendar-grid {
     display: grid;
+    font-size: 0.8rem;
 
     --resolution: 4; /* must also change n-th child below */
     --num-days: 3;
