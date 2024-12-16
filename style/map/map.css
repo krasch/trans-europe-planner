@@ -75,6 +75,36 @@
   background-color: var(--color-background);
 }
 
+.city-menu label {
+  /* whole width should be clickable */
+  width: 100%;
+  /* should also look clickable*/
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* checkboxes should not be visible */
+.city-menu input {
+  visibility: hidden;
+  padding: 0;
+  margin: 0;
+  width: 0;
+}
+
+/* instead, the 👁 symbol works as visual indicator */
+.city-menu input + label:before {
+  content: "👁";
+  color: darkgray; /* light when unchecked */
+}
+.city-menu input:checked + label:before {
+  color: var(--color-dark); /* dark when checked */
+}
+
+
 /***********************************************
   edge context menu
 ************************************************/
