@@ -78,7 +78,7 @@
     filter: var(--filter-white);
 }
 
-#modal button {
+#modal a {
     border: 1px solid var(--color-modal-text);
     border-radius: 0.25rem;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
@@ -86,12 +86,13 @@
     padding: 0.5rem;
 
     cursor: pointer;
+    text-decoration: none;
 
     background: white;
     color: var(--color-modal-text);
 }
 
-#modal button:hover {
+#modal a:hover {
     background: var(--color-modal-text);
     color: white;
 }

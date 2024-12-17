@@ -159,10 +159,10 @@
         <div id="choose-home">
             <h1>Wo soll die Reise starten?</h1>
             <div>
-                <button onclick="redirect('Berlin')">Berlin</button>
-                <button onclick="redirect('Hamburg')">Hamburg</button>
-                <button onclick="redirect('Köln')">Köln</button>
-                <button onclick="redirect('München')">München</button>
+                <a href="?start=Berlin">Berlin</a>
+                <a href="?start=Hamburg">Hamburg</a>
+                <a href="?start=Köln">Köln</a>
+                <a href="?start=München">München</a>
             </div>
             <em>(Weitere Startpunkte bald verfügbar)</em>
         </div>
@@ -172,12 +172,7 @@
 
 
 <script>
-
-    function redirect(city) {
-        const url = window.location.origin + window.location.pathname + `?start=${city}`;
-        window.location.replace(url); // redirect
-    }
-
+    
     onload = async (event) => {
         initColors();
         initCityNameToId(CITIES);
