@@ -172,7 +172,7 @@
 
 
 <script>
-    
+
     onload = async (event) => {
         initColors();
         initCityNameToId(CITIES);
@@ -182,7 +182,9 @@
 
         // all necessary data is there, let's go!
         const params = new URLSearchParams(window.location.search);
-        if (params.get("start")) {
+        const home = params.get("start");
+
+        if (home && ["Berlin", "Hamburg", "Köln", "München"].includes(home)) {
 
             document.getElementsByTagName("body")[0].style.setProperty("--sidebar-width", "500px"); // todo
 
