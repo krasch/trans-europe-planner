@@ -1,40 +1,60 @@
 body {
-  margin: 0;
-  padding: 0;
-  font-family: helvetica, arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    font-family: helvetica, arial, sans-serif;
 }
 
 html, body {
-  height: 100%;
-}
-
-body {
-  display: flex;
-  flex-direction: row;
-  --sidebar-width: 0px; /* todo relative to viewport */
-}
-
-#sidebar {
-  height: 100%;
-  width: var(--sidebar-width);
+    height: 100%;
 }
 
 #map {
-  height: 100%;
-  width: calc(100% - var(--sidebar-width));
+    z-index: 1;
+
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    height: 100%;
+    width: 100%;
+}
+
+#icon {
+    z-index: 2;
+
+    position: absolute;
+    left: 2rem;
+    top: 2rem;
+
+    height: 6rem;
+
+    filter: var(--filter-white);
+}
+
+#sidebar {
+    z-index: 3;
+
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    height: 100%;
+    width: 500px;
+
+    visibility: hidden;
 }
 
 #modal {
-  z-index: 1;
+    z-index: 4;
 
-  /* center horizontally and vertically */
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+    /* center horizontally and vertically */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 
-  min-height: 50%;
-  min-width: 50%;
+    min-height: 50%;
+    min-width: 50%;
 }
 
 /*******************************************************
@@ -42,18 +62,18 @@ body {
 *******************************************************/
 
 .card {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 
-  border-radius: 5px;
-  overflow: hidden; /* this is necessary to really get the round corners */
+    border-radius: 5px;
+    overflow: hidden; /* this is necessary to really get the round corners */
 }
 
 .card > * {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
-  /*margin: 0;*/
-  padding: 5px;
+    /*margin: 0;*/
+    padding: 5px;
 }
