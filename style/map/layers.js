@@ -119,7 +119,7 @@ const mapStyles = [
     layout: {
       "text-font": ["Stadia Semibold"],
       "text-size": {
-        base: 1.4,
+        base: 1.2,
         stops: [
           [7, 14],
           [11, 24],
@@ -134,7 +134,8 @@ const mapStyles = [
       "text-allow-overlap": false,
     },
     paint: {
-      "text-halo-width": 1.2,
+      "text-halo-width": 0.8,
+      "text-color": "#666",
       "text-halo-color": "rgba(255,255,255,0.8)",
     },
   },
