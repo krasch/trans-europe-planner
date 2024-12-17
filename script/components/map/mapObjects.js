@@ -1,6 +1,7 @@
 class CityMarker {
   #markerElement; // the html element
   marker; // the actual maplibre marker object
+  icon;
 
   constructor(lngLat) {
     this.#markerElement = createElementFromTemplate("template-city-marker");
@@ -14,6 +15,8 @@ class CityMarker {
 
   update(diff) {
     if (diff.key === "markerIcon") {
+      this.icon = diff.newValue;
+
       this.#markerElement.classList.remove("city-marker-empty");
       this.#markerElement.classList.remove("city-marker-home");
       this.#markerElement.classList.remove("city-marker-destination");
@@ -43,6 +46,7 @@ class CityMarker {
 
 class CityMarkerCollection {
   markers = {};
+  added = [];
 
   constructor(cities) {
     for (let id in cities) {
@@ -54,12 +58,34 @@ class CityMarkerCollection {
     for (let diff of diffs) {
       this.markers[diff.id].update(diff);
 
-      if (diff.kind === "added" && diff.key === "markerIcon")
-        this.markers[diff.id].marker.addTo(map);
+      if (diff.kind === "added" && diff.key === "markerIcon") {
+        this.added.push(diff.id); // not directly adding to map here
+      }
 
       if (diff.kind === "removed" && diff.key === "markerIcon")
         this.markers[diff.id].marker.remove();
     }
+  }
+
+  addToMapWithAnimation(map) {
+    const markers = this.added.map((id) => this.markers[id]);
+
+    const animateDestinations = () =>
+      animateDropWithBounce(
+        map,
+        markers.filter((m) => m.icon === "destination").map((m) => m.marker),
+        300,
+        3,
+      );
+
+    // animate all markers with a home icon
+    animateDropWithBounce(
+      map,
+      markers.filter((m) => m.icon === "home").map((m) => m.marker),
+      300,
+      3,
+      animateDestinations, // when that is done animate all with a destination marker
+    );
   }
 
   setPopups(popups) {

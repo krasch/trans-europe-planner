@@ -112,6 +112,8 @@ class MapWrapper {
   #journeys;
   #mapping;
 
+  #firstUpdate = true;
+
   constructor(containerId, center, zoom) {
     this.map = new maplibregl.Map({
       container: containerId,
@@ -123,7 +125,7 @@ class MapWrapper {
 
   async load(cities, legs) {
     return new Promise((fulfilled, rejected) => {
-      this.map.on("load", async () => {
+      this.map.on("idle", async () => {
         try {
           const image = await this.map.loadImage("images/circle.sdf.png");
           this.map.addImage("circle", image.data, { sdf: true });
@@ -284,6 +286,11 @@ class MapWrapper {
     this.#mapping = {
       edges: edges.mapping,
     };
+
+    if (this.#firstUpdate) {
+      this.#objects.cityMarkers.addToMapWithAnimation(this.map);
+      this.#firstUpdate = false;
+    }
   }
 
   #updateCities(cityDiffs) {
