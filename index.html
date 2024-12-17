@@ -149,6 +149,8 @@
 
 <div id="map"></div>
 
+<img id="icon" src="images/logo.svg" alt="logo for the trans-europe-planner">
+
 <div id="modal" class="card">
     <img class="logo" src="images/logo.svg" alt="logo for the trans-europe-planner">
     <div class="title">
@@ -186,8 +188,6 @@
         const home = params.get("start");
 
         if (home && ["Berlin", "Hamburg", "Köln", "München"].includes(home)) {
-
-            document.getElementsByTagName("body")[0].style.setProperty("--sidebar-width", "500px"); // todo
 
             try {
                 main(map, calendar);

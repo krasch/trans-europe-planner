@@ -125,7 +125,7 @@ class MapWrapper {
 
   async load(cities, legs) {
     return new Promise((fulfilled, rejected) => {
-      this.map.on("idle", async () => {
+      this.map.on("load", async () => {
         try {
           const image = await this.map.loadImage("images/circle.sdf.png");
           this.map.addImage("circle", image.data, { sdf: true });

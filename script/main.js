@@ -3,8 +3,12 @@ function initUpdateViews(map, calendar, database) {
     map.updateView(prepareDataForMap(state.home, state.journeys, database));
     calendar.updateView(prepareDataForCalendar(state.journeys, database));
 
-    if (state.journeys.activeJourney) calendar.show();
-    else calendar.hide();
+    if (state.journeys.activeJourney) {
+      calendar.show();
+      document
+        .getElementById("sidebar")
+        .style.setProperty("visibility", "visible");
+    } else calendar.hide();
   }
   return updateViews;
 }

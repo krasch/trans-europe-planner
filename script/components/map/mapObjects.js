@@ -74,7 +74,7 @@ class CityMarkerCollection {
       animateDropWithBounce(
         map,
         markers.filter((m) => m.icon === "destination").map((m) => m.marker),
-        300,
+        200,
         3,
       );
 

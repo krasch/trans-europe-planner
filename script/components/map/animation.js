@@ -5,7 +5,7 @@ function animateDropWithBounce(
   bounciness,
   callback,
 ) {
-  const speedup = 1.5;
+  const speedup = 2;
 
   // don't start higher than top of screen
   //marker.addTo(map); // must be added to map to get y pos
