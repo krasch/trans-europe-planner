@@ -757,8 +757,8 @@ const ROUTES = {
     [
       "München->Hamburg",
       "Hamburg->København",
-      "København->Malmö Central",
-      "Malmö Central->Stockholm",
+      "København->Malmö",
+      "Malmö->Stockholm",
     ],
   ],
   "München->Venezia": [
