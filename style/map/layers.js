@@ -79,7 +79,7 @@ const mapStyles = [
       "circle-radius": [
         "case",
         ["boolean", ["feature-state", "hover"], false],
-        8.0,
+        7.0,
         0,
       ],
       "circle-opacity": 0,
@@ -90,7 +90,7 @@ const mapStyles = [
           ["boolean", ["feature-state", "isDestination"], false],
           ["boolean", ["feature-state", "hover"], false],
         ],
-        1,
+        2,
         0,
       ],
       "circle-stroke-color": "#aaa",
