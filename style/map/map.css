@@ -24,31 +24,33 @@
 }
 
 .city-marker-destination {
-  --circle-radius: 8px;
-  --pulse-radius: 16px;
+  --circle-radius: 9px;
+  --circle-offset: -5px;
+  --pulse-radius: 15px;
+  --pulse-offset: -8px;
 }
 
 .city-marker-destination .inner-circle {
   position: absolute;
-  left: calc(-1 * var(--circle-radius) / 2);
-  bottom: calc(-1 * var(--circle-radius) / 2);
+  left: var(--circle-offset);
+  bottom: var(--circle-offset);
 
   /*background-image: url("../../images/marker_flag.svg");
   background-image: url("../../images/circle.svg");*/
-  height: var(--circle-radius);
+  /*height: var(--circle-radius);
   width: var(--circle-radius);
 
   border-radius: 50%;
   border: 1px solid darkgray;
 
-  background-color: white;
+  background-color: white;*/
 }
 
 .city-marker-destination .outer-circle,
 .city-marker-destination .outer-circle-animation {
   position: absolute;
-  left: calc(-1 * var(--pulse-radius) / 2);
-  bottom: calc(-1 * var(--pulse-radius) / 2);
+  left: var(--pulse-offset);
+  bottom: var(--pulse-offset);
 
   height: var(--pulse-radius);
   width: var(--pulse-radius);
@@ -64,7 +66,7 @@
 }
 
 .city-marker-destination .outer-circle:hover {
-  opacity: 1;
+  /*opacity: 1;*/
 }
 
 @keyframes pulsate {

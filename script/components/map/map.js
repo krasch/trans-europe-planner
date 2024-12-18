@@ -219,9 +219,11 @@ class MapWrapper {
           "outer-circle-animation",
         )) {
           marker.style.setProperty("animation-play-state", "paused");
-          marker.style.setProperty("visibility", "hidden");
+          marker.style.setProperty("visibility", "hidden"); // todo remove completely from map
         }
       }
+
+      this.setCityHoverState(e.feature.id, true);
 
       if (!e.featureState.circleVisible) return;
 
@@ -229,12 +231,11 @@ class MapWrapper {
         .setLngLat(e.lngLat)
         .setText(e.feature.properties.name)
         .addTo(this.map);
-      this.setCityHoverState(e.feature.id, true);
     });
     layerMouseEvents.cities.on("mouseLeave", (e) => {
+      this.setCityHoverState(e.feature.id, false);
       if (!e.featureState.circleVisible) return;
       this.#cityTooltip.remove();
-      this.setCityHoverState(e.feature.id, false);
     });
     layerMouseEvents.cities.on("click", (e) => {
       if (e.layer === "city-circle" && !e.featureState.circleVisible) return;

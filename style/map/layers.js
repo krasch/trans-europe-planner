@@ -72,12 +72,29 @@ const mapStyles = [
   // ################################
 
   {
+    id: "city-circle-outer-border",
+    source: "cities",
+    type: "circle",
+    paint: {
+      "circle-radius": [
+        "case",
+        ["boolean", ["feature-state", "hover"], false],
+        8.0,
+        5, // 5
+      ],
+      "circle-opacity": 0,
+      "circle-stroke-width": 1,
+      "circle-stroke-color": "#aaa",
+    },
+  },
+
+  {
     id: "city-circle",
     source: "cities",
     type: "symbol",
     layout: {
       "icon-image": "circle",
-      "icon-size": 0.5,
+      "icon-size": 0.8,
       "icon-allow-overlap": true,
       "text-allow-overlap": true, // perhaps speed up redrawing?
     },
@@ -89,7 +106,7 @@ const mapStyles = [
         0.6,
         ["boolean", ["feature-state", "hover"], false],
         1.0, // todo does not appear to have effect
-        0,
+        1,
       ],
       "icon-halo-color": ["to-color", ["feature-state", "circleColor"], "#aaa"],
       "icon-halo-width": [
