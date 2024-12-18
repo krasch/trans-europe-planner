@@ -213,7 +213,18 @@ class MapWrapper {
 
     // set up mouse events for interacting with cities
     layerMouseEvents.cities.on("mouseOver", (e) => {
+      const icon = this.#states.cities.getDefault(e.features[0].id).markerIcon;
+      if (icon === "destination") {
+        for (let marker of document.getElementsByClassName(
+          "outer-circle-animation",
+        )) {
+          marker.style.setProperty("animation-play-state", "paused");
+          marker.style.setProperty("visibility", "hidden");
+        }
+      }
+
       if (!e.featureState.circleVisible) return;
+
       this.#cityTooltip
         .setLngLat(e.lngLat)
         .setText(e.feature.properties.name)

@@ -24,12 +24,67 @@
 }
 
 .city-marker-destination {
-  background-image: url("../../images/marker_flag.svg");
+  --circle-radius: 8px;
+  --pulse-radius: 16px;
+}
+
+.city-marker-destination .inner-circle {
+  position: absolute;
+  left: calc(-1 * var(--circle-radius) / 2);
+  bottom: calc(-1 * var(--circle-radius) / 2);
+
+  /*background-image: url("../../images/marker_flag.svg");
+  background-image: url("../../images/circle.svg");*/
+  height: var(--circle-radius);
+  width: var(--circle-radius);
+
+  border-radius: 50%;
+  border: 1px solid darkgray;
+
+  background-color: white;
+}
+
+.city-marker-destination .outer-circle,
+.city-marker-destination .outer-circle-animation {
+  position: absolute;
+  left: calc(-1 * var(--pulse-radius) / 2);
+  bottom: calc(-1 * var(--pulse-radius) / 2);
+
+  height: var(--pulse-radius);
+  width: var(--pulse-radius);
+
+  border: 1px solid #286099;
+  border-radius: 50%;
+
+  opacity: 0;
+}
+
+.city-marker-destination .outer-circle-animation {
+  animation: pulsate 1s ease-out infinite;
+}
+
+.city-marker-destination .outer-circle:hover {
+  opacity: 1;
+}
+
+@keyframes pulsate {
+  0% {
+    transform: scale(0.1, 0.1);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.2, 1.2);
+    opacity: 0;
+  }
 }
 
 .city-marker-small {
-  height: 1.5rem;
+  /*height: 1.5rem;
   width: calc(1.5rem * 0.64);
+  width: 1.5rem;*/
 }
 
 .city-marker-large {
@@ -37,15 +92,7 @@
   width: calc(2.5rem * 0.64);
 }
 
-.city-marker-light {
-  filter: var(--filter-light-blue);
-}
-
 .city-marker-dark {
-  filter: var(--filter-dark-blue2);
-}
-
-.city-marker-light:hover {
   filter: var(--filter-dark-blue2);
 }
 
@@ -103,7 +150,6 @@
 .city-menu input:checked + label:before {
   color: var(--color-dark); /* dark when checked */
 }
-
 
 /***********************************************
   edge context menu
