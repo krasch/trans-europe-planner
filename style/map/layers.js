@@ -103,7 +103,7 @@ const mapStyles = [
     filter: ["boolean", ["get", "isVisible"], false],
     layout: {
       "icon-image": "circle",
-      "icon-size": 1.5,
+      "icon-size": 2,
       "icon-allow-overlap": true,
       "text-allow-overlap": true, // perhaps speed up redrawing?
     },
