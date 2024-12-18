@@ -120,8 +120,8 @@ function prepareInitialDataForMap(home, cityInfo, connections) {
       };
       cities.defaults[id] = {
         rank: cityInfo[id].rank,
-        isHome: cityInfo[id].name === home,
-        isDestination: cityInfo[id].routesAvailable,
+        isHome: cityInfo[id].name === home ?? false,
+        isDestination: cityInfo[id].routesAvailable ?? false,
       };
     }
 

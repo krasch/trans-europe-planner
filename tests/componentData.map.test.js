@@ -50,21 +50,18 @@ test("prepareInitialDataForMap", function () {
     defaults: {
       cityId1: {
         rank: 1,
-        menuDestination: false,
-        markerIcon: "home",
-        markerSize: "large",
-        markerColor: "dark",
+        isHome: true,
+        isDestination: false,
       },
       cityId2: {
         rank: 2,
-        menuDestination: false,
+        isHome: false,
+        isDestination: false,
       },
       cityId3: {
         rank: 3,
-        menuDestination: true,
-        markerIcon: "destination",
-        markerSize: "small",
-        markerColor: "light",
+        isHome: false,
+        isDestination: true,
       },
     },
   };
@@ -121,8 +118,6 @@ test("prepareDataForMapNoActiveJourney", function () {
     cityId2: { circleVisible: true },
     cityId3: {
       circleVisible: true,
-      markerSize: "large",
-      markerColor: "dark",
     },
   };
 
@@ -199,12 +194,8 @@ test("prepareDataForMap", function () {
     cityId4: {
       circleVisible: true,
       circleColor: `rgb(${getColor(1)})`,
-      markerSize: "large",
-      markerColor: "dark",
     },
     cityId5: {
-      markerSize: "large",
-      markerColor: "dark",
       circleVisible: true,
     },
   };
