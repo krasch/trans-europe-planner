@@ -222,9 +222,8 @@ class MapWrapper {
 
     // set up mouse events for interacting with cities
     layerMouseEvents.cities.on("mouseOver", (e) => {
-      const icon = this.#states.cities.getDefault(e.features[0].id).markerIcon;
-      if (icon === "destination") {
-        this.#objects.cityMarkers.removeDestinations();
+      if (this.#states.cities.getDefault(e.features[0].id).isDestination) {
+        for (let p of pulsars) p.remove();
       }
 
       this.setCityHoverState(e.feature.id, true);
@@ -301,7 +300,7 @@ class MapWrapper {
         destinationMarkers,
         200,
         3,
-        animationDoneCallback, // when animation is done callback to main
+        () => animationDoneCallback(destinationMarkers), // when animation is done callback to main
       );
 
     // run the first animation (show home marker(s) dropping)

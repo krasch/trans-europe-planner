@@ -60,6 +60,7 @@
   border-radius: 50%;
 
   opacity: 0;
+  background-color: white;
   animation: pulsate 1s ease-out infinite;
 }
 
