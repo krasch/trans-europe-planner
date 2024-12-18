@@ -70,7 +70,22 @@ const mapStyles = [
   // ################################
   //           city circles
   // ################################
-
+  {
+    id: "city-circle-interact",
+    source: "cities",
+    type: "symbol",
+    filter: ["boolean", ["get", "isVisible"], false],
+    layout: {
+      "icon-image": "circle",
+      "icon-size": 2,
+      "icon-allow-overlap": true,
+      "text-allow-overlap": true, // perhaps speed up redrawing?
+    },
+    paint: {
+      "icon-color": "white",
+      "icon-opacity": 0.0,
+    },
+  },
   {
     id: "city-circle-hover-border",
     source: "cities",
@@ -97,63 +112,33 @@ const mapStyles = [
     },
   },
   {
-    id: "city-circle-interact",
+    id: "city-circle",
     source: "cities",
-    type: "symbol",
-    filter: ["boolean", ["get", "isVisible"], false],
-    layout: {
-      "icon-image": "circle",
-      "icon-size": 2,
-      "icon-allow-overlap": true,
-      "text-allow-overlap": true, // perhaps speed up redrawing?
-    },
+    type: "circle",
     paint: {
-      "icon-color": "white",
-      "icon-opacity": 0.0,
-    },
-  },
-  {
-    id: "city-circle-stop",
-    source: "cities",
-    type: "symbol",
-    layout: {
-      "icon-image": "circle",
-      "icon-size": 0.5,
-      "icon-allow-overlap": true,
-      "text-allow-overlap": true, // perhaps speed up redrawing?
-    },
-    paint: {
-      "icon-color": "white",
-      "icon-opacity": [
+      "circle-radius": [
         "case",
+        ["boolean", ["feature-state", "isDestination"], false],
+        5.0,
         ["boolean", ["feature-state", "isStop"], false],
-        0.6,
-        0.0,
+        3.0,
+        0,
       ],
-      "icon-halo-color": ["to-color", ["feature-state", "circleColor"], "#aaa"],
-      "icon-halo-width": 1,
-    },
-  },
-  {
-    id: "city-circle-destination",
-    source: "cities",
-    type: "symbol",
-    layout: {
-      "icon-image": "circle",
-      "icon-size": 0.8,
-      "icon-allow-overlap": true,
-      "text-allow-overlap": true, // perhaps speed up redrawing?
-    },
-    paint: {
-      "icon-color": "white",
-      "icon-opacity": [
+      "circle-color": "white",
+      "circle-opacity": [
         "case",
         ["boolean", ["feature-state", "isDestination"], false],
         1.0,
-        0.0,
+        ["boolean", ["feature-state", "isStop"], false],
+        0.6,
+        0,
       ],
-      "icon-halo-color": ["to-color", ["feature-state", "circleColor"], "#aaa"],
-      "icon-halo-width": 1,
+      "circle-stroke-width": 1,
+      "circle-stroke-color": [
+        "to-color",
+        ["feature-state", "circleColor"],
+        "#aaa",
+      ],
     },
   },
 
