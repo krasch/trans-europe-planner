@@ -186,18 +186,27 @@ class MapWrapper {
     // only updates concerning these keys will be sent to the update() method
     this.#observedKeys = {
       // cities
-      cityMarkers: ["markerIcon", "markerSize", "markerColor"],
-      cityMenus: ["menuDestination"],
+      cityMarkers: ["isHome"],
+      cityMenus: ["isDestination"],
       citySourceData: ["rank"], // slow to update
-      cityFeatureState: ["circleVisible", "circleColor"],
+      cityFeatureState: ["circleVisible", "circleColor", "isDestination"],
       // edges
       edgeFeatureState: ["visible", "active", "color", "leg", "journey"],
     };
 
-    // apply initial state (setToDefaults generates the necessary diffs)
-    this.#updateCities(this.#states.cities.setToDefaults());
-    this.#updateEdges(this.#states.edges.setToDefaults());
+    const initialCityDiffs = this.#states.cities.setToDefaults();
+    const initialEdgeDiffs = this.#states.edges.setToDefaults();
 
+    this.#showStartAnimation(cities.geo, initialCityDiffs, (pulsars) => {
+      // when animation is done, do proper initial render
+      this.#updateCities(initialCityDiffs);
+      this.#updateEdges(initialEdgeDiffs);
+
+      this.#setupEventHandlers(pulsars);
+    });
+  }
+
+  #setupEventHandlers(pulsars) {
     // initialise mouse event helper for cities and edge layers
     const cityLayers = ["city-name", "city-circle"];
     const layerMouseEvents = {
@@ -215,12 +224,7 @@ class MapWrapper {
     layerMouseEvents.cities.on("mouseOver", (e) => {
       const icon = this.#states.cities.getDefault(e.features[0].id).markerIcon;
       if (icon === "destination") {
-        for (let marker of document.getElementsByClassName(
-          "outer-circle-animation",
-        )) {
-          marker.style.setProperty("animation-play-state", "paused");
-          marker.style.setProperty("visibility", "hidden"); // todo remove completely from map
-        }
+        this.#objects.cityMarkers.removeDestinations();
       }
 
       this.setCityHoverState(e.feature.id, true);
@@ -281,6 +285,35 @@ class MapWrapper {
     });
   }
 
+  #showStartAnimation(geo, cityDiffs, animationDoneCallback) {
+    const homeMarkers = cityDiffs
+      .filter((d) => d.key === "isHome" && d.newValue)
+      .map((d) => initHomeMarker(geo[d.id].lngLat));
+
+    const destinationMarkers = cityDiffs
+      .filter((d) => d.key === "isDestination" && d.newValue)
+      .map((d) => initDestinationMarker(geo[d.id].lngLat));
+
+    //this is the second animation we'll do (show destination markers dropping)
+    const animateDestinations = () =>
+      animateDropWithBounce(
+        this.map,
+        destinationMarkers,
+        200,
+        3,
+        animationDoneCallback, // when animation is done callback to main
+      );
+
+    // run the first animation (show home marker(s) dropping)
+    animateDropWithBounce(
+      this.map,
+      homeMarkers,
+      300,
+      3,
+      animateDestinations, // when that is done do the second animation
+    );
+  }
+
   on(eventName, callback) {
     this.#callbacks[eventName] = callback;
   }
@@ -298,11 +331,6 @@ class MapWrapper {
     this.#mapping = {
       edges: edges.mapping,
     };
-
-    if (this.#firstUpdate) {
-      this.#objects.cityMarkers.addToMapWithAnimation(this.map);
-      this.#firstUpdate = false;
-    }
   }
 
   #updateCities(cityDiffs) {

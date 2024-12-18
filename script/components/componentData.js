@@ -120,20 +120,9 @@ function prepareInitialDataForMap(home, cityInfo, connections) {
       };
       cities.defaults[id] = {
         rank: cityInfo[id].rank,
-        menuDestination: false,
+        isHome: cityInfo[id].name === home,
+        isDestination: cityInfo[id].routesAvailable,
       };
-
-      if (cityInfo[id].routesAvailable) {
-        cities.defaults[id].menuDestination = true;
-        cities.defaults[id].markerIcon = "destination";
-        cities.defaults[id].markerSize = "small";
-        cities.defaults[id].markerColor = "light";
-      }
-      if (cityInfo[id].name === home) {
-        cities.defaults[id].markerIcon = "home";
-        cities.defaults[id].markerSize = "large";
-        cities.defaults[id].markerColor = "dark";
-      }
     }
 
     for (let edge of c.edges) {
@@ -179,11 +168,6 @@ function prepareDataForMap(journeys, database) {
         // updated carefully to make sure we don't overwrite data from active journey
         data.circleVisible = true;
         if (active && !data.circleColor) data.circleColor = color;
-
-        if (destination) {
-          data.markerSize = "large";
-          data.markerColor = "dark";
-        }
 
         cities[id] = data;
       }

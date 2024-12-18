@@ -7,27 +7,31 @@
 }
 
 /***********************************************
- home/destination etc city markers
+ home marker
 ************************************************/
 
-.city-marker {
-  background-size: contain;
-  cursor: pointer;
-}
-
-.city-marker-empty {
-  background-image: url("../../images/marker_empty.svg");
-}
-
 .city-marker-home {
+  cursor: pointer;
+
   background-image: url("../../images/marker_home.svg");
+  background-size: contain;
+  filter: var(--filter-dark-blue2);
+
+  height: 2.5rem;
+  width: calc(2.5rem * 0.64);
 }
+
+/***********************************************
+ destination marker
+************************************************/
 
 .city-marker-destination {
+  cursor: pointer;
+
   --circle-radius: 9px;
   --circle-offset: -5px;
-  --pulse-radius: 15px;
-  --pulse-offset: -8px;
+  --pulse-radius: 17px;
+  --pulse-offset: -9px;
 }
 
 .city-marker-destination .inner-circle {
@@ -35,19 +39,16 @@
   left: var(--circle-offset);
   bottom: var(--circle-offset);
 
-  /*background-image: url("../../images/marker_flag.svg");
-  background-image: url("../../images/circle.svg");*/
-  /*height: var(--circle-radius);
+  height: var(--circle-radius);
   width: var(--circle-radius);
 
   border-radius: 50%;
-  border: 1px solid darkgray;
+  border: 1px solid #aaa;
 
-  background-color: white;*/
+  background-color: white;
 }
 
-.city-marker-destination .outer-circle,
-.city-marker-destination .outer-circle-animation {
+.city-marker-destination .outer-circle {
   position: absolute;
   left: var(--pulse-offset);
   bottom: var(--pulse-offset);
@@ -55,18 +56,11 @@
   height: var(--pulse-radius);
   width: var(--pulse-radius);
 
-  border: 1px solid #286099;
+  border: 1px solid #aaa;
   border-radius: 50%;
 
   opacity: 0;
-}
-
-.city-marker-destination .outer-circle-animation {
   animation: pulsate 1s ease-out infinite;
-}
-
-.city-marker-destination .outer-circle:hover {
-  /*opacity: 1;*/
 }
 
 @keyframes pulsate {
@@ -81,25 +75,6 @@
     transform: scale(1.2, 1.2);
     opacity: 0;
   }
-}
-
-.city-marker-small {
-  /*height: 1.5rem;
-  width: calc(1.5rem * 0.64);
-  width: 1.5rem;*/
-}
-
-.city-marker-large {
-  height: 2.5rem;
-  width: calc(2.5rem * 0.64);
-}
-
-.city-marker-dark {
-  filter: var(--filter-dark-blue2);
-}
-
-.city-marker-dark:hover {
-  filter: var(--filter-dark-blue2-hover);
 }
 
 /***********************************************

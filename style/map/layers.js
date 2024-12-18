@@ -72,7 +72,7 @@ const mapStyles = [
   // ################################
 
   {
-    id: "city-circle-outer-border",
+    id: "city-circle-hover-border",
     source: "cities",
     type: "circle",
     paint: {
@@ -80,10 +80,19 @@ const mapStyles = [
         "case",
         ["boolean", ["feature-state", "hover"], false],
         8.0,
-        5, // 5
+        0,
       ],
       "circle-opacity": 0,
-      "circle-stroke-width": 1,
+      "circle-stroke-width": [
+        "case",
+        [
+          "all",
+          ["boolean", ["feature-state", "isDestination"], false],
+          ["boolean", ["feature-state", "hover"], false],
+        ],
+        1,
+        0,
+      ],
       "circle-stroke-color": "#aaa",
     },
   },
@@ -102,19 +111,12 @@ const mapStyles = [
       "icon-color": "white",
       "icon-opacity": [
         "case",
-        ["boolean", ["feature-state", "circleVisible"], false],
-        0.6,
-        ["boolean", ["feature-state", "hover"], false],
-        1.0, // todo does not appear to have effect
-        1,
+        ["boolean", ["feature-state", "isDestination"], false],
+        1.0,
+        0.0,
       ],
       "icon-halo-color": ["to-color", ["feature-state", "circleColor"], "#aaa"],
-      "icon-halo-width": [
-        "case",
-        ["boolean", ["feature-state", "hover"], false],
-        1,
-        1,
-      ],
+      "icon-halo-width": 1,
     },
   },
 
