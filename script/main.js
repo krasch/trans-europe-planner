@@ -1,6 +1,6 @@
 function initUpdateViews(map, calendar, database) {
   function updateViews(state) {
-    map.updateView(prepareDataForMap(state.home, state.journeys, database));
+    map.updateView(prepareDataForMap(state.journeys, database));
     calendar.updateView(prepareDataForCalendar(state.journeys, database));
 
     if (state.journeys.activeJourney) {
@@ -24,11 +24,9 @@ function addIsDestinationInfo(CITIES, ROUTES) {
   }
 }
 
-async function main(map, calendar) {
+async function main(home, map, calendar) {
   // init state
-  const params = new URLSearchParams(window.location.search);
   const state = {
-    home: params.get("start"),
     journeys: new JourneyCollection(),
   };
 
@@ -42,7 +40,7 @@ async function main(map, calendar) {
   const database = new Database(connections);
 
   // initial drawing of all necessary geo information
-  const initialMapData = prepareInitialDataForMap(CITIES, connections);
+  const initialMapData = prepareInitialDataForMap(home, CITIES, connections);
   const mapLoadedPromise = map.load(initialMapData);
 
   // init update views
@@ -62,7 +60,7 @@ async function main(map, calendar) {
 
   // clicking on a city
   map.on("showCityRoutes", (city) => {
-    const target = `${state.home}->${city}`;
+    const target = `${home}->${city}`;
     if (!ROUTES[target]) return;
 
     for (let route of ROUTES[target]) {

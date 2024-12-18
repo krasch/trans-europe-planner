@@ -9,6 +9,8 @@ const { Database } = require("../script/database.js");
 const { createConnection, testCities } = require("../tests/data.js");
 
 test("prepareInitialDataForMap", function () {
+  const home = "City1";
+
   const c1 = createConnection([
     ["2024-10-15", "06:00", "city1MainStationId"],
     ["2024-10-15", "07:00", "city1ExtraStationId"],
@@ -29,7 +31,7 @@ test("prepareInitialDataForMap", function () {
     ["2024-10-15", "09:00", "city1MainStationId"],
   ]);
 
-  const got = prepareInitialDataForMap(testCities, [c1, c2, c3]);
+  const got = prepareInitialDataForMap(home, testCities, [c1, c2, c3]);
   const expCities = {
     geo: {
       cityId1: {
@@ -48,18 +50,21 @@ test("prepareInitialDataForMap", function () {
     defaults: {
       cityId1: {
         rank: 1,
-        menuDestination: false,
+        isVisible: true,
+        isHome: true,
+        isDestination: false,
       },
       cityId2: {
         rank: 2,
-        menuDestination: false,
+        isVisible: false,
+        isHome: false,
+        isDestination: false,
       },
       cityId3: {
         rank: 3,
-        menuDestination: true,
-        markerIcon: "destination",
-        markerSize: "small",
-        markerColor: "light",
+        isVisible: true,
+        isHome: false,
+        isDestination: true,
       },
     },
   };
@@ -79,9 +84,9 @@ test("prepareInitialDataForMap", function () {
       },
     },
     defaults: {
-      "City1->City2": {},
-      "City2->City3": {},
-      "City1->City3": {},
+      "City1->City2": { isVisible: false },
+      "City2->City3": { isVisible: false },
+      "City1->City3": { isVisible: false },
     },
   };
   expect(got).toStrictEqual([expCities, expEdges]);
@@ -92,7 +97,7 @@ test("prepareDataForMapEmpty", function () {
 
   const journeys = new JourneyCollection();
 
-  const got = prepareDataForMap(null, journeys, database);
+  const got = prepareDataForMap(journeys, database);
   expect(got).toStrictEqual([{}, { mapping: {}, state: {} }, {}]);
 });
 
@@ -110,31 +115,22 @@ test("prepareDataForMapNoActiveJourney", function () {
   const j1 = journeys.addJourney([c1.id]);
 
   const expCities = {
-    cityId1: {
-      circleVisible: true,
-      markerIcon: "home",
-      markerSize: "large",
-      markerColor: "dark",
-    },
-    cityId2: { circleVisible: true },
-    cityId3: {
-      circleVisible: true,
-      markerSize: "large",
-      markerColor: "dark",
-    },
+    cityId1: { isVisible: true, isStop: true },
+    cityId2: { isVisible: true, isStop: true },
+    cityId3: { isVisible: true, isStop: true },
   };
 
   const expEdges = {
     state: {
       "City1->City2": {
-        visible: true,
-        active: false,
+        isVisible: true,
+        isActive: false,
         leg: "City1->City3",
         journey: j1,
       },
       "City2->City3": {
-        visible: true,
-        active: false,
+        isVisible: true,
+        isActive: false,
         leg: "City1->City3",
         journey: j1,
       },
@@ -153,7 +149,7 @@ test("prepareDataForMapNoActiveJourney", function () {
 
   const expJourneys = { "City1->City3": getJourneySummary([c1]) };
 
-  const got = prepareDataForMap("City1", journeys, database);
+  const got = prepareDataForMap(journeys, database);
   expect(got).toStrictEqual([expCities, expEdges, expJourneys]);
 });
 
@@ -183,59 +179,57 @@ test("prepareDataForMap", function () {
 
   const expCities = {
     cityId1: {
-      circleVisible: true,
+      isStop: true,
+      isVisible: true,
       circleColor: `rgb(${getColor(0)})`,
-      markerIcon: "home",
-      markerSize: "large",
-      markerColor: "dark",
     },
     cityId2: {
-      circleVisible: true,
+      isStop: true,
+      isVisible: true,
       circleColor: `rgb(${getColor(0)})`,
     },
     cityId3: {
-      circleVisible: true,
+      isStop: true,
+      isVisible: true,
       circleColor: `rgb(${getColor(0)})`,
     },
     cityId4: {
-      circleVisible: true,
+      isStop: true,
+      isVisible: true,
       circleColor: `rgb(${getColor(1)})`,
-      markerSize: "large",
-      markerColor: "dark",
     },
     cityId5: {
-      markerSize: "large",
-      markerColor: "dark",
-      circleVisible: true,
+      isStop: true,
+      isVisible: true,
     },
   };
 
   const expEdges = {
     state: {
       "City1->City2": {
-        visible: true,
-        active: true,
+        isVisible: true,
+        isActive: true,
         color: `rgb(${getColor(0)})`,
         leg: "City1->City3",
         journey: j1,
       },
       "City2->City3": {
-        visible: true,
-        active: true,
+        isVisible: true,
+        isActive: true,
         color: `rgb(${getColor(0)})`,
         leg: "City1->City3",
         journey: j1,
       },
       "City3->City4": {
-        visible: true,
-        active: true,
+        isVisible: true,
+        isActive: true,
         color: `rgb(${getColor(1)})`,
         leg: "City3->City4",
         journey: j1,
       },
       "City2->City5": {
-        visible: true,
-        active: false,
+        isVisible: true,
+        isActive: false,
         leg: "City1->City5",
         journey: j2,
       },
@@ -265,6 +259,6 @@ test("prepareDataForMap", function () {
     "City1->City5": getJourneySummary([c3]),
   };
 
-  const got = prepareDataForMap("City1", journeys, database);
+  const got = prepareDataForMap(journeys, database);
   expect(got).toStrictEqual([expCities, expEdges, expJourneys]);
 });

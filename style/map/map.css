@@ -7,50 +7,75 @@
 }
 
 /***********************************************
- home/destination etc city markers
+ home marker
 ************************************************/
 
-.city-marker {
-  background-size: contain;
-  cursor: pointer;
-}
-
-.city-marker-empty {
-  background-image: url("../../images/marker_empty.svg");
-}
-
 .city-marker-home {
+  cursor: pointer;
+
   background-image: url("../../images/marker_home.svg");
-}
+  background-size: contain;
+  filter: var(--filter-dark-blue2);
 
-.city-marker-destination {
-  background-image: url("../../images/marker_flag.svg");
-}
-
-.city-marker-small {
-  height: 1.5rem;
-  width: calc(1.5rem * 0.64);
-}
-
-.city-marker-large {
   height: 2.5rem;
   width: calc(2.5rem * 0.64);
 }
 
-.city-marker-light {
-  filter: var(--filter-light-blue);
+/***********************************************
+ destination marker
+************************************************/
+
+.city-marker-destination {
+  cursor: pointer;
+
+  --circle-radius: 9px;
+  --circle-offset: -5px;
+  --pulse-radius: 17px;
+  --pulse-offset: -9px;
 }
 
-.city-marker-dark {
-  filter: var(--filter-dark-blue2);
+.city-marker-destination .inner-circle {
+  position: absolute;
+  left: var(--circle-offset);
+  bottom: var(--circle-offset);
+
+  height: var(--circle-radius);
+  width: var(--circle-radius);
+
+  border-radius: 50%;
+  border: 1px solid #aaa;
+
+  background-color: white;
 }
 
-.city-marker-light:hover {
-  filter: var(--filter-dark-blue2);
+.city-marker-destination .outer-circle {
+  position: absolute;
+  left: var(--pulse-offset);
+  bottom: var(--pulse-offset);
+
+  height: var(--pulse-radius);
+  width: var(--pulse-radius);
+
+  border: 1px solid #aaa;
+  border-radius: 50%;
+
+  opacity: 0;
+  background-color: white;
+  animation: pulsate 1s ease-out infinite;
 }
 
-.city-marker-dark:hover {
-  filter: var(--filter-dark-blue2-hover);
+@keyframes pulsate {
+  0% {
+    transform: scale(0.1, 0.1);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.2, 1.2);
+    opacity: 0;
+  }
 }
 
 /***********************************************
@@ -103,7 +128,6 @@
 .city-menu input:checked + label:before {
   color: var(--color-dark); /* dark when checked */
 }
-
 
 /***********************************************
   edge context menu

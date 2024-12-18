@@ -41,51 +41,46 @@ function asGeojsonFeatureCollection(features) {
 // 2. The maplibre mouseLeave event does not contain the feature that was left -> need to keep state
 // 3. Maplibre does not attach the feature state to the event
 class MouseEventHelper {
+  #states;
+
   #callbacks = {
     mouseOver: () => {},
     mouseLeave: () => {},
     click: () => {},
   };
 
-  constructor(map, layerNames, attachFeatureState = false) {
-    let currentFeature = null;
+  constructor(map, states, layerNames) {
+    this.#states = states;
 
-    const enrichEvent = (layer, e) => {
-      e.feature = currentFeature;
-      e.layer = layer;
+    let previousFeature = null;
 
-      if (attachFeatureState) {
-        e.featureState = map.getFeatureState({
-          source: e.feature.source,
-          id: e.feature.id,
-        });
-      }
-    };
+    const mouseMove = (layer, e) => {
+      const visible = e.features.filter((f) => f.state.isVisible);
+      if (visible.length === 0) return;
 
-    const mouseOver = (layer, e) => {
-      if (e.features.length < 1) return;
-      currentFeature = e.features.at(-1); // todo currently only looking at last event
+      const currentFeature = visible[0].id; // todo break ties?
+      if (previousFeature === currentFeature) return;
 
-      enrichEvent(layer, e);
-      this.#callbacks["mouseOver"](e);
+      if (previousFeature)
+        this.#callbacks["mouseLeave"](previousFeature, e.lngLat);
+
+      this.#callbacks["mouseOver"](currentFeature, e.lngLat);
+      previousFeature = currentFeature;
     };
 
     const mouseLeave = (layer, e) => {
-      if (currentFeature) {
-        enrichEvent(layer, e);
-        this.#callbacks["mouseLeave"](e);
-
-        currentFeature = null;
+      if (previousFeature) {
+        this.#callbacks["mouseLeave"](previousFeature, e.lngLat);
+        previousFeature = null;
       }
     };
 
     const click = (layer, e) => {
-      enrichEvent(layer, e);
-      this.#callbacks["click"](e);
+      if (previousFeature) this.#callbacks["click"](previousFeature, e.lngLat);
     };
 
     for (let layer of layerNames) {
-      map.on("mouseover", layer, (e) => mouseOver(layer, e));
+      map.on("mousemove", layer, (e) => mouseMove(layer, e));
       map.on("mouseleave", layer, (e) => mouseLeave(layer, e));
       map.on("click", layer, (e) => click(layer, e));
     }
@@ -111,8 +106,6 @@ class MapWrapper {
   #cityTooltip;
   #journeys;
   #mapping;
-
-  #firstUpdate = true;
 
   constructor(containerId, center, zoom) {
     this.map = new maplibregl.Map({
@@ -186,23 +179,38 @@ class MapWrapper {
     // only updates concerning these keys will be sent to the update() method
     this.#observedKeys = {
       // cities
-      cityMarkers: ["markerIcon", "markerSize", "markerColor"],
-      cityMenus: ["menuDestination"],
-      citySourceData: ["rank"], // slow to update
-      cityFeatureState: ["circleVisible", "circleColor"],
+      cityMarkers: ["isHome"],
+      cityMenus: ["isDestination"],
+      citySourceData: ["rank", "isVisible"], // slow to update
+      cityFeatureState: ["isVisible", "circleColor", "isDestination", "isStop"],
       // edges
-      edgeFeatureState: ["visible", "active", "color", "leg", "journey"],
+      edgeFeatureState: ["isVisible", "isActive", "color", "leg", "journey"],
     };
 
-    // apply initial state (setToDefaults generates the necessary diffs)
-    this.#updateCities(this.#states.cities.setToDefaults());
-    this.#updateEdges(this.#states.edges.setToDefaults());
+    const initialCityDiffs = this.#states.cities.setToDefaults();
+    const initialEdgeDiffs = this.#states.edges.setToDefaults();
+
+    this.#showStartAnimation(cities.geo, initialCityDiffs, (pulsars) => {
+      // when animation is done, do proper initial render
+      this.#updateCities(initialCityDiffs);
+      this.#updateEdges(initialEdgeDiffs);
+
+      this.#setupEventHandlers(pulsars);
+    });
+  }
+
+  #setupEventHandlers(pulsars) {
+    let pulsarsRemoved = false;
 
     // initialise mouse event helper for cities and edge layers
-    const cityLayers = ["city-name", "city-circle"];
     const layerMouseEvents = {
-      cities: new MouseEventHelper(this.map, cityLayers, true),
-      edges: new MouseEventHelper(this.map, ["edges-interact"], true),
+      cities: new MouseEventHelper(this.map, this.#states.cities, [
+        "city-name",
+        "city-circle-interact",
+      ]),
+      edges: new MouseEventHelper(this.map, this.#states.edges, [
+        "edges-interact",
+      ]),
     };
 
     // when clicking on city marker popup should show
@@ -212,45 +220,52 @@ class MapWrapper {
     this.#cityTooltip = new maplibregl.Popup({ closeButton: false });
 
     // set up mouse events for interacting with cities
-    layerMouseEvents.cities.on("mouseOver", (e) => {
-      if (!e.featureState.circleVisible) return;
-      this.#cityTooltip
+    layerMouseEvents.cities.on("mouseOver", (id, lngLat) => {
+      if (!pulsarsRemoved) {
+        for (let p of pulsars) p.remove();
+        pulsarsRemoved = true;
+      }
+
+      this.map.getCanvas().style.cursor = "pointer";
+      this.setCityHoverState(id, true);
+      /*this.#cityTooltip
         .setLngLat(e.lngLat)
         .setText(e.feature.properties.name)
-        .addTo(this.map);
-      this.setCityHoverState(e.feature.id, true);
+        .addTo(this.map);*/
     });
-    layerMouseEvents.cities.on("mouseLeave", (e) => {
-      if (!e.featureState.circleVisible) return;
-      this.#cityTooltip.remove();
-      this.setCityHoverState(e.feature.id, false);
+    layerMouseEvents.cities.on("mouseLeave", (id, lngLat) => {
+      this.map.getCanvas().style.cursor = "default";
+      this.setCityHoverState(id, false);
+      //this.#cityTooltip.remove();
     });
-    layerMouseEvents.cities.on("click", (e) => {
-      if (e.layer === "city-circle" && !e.featureState.circleVisible) return;
+    layerMouseEvents.cities.on("click", (id, lngLat) => {
       // when clicking on city name, popup should show
-      this.#objects.cityMenus.show(this.map, e.feature.id);
+      this.#objects.cityMenus.show(this.map, id);
     });
 
     // set up mouse events for interacting with edges
-    layerMouseEvents.edges.on("mouseOver", (e) => {
+    layerMouseEvents.edges.on("mouseOver", (id, lngLat) => {
       this.map.getCanvas().style.cursor = "pointer";
-      this.setJourneyHoverState(e.featureState.journey, true);
+      const journey = this.#states.edges.get(id, "journey");
+      this.setJourneyHoverState(journey, true);
     });
-    layerMouseEvents.edges.on("mouseLeave", (e) => {
+    layerMouseEvents.edges.on("mouseLeave", (id, lngLat) => {
       this.map.getCanvas().style.cursor = "default";
-      this.setJourneyHoverState(e.featureState.journey, false);
+      const journey = this.#states.edges.get(id, "journey");
+      this.setJourneyHoverState(journey, false);
     });
-    layerMouseEvents.edges.on("click", (e) => {
-      if (!e.featureState.active) {
-        this.#callbacks["selectJourney"](e.featureState.journey);
-      }
+    layerMouseEvents.edges.on("click", (id, lngLat) => {
+      const journey = this.#states.edges.get(id, "journey");
+      const active = this.#states.edges.get(id, "active");
+
+      if (!active) this.#callbacks["selectJourney"](journey);
 
       // todo don't re-instantiate every time
       if (this.#journeyMenu) this.#journeyMenu.remove();
       this.#journeyMenu = new JourneyMenu(
-        e.featureState.journey,
-        this.#journeys[e.featureState.journey],
-        e.lngLat,
+        journey,
+        this.#journeys[journey],
+        lngLat,
       );
       this.#journeyMenu.popup.addTo(this.map);
     });
@@ -267,6 +282,35 @@ class MapWrapper {
         else this.#callbacks["hideCityRoutes"](data.cityName);
       }
     });
+  }
+
+  #showStartAnimation(geo, cityDiffs, animationDoneCallback) {
+    const homeMarkers = cityDiffs
+      .filter((d) => d.key === "isHome" && d.newValue)
+      .map((d) => initHomeMarker(geo[d.id].lngLat));
+
+    const destinationMarkers = cityDiffs
+      .filter((d) => d.key === "isDestination" && d.newValue)
+      .map((d) => initDestinationMarker(geo[d.id].lngLat));
+
+    //this is the second animation we'll do (show destination markers dropping)
+    const animateDestinations = () =>
+      animateDropWithBounce(
+        this.map,
+        destinationMarkers,
+        200,
+        3,
+        () => animationDoneCallback(destinationMarkers), // when animation is done callback to main
+      );
+
+    // run the first animation (show home marker(s) dropping)
+    animateDropWithBounce(
+      this.map,
+      homeMarkers,
+      300,
+      3,
+      animateDestinations, // when that is done do the second animation
+    );
   }
 
   on(eventName, callback) {
@@ -286,11 +330,6 @@ class MapWrapper {
     this.#mapping = {
       edges: edges.mapping,
     };
-
-    if (this.#firstUpdate) {
-      this.#objects.cityMarkers.addToMapWithAnimation(this.map);
-      this.#firstUpdate = false;
-    }
   }
 
   #updateCities(cityDiffs) {

@@ -11,7 +11,7 @@ const mapStyles = [
       "line-opacity": 0.0,
       "line-width": [
         "case",
-        ["boolean", ["feature-state", "visible"], false],
+        ["boolean", ["feature-state", "isVisible"], false],
         20,
         0,
       ],
@@ -30,7 +30,7 @@ const mapStyles = [
       "line-color": ["to-color", ["feature-state", "color"], "#aaa"],
       "line-width": [
         "case",
-        ["boolean", ["feature-state", "visible"], false],
+        ["boolean", ["feature-state", "isVisible"], false],
         2,
         0,
       ],
@@ -61,7 +61,7 @@ const mapStyles = [
       ],
       "line-width": [
         "case",
-        ["boolean", ["feature-state", "visible"], false],
+        ["boolean", ["feature-state", "isVisible"], false],
         8,
         0,
       ],
@@ -70,33 +70,74 @@ const mapStyles = [
   // ################################
   //           city circles
   // ################################
-
   {
-    id: "city-circle",
+    id: "city-circle-interact",
     source: "cities",
     type: "symbol",
+    filter: ["boolean", ["get", "isVisible"], false],
     layout: {
       "icon-image": "circle",
-      "icon-size": 0.5,
+      "icon-size": 2,
       "icon-allow-overlap": true,
       "text-allow-overlap": true, // perhaps speed up redrawing?
     },
     paint: {
       "icon-color": "white",
-      "icon-opacity": [
+      "icon-opacity": 0.0,
+    },
+  },
+  {
+    id: "city-circle-hover-border",
+    source: "cities",
+    type: "circle",
+    paint: {
+      "circle-radius": [
         "case",
-        ["boolean", ["feature-state", "circleVisible"], false],
-        0.6,
         ["boolean", ["feature-state", "hover"], false],
-        1.0, // todo does not appear to have effect
+        7.0,
         0,
       ],
-      "icon-halo-color": ["to-color", ["feature-state", "circleColor"], "#aaa"],
-      "icon-halo-width": [
+      "circle-opacity": 0,
+      "circle-stroke-width": [
         "case",
-        ["boolean", ["feature-state", "hover"], false],
-        1,
-        1,
+        [
+          "all",
+          ["boolean", ["feature-state", "isDestination"], false],
+          ["boolean", ["feature-state", "hover"], false],
+        ],
+        2,
+        0,
+      ],
+      "circle-stroke-color": "#aaa",
+    },
+  },
+  {
+    id: "city-circle",
+    source: "cities",
+    type: "circle",
+    paint: {
+      "circle-radius": [
+        "case",
+        ["boolean", ["feature-state", "isDestination"], false],
+        5.0,
+        ["boolean", ["feature-state", "isStop"], false],
+        3.0,
+        0,
+      ],
+      "circle-color": "white",
+      "circle-opacity": [
+        "case",
+        ["boolean", ["feature-state", "isDestination"], false],
+        1.0,
+        ["boolean", ["feature-state", "isStop"], false],
+        0.6,
+        0,
+      ],
+      "circle-stroke-width": 1,
+      "circle-stroke-color": [
+        "to-color",
+        ["feature-state", "circleColor"],
+        "#aaa",
       ],
     },
   },

@@ -105,7 +105,7 @@ function prepareDataForCalendar(journeys, database) {
   return data;
 }
 
-function prepareInitialDataForMap(cityInfo, connections) {
+function prepareInitialDataForMap(home, cityInfo, connections) {
   const cities = { geo: {}, defaults: {} };
   const edges = { geo: {}, defaults: {} };
 
@@ -120,15 +120,11 @@ function prepareInitialDataForMap(cityInfo, connections) {
       };
       cities.defaults[id] = {
         rank: cityInfo[id].rank,
-        menuDestination: false,
+        isHome: cityInfo[id].name === home ?? false,
+        isDestination: cityInfo[id].routesAvailable ?? false,
       };
-
-      if (cityInfo[id].routesAvailable) {
-        cities.defaults[id].menuDestination = true;
-        cities.defaults[id].markerIcon = "destination";
-        cities.defaults[id].markerSize = "small";
-        cities.defaults[id].markerColor = "light";
-      }
+      cities.defaults[id].isVisible =
+        cities.defaults[id].isHome || cities.defaults[id].isDestination;
     }
 
     for (let edge of c.edges) {
@@ -142,25 +138,17 @@ function prepareInitialDataForMap(cityInfo, connections) {
         startLngLat: [start.longitude, start.latitude],
         endLngLat: [end.longitude, end.latitude],
       };
-      edges.defaults[id] = {};
+      edges.defaults[id] = { isVisible: false };
     }
   }
 
   return [cities, edges];
 }
 
-function prepareDataForMap(home, journeys, database) {
+function prepareDataForMap(journeys, database) {
   const cities = {};
   const edges = { state: {}, mapping: {} };
   const journeyInfo = {};
-
-  if (home) {
-    cities[CITY_NAME_TO_ID[home]] = {
-      markerIcon: "home",
-      markerSize: "large",
-      markerColor: "dark",
-    };
-  }
 
   const activeJourney = journeys.activeJourney; // might be null
   for (let journey of journeys.journeys) {
@@ -180,13 +168,9 @@ function prepareDataForMap(home, journeys, database) {
         const data = cities[id] ?? {};
 
         // updated carefully to make sure we don't overwrite data from active journey
-        data.circleVisible = true;
+        data.isVisible = true;
+        data.isStop = true;
         if (active && !data.circleColor) data.circleColor = color;
-
-        if (destination) {
-          data.markerSize = "large";
-          data.markerColor = "dark";
-        }
 
         cities[id] = data;
       }
@@ -199,8 +183,8 @@ function prepareDataForMap(home, journeys, database) {
         const state = edges.state[id] ?? {};
 
         // update carefully to make sure we don't overwrite data from active journey
-        state.active = state.active || active;
-        state.visible = true;
+        state.isActive = state.isActive || active;
+        state.isVisible = true;
         if (active) state.color = color;
         // todo it it is not nice that I need this here and in mapping
         if (!state.leg || active) state.leg = leg;
