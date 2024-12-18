@@ -115,9 +115,9 @@ test("prepareDataForMapNoActiveJourney", function () {
   const j1 = journeys.addJourney([c1.id]);
 
   const expCities = {
-    cityId1: { isVisible: true },
-    cityId2: { isVisible: true },
-    cityId3: { isVisible: true },
+    cityId1: { isVisible: true, isStop: true },
+    cityId2: { isVisible: true, isStop: true },
+    cityId3: { isVisible: true, isStop: true },
   };
 
   const expEdges = {
@@ -179,22 +179,27 @@ test("prepareDataForMap", function () {
 
   const expCities = {
     cityId1: {
+      isStop: true,
       isVisible: true,
       circleColor: `rgb(${getColor(0)})`,
     },
     cityId2: {
+      isStop: true,
       isVisible: true,
       circleColor: `rgb(${getColor(0)})`,
     },
     cityId3: {
+      isStop: true,
       isVisible: true,
       circleColor: `rgb(${getColor(0)})`,
     },
     cityId4: {
+      isStop: true,
       isVisible: true,
       circleColor: `rgb(${getColor(1)})`,
     },
     cityId5: {
+      isStop: true,
       isVisible: true,
     },
   };
