@@ -105,7 +105,7 @@ function prepareDataForCalendar(journeys, database) {
   return data;
 }
 
-function prepareInitialDataForMap(cityInfo, connections) {
+function prepareInitialDataForMap(home, cityInfo, connections) {
   const cities = { geo: {}, defaults: {} };
   const edges = { geo: {}, defaults: {} };
 
@@ -129,6 +129,11 @@ function prepareInitialDataForMap(cityInfo, connections) {
         cities.defaults[id].markerSize = "small";
         cities.defaults[id].markerColor = "light";
       }
+      if (cityInfo[id].name === home) {
+        cities.defaults[id].markerIcon = "home";
+        cities.defaults[id].markerSize = "large";
+        cities.defaults[id].markerColor = "dark";
+      }
     }
 
     for (let edge of c.edges) {
@@ -149,18 +154,10 @@ function prepareInitialDataForMap(cityInfo, connections) {
   return [cities, edges];
 }
 
-function prepareDataForMap(home, journeys, database) {
+function prepareDataForMap(journeys, database) {
   const cities = {};
   const edges = { state: {}, mapping: {} };
   const journeyInfo = {};
-
-  if (home) {
-    cities[CITY_NAME_TO_ID[home]] = {
-      markerIcon: "home",
-      markerSize: "large",
-      markerColor: "dark",
-    };
-  }
 
   const activeJourney = journeys.activeJourney; // might be null
   for (let journey of journeys.journeys) {

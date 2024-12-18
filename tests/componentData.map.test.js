@@ -9,6 +9,8 @@ const { Database } = require("../script/database.js");
 const { createConnection, testCities } = require("../tests/data.js");
 
 test("prepareInitialDataForMap", function () {
+  const home = "City1";
+
   const c1 = createConnection([
     ["2024-10-15", "06:00", "city1MainStationId"],
     ["2024-10-15", "07:00", "city1ExtraStationId"],
@@ -29,7 +31,7 @@ test("prepareInitialDataForMap", function () {
     ["2024-10-15", "09:00", "city1MainStationId"],
   ]);
 
-  const got = prepareInitialDataForMap(testCities, [c1, c2, c3]);
+  const got = prepareInitialDataForMap(home, testCities, [c1, c2, c3]);
   const expCities = {
     geo: {
       cityId1: {
@@ -49,6 +51,9 @@ test("prepareInitialDataForMap", function () {
       cityId1: {
         rank: 1,
         menuDestination: false,
+        markerIcon: "home",
+        markerSize: "large",
+        markerColor: "dark",
       },
       cityId2: {
         rank: 2,
@@ -92,7 +97,7 @@ test("prepareDataForMapEmpty", function () {
 
   const journeys = new JourneyCollection();
 
-  const got = prepareDataForMap(null, journeys, database);
+  const got = prepareDataForMap(journeys, database);
   expect(got).toStrictEqual([{}, { mapping: {}, state: {} }, {}]);
 });
 
@@ -112,9 +117,6 @@ test("prepareDataForMapNoActiveJourney", function () {
   const expCities = {
     cityId1: {
       circleVisible: true,
-      markerIcon: "home",
-      markerSize: "large",
-      markerColor: "dark",
     },
     cityId2: { circleVisible: true },
     cityId3: {
@@ -153,7 +155,7 @@ test("prepareDataForMapNoActiveJourney", function () {
 
   const expJourneys = { "City1->City3": getJourneySummary([c1]) };
 
-  const got = prepareDataForMap("City1", journeys, database);
+  const got = prepareDataForMap(journeys, database);
   expect(got).toStrictEqual([expCities, expEdges, expJourneys]);
 });
 
@@ -185,9 +187,6 @@ test("prepareDataForMap", function () {
     cityId1: {
       circleVisible: true,
       circleColor: `rgb(${getColor(0)})`,
-      markerIcon: "home",
-      markerSize: "large",
-      markerColor: "dark",
     },
     cityId2: {
       circleVisible: true,
@@ -265,6 +264,6 @@ test("prepareDataForMap", function () {
     "City1->City5": getJourneySummary([c3]),
   };
 
-  const got = prepareDataForMap("City1", journeys, database);
+  const got = prepareDataForMap(journeys, database);
   expect(got).toStrictEqual([expCities, expEdges, expJourneys]);
 });
