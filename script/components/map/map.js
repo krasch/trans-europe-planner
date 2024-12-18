@@ -221,6 +221,11 @@ class MapWrapper {
 
     // set up mouse events for interacting with cities
     layerMouseEvents.cities.on("mouseOver", (id, lngLat) => {
+      if (!pulsarsRemoved) {
+        for (let p of pulsars) p.remove();
+        pulsarsRemoved = true;
+      }
+
       this.map.getCanvas().style.cursor = "pointer";
       this.setCityHoverState(id, true);
       /*this.#cityTooltip
@@ -234,10 +239,6 @@ class MapWrapper {
       //this.#cityTooltip.remove();
     });
     layerMouseEvents.cities.on("click", (id, lngLat) => {
-      if (!pulsarsRemoved) {
-        for (let p of pulsars) p.remove();
-        pulsarsRemoved = true;
-      }
       // when clicking on city name, popup should show
       this.#objects.cityMenus.show(this.map, id);
     });
