@@ -169,8 +169,8 @@ class StateManager {
     return diffs.filter((d) => d.kind !== "____");
   }
 
-  getDefault(id) {
-    return this.#defaults[id];
+  get(id, key) {
+    return this.#states[id][key];
   }
 
   #hasDefault(id, key) {

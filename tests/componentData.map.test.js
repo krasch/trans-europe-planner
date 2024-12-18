@@ -50,16 +50,19 @@ test("prepareInitialDataForMap", function () {
     defaults: {
       cityId1: {
         rank: 1,
+        isVisible: true,
         isHome: true,
         isDestination: false,
       },
       cityId2: {
         rank: 2,
+        isVisible: false,
         isHome: false,
         isDestination: false,
       },
       cityId3: {
         rank: 3,
+        isVisible: true,
         isHome: false,
         isDestination: true,
       },
@@ -81,9 +84,9 @@ test("prepareInitialDataForMap", function () {
       },
     },
     defaults: {
-      "City1->City2": {},
-      "City2->City3": {},
-      "City1->City3": {},
+      "City1->City2": { isVisible: false },
+      "City2->City3": { isVisible: false },
+      "City1->City3": { isVisible: false },
     },
   };
   expect(got).toStrictEqual([expCities, expEdges]);
@@ -112,26 +115,22 @@ test("prepareDataForMapNoActiveJourney", function () {
   const j1 = journeys.addJourney([c1.id]);
 
   const expCities = {
-    cityId1: {
-      circleVisible: true,
-    },
-    cityId2: { circleVisible: true },
-    cityId3: {
-      circleVisible: true,
-    },
+    cityId1: { isVisible: true },
+    cityId2: { isVisible: true },
+    cityId3: { isVisible: true },
   };
 
   const expEdges = {
     state: {
       "City1->City2": {
-        visible: true,
-        active: false,
+        isVisible: true,
+        isActive: false,
         leg: "City1->City3",
         journey: j1,
       },
       "City2->City3": {
-        visible: true,
-        active: false,
+        isVisible: true,
+        isActive: false,
         leg: "City1->City3",
         journey: j1,
       },
@@ -180,52 +179,52 @@ test("prepareDataForMap", function () {
 
   const expCities = {
     cityId1: {
-      circleVisible: true,
+      isVisible: true,
       circleColor: `rgb(${getColor(0)})`,
     },
     cityId2: {
-      circleVisible: true,
+      isVisible: true,
       circleColor: `rgb(${getColor(0)})`,
     },
     cityId3: {
-      circleVisible: true,
+      isVisible: true,
       circleColor: `rgb(${getColor(0)})`,
     },
     cityId4: {
-      circleVisible: true,
+      isVisible: true,
       circleColor: `rgb(${getColor(1)})`,
     },
     cityId5: {
-      circleVisible: true,
+      isVisible: true,
     },
   };
 
   const expEdges = {
     state: {
       "City1->City2": {
-        visible: true,
-        active: true,
+        isVisible: true,
+        isActive: true,
         color: `rgb(${getColor(0)})`,
         leg: "City1->City3",
         journey: j1,
       },
       "City2->City3": {
-        visible: true,
-        active: true,
+        isVisible: true,
+        isActive: true,
         color: `rgb(${getColor(0)})`,
         leg: "City1->City3",
         journey: j1,
       },
       "City3->City4": {
-        visible: true,
-        active: true,
+        isVisible: true,
+        isActive: true,
         color: `rgb(${getColor(1)})`,
         leg: "City3->City4",
         journey: j1,
       },
       "City2->City5": {
-        visible: true,
-        active: false,
+        isVisible: true,
+        isActive: false,
         leg: "City1->City5",
         journey: j2,
       },

@@ -60,7 +60,7 @@ async function main(home, map, calendar) {
 
   // clicking on a city
   map.on("showCityRoutes", (city) => {
-    const target = `${state.home}->${city}`;
+    const target = `${home}->${city}`;
     if (!ROUTES[target]) return;
 
     for (let route of ROUTES[target]) {

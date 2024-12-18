@@ -11,7 +11,7 @@ const mapStyles = [
       "line-opacity": 0.0,
       "line-width": [
         "case",
-        ["boolean", ["feature-state", "visible"], false],
+        ["boolean", ["feature-state", "isVisible"], false],
         20,
         0,
       ],
@@ -30,7 +30,7 @@ const mapStyles = [
       "line-color": ["to-color", ["feature-state", "color"], "#aaa"],
       "line-width": [
         "case",
-        ["boolean", ["feature-state", "visible"], false],
+        ["boolean", ["feature-state", "isVisible"], false],
         2,
         0,
       ],
@@ -61,7 +61,7 @@ const mapStyles = [
       ],
       "line-width": [
         "case",
-        ["boolean", ["feature-state", "visible"], false],
+        ["boolean", ["feature-state", "isVisible"], false],
         8,
         0,
       ],
@@ -96,9 +96,46 @@ const mapStyles = [
       "circle-stroke-color": "#aaa",
     },
   },
-
   {
-    id: "city-circle",
+    id: "city-circle-interact",
+    source: "cities",
+    type: "symbol",
+    filter: ["boolean", ["get", "isVisible"], false],
+    layout: {
+      "icon-image": "circle",
+      "icon-size": 1.5,
+      "icon-allow-overlap": true,
+      "text-allow-overlap": true, // perhaps speed up redrawing?
+    },
+    paint: {
+      "icon-color": "white",
+      "icon-opacity": 0.0,
+    },
+  },
+  {
+    id: "city-circle-stop",
+    source: "cities",
+    type: "symbol",
+    layout: {
+      "icon-image": "circle",
+      "icon-size": 0.5,
+      "icon-allow-overlap": true,
+      "text-allow-overlap": true, // perhaps speed up redrawing?
+    },
+    paint: {
+      "icon-color": "white",
+      "icon-opacity": [
+        "case",
+        ["boolean", ["feature-state", "isStop"], false],
+        0.6,
+        0.0,
+      ],
+      "icon-halo-color": ["to-color", ["feature-state", "circleColor"], "#aaa"],
+      "icon-halo-width": 1,
+    },
+  },
+  {
+    id: "city-circle-destination",
     source: "cities",
     type: "symbol",
     layout: {

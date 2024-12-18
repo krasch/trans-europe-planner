@@ -123,6 +123,8 @@ function prepareInitialDataForMap(home, cityInfo, connections) {
         isHome: cityInfo[id].name === home ?? false,
         isDestination: cityInfo[id].routesAvailable ?? false,
       };
+      cities.defaults[id].isVisible =
+        cities.defaults[id].isHome || cities.defaults[id].isDestination;
     }
 
     for (let edge of c.edges) {
@@ -136,7 +138,7 @@ function prepareInitialDataForMap(home, cityInfo, connections) {
         startLngLat: [start.longitude, start.latitude],
         endLngLat: [end.longitude, end.latitude],
       };
-      edges.defaults[id] = {};
+      edges.defaults[id] = { isVisible: false };
     }
   }
 
@@ -166,7 +168,8 @@ function prepareDataForMap(journeys, database) {
         const data = cities[id] ?? {};
 
         // updated carefully to make sure we don't overwrite data from active journey
-        data.circleVisible = true;
+        data.isVisible = true;
+        data.isStop = true;
         if (active && !data.circleColor) data.circleColor = color;
 
         cities[id] = data;
@@ -180,8 +183,8 @@ function prepareDataForMap(journeys, database) {
         const state = edges.state[id] ?? {};
 
         // update carefully to make sure we don't overwrite data from active journey
-        state.active = state.active || active;
-        state.visible = true;
+        state.isActive = state.isActive || active;
+        state.isVisible = true;
         if (active) state.color = color;
         // todo it it is not nice that I need this here and in mapping
         if (!state.leg || active) state.leg = leg;
