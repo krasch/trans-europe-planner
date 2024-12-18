@@ -52,38 +52,35 @@ class MouseEventHelper {
   constructor(map, states, layerNames) {
     this.#states = states;
 
-    let currentFeature = null;
+    let previousFeature = null;
 
-    const mouseOver = (layer, e) => {
-      // only concerned with currently visible features
-      const visible = e.features.filter((f) =>
-        this.#states.get(f.id, "isVisible"),
-      );
+    const mouseMove = (layer, e) => {
+      const visible = e.features.filter((f) => f.state.isVisible);
       if (visible.length === 0) return;
 
-      // todo currently only looking at first feature, is that a problem?
-      const newFeature = visible[0];
+      const currentFeature = visible[0].id; // todo break ties?
+      if (previousFeature === currentFeature) return;
 
-      // no changes
-      if (currentFeature && newFeature.id === currentFeature.id) return;
+      if (previousFeature)
+        this.#callbacks["mouseLeave"](previousFeature, e.lngLat);
 
-      currentFeature = newFeature;
-      this.#callbacks["mouseOver"](newFeature.id, e.lngLat);
+      this.#callbacks["mouseOver"](currentFeature, e.lngLat);
+      previousFeature = currentFeature;
     };
 
     const mouseLeave = (layer, e) => {
-      if (currentFeature) {
-        this.#callbacks["mouseLeave"](currentFeature.id, e.lngLat);
-        currentFeature = null;
+      if (previousFeature) {
+        this.#callbacks["mouseLeave"](previousFeature, e.lngLat);
+        previousFeature = null;
       }
     };
 
     const click = (layer, e) => {
-      if (currentFeature) this.#callbacks["click"](currentFeature.id, e.lngLat);
+      if (previousFeature) this.#callbacks["click"](previousFeature, e.lngLat);
     };
 
     for (let layer of layerNames) {
-      map.on("mouseover", layer, (e) => mouseOver(layer, e));
+      map.on("mousemove", layer, (e) => mouseMove(layer, e));
       map.on("mouseleave", layer, (e) => mouseLeave(layer, e));
       map.on("click", layer, (e) => click(layer, e));
     }
