@@ -6,6 +6,17 @@
   visibility: hidden;
 }
 
+.maplibregl-popup-close-button {
+  color: white;
+  top: 3px;
+  right: 3px;
+  border-radius: 5px;
+}
+
+.maplibregl-popup-close-button:hover {
+  border: 1px solid white;
+}
+
 /***********************************************
  home marker
 ************************************************/

@@ -80,8 +80,8 @@ class CityMenu {
 
     this.popup = new maplibregl.Popup({
       anchor: "left",
-      offset: [5, -20],
-      closeButton: false,
+      offset: [5, 0],
+      closeButton: true,
     });
 
     this.popup.setDOMContent(this.#popupElement).setLngLat(lngLat);
@@ -136,8 +136,8 @@ class JourneyMenu {
 
     this.popup = new maplibregl.Popup({
       anchor: "left",
-      offset: [5, -20],
-      closeButton: false,
+      offset: [5, 0],
+      closeButton: true,
     });
 
     this.popup.setDOMContent(this.#popupElement).setLngLat(lngLat);
