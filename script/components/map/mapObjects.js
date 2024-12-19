@@ -96,26 +96,17 @@ class CityMenu {
   }
 
   #initMenuEntry(element, cityId, cityName) {
-    const input = element.querySelector("input");
-    const label = element.querySelector("label");
-
-    // make unique across document by adding city to strings
-    input.name = `city-menu-${cityId}`;
-    input.id = `city-menu-${cityId}-${input.id}`;
-    label.setAttribute(
-      "for",
-      `city-menu-${cityId}-${label.getAttribute("for")}`,
-    );
+    const result = initInputAndLabel(element, cityId);
 
     // needed for reacting when entry is chosen
-    input.data = {
+    result.input.data = {
       type: "city",
       cityName: cityName,
       cityId: cityId,
-      entry: input.value,
+      entry: result.input.value,
     };
 
-    return input.value; // what is the "name" of this entry?
+    return result.input.value; // what is the "name" of this entry?
   }
 }
 
@@ -155,22 +146,16 @@ class JourneyMenu {
   update(diff) {}
 
   #initMenuEntry(element, id) {
-    const input = element.querySelector("input");
-    const label = element.querySelector("label");
-
-    // make unique across document by adding id to strings
-    input.name = `edge-menu-${id}`;
-    input.id = `edge-menu-${id}-${input.id}`;
-    label.setAttribute("for", `edge-menu-${id}-${label.getAttribute("for")}`);
+    const result = initInputAndLabel(element, id);
 
     // needed for reacting when entry is chosen
-    input.data = {
+    result.input.data = {
       type: "edge",
       id: id,
-      entry: input.value,
+      entry: result.input.value,
     };
 
-    return input.value; // what is the "name" of this entry?
+    return result.input.value; // what is the "name" of this entry?
   }
 
   remove() {

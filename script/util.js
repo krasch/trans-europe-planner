@@ -22,6 +22,17 @@ function updateElement(element, data) {
   }
 }
 
+function initInputAndLabel(container, idSuffix) {
+  const input = container.querySelector("input");
+  const label = container.querySelector("label");
+
+  input.name = `${input.name}-${idSuffix}`;
+  input.id = `${input.id}-${idSuffix}`;
+  label.setAttribute("for", input.id);
+
+  return { input: input, label: label };
+}
+
 function* calculateDiffs(oldObjectOfObjects, newObjectOfObjects) {
   for (let id in oldObjectOfObjects) {
     // this id is not present in the new object
