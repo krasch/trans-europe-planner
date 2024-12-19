@@ -77,7 +77,7 @@ const mapStyles = [
     filter: ["boolean", ["get", "isVisible"], false],
     layout: {
       "icon-image": "circle",
-      "icon-size": 2,
+      "icon-size": 0.6,
       "icon-allow-overlap": true,
       "text-allow-overlap": true, // perhaps speed up redrawing?
     },
@@ -93,8 +93,18 @@ const mapStyles = [
     paint: {
       "circle-radius": [
         "case",
-        ["boolean", ["feature-state", "hover"], false],
-        7.0,
+        [
+          "all",
+          ["boolean", ["feature-state", "isDestination"], false],
+          ["boolean", ["feature-state", "hover"], false],
+        ],
+        8.0,
+        [
+          "all",
+          ["boolean", ["feature-state", "isStop"], false],
+          ["boolean", ["feature-state", "hover"], false],
+        ],
+        6.0,
         0,
       ],
       "circle-opacity": 0,
@@ -102,13 +112,17 @@ const mapStyles = [
         "case",
         [
           "all",
-          ["boolean", ["feature-state", "isDestination"], false],
+          ["boolean", ["feature-state", "isVisible"], false],
           ["boolean", ["feature-state", "hover"], false],
         ],
         2,
         0,
       ],
-      "circle-stroke-color": "#aaa",
+      "circle-stroke-color": [
+        "to-color",
+        ["feature-state", "circleColor"],
+        "#aaa",
+      ],
     },
   },
   {

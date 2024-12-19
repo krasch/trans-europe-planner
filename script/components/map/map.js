@@ -39,7 +39,7 @@ function asGeojsonFeatureCollection(features) {
 // this class abstracts away following issues
 // 1. We want to react on multiple layers (e.g. all city layers) with the same event handlers
 // 2. The maplibre mouseLeave event does not contain the feature that was left -> need to keep state
-// 3. Maplibre does not attach the feature state to the event
+// 3. We want to prefer city events to edge events
 class MouseEventHelper {
   #states;
 
@@ -49,34 +49,56 @@ class MouseEventHelper {
     click: () => {},
   };
 
-  constructor(map, states, layerNames) {
+  constructor(map, states, layerNames, priorityLayers = null) {
     this.#states = states;
 
-    let previousFeature = null;
+    let previousFeatureId = null;
 
-    const mouseMove = (layer, e) => {
-      const visible = e.features.filter((f) => f.state.isVisible);
-      if (visible.length === 0) return;
-
-      const currentFeature = visible[0].id; // todo break ties?
-      if (previousFeature === currentFeature) return;
-
-      if (previousFeature)
-        this.#callbacks["mouseLeave"](previousFeature, e.lngLat);
-
-      this.#callbacks["mouseOver"](currentFeature, e.lngLat);
-      previousFeature = currentFeature;
+    const getFirstVisible = (features) => {
+      const visible = features.filter((f) => f.state.isVisible);
+      if (visible.length > 0) return visible[0].id;
+      return null;
     };
 
-    const mouseLeave = (layer, e) => {
-      if (previousFeature) {
-        this.#callbacks["mouseLeave"](previousFeature, e.lngLat);
-        previousFeature = null;
+    const hasHigherPriorityFeatures = (point) => {
+      if (!priorityLayers) return false;
+
+      const features = map.queryRenderedFeatures(point, {
+        layers: priorityLayers,
+      });
+
+      return getFirstVisible(features) !== null;
+    };
+
+    const mouseMove = (layer, e) => {
+      const newFeatureId = getFirstVisible(e.features);
+      if (!newFeatureId) return;
+
+      if (hasHigherPriorityFeatures(e.point)) {
+        if (previousFeatureId !== null)
+          this.#callbacks["mouseLeave"](previousFeatureId, e.lngLat);
+
+        previousFeatureId = null;
+        return;
+      }
+
+      if (previousFeatureId === null || previousFeatureId !== newFeatureId) {
+        if (previousFeatureId !== null)
+          this.#callbacks["mouseLeave"](previousFeatureId, e.lngLat);
+        this.#callbacks["mouseOver"](newFeatureId, e.lngLat);
+        previousFeatureId = newFeatureId;
       }
     };
 
+    const mouseLeave = (layer, e) => {
+      if (previousFeatureId !== null)
+        this.#callbacks["mouseLeave"](previousFeatureId, e.lngLat);
+      previousFeatureId = null;
+    };
+
     const click = (layer, e) => {
-      if (previousFeature) this.#callbacks["click"](previousFeature, e.lngLat);
+      if (previousFeatureId !== null)
+        this.#callbacks["click"](previousFeatureId, e.lngLat);
     };
 
     for (let layer of layerNames) {
@@ -208,9 +230,12 @@ class MapWrapper {
         "city-name",
         "city-circle-interact",
       ]),
-      edges: new MouseEventHelper(this.map, this.#states.edges, [
-        "edges-interact",
-      ]),
+      edges: new MouseEventHelper(
+        this.map,
+        this.#states.edges,
+        ["edges-interact"],
+        ["city-circle-interact"],
+      ),
     };
 
     // when clicking on city marker popup should show
