@@ -133,7 +133,12 @@ const mapStyles = [
         0.6,
         0,
       ],
-      "circle-stroke-width": 1,
+      "circle-stroke-width": [
+        "case",
+        ["boolean", ["feature-state", "isVisible"], false],
+        1,
+        0,
+      ],
       "circle-stroke-color": [
         "to-color",
         ["feature-state", "circleColor"],
