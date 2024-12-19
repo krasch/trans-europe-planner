@@ -88,11 +88,11 @@ class CityMenu {
   }
 
   update(diff) {
-    if (diff.key === "isDestination") {
+    /*if (diff.key === "isDestination") {
       if (diff.newValue === true)
         this.#entries["routes"].style.setProperty("display", "flex");
       else this.#entries["routes"].style.setProperty("display", "none");
-    }
+    }*/
   }
 
   #initMenuEntry(element, cityId, cityName) {

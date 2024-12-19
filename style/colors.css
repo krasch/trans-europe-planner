@@ -1,29 +1,37 @@
 body {
-    --color1: 27,158,119;
-    --color2: 217,95,2;
-    --color3: 117,112,179;
-    --color4: 231,41,138;
-    --color5: 102,166,30;
+  --color1: 27, 158, 119;
+  --color2: 217, 95, 2;
+  --color3: 117, 112, 179;
+  --color4: 231, 41, 138;
+  --color5: 102, 166, 30;
 
-    --color-background: #81a0be;
-    --color-dark: #2f4f69;
-    --color-light: #f9f3ea;
+  --color-background: #81a0be;
+  --color-dark: #2f4f69;
+  --color-light: #f9f3ea;
 
-    --color-map-beige: #F6F0E6;
-    --color-map-blue: #B3CFEB;
-    --color-map-green: #DDE9CC;
+  --color-map-beige: #f6f0e6;
+  --color-map-blue: #b3cfeb;
+  --color-map-green: #dde9cc;
 
-    /* https://codepen.io/sosuke/pen/Pjoqqp */
-    --filter-white: invert(100%);
-    /* #f9f3ea */
-    --filter-beige: invert(95%) sepia(9%) saturate(656%) hue-rotate(315deg) brightness(105%) contrast(95%);
-    --filter-darkgrey: invert(73%) sepia(0%) saturate(0%) hue-rotate(158deg) brightness(94%) contrast(89%);
-    /* 2f4f69 */
-    --filter-dark-blue:  invert(26%) sepia(17%) saturate(1428%) hue-rotate(165deg) brightness(98%) contrast(88%);
-     /* 0c3e87 looks nicer for marker*/
-    --filter-dark-blue2: invert(19%) sepia(96%) saturate(1482%) hue-rotate(201deg) brightness(84%) contrast(100%);
-    /* #2f4169 */
-    --filter-dark-blue2-hover: invert(22%) sepia(42%) saturate(701%) hue-rotate(183deg) brightness(93%) contrast(91%);
-    /* 81a0be*/
-    --filter-light-blue: invert(58%) sepia(51%) saturate(225%) hue-rotate(168deg) brightness(97%) contrast(83%);
+  --color-modal: #286099;
+
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  --filter-white: invert(100%);
+  /* #f9f3ea */
+  --filter-beige: invert(95%) sepia(9%) saturate(656%) hue-rotate(315deg)
+    brightness(105%) contrast(95%);
+  --filter-darkgrey: invert(73%) sepia(0%) saturate(0%) hue-rotate(158deg)
+    brightness(94%) contrast(89%);
+  /* 2f4f69 */
+  --filter-dark-blue: invert(26%) sepia(17%) saturate(1428%) hue-rotate(165deg)
+    brightness(98%) contrast(88%);
+  /* 0c3e87 looks nicer for marker*/
+  --filter-dark-blue2: invert(19%) sepia(96%) saturate(1482%) hue-rotate(201deg)
+    brightness(84%) contrast(100%);
+  /* #2f4169 */
+  --filter-dark-blue2-hover: invert(22%) sepia(42%) saturate(701%)
+    hue-rotate(183deg) brightness(93%) contrast(91%);
+  /* 81a0be*/
+  --filter-light-blue: invert(58%) sepia(51%) saturate(225%) hue-rotate(168deg)
+    brightness(97%) contrast(83%);
 }

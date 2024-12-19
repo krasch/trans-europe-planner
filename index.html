@@ -106,14 +106,17 @@
 </template>
 
 <template id="template-city-menu">
-    <div class="city-menu card">
-        <div class="title"></div>
-        <div class="row menu-entry">
-            <!-- id, name and for will be made unique when instantiating the template -->
+    <menu class="city-menu">
+        <li class="title"></li>
+        <li><em>Mit x Umstiegen erreichbar</em></li>
+        <li><button>Reiserouten anzeigen</button></li>
+        <li><button>Aufenthalt einfügen</button></li>
+        <!--div class="row menu-entry">
+            <id, name and for will be made unique when instantiating the templat>
             <input type="checkbox" id="city-menu-routes" name="city-menu-routes" value="routes">
-            <label for="city-menu-routes">Routen hierher</label>
-        </div>
-    </div>
+            <label for="city-menu-routes"><span class="slider"></span>Routen hierher</label>
+        </div-->
+    </menu>
 </template>
 
 <template id="template-edge-menu">
