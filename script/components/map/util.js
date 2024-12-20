@@ -33,6 +33,14 @@ function groupChangesById(changes) {
   return grouped;
 }
 
+function isSet(stateDict, id, key) {
+  return (
+    stateDict[id] !== undefined &&
+    stateDict[id][key] !== undefined &&
+    stateDict[id][key] !== null
+  );
+}
+
 class StateDict {
   #state = {};
 
@@ -64,11 +72,7 @@ class StateDict {
   }
 
   isSet(id, key) {
-    return (
-      this.#state[id] !== undefined &&
-      this.#state[id][key] !== undefined &&
-      this.#state[id][key] !== null
-    );
+    return isSet(this.#state, id, key);
   }
 
   set(id, key, value) {

@@ -171,7 +171,7 @@ function prepareDataForMap(journeys, database) {
         // updated carefully to make sure we don't overwrite data from active journey
         data.isVisible = true;
         data.isStop = true;
-        if (active && !data.circleColor) data.circleColor = color;
+        if (!data.circleColor || active) data.circleColor = color;
 
         cities[id] = data;
       }
@@ -186,7 +186,7 @@ function prepareDataForMap(journeys, database) {
         // update carefully to make sure we don't overwrite data from active journey
         state.isActive = state.isActive || active;
         state.isVisible = true;
-        if (active) state.color = color;
+        if (!state.color || active) state.color = color;
         // todo it it is not nice that I need this here and in mapping
         if (!state.leg || active) state.leg = leg;
         if (!state.journey || active) state.journey = journey.id;

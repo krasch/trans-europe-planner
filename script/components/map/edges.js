@@ -33,7 +33,7 @@ class Edges {
   #keys = {
     featureState: ["hover", "isVisible", "isActive", "color", "leg", "journey"],
   };
-  #resetKeys = ["leg", "journey", "isVisible"];
+  #resetKeys = ["leg", "journey", "isVisible", "color", "isActive"];
 
   #map;
   #geo; // {id: {name: , lngLat: }}
@@ -123,7 +123,7 @@ class Edges {
     for (let id in this.#geo) {
       for (let key of this.#resetKeys) {
         if (!this.#state.isSet(id, key)) continue; // not currently set -> ignore
-        if (updates[id] && updates[id][key]) continue; // appears in update -> ignore
+        if (isSet(updates, id, key)) continue; // appears in update -> ignore
 
         if (!updates[id]) updates[id] = {};
         updates[id][key] = null;
