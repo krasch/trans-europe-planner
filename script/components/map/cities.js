@@ -82,7 +82,7 @@ function showStartAnimation(map, geo, initialState, animationDoneCallback) {
   );
 }
 
-ANIMATION = false;
+ANIMATION = true;
 
 class Cities {
   #callbacks = {
