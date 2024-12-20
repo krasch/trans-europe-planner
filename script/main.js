@@ -6,24 +6,13 @@ function initUpdateViews(map, calendar, database) {
   return updateViews;
 }
 
-function addIsDestinationInfo(CITIES, ROUTES) {
-  const destinations = Object.keys(ROUTES).map((k) => k.split("->")[1]);
-
-  for (let id in CITIES) {
-    if (destinations.includes(CITIES[id].name)) {
-      CITIES[id].routesAvailable = true;
-      CITIES[id].rank = 2;
-    }
-  }
-}
-
 async function main(home, map, calendar) {
   // init state
   const state = {
     journeys: new JourneyCollection(),
   };
 
-  addIsDestinationInfo(CITIES, ROUTES); // hack
+  //addIsDestinationInfo(CITIES, ROUTES); // hack
 
   // prepare database
   const DATES = ["2024-12-01", "2024-12-02", "2024-12-03"];
@@ -33,7 +22,12 @@ async function main(home, map, calendar) {
   const database = new Database(connections);
 
   // initial drawing of all necessary geo information
-  const initialMapData = prepareInitialDataForMap(home, CITIES, connections);
+  const initialMapData = prepareInitialDataForMap(
+    home,
+    CITIES,
+    connections,
+    ROUTES,
+  );
   const mapLoadedPromise = map.load(initialMapData);
 
   // init update views

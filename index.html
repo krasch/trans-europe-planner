@@ -32,6 +32,7 @@
     <script src="data/stations.js"></script>
     <script src="data/connections.js"></script>
     <script src="data/routes.js"></script>
+    <script src="data/text.js"></script>
 
     <!-- scripts -->
     <script src="script/util.js"></script>
@@ -109,7 +110,7 @@
 <template id="template-city-menu">
     <menu class="city-menu" data-city-id="to-be-filled">
         <li><span class="title"></span></li>
-        <li><em>Mit x Umstiegen erreichbar</em></li>
+        <li><em class="num-transfers hidden"></em></li>
         <li>
             <button class="hidden" value="showRoutes">
                 <img src="images/icons/eye.svg" alt="icon of eye"/>

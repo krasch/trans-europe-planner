@@ -20,10 +20,11 @@ function initDestinationMarker(lngLat) {
   return marker;
 }
 
-function initCityMenu(id, name, lngLat) {
+function initCityMenu(id, name, numTransfer, lngLat) {
   const element = createElementFromTemplate("template-city-menu", {
     $root$: { "data-city-id": id },
     ".title": { innerText: name },
+    ".num-transfers": { innerText: getNumTransfersText(numTransfer) },
   });
 
   const popup = new maplibregl.Popup({
@@ -33,12 +34,18 @@ function initCityMenu(id, name, lngLat) {
   });
   popup.setDOMContent(element).setLngLat(lngLat);
 
+  const textNumTransfers = element.querySelector(".num-transfers");
   const buttonShowRoutes = element.querySelector("button[value='showRoutes']");
   const buttonMakeCut = element.querySelector("button[value='makeCut']");
 
   popup.updateElement = (state) => {
-    if (state.isDestination !== undefined)
+    if (state.isDestination !== undefined) {
       updateVisibility(buttonShowRoutes, state.isDestination);
+      updateVisibility(textNumTransfers, state.isDestination);
+    }
+    if (state.isStop !== undefined) {
+      updateVisibility(buttonMakeCut, state.isDestination);
+    }
   };
 
   return popup;
@@ -96,7 +103,7 @@ class Cities {
       "isStop",
       "circleColor",
     ],
-    cityMenu: ["isDestination"],
+    cityMenu: ["isDestination", "isStop"],
     sourceData: ["rank", "isVisible"], // slow to update
   };
   #resetKeys = ["isStop", "circleColor"];
@@ -224,6 +231,7 @@ class Cities {
       this.#menus[id] = initCityMenu(
         id,
         this.#geo[id].name,
+        this.#state.get(id, "numTransfer"),
         this.#geo[id].lngLat,
       );
     }
