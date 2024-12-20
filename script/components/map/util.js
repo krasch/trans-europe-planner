@@ -43,8 +43,16 @@ function isSet(stateDict, id, key) {
 
 class StateDict {
   #state = {};
+  #resetKeys;
+
+  constructor(resetKeys) {
+    this.#resetKeys = resetKeys;
+  }
 
   update(updates) {
+    // some keys need to be reset to null if they don't appear in the updates
+    this.#addResets(updates);
+
     const changes = [];
 
     for (let id in updates) {
@@ -61,6 +69,18 @@ class StateDict {
     return changes;
   }
 
+  #addResets(updates) {
+    for (let id in this.#state) {
+      for (let key of this.#resetKeys) {
+        if (!isSet(this.#state, id, key)) continue; // not currently set -> ignore
+        if (isSet(updates, id, key)) continue; // appears in update -> ignore
+
+        if (!updates[id]) updates[id] = {};
+        updates[id][key] = null;
+      }
+    }
+  }
+
   get(id, key) {
     return this.#state[id][key];
   }
@@ -71,15 +91,9 @@ class StateDict {
     return result;
   }
 
-  isSet(id, key) {
-    return isSet(this.#state, id, key);
-  }
-
   set(id, key, value) {
-    const update = {};
-    update[id] = {};
-    update[id][key] = value;
-    return this.update(update);
+    if (this.#state[id] === undefined) this.#state[id] = {};
+    this.#state[id][key] = value;
   }
 }
 

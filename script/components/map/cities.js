@@ -114,7 +114,8 @@ class Cities {
     this.#map = map;
     this.#geo = geo;
 
-    this.#state = new StateDict();
+    this.#state = new StateDict(this.#resetKeys);
+
     const events = new MouseEventHelper(this.#map, this.#layers);
 
     events.on("mouseOver", (id, lngLat) => {
@@ -168,9 +169,6 @@ class Cities {
   }
 
   update(updates) {
-    // some keys need to be reset if they don't appear in the updates
-    this.#addResets(updates);
-
     // apply update to the state
     // changes contains the "true" changes, i.e. things that actually changed
     const changes = this.#state.update(updates);
@@ -240,18 +238,6 @@ class Cities {
   #stopAnimation() {
     if (this.#pulsars) {
       for (let p of this.#pulsars) p.remove();
-    }
-  }
-
-  #addResets(updates) {
-    for (let id in this.#geo) {
-      for (let key of this.#resetKeys) {
-        if (!this.#state.isSet(id, key)) continue; // not currently set -> ignore
-        if (isSet(updates, id, key)) continue; // appears in update -> ignore
-
-        if (!updates[id]) updates[id] = {};
-        updates[id][key] = null;
-      }
     }
   }
 }
