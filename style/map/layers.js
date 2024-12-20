@@ -57,7 +57,7 @@ const mapStyles = [
         "case",
         ["boolean", ["feature-state", "isActive"], false],
         0.6,
-        0.3,
+        0.4,
       ],
       "line-width": [
         "case",

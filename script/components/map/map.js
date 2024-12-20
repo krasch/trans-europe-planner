@@ -114,11 +114,17 @@ class MapWrapper {
     });
 
     this.edges.on("click", (id, lngLat) => {
+      const active = this.edges.getState(id, "isActive");
       const journey = this.edges.getState(id, "journey");
-      this.edges.showEdgeMenu(journey, this.#journeys[journey], lngLat);
 
-      const active = this.edges.getState(id, "active");
-      if (!active) this.#callbacks["selectJourney"](journey);
+      // first click = make active
+      if (!active) {
+        this.#callbacks["selectJourney"](journey);
+        return;
+      }
+
+      // second click = show menu
+      this.edges.showEdgeMenu(journey, this.#journeys[journey], lngLat);
     });
   }
 
