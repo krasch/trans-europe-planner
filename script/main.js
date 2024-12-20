@@ -69,6 +69,10 @@ async function main(home, map, calendar) {
       .style.setProperty("visibility", "visible");
   });
 
+  map.on("cutJourney", (cityName) => {
+    state.journeys.cutActiveJourney(cityName, database);
+  });
+
   // hovering over map or calender
   calendar.on("entryHoverStart", (leg) => map.setLegHoverState(leg, true));
   calendar.on("entryHoverStop", (leg) => map.setLegHoverState(leg, false));

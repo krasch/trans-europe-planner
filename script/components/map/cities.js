@@ -43,8 +43,8 @@ function initCityMenu(id, name, numTransfer, lngLat) {
       updateVisibility(buttonShowRoutes, state.isDestination);
       updateVisibility(textNumTransfers, state.isDestination);
     }
-    if (state.isStop !== undefined) {
-      updateVisibility(buttonMakeCut, state.isDestination);
+    if (state.isTransfer !== undefined && state.isStop !== undefined) {
+      //updateVisibility(buttonMakeCut, state.isStop && !state.isTransfer);
     }
   };
 
@@ -101,12 +101,13 @@ class Cities {
       "isVisible",
       "isDestination",
       "isStop",
+      "isTransfer",
       "circleColor",
     ],
-    cityMenu: ["isDestination", "isStop"],
+    cityMenu: ["isDestination", "isStop", "isTransfer"],
     sourceData: ["rank", "isVisible"], // slow to update
   };
-  #resetKeys = ["isStop", "circleColor"];
+  #resetKeys = ["isStop", "isTransfer", "circleColor"];
 
   #map;
   #geo; // {id: {name: , lngLat: }}

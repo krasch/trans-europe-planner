@@ -103,6 +103,9 @@ class MapWrapper {
     this.cities.on("menuClick", (id, entry) => {
       if (entry === "showRoutes")
         this.#callbacks["showCityRoutes"](cities.geo[id].name);
+
+      if (entry === "makeCut")
+        this.#callbacks["cutJourney"](cities.geo[id].name);
     });
 
     this.edges.on("mouseOver", (id, lngLat) => {

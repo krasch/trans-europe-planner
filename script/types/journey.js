@@ -79,6 +79,15 @@ class JourneyCollection {
     this.setActive(shortest.id);
   }
 
+  cutActiveJourney(cityName, database) {
+    if (!this.#activeId) return;
+
+    const active = this.activeJourney;
+    for (let id of active.connectionIds) {
+      const connection = database.connection(id);
+    }
+  }
+
   reset() {
     this.#journeys = [];
     this.#activeId = null;

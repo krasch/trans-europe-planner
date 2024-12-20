@@ -167,9 +167,11 @@ function prepareDataForMap(journeys, database) {
     for (let i in connections) {
       const color = active ? `rgb(${getColor(i)})` : null;
 
-      for (let cityName of connections[i].cities) {
+      for (let j in connections[i].cities) {
+        const cityName = connections[i].cities[j];
         const id = CITY_NAME_TO_ID[cityName];
-        const destination = journey.destination === cityName;
+
+        const isTransfer = j === "0" || Number(j) === connections[i].length - 1;
 
         // get current data for this city or init new if first time we see this city
         const data = cities[id] ?? {};
@@ -177,7 +179,8 @@ function prepareDataForMap(journeys, database) {
         // updated carefully to make sure we don't overwrite data from active journey
         data.isVisible = true;
         data.isStop = true;
-        if (!data.circleColor || active) data.circleColor = color;
+        if (data.circleColor === null || active) data.circleColor = color;
+        if (data.isTransfer === null || active) data.isTransfer = isTransfer;
 
         cities[id] = data;
       }
