@@ -69,6 +69,16 @@ class JourneyCollection {
     this.#activeId = journeyId;
   }
 
+  setShortestAsActive() {
+    if (this.#journeys.length === 0) return;
+
+    let shortest = this.#journeys[0];
+    for (let journey of this.#journeys.slice(1))
+      if (journey.legs.length < shortest.legs.length) shortest = journey;
+
+    this.setActive(shortest.id);
+  }
+
   reset() {
     this.#journeys = [];
     this.#activeId = null;

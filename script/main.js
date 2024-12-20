@@ -70,6 +70,8 @@ async function main(home, map, calendar) {
       const connectionIds = createStupidItineraryForRoute(route, database);
       state.journeys.addJourney(connectionIds);
     }
+
+    state.journeys.setShortestAsActive();
     updateViews(state);
   });
 
