@@ -46,8 +46,9 @@
     <script src="script/components/calendar/calendar.js"></script>
     <script src="script/components/calendar/draganddrop.js"></script>
     <script src="script/components/map/map.js"></script>
-    <script src="script/components/map/mapObjects.js"></script>
-    <script src="script/components/map/animation.js"></script>
+    <script src="script/components/map/cities.js"></script>
+    <script src="script/components/map/edges.js"></script>
+    <script src="script/components/map/util.js"></script>
 
     <title>Trans-Europe-Planner</title>
     <link rel="stylesheet" href="style/sidebar.css">
@@ -95,7 +96,7 @@
 </template>
 
 <template id="template-city-marker-home">
-    <div class="city-marker-home"></div>
+    <div class="city-marker-home" data-city-id="to-be-filled"></div>
 </template>
 
 <template id="template-city-marker-destination">
