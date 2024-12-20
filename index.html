@@ -117,7 +117,7 @@
         </li>
         <li>
             <button class="hidden" value="makeCut">
-                <img src="images/icons/scissors.svg" alt="icon of scissors"/>
+                <img src="images/icons/scissors.svg" alt="icon of a pair of scissors"/>
                 Aufenthalt einfügen
             </button>
         </li>
@@ -125,18 +125,18 @@
 </template>
 
 <template id="template-edge-menu">
-    <div class="edge-menu card">
-        <div class="title">
-            <span class="from"></span> &nbsp;⮕&nbsp;<span class="to"></span>
-        </div>
-        <div class="row"><span class="num-transfer"></span>&nbsp;<span class="via"></span></div>
-        <div class="row">Reisezeit: &nbsp; <strong class="travel-time"></strong></div>
-        <!--div class="row menu-entry"-->
-        <!-- id, name and for will be made unique when instantiating the template -->
-        <!--input type="checkbox" id="edge-menu-calendar" name="edge-menu-calendar" value="journey">
-        <label for="edge-menu-calendar">Reisekalender anzeigen</label>
-    </div-->
-    </div>
+    <menu class="edge-menu" data-edge-id="to-be-filled">
+        <li>
+            <div class="title"><span class="from"></span> &nbsp;⮕&nbsp;<span class="to"></span></div>
+        </li>
+        <li><span>Reisezeit: &nbsp;<strong class="travel-time"></strong></span></li>
+        <li>
+            <button value="showCalendar" class="hidden">
+                <img src="images/icons/calendar.svg" alt="icon of a calendar"/>
+                Reisekalender anzeigen
+            </button>
+        </li>
+    </menu>
 </template>
 
 

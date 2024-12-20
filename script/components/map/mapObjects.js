@@ -46,6 +46,26 @@ function initCityMenu(id, name, lngLat) {
   return popup;
 }
 
+function initEdgeMenu(id, journey, lngLat) {
+  const element = createElementFromTemplate("template-edge-menu", {
+    $root$: { "data-edge-id": id },
+    ".from": { innerText: journey.from },
+    ".to": { innerText: journey.to },
+    ".travel-time": { innerText: journey.travelTime },
+    ".via": { innerText: journey.via },
+    ".num-transfer": { innerText: journey.numTransfer },
+  });
+
+  const popup = new maplibregl.Popup({
+    anchor: "left",
+    offset: [5, 0],
+    closeButton: true,
+  });
+  popup.setDOMContent(element).setLngLat(lngLat);
+
+  return popup;
+}
+
 class CityMarker {
   marker; // the actual maplibre marker object
 
@@ -102,56 +122,14 @@ class CityMenu {
 }
 
 class JourneyMenu {
-  #popupElement; // the html element
   popup; // the actual maplibre popup object
 
-  // input elements to make it easier to change menu items
-  #entries = {};
-
   constructor(id, journey, lngLat) {
-    this.#popupElement = createElementFromTemplate("template-edge-menu", {
-      ".from": { innerText: journey.from },
-      ".to": { innerText: journey.to },
-      ".travel-time": { innerText: journey.travelTime },
-      ".via": { innerText: journey.via },
-      ".num-transfer": { innerText: journey.numTransfer },
-    });
-    this.#popupElement.id = `edge-menu-${id}`;
-
-    for (let entryContainer of this.#popupElement.querySelectorAll(
-      ".menu-entry",
-    )) {
-      const entryName = this.#initMenuEntry(entryContainer, id, name);
-      this.#entries[entryName] = entryContainer;
-    }
-
-    this.popup = new maplibregl.Popup({
-      anchor: "left",
-      offset: [5, 0],
-      closeButton: true,
-    });
-
-    this.popup.setDOMContent(this.#popupElement).setLngLat(lngLat);
-  }
-
-  update(diff) {}
-
-  #initMenuEntry(element, id) {
-    const result = initInputAndLabel(element, id);
-
-    // needed for reacting when entry is chosen
-    result.input.data = {
-      type: "edge",
-      id: id,
-      entry: result.input.value,
-    };
-
-    return result.input.value; // what is the "name" of this entry?
+    this.popup = initEdgeMenu(id, journey, lngLat);
   }
 
   remove() {
     this.popup.remove();
-    this.#popupElement.remove();
   }
 }
 

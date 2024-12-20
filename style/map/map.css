@@ -32,9 +32,9 @@
   width: calc(2.5rem * 0.64);
 }
 
-/***********************************************
- destination marker
-************************************************/
+/***********************************************************************
+ destination marker (only for animation, will get replaced by map layer
+***********************************************************************/
 
 .city-marker-destination {
   cursor: pointer;
@@ -90,51 +90,50 @@
 }
 
 /***********************************************
-  city context menu
+  city and edge context menu
 ************************************************/
 
-.city-menu {
+.city-menu,
+.edge-menu {
   width: 12rem;
 
-  --color-menu-highlight: var(--color-dark);
+  --color-menu-light: white;
+  --filter-menu-light: var(--filter-white);
 
-  border-color: var(--color-menu-highlight);
+  --color-menu-dark: var(--color-dark);
+  --filter-menu-dark: var(--filter-dark);
+
+  border-color: var(--color-menu-dark);
 }
 
-.city-menu .title {
-  color: white;
-  background-color: var(--color-menu-highlight);
-  letter-spacing: 0.02rem;
-}
-
-.city-menu button {
-  border: 0;
-  background: white;
-  color: var(--color-menu-highlight);
-}
-
-.city-menu button img {
-  filter: var(--filter-dark);
-}
-
-.city-menu button:hover {
-  background-color: var(--color-menu-highlight);
-  color: white;
-}
-
-.city-menu button:hover img {
-  filter: var(--filter-white);
-}
-
-/***********************************************
-  edge context menu
-************************************************/
-
-.edge-menu {
-  border-color: var(--color-background);
-}
-
+.city-menu .title,
 .edge-menu .title {
-  background-color: var(--color-dark);
-  color: white;
+  letter-spacing: 0.02rem;
+
+  color: var(--color-menu-light);
+  background-color: var(--color-menu-dark);
+}
+
+.city-menu button,
+.edge-menu button {
+  border: 0;
+
+  color: var(--color-menu-dark);
+  background: var(--color-menu-light);
+}
+
+.city-menu button img,
+.edge-menu button img {
+  filter: var(--filter-menu-dark);
+}
+
+.city-menu button:hover,
+.edge-menu button:hover {
+  color: var(--color-menu-light);
+  background-color: var(--color-menu-dark);
+}
+
+.city-menu button:hover img,
+.edge-menu button:hover img {
+  filter: var(--filter-menu-light);
 }
