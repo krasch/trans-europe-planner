@@ -6,29 +6,23 @@
   --logo-height: 6rem;
   --padding: 0.5rem;
 
-  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
   justify-content: space-between;
+
+  border-radius: 1rem;
+  overflow: hidden; /* this is necessary to really get the round corners */
 
   visibility: hidden;
 }
 
-#modal > .title,
-.bottom {
-  height: calc(var(--logo-height) + 2 * var(--padding));
-}
-
-#modal h1,
-h2,
-h3 {
-  margin: 0;
-  font-weight: normal;
-}
-
 #modal > * {
-  justify-content: center;
-
   padding: var(--padding);
-  gap: var(--padding);
+}
+
+#modal > .title,
+#modal > .bottom {
+  height: calc(var(--logo-height) + 2 * var(--padding));
 }
 
 #modal > .logo {
@@ -38,9 +32,22 @@ h3 {
   height: var(--logo-height);
 }
 
-#modal > .title {
+#modal .title {
   display: flex;
   flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+}
+
+#modal .content {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: center;
+  align-items: center;
+
+  gap: 2rem;
 }
 
 #modal #choose-home {
@@ -50,38 +57,46 @@ h3 {
   gap: calc(2 * var(--padding));
 }
 
+#modal h1,
+#modal h2,
+#modal h3 {
+  margin: 0;
+  font-weight: normal;
+}
+
 /***********************************************
  style
 ************************************************/
 
 #modal {
-  --color-modal-background: white;
-  --color-modal-text: var(--color-dark);
+  --color-modal-light: white;
+  --filter-modal-light: var(--filter-white);
 
-  background-color: var(--color-modal-background);
-  color: var(--color-modal-text);
+  --color-modal-dark: var(--color-dark);
+  --filter-modal-dark: var(--filter-dark);
 
-  border: 1px solid var(--color-modal-text);
-}
+  color: var(--color-modal-dark);
+  background-color: var(--color-modal-light);
 
-#modal > .title,
-.bottom {
-  color: var(--color-modal-background);
-  background-color: var(--color-modal-text);
-}
-
-#modal img {
-  /* #286099 */
-  filter: invert(33%) sepia(54%) saturate(687%) hue-rotate(168deg)
-    brightness(91%) contrast(91%);
+  border: 1px solid var(--color-modal-dark);
 }
 
 #modal .logo {
-  filter: var(--filter-white);
+  filter: var(--filter-modal-light);
+}
+
+#modal > .title,
+#modal > .bottom {
+  color: var(--color-modal-light);
+  background-color: var(--color-modal-dark);
+}
+
+#modal > .content img {
+  filter: var(--filter-modal-dark);
 }
 
 #modal a {
-  border: 1px solid var(--color-modal-text);
+  border: 1px solid var(--color-modal-dark);
   border-radius: 0.25rem;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 
@@ -91,10 +106,10 @@ h3 {
   text-decoration: none;
 
   background: white;
-  color: var(--color-modal-text);
+  color: var(--color-modal-dark);
 }
 
 #modal a:hover {
-  background: var(--color-modal-text);
+  background: var(--color-modal-dark);
   color: white;
 }
