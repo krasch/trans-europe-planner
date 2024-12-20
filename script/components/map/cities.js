@@ -75,7 +75,7 @@ function showStartAnimation(map, geo, initialState, animationDoneCallback) {
   );
 }
 
-ANIMATION = true;
+ANIMATION = false;
 
 class Cities {
   #callbacks = {
@@ -99,6 +99,7 @@ class Cities {
     cityMenu: ["isDestination"],
     sourceData: ["rank", "isVisible"], // slow to update
   };
+  #resetKeys = ["isStop"];
 
   #map;
   #geo; // {id: {name: , lngLat: }}
@@ -167,6 +168,9 @@ class Cities {
   }
 
   update(updates) {
+    // some keys need to be reset if they don't appear in the updates
+    this.#addResets(updates);
+
     // apply update to the state
     // changes contains the "true" changes, i.e. things that actually changed
     const changes = this.#state.update(updates);
@@ -236,6 +240,18 @@ class Cities {
   #stopAnimation() {
     if (this.#pulsars) {
       for (let p of this.#pulsars) p.remove();
+    }
+  }
+
+  #addResets(updates) {
+    for (let id in this.#geo) {
+      for (let key of this.#resetKeys) {
+        if (!this.#state.isSet(id, key)) continue; // not currently set -> ignore
+        if (updates[id] && updates[id][key]) continue; // appears in update -> ignore
+
+        if (!updates[id]) updates[id] = {};
+        updates[id][key] = null;
+      }
     }
   }
 }

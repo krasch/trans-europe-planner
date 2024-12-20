@@ -61,17 +61,15 @@ async function main(home, map, calendar) {
   // clicking on a city
   map.on("showCityRoutes", (city) => {
     const target = `${home}->${city}`;
-    if (!ROUTES[target]) return;
+    if (!ROUTES[target]) return; // todo handle error
+
+    state.journeys.reset();
 
     for (let route of ROUTES[target]) {
       if (typeof route === "string") continue; // inline "comments" in routes file
       const connectionIds = createStupidItineraryForRoute(route, database);
       state.journeys.addJourney(connectionIds);
     }
-    updateViews(state);
-  });
-  map.on("hideCityRoutes", (city) => {
-    state.journeys.removeJourneysWithDestination(city);
     updateViews(state);
   });
 

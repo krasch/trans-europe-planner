@@ -28,11 +28,12 @@ class Edges {
 
   #source = "edges";
   #layers = ["edges-interact"];
-  #eventPrioLayers = ["cities-interact"];
+  #eventPrioLayers = ["city-circle-interact"];
 
   #keys = {
     featureState: ["hover", "isVisible", "isActive", "color", "leg", "journey"],
   };
+  #resetKeys = ["leg", "journey", "isVisible"];
 
   #map;
   #geo; // {id: {name: , lngLat: }}
@@ -82,6 +83,9 @@ class Edges {
     this.#callbacks[eventName] = callback;
   }
   update(updates) {
+    // some keys need to be reset if they don't appear in the updates
+    this.#addResets(updates);
+
     // apply update to the state
     // changes contains the "true" changes, i.e. things that actually changed
     const changes = this.#state.update(updates);
@@ -113,5 +117,17 @@ class Edges {
   #copyStateToFeatureState(id) {
     const current = this.#state.getAll(id, this.#keys.featureState);
     this.#map.setFeatureState({ source: this.#source, id: id }, current);
+  }
+
+  #addResets(updates) {
+    for (let id in this.#geo) {
+      for (let key of this.#resetKeys) {
+        if (!this.#state.isSet(id, key)) continue; // not currently set -> ignore
+        if (updates[id] && updates[id][key]) continue; // appears in update -> ignore
+
+        if (!updates[id]) updates[id] = {};
+        updates[id][key] = null;
+      }
+    }
   }
 }

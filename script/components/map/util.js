@@ -63,6 +63,14 @@ class StateDict {
     return result;
   }
 
+  isSet(id, key) {
+    return (
+      this.#state[id] !== undefined &&
+      this.#state[id][key] !== undefined &&
+      this.#state[id][key] !== null
+    );
+  }
+
   set(id, key, value) {
     const update = {};
     update[id] = {};

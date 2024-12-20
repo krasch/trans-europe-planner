@@ -54,18 +54,8 @@ class JourneyCollection {
     for (let j of this.#journeys) if (j.id === this.#activeId) return j;
   }
 
-  get alternativeJourneys() {
-    const result = [];
-    for (let j of this.#journeys) if (j.id !== this.#activeId) result.push(j);
-    return result;
-  }
-
   get journeys() {
     return this.#journeys;
-  }
-
-  get numJourneys() {
-    return this.#journeys.length;
   }
 
   addJourney(connections) {
@@ -82,16 +72,6 @@ class JourneyCollection {
   reset() {
     this.#journeys = [];
     this.#activeId = null;
-  }
-
-  removeJourneysWithDestination(destination) {
-    const toRemove = this.#journeys
-      .filter((j) => j.destination === destination)
-      .map((j) => j.id);
-
-    if (toRemove.includes(this.#activeId)) this.#activeId = null;
-
-    this.#journeys = this.#journeys.filter((j) => !toRemove.includes(j.id));
   }
 }
 

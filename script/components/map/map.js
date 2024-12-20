@@ -40,7 +40,6 @@ class MapWrapper {
   #callbacks = {
     selectJourney: () => {},
     showCityRoutes: () => {},
-    hideCityRoutes: () => {},
   };
 
   #journeys;
