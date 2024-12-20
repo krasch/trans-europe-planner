@@ -40,6 +40,7 @@ class MapWrapper {
   #callbacks = {
     selectJourney: () => {},
     showCityRoutes: () => {},
+    showCalendar: () => {},
   };
 
   #journeys;
@@ -99,8 +100,9 @@ class MapWrapper {
     this.cities = new Cities(this.map, cities.geo, cities.defaults);
     this.edges = new Edges(this.map, edges.geo, edges.defaults);
 
-    this.cities.on("menuClick", (id, name, entry) => {
-      if (entry === "showRoutes") this.#callbacks["showCityRoutes"](name);
+    this.cities.on("menuClick", (id, entry) => {
+      if (entry === "showRoutes")
+        this.#callbacks["showCityRoutes"](cities.geo[id].name);
     });
 
     this.edges.on("mouseOver", (id, lngLat) => {
@@ -115,16 +117,22 @@ class MapWrapper {
 
     this.edges.on("click", (id, lngLat) => {
       const active = this.edges.getState(id, "isActive");
-      const journey = this.edges.getState(id, "journey");
+      const journeyId = this.edges.getState(id, "journey");
 
       // first click = make active
       if (!active) {
-        this.#callbacks["selectJourney"](journey);
+        this.#callbacks["selectJourney"](journeyId);
         return;
       }
 
       // second click = show menu
-      this.edges.showEdgeMenu(journey, this.#journeys[journey], lngLat);
+      this.edges.showJourneyMenu(journeyId, this.#journeys[journeyId], lngLat);
+    });
+
+    this.edges.on("menuClick", (journeyId, entry) => {
+      if (entry === "showCalendar") {
+        this.#callbacks["showCalendar"](journeyId);
+      }
     });
   }
 

@@ -1,6 +1,6 @@
-function initEdgeMenu(id, journey, lngLat) {
+function initJourneyMenu(id, journey, lngLat) {
   const element = createElementFromTemplate("template-edge-menu", {
-    $root$: { "data-edge-id": id },
+    $root$: { "data-journey-id": id },
     ".from": { innerText: journey.from },
     ".to": { innerText: journey.to },
     ".travel-time": { innerText: journey.travelTime },
@@ -68,12 +68,13 @@ class Edges {
     });
 
     this.#map._container.addEventListener("click", (e) => {
-      if (e.target.tagName === "BUTTON") {
-        const menu = e.target.parentElement.parentElement;
-        const id = menu.dataset.edgeId;
-        //this.#hideEdgeMenu(id);
-        this.#callbacks["menuClick"](id, e.target.value);
-      }
+      if (e.target.tagName !== "BUTTON") return;
+
+      const menu = e.target.parentElement.parentElement;
+      if (!menu.classList.contains("edge-menu")) return;
+
+      this.#hideJourneyMenu();
+      this.#callbacks["menuClick"](menu.dataset.journeyId, e.target.value);
     });
 
     // initial drawing
@@ -99,10 +100,17 @@ class Edges {
     return this.#state.get(id, key); // temporary
   }
 
-  showEdgeMenu(journeyId, journeyInfo, lngLat) {
+  showJourneyMenu(journeyId, journeyInfo, lngLat) {
     if (this.#journeyMenu) this.#journeyMenu.remove();
-    this.#journeyMenu = initEdgeMenu(journeyId, journeyInfo, lngLat);
+    this.#journeyMenu = initJourneyMenu(journeyId, journeyInfo, lngLat);
     this.#journeyMenu.addTo(this.#map);
+  }
+
+  #hideJourneyMenu() {
+    if (this.#journeyMenu) {
+      this.#journeyMenu.remove();
+      this.#journeyMenu = null;
+    }
   }
 
   #updateFeatureState(changes) {

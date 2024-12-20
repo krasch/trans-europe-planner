@@ -22,7 +22,7 @@ function initDestinationMarker(lngLat) {
 
 function initCityMenu(id, name, lngLat) {
   const element = createElementFromTemplate("template-city-menu", {
-    $root$: { "data-city-id": id, "data-city-name": name },
+    $root$: { "data-city-id": id },
     ".title": { innerText: name },
   });
 
@@ -137,20 +137,22 @@ class Cities {
     });
 
     this.#map._container.addEventListener("click", (e) => {
-      // menu item was clicked
-      if (e.target.tagName === "BUTTON") {
-        const menu = e.target.parentElement.parentElement;
-        const id = menu.dataset.cityId;
-        const name = menu.dataset.cityName;
-        this.#hideCityMenu(id);
-        this.#callbacks["menuClick"](id, name, e.target.value);
-      }
-      // home marker was clicked
-      else if (e.target.classList.contains("city-marker-home")) {
-        const id = e.target.dataset.cityId;
-        this.#showCityMenu(id);
-        this.#callbacks["click"](id);
-      }
+      if (e.target.tagName !== "BUTTON") return;
+
+      const menu = e.target.parentElement.parentElement;
+      if (!menu.classList.contains("city-menu")) return;
+
+      const id = menu.dataset.cityId;
+      this.#hideCityMenu(id);
+      this.#callbacks["menuClick"](id, e.target.value);
+    });
+
+    this.#map._container.addEventListener("click", (e) => {
+      if (!e.target.classList.contains("city-marker-home")) return;
+
+      const id = e.target.dataset.cityId;
+      this.#showCityMenu(id);
+      this.#callbacks["click"](id);
     });
 
     // initial drawing

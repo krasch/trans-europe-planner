@@ -2,13 +2,6 @@ function initUpdateViews(map, calendar, database) {
   function updateViews(state) {
     map.updateView(prepareDataForMap(state.journeys, database));
     calendar.updateView(prepareDataForCalendar(state.journeys, database));
-
-    if (state.journeys.activeJourney) {
-      calendar.show();
-      document
-        .getElementById("sidebar")
-        .style.setProperty("visibility", "visible");
-    } else calendar.hide();
   }
   return updateViews;
 }
@@ -59,8 +52,8 @@ async function main(home, map, calendar) {
   });
 
   // clicking on a city
-  map.on("showCityRoutes", (city) => {
-    const target = `${home}->${city}`;
+  map.on("showCityRoutes", (cityName) => {
+    const target = `${home}->${cityName}`;
     if (!ROUTES[target]) return; // todo handle error
 
     state.journeys.reset();
@@ -73,6 +66,13 @@ async function main(home, map, calendar) {
 
     state.journeys.setShortestAsActive();
     updateViews(state);
+  });
+
+  map.on("showCalendar", (journeyId) => {
+    calendar.show();
+    document
+      .getElementById("sidebar")
+      .style.setProperty("visibility", "visible");
   });
 
   // hovering over map or calender
