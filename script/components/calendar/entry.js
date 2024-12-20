@@ -39,7 +39,7 @@ class CalendarEntry extends HTMLElement {
 
 function createCalendarEntry(connection) {
   const templateData = {
-    ".connection-icon": { src: `images/${connection.type}.svg` },
+    ".connection-icon": { src: `images/icons/${connection.type}.svg` },
     ".connection-number": { innerText: connection.displayId },
     ".connection-start-time": {
       innerText: connection.startDateTime.timeString,

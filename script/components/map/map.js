@@ -142,7 +142,9 @@ class MapWrapper {
     return new Promise((fulfilled, rejected) => {
       this.map.on("load", async () => {
         try {
-          const image = await this.map.loadImage("images/circle.sdf.png");
+          const image = await this.map.loadImage(
+            "images/markers/circle.sdf.png",
+          );
           this.map.addImage("circle", image.data, { sdf: true });
 
           this.init(cities, legs);
@@ -306,6 +308,14 @@ class MapWrapper {
         if (e.target.checked) this.#callbacks["showCityRoutes"](data.cityName);
         else this.#callbacks["hideCityRoutes"](data.cityName);
       }
+    });
+
+    this.map._container.addEventListener("click", (e) => {
+      if (e.target.tagName !== "BUTTON") return;
+
+      const menu = e.target.parentElement.parentElement;
+      this.#objects.cityMenus.hide(menu.dataset.cityId);
+      this.#callbacks["showCityRoutes"](menu.dataset.cityName);
     });
   }
 

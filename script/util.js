@@ -10,27 +10,21 @@ function createElementFromTemplate(templateId, templateData) {
   return element;
 }
 
-function updateElement(element, data) {
+function updateElement(container, data) {
   for (let selector in data) {
-    const children = element.querySelectorAll(selector);
+    const matches =
+      selector === "$root$"
+        ? [container]
+        : container.querySelectorAll(selector);
 
-    for (let child of children) {
+    for (let element of matches) {
       for (let key in data[selector]) {
-        child[key] = data[selector][key];
+        if (key.startsWith("data"))
+          element.setAttribute(key, data[selector][key]);
+        else element[key] = data[selector][key];
       }
     }
   }
-}
-
-function initInputAndLabel(container, idSuffix) {
-  const input = container.querySelector("input");
-  const label = container.querySelector("label");
-
-  input.name = `${input.name}-${idSuffix}`;
-  input.id = `${input.id}-${idSuffix}`;
-  label.setAttribute("for", input.id);
-
-  return { input: input, label: label };
 }
 
 function* calculateDiffs(oldObjectOfObjects, newObjectOfObjects) {
@@ -160,6 +154,7 @@ class StateManager {
       if (diff.kind === "updated" || diff.kind === "added")
         this.#states[id][key] = diff.newValue;
       else if (diff.kind === "removed") {
+        // todo get rid of removed, everything should have a default
         // need to fall back to a default value -> rewrite "removed" as "updated"
         if (this.#hasDefault(id, key)) {
           // already at default, this is not actually a diff

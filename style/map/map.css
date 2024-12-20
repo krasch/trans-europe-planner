@@ -24,9 +24,9 @@
 .city-marker-home {
   cursor: pointer;
 
-  background-image: url("../../images/marker_home.svg");
+  background-image: url("../../images/markers/marker_home.svg");
   background-size: contain;
-  filter: var(--filter-dark-blue2);
+  filter: var(--filter-dark);
 
   height: 2.5rem;
   width: calc(2.5rem * 0.64);
@@ -96,7 +96,7 @@
 .city-menu {
   width: 12rem;
 
-  --color-menu-highlight: var(--color-modal);
+  --color-menu-highlight: var(--color-dark);
 
   border-color: var(--color-menu-highlight);
 }
@@ -107,115 +107,23 @@
   letter-spacing: 0.02rem;
 }
 
-.city-menu li {
-  width: 100%;
-  padding: 0;
-}
-
-.city-menu li:not(button) {
-  /*padding: 5px;*/
-}
-
 .city-menu button {
-  width: 100%;
-  height: 1.3rem;
-
-  padding: 0;
-  margin: 0;
-  text-align: left;
-
-  /*box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);*/
-
-  cursor: pointer;
-
+  border: 0;
   background: white;
   color: var(--color-menu-highlight);
 }
 
-.city-menu .symbol-eye {
-  content: "👁";
+.city-menu button img {
+  filter: var(--filter-dark);
 }
 
 .city-menu button:hover {
-  border-color: var(--color-menu-highlight);
   background-color: var(--color-menu-highlight);
   color: white;
 }
 
-/*.city-menu button {
-  width: 95%;
-
-  border: 1px solid white;
-  border-radius: 0.25rem;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-
-  padding: 0.2rem;
-
-  cursor: pointer;
-
-  background: white;
-  color: var(--color-menu-highlight);
-}
-
-.city-menu em {
-}
-
-.city-menu ul {
-}
-
-.city-menu button:enabled:hover {
-  border-color: var(--color-menu-highlight);
-  background-color: var(--color-menu-highlight);
-  color: white;
-}
-
-.city-menu button:disabled {
-  cursor: default;
-  box-shadow: none;
-  color: lightgray;
-}
-
-.city-menu .symbol-scissors {
-  transform: rotate(-90deg);
-  display: inline-block;
-}
-
-.city-menu .menu-entry {
-  color: var(--color-menu-highlight);
-}*/
-
-/* when hovering the background color changes */
-.city-menu .menu-entry:hover {
-  background-color: var(--color-background);
-}
-
-.city-menu label {
-  /* whole width should be clickable */
-  width: 100%;
-  /* should also look clickable*/
-  cursor: pointer;
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-/* checkboxes should not be visible */
-.city-menu input {
-  visibility: hidden;
-  padding: 0;
-  margin: 0;
-  width: 0;
-}
-
-/* instead, the 👁 symbol works as visual indicator */
-.city-menu input + label:before {
-  content: "👁";
-  color: darkgray; /* light when unchecked */
-}
-.city-menu input:checked + label:before {
-  color: var(--color-dark); /* dark when checked */
+.city-menu button:hover img {
+  filter: var(--filter-white);
 }
 
 /***********************************************

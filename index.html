@@ -81,7 +81,7 @@
         <div class="calendar-connection-header">
             <img class="connection-icon">
             <span class="connection-number"></span>
-            <img src="images/move.svg" alt="icon to move calendar event">
+            <img src="images/icons/move.svg" alt="icon to move calendar event">
         </div>
         <div>
             <span class="connection-start-time"></span>
@@ -106,16 +106,21 @@
 </template>
 
 <template id="template-city-menu">
-    <menu class="city-menu">
-        <li class="title"></li>
+    <menu class="city-menu" data-city-id="to-be-filled" data-city-name="to-be-filled">
+        <li><span class="title"></span></li>
         <li><em>Mit x Umstiegen erreichbar</em></li>
-        <li><button>Reiserouten anzeigen</button></li>
-        <li><button>Aufenthalt einfügen</button></li>
-        <!--div class="row menu-entry">
-            <id, name and for will be made unique when instantiating the templat>
-            <input type="checkbox" id="city-menu-routes" name="city-menu-routes" value="routes">
-            <label for="city-menu-routes"><span class="slider"></span>Routen hierher</label>
-        </div-->
+        <li>
+            <button class="hidden" value="showRoutes">
+                <img src="images/icons/eye.svg" alt="icon of eye"/>
+                Reiserouten anzeigen
+            </button>
+        </li>
+        <li>
+            <button class="hidden" value="makeCut">
+                <img src="images/icons/scissors.svg" alt="icon of scissors"/>
+                Aufenthalt einfügen
+            </button>
+        </li>
     </menu>
 </template>
 
@@ -168,7 +173,7 @@
         <h3><em>Einfacher mit dem Zug quer durch Europa</em></h3>
     </div>
     <div>
-        <img src="images/marker_home.svg" alt="map marker depicting a house">
+        <img src="images/markers/marker_home.svg" alt="map marker depicting a house">
         <div id="choose-home">
             <h1>Wo soll die Reise starten?</h1>
             <div>

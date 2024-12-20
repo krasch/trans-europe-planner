@@ -119,6 +119,7 @@ function prepareInitialDataForMap(home, cityInfo, connections) {
         lngLat: [cityInfo[id].longitude, cityInfo[id].latitude],
       };
       cities.defaults[id] = {
+        // todo every state key should have a default value
         rank: cityInfo[id].rank,
         isHome: cityInfo[id].name === home ?? false,
         isDestination: cityInfo[id].routesAvailable ?? false,

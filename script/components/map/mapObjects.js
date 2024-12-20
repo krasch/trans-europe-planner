@@ -1,3 +1,8 @@
+function updateVisibility(element, isVisible) {
+  if (isVisible) element.classList.remove("hidden");
+  else element.classList.add("hidden");
+}
+
 function initHomeMarker(lngLat) {
   const marker = new maplibregl.Marker({
     element: createElementFromTemplate("template-city-marker-home"),
@@ -14,6 +19,31 @@ function initDestinationMarker(lngLat) {
   });
   marker.setLngLat(lngLat);
   return marker;
+}
+
+function initCityMenu(id, name, lngLat) {
+  const element = createElementFromTemplate("template-city-menu", {
+    $root$: { "data-city-id": id, "data-city-name": name },
+    ".title": { innerText: name },
+  });
+
+  const popup = new maplibregl.Popup({
+    anchor: "left",
+    offset: [5, 0],
+    closeButton: true,
+  });
+  popup.setDOMContent(element).setLngLat(lngLat);
+
+  const buttonShowRoutes = element.querySelector("button[value='showRoutes']");
+  const buttonMakeCut = element.querySelector("button[value='makeCut']");
+
+  popup.updateElement = (diff) => {
+    if (diff.key === "isDestination") {
+      updateVisibility(buttonShowRoutes, diff.newValue);
+    }
+  };
+
+  return popup;
 }
 
 class CityMarker {
@@ -59,54 +89,15 @@ class CityMarkerCollection {
 }
 
 class CityMenu {
-  #popupElement; // the html element
   popup; // the actual maplibre popup object
 
-  // input elements to make it easier to change menu items
-  #entries = {};
-
   constructor(id, name, lngLat) {
-    this.#popupElement = createElementFromTemplate("template-city-menu", {
-      ".title": { innerText: name },
-    });
-    this.#popupElement.id = `city-menu-${id}`;
-
-    for (let entryContainer of this.#popupElement.querySelectorAll(
-      ".menu-entry",
-    )) {
-      const entryName = this.#initMenuEntry(entryContainer, id, name);
-      this.#entries[entryName] = entryContainer;
-    }
-
-    this.popup = new maplibregl.Popup({
-      anchor: "left",
-      offset: [5, 0],
-      closeButton: true,
-    });
-
-    this.popup.setDOMContent(this.#popupElement).setLngLat(lngLat);
+    this.popup = initCityMenu(id, name, lngLat);
+    this.popup.updateElement({ key: "isDestination", value: false });
   }
 
   update(diff) {
-    /*if (diff.key === "isDestination") {
-      if (diff.newValue === true)
-        this.#entries["routes"].style.setProperty("display", "flex");
-      else this.#entries["routes"].style.setProperty("display", "none");
-    }*/
-  }
-
-  #initMenuEntry(element, cityId, cityName) {
-    const result = initInputAndLabel(element, cityId);
-
-    // needed for reacting when entry is chosen
-    result.input.data = {
-      type: "city",
-      cityName: cityName,
-      cityId: cityId,
-      entry: result.input.value,
-    };
-
-    return result.input.value; // what is the "name" of this entry?
+    this.popup.updateElement(diff);
   }
 }
 
