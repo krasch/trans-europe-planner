@@ -6,6 +6,17 @@
   visibility: hidden;
 }
 
+.maplibregl-popup-close-button {
+  color: white;
+  top: 3px;
+  right: 3px;
+  border-radius: 5px;
+}
+
+.maplibregl-popup-close-button:hover {
+  border: 1px solid white;
+}
+
 /***********************************************
  home marker
 ************************************************/
@@ -13,17 +24,17 @@
 .city-marker-home {
   cursor: pointer;
 
-  background-image: url("../../images/marker_home.svg");
+  background-image: url("../../images/markers/marker_home.svg");
   background-size: contain;
-  filter: var(--filter-dark-blue2);
+  filter: var(--filter-dark);
 
   height: 2.5rem;
   width: calc(2.5rem * 0.64);
 }
 
-/***********************************************
- destination marker
-************************************************/
+/***********************************************************************
+ destination marker (only for animation, will get replaced by map layer
+***********************************************************************/
 
 .city-marker-destination {
   cursor: pointer;
@@ -79,65 +90,50 @@
 }
 
 /***********************************************
-  city context menu
+  city and edge context menu
 ************************************************/
 
-.city-menu {
-  border-color: var(--color-background);
-}
-
-.city-menu .title {
-  background-color: var(--color-dark);
-  color: white;
-}
-
-.city-menu .menu-entry {
-  color: var(--color-dark);
-}
-
-/* when hovering the background color changes */
-.city-menu .menu-entry:hover {
-  background-color: var(--color-background);
-}
-
-.city-menu label {
-  /* whole width should be clickable */
-  width: 100%;
-  /* should also look clickable*/
-  cursor: pointer;
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-/* checkboxes should not be visible */
-.city-menu input {
-  visibility: hidden;
-  padding: 0;
-  margin: 0;
-  width: 0;
-}
-
-/* instead, the 👁 symbol works as visual indicator */
-.city-menu input + label:before {
-  content: "👁";
-  color: darkgray; /* light when unchecked */
-}
-.city-menu input:checked + label:before {
-  color: var(--color-dark); /* dark when checked */
-}
-
-/***********************************************
-  edge context menu
-************************************************/
-
+.city-menu,
 .edge-menu {
-  border-color: var(--color-background);
+  width: 12rem;
+
+  --color-menu-light: white;
+  --filter-menu-light: var(--filter-white);
+
+  --color-menu-dark: var(--color-dark);
+  --filter-menu-dark: var(--filter-dark);
+
+  border-color: var(--color-menu-dark);
 }
 
+.city-menu .title,
 .edge-menu .title {
-  background-color: var(--color-dark);
-  color: white;
+  letter-spacing: 0.02rem;
+
+  color: var(--color-menu-light);
+  background-color: var(--color-menu-dark);
+}
+
+.city-menu button,
+.edge-menu button {
+  border: 0;
+
+  color: var(--color-menu-dark);
+  background: var(--color-menu-light);
+}
+
+.city-menu button img,
+.edge-menu button img {
+  filter: var(--filter-menu-dark);
+}
+
+.city-menu button:hover,
+.edge-menu button:hover {
+  color: var(--color-menu-light);
+  background-color: var(--color-menu-dark);
+}
+
+.city-menu button:hover img,
+.edge-menu button:hover img {
+  filter: var(--filter-menu-light);
 }

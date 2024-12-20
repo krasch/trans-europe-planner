@@ -32,6 +32,7 @@
     <script src="data/stations.js"></script>
     <script src="data/connections.js"></script>
     <script src="data/routes.js"></script>
+    <script src="data/text.js"></script>
 
     <!-- scripts -->
     <script src="script/util.js"></script>
@@ -46,8 +47,9 @@
     <script src="script/components/calendar/calendar.js"></script>
     <script src="script/components/calendar/draganddrop.js"></script>
     <script src="script/components/map/map.js"></script>
-    <script src="script/components/map/mapObjects.js"></script>
-    <script src="script/components/map/animation.js"></script>
+    <script src="script/components/map/cities.js"></script>
+    <script src="script/components/map/edges.js"></script>
+    <script src="script/components/map/util.js"></script>
 
     <title>Trans-Europe-Planner</title>
     <link rel="stylesheet" href="style/sidebar.css">
@@ -81,7 +83,7 @@
         <div class="calendar-connection-header">
             <img class="connection-icon">
             <span class="connection-number"></span>
-            <img src="images/move.svg" alt="icon to move calendar event">
+            <img src="images/icons/move.svg" alt="icon to move calendar event">
         </div>
         <div>
             <span class="connection-start-time"></span>
@@ -95,7 +97,7 @@
 </template>
 
 <template id="template-city-marker-home">
-    <div class="city-marker-home"></div>
+    <div class="city-marker-home" data-city-id="to-be-filled"></div>
 </template>
 
 <template id="template-city-marker-destination">
@@ -106,29 +108,37 @@
 </template>
 
 <template id="template-city-menu">
-    <div class="city-menu card">
-        <div class="title"></div>
-        <div class="row menu-entry">
-            <!-- id, name and for will be made unique when instantiating the template -->
-            <input type="checkbox" id="routes" name="show" value="routes">
-            <label for="routes">Routen hierher</label>
-        </div>
-    </div>
+    <menu class="city-menu" data-city-id="to-be-filled">
+        <li><span class="title"></span></li>
+        <li><em class="num-transfers hidden"></em></li>
+        <li>
+            <button class="hidden" value="showRoutes">
+                <img src="images/icons/eye.svg" alt="icon of eye"/>
+                Reiserouten anzeigen
+            </button>
+        </li>
+        <li>
+            <button class="hidden" value="makeCut">
+                <img src="images/icons/scissors.svg" alt="icon of a pair of scissors"/>
+                Aufenthalt einfügen
+            </button>
+        </li>
+    </menu>
 </template>
 
 <template id="template-edge-menu">
-    <div class="edge-menu card">
-        <div class="title">
-            <span class="from"></span> &nbsp;⮕&nbsp;<span class="to"></span>
-        </div>
-        <div class="row"><span class="num-transfer"></span>&nbsp;<span class="via"></span></div>
-        <div class="row">Reisezeit: &nbsp; <strong class="travel-time"></strong></div>
-        <!--div class="row menu-entry"-->
-        <!-- id, name and for will be made unique when instantiating the template -->
-        <!--input type="checkbox" id="showJourneyCalendar" name="show" value="journey">
-        <label for="showJourneyCalendar">Reisekalender anzeigen</label>
-    </div-->
-    </div>
+    <menu class="edge-menu" data-journey-id="to-be-filled">
+        <li>
+            <div class="title"><span class="from"></span> &nbsp;⮕&nbsp;<span class="to"></span></div>
+        </li>
+        <li><span>Reisezeit: &nbsp;<strong class="travel-time"></strong></span></li>
+        <li>
+            <button value="showCalendar">
+                <img src="images/icons/calendar.svg" alt="icon of a calendar"/>
+                Reisekalender anzeigen
+            </button>
+        </li>
+    </menu>
 </template>
 
 
@@ -158,14 +168,14 @@
 
 <img id="icon" src="images/logo.svg" alt="logo for the trans-europe-planner">
 
-<div id="modal" class="card">
+<div id="modal">
     <img class="logo" src="images/logo.svg" alt="logo for the trans-europe-planner">
     <div class="title">
         <h1>Willkommen beim Trans Europa Planer</h1>
         <h3><em>Einfacher mit dem Zug quer durch Europa</em></h3>
     </div>
-    <div>
-        <img src="images/marker_home.svg" alt="map marker depicting a house">
+    <div class="content">
+        <img src="images/markers/marker_home.svg" alt="map marker depicting a house">
         <div id="choose-home">
             <h1>Wo soll die Reise starten?</h1>
             <div>

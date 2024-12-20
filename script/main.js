@@ -2,26 +2,8 @@ function initUpdateViews(map, calendar, database) {
   function updateViews(state) {
     map.updateView(prepareDataForMap(state.journeys, database));
     calendar.updateView(prepareDataForCalendar(state.journeys, database));
-
-    if (state.journeys.activeJourney) {
-      calendar.show();
-      document
-        .getElementById("sidebar")
-        .style.setProperty("visibility", "visible");
-    } else calendar.hide();
   }
   return updateViews;
-}
-
-function addIsDestinationInfo(CITIES, ROUTES) {
-  const destinations = Object.keys(ROUTES).map((k) => k.split("->")[1]);
-
-  for (let id in CITIES) {
-    if (destinations.includes(CITIES[id].name)) {
-      CITIES[id].routesAvailable = true;
-      CITIES[id].rank = 2;
-    }
-  }
 }
 
 async function main(home, map, calendar) {
@@ -30,7 +12,7 @@ async function main(home, map, calendar) {
     journeys: new JourneyCollection(),
   };
 
-  addIsDestinationInfo(CITIES, ROUTES); // hack
+  //addIsDestinationInfo(CITIES, ROUTES); // hack
 
   // prepare database
   const DATES = ["2024-12-01", "2024-12-02", "2024-12-03"];
@@ -40,7 +22,12 @@ async function main(home, map, calendar) {
   const database = new Database(connections);
 
   // initial drawing of all necessary geo information
-  const initialMapData = prepareInitialDataForMap(home, CITIES, connections);
+  const initialMapData = prepareInitialDataForMap(
+    home,
+    CITIES,
+    connections,
+    ROUTES,
+  );
   const mapLoadedPromise = map.load(initialMapData);
 
   // init update views
@@ -59,20 +46,31 @@ async function main(home, map, calendar) {
   });
 
   // clicking on a city
-  map.on("showCityRoutes", (city) => {
-    const target = `${home}->${city}`;
-    if (!ROUTES[target]) return;
+  map.on("showCityRoutes", (cityName) => {
+    const target = `${home}->${cityName}`;
+    if (!ROUTES[target]) return; // todo handle error
+
+    state.journeys.reset();
 
     for (let route of ROUTES[target]) {
       if (typeof route === "string") continue; // inline "comments" in routes file
       const connectionIds = createStupidItineraryForRoute(route, database);
       state.journeys.addJourney(connectionIds);
     }
+
+    state.journeys.setShortestAsActive();
     updateViews(state);
   });
-  map.on("hideCityRoutes", (city) => {
-    state.journeys.removeJourneysWithDestination(city);
-    updateViews(state);
+
+  map.on("showCalendar", (journeyId) => {
+    calendar.show();
+    document
+      .getElementById("sidebar")
+      .style.setProperty("visibility", "visible");
+  });
+
+  map.on("cutJourney", (cityName) => {
+    state.journeys.cutActiveJourney(cityName, database);
   });
 
   // hovering over map or calender

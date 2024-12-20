@@ -31,7 +31,9 @@ test("prepareInitialDataForMap", function () {
     ["2024-10-15", "09:00", "city1MainStationId"],
   ]);
 
-  const got = prepareInitialDataForMap(home, testCities, [c1, c2, c3]);
+  const routes = { "City1->City3": [["City1->City3"]] };
+
+  const got = prepareInitialDataForMap(home, testCities, [c1, c2, c3], routes);
   const expCities = {
     geo: {
       cityId1: {
@@ -53,18 +55,21 @@ test("prepareInitialDataForMap", function () {
         isVisible: true,
         isHome: true,
         isDestination: false,
+        numTransfer: Infinity,
       },
       cityId2: {
         rank: 2,
         isVisible: false,
         isHome: false,
         isDestination: false,
+        numTransfer: Infinity,
       },
       cityId3: {
-        rank: 3,
+        rank: 2,
         isVisible: true,
         isHome: false,
         isDestination: true,
+        numTransfer: 0,
       },
     },
   };
@@ -123,12 +128,14 @@ test("prepareDataForMapNoActiveJourney", function () {
   const expEdges = {
     state: {
       "City1->City2": {
+        color: null,
         isVisible: true,
         isActive: false,
         leg: "City1->City3",
         journey: j1,
       },
       "City2->City3": {
+        color: null,
         isVisible: true,
         isActive: false,
         leg: "City1->City3",
@@ -180,21 +187,25 @@ test("prepareDataForMap", function () {
   const expCities = {
     cityId1: {
       isStop: true,
+      isTransfer: true,
       isVisible: true,
       circleColor: `rgb(${getColor(0)})`,
     },
     cityId2: {
       isStop: true,
+      isTransfer: false,
       isVisible: true,
       circleColor: `rgb(${getColor(0)})`,
     },
     cityId3: {
       isStop: true,
+      isTransfer: true,
       isVisible: true,
-      circleColor: `rgb(${getColor(0)})`,
+      circleColor: `rgb(${getColor(1)})`,
     },
     cityId4: {
       isStop: true,
+      isTransfer: false,
       isVisible: true,
       circleColor: `rgb(${getColor(1)})`,
     },
@@ -230,6 +241,7 @@ test("prepareDataForMap", function () {
       "City2->City5": {
         isVisible: true,
         isActive: false,
+        color: null,
         leg: "City1->City5",
         journey: j2,
       },

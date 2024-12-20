@@ -105,23 +105,30 @@ function prepareDataForCalendar(journeys, database) {
   return data;
 }
 
-function prepareInitialDataForMap(home, cityInfo, connections) {
+function prepareInitialDataForMap(home, cityInfo, connections, allRoutes) {
   const cities = { geo: {}, defaults: {} };
   const edges = { geo: {}, defaults: {} };
 
   for (let c of connections) {
     for (let cityName of c.cities) {
-      const id = CITY_NAME_TO_ID[cityName];
       if (cities.geo[cityName] !== undefined) continue; // already done this city
+
+      const id = CITY_NAME_TO_ID[cityName];
+
+      const target = `${home}->${cityName}`;
+      const routes = (allRoutes[target] ?? []).filter(
+        (r) => typeof r !== "string",
+      );
 
       cities.geo[id] = {
         name: cityInfo[id].name,
         lngLat: [cityInfo[id].longitude, cityInfo[id].latitude],
       };
       cities.defaults[id] = {
-        rank: cityInfo[id].rank,
+        rank: routes.length > 0 ? 2 : cityInfo[id].rank,
         isHome: cityInfo[id].name === home ?? false,
-        isDestination: cityInfo[id].routesAvailable ?? false,
+        isDestination: routes.length > 0,
+        numTransfer: Math.min(...routes.map((r) => r.length)) - 1,
       };
       cities.defaults[id].isVisible =
         cities.defaults[id].isHome || cities.defaults[id].isDestination;
@@ -160,9 +167,11 @@ function prepareDataForMap(journeys, database) {
     for (let i in connections) {
       const color = active ? `rgb(${getColor(i)})` : null;
 
-      for (let cityName of connections[i].cities) {
+      for (let j in connections[i].cities) {
+        const cityName = connections[i].cities[j];
         const id = CITY_NAME_TO_ID[cityName];
-        const destination = journey.destination === cityName;
+
+        const isTransfer = j === "0" || Number(j) === connections[i].length - 1;
 
         // get current data for this city or init new if first time we see this city
         const data = cities[id] ?? {};
@@ -170,7 +179,8 @@ function prepareDataForMap(journeys, database) {
         // updated carefully to make sure we don't overwrite data from active journey
         data.isVisible = true;
         data.isStop = true;
-        if (active && !data.circleColor) data.circleColor = color;
+        if (data.circleColor === null || active) data.circleColor = color;
+        if (data.isTransfer === null || active) data.isTransfer = isTransfer;
 
         cities[id] = data;
       }
@@ -185,7 +195,7 @@ function prepareDataForMap(journeys, database) {
         // update carefully to make sure we don't overwrite data from active journey
         state.isActive = state.isActive || active;
         state.isVisible = true;
-        if (active) state.color = color;
+        if (!state.color || active) state.color = color;
         // todo it it is not nice that I need this here and in mapping
         if (!state.leg || active) state.leg = leg;
         if (!state.journey || active) state.journey = journey.id;

@@ -54,18 +54,8 @@ class JourneyCollection {
     for (let j of this.#journeys) if (j.id === this.#activeId) return j;
   }
 
-  get alternativeJourneys() {
-    const result = [];
-    for (let j of this.#journeys) if (j.id !== this.#activeId) result.push(j);
-    return result;
-  }
-
   get journeys() {
     return this.#journeys;
-  }
-
-  get numJourneys() {
-    return this.#journeys.length;
   }
 
   addJourney(connections) {
@@ -79,19 +69,28 @@ class JourneyCollection {
     this.#activeId = journeyId;
   }
 
+  setShortestAsActive() {
+    if (this.#journeys.length === 0) return;
+
+    let shortest = this.#journeys[0];
+    for (let journey of this.#journeys.slice(1))
+      if (journey.legs.length < shortest.legs.length) shortest = journey;
+
+    this.setActive(shortest.id);
+  }
+
+  cutActiveJourney(cityName, database) {
+    if (!this.#activeId) return;
+
+    const active = this.activeJourney;
+    for (let id of active.connectionIds) {
+      const connection = database.connection(id);
+    }
+  }
+
   reset() {
     this.#journeys = [];
     this.#activeId = null;
-  }
-
-  removeJourneysWithDestination(destination) {
-    const toRemove = this.#journeys
-      .filter((j) => j.destination === destination)
-      .map((j) => j.id);
-
-    if (toRemove.includes(this.#activeId)) this.#activeId = null;
-
-    this.#journeys = this.#journeys.filter((j) => !toRemove.includes(j.id));
   }
 }
 

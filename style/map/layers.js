@@ -55,9 +55,9 @@ const mapStyles = [
       "line-color": ["to-color", ["feature-state", "color"], "#aaa"],
       "line-opacity": [
         "case",
-        ["boolean", ["feature-state", "active"], false],
+        ["boolean", ["feature-state", "isActive"], false],
         0.6,
-        0.3,
+        0.4,
       ],
       "line-width": [
         "case",
