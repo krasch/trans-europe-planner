@@ -98,6 +98,8 @@ class Cities {
   #keys = {
     featureState: [
       "hover",
+      // todo this is isStop||isDestination and is used in event handling, can replace?
+      // somehow it does not work correctly when using in layer filter, old stops still visible, something to do with reset?
       "isVisible",
       "isDestination",
       "isStop",
@@ -105,7 +107,7 @@ class Cities {
       "circleColor",
     ],
     cityMenu: ["isDestination", "isStop", "isTransfer"],
-    sourceData: ["rank", "isVisible"], // slow to update
+    sourceData: ["rank", "isDestination", "isStop"], // slow to update
   };
   #resetKeys = ["isStop", "isTransfer", "circleColor"];
 

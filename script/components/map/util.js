@@ -172,7 +172,7 @@ class MouseEventHelper {
 
       if (hasHigherPriorityFeatures(e.point)) {
         if (previousFeatureId !== null)
-          this.#callbacks["mouseLeave"](previousFeatureId, e.lngLat);
+          this.#callbacks["mouseLeave"](previousFeatureId, e.lngLat, true);
 
         previousFeatureId = null;
         return;

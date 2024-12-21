@@ -74,7 +74,11 @@ const mapStyles = [
     id: "city-circle-interact",
     source: "cities",
     type: "symbol",
-    filter: ["boolean", ["get", "isVisible"], false],
+    filter: [
+      "any",
+      ["boolean", ["get", "isDestination"], false],
+      ["boolean", ["get", "isStop"], false],
+    ],
     layout: {
       "icon-image": "circle",
       "icon-size": 0.6,
@@ -112,7 +116,13 @@ const mapStyles = [
         "case",
         [
           "all",
-          ["boolean", ["feature-state", "isVisible"], false],
+          ["boolean", ["feature-state", "isDestination"], false],
+          ["boolean", ["feature-state", "hover"], false],
+        ],
+        2,
+        [
+          "all",
+          ["boolean", ["feature-state", "isStop"], false],
           ["boolean", ["feature-state", "hover"], false],
         ],
         2,
@@ -149,7 +159,9 @@ const mapStyles = [
       ],
       "circle-stroke-width": [
         "case",
-        ["boolean", ["feature-state", "isVisible"], false],
+        ["boolean", ["feature-state", "isDestination"], false],
+        1,
+        ["boolean", ["feature-state", "isStop"], false],
         1,
         0,
       ],
