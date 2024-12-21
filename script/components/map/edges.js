@@ -58,8 +58,9 @@ class Edges {
       this.#callbacks["mouseOver"](id);
     });
 
-    events.on("mouseLeave", (id, lngLat) => {
-      this.#map.getCanvas().style.cursor = "default";
+    events.on("mouseLeave", (id, lngLat, hasHigherPriorityFeature = false) => {
+      if (!hasHigherPriorityFeature)
+        this.#map.getCanvas().style.cursor = "default";
       this.#callbacks["mouseLeave"](id);
     });
 
