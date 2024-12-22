@@ -141,36 +141,13 @@
     </menu>
 </template>
 
-
-<div id="sidebar">
-    <div id="logo">
-        <img src="images/logo.svg" alt="logo for the trans-europe-planner">
-        <div>
-            <div>Trans Europe Planner</div>
-            <div class="claim"><em>Einfacher mit dem Zug quer durch Europa</em></div>
-        </div>
-    </div>
-
-    <!-- All calendar elements will be added into the container below dynamically -->
-    <div id="calender-container">
-        <div class="title">Reisevorschlag anpassen</div>
-        <div class="explanation">
-            Hier kannst du Zugverbindungen einfach
-            <strong>hin und her schieben</strong> um
-            Umsteigezeiten anzupassen oder die Reise
-            auf mehrere Tage zu verteilen.
-        </div>
-        <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
-    </div>
-</div>
+<img id="icon" src="images/logo.svg" alt="logo for the trans-europe-planner">
 
 <div id="map"></div>
 
-<img id="icon" src="images/logo.svg" alt="logo for the trans-europe-planner">
-
 <div id="modal">
     <img class="logo" src="images/logo.svg" alt="logo for the trans-europe-planner">
-    <div class="title">
+    <div class="header">
         <h1>Willkommen beim Trans Europa Planer</h1>
         <h3><em>Einfacher mit dem Zug quer durch Europa</em></h3>
     </div>
@@ -188,6 +165,28 @@
         </div>
     </div>
     <div class="bottom"></div>
+</div>
+
+<div id="sidebar">
+    <div class="header">
+        <img class="logo" src="images/logo.svg" alt="logo for the trans-europe-planner">
+        <div class="claim">
+            <h1>Trans Europe Planner</h1>
+            <h3><em>Einfacher mit dem Zug quer durch Europa</em></h3>
+        </div>
+    </div>
+
+    <!-- All calendar elements will be added into the container below dynamically -->
+    <div id="calender-container">
+        <div class="title">Reisevorschlag anpassen</div>
+        <div class="explanation">
+            Hier kannst du Zugverbindungen einfach
+            <strong>hin und her schieben</strong> um
+            Umsteigezeiten anzupassen oder die Reise
+            auf mehrere Tage zu verteilen.
+        </div>
+        <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
+    </div>
 </div>
 
 

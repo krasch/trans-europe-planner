@@ -20,7 +20,7 @@
   padding: var(--padding);
 }
 
-#modal > .title,
+#modal > .header,
 #modal > .bottom {
   height: calc(var(--logo-height) + 2 * var(--padding));
 }
@@ -32,7 +32,7 @@
   height: var(--logo-height);
 }
 
-#modal .title {
+#modal .header {
   display: flex;
   flex-direction: column;
 
@@ -57,13 +57,6 @@
   gap: calc(2 * var(--padding));
 }
 
-#modal h1,
-#modal h2,
-#modal h3 {
-  margin: 0;
-  font-weight: normal;
-}
-
 /***********************************************
  style
 ************************************************/
@@ -85,7 +78,7 @@
   filter: var(--filter-modal-light);
 }
 
-#modal > .title,
+#modal > .header,
 #modal > .bottom {
   color: var(--color-modal-light);
   background-color: var(--color-modal-dark);

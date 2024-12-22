@@ -1,72 +1,78 @@
 #sidebar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 3rem;
+    --color-sidebar-light: white;
+    --filter-sidebar-light: var(--filter-white);
 
-  background-color: var(--color-background);
-  color: var(--color-light);
+    --color-sidebar-dark: var(--color-dark);
+    --filter-sidebar-dark: var(--filter-dark);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 3rem;
+
+    background-color: var(--color-sidebar-light);
+    color: var(--color-sidebar-dark);
+    border-right: 1px solid lightgrey;
 }
 
-#logo {
-  padding-top: 2rem;
-  height: 3rem;
-
-  font-size: 1.5rem;
+#sidebar > * {
+    width: calc(100% - 2*2rem);
+    padding: 2rem;
 }
 
-#logo {
+#sidebar .header {
+
     display: flex;
     flex-direction: row;
-    gap: 0.5rem;
+    align-self: start;
     align-items: center;
+    gap: 1rem;
+
+    background-color: var(--color-sidebar-dark);
+    color: var(--color-sidebar-light);
 }
 
-#logo img {
-    /* https://codepen.io/sosuke/pen/Pjoqqp */
-    filter: var(--filter-beige);
-    height: 100%;
+#sidebar .header .claim {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
 }
 
-
-#logo div {
-  flex-direction: row;
-  align-content: center;
-}
-
-#logo .claim {
-  font-size: 1rem;
+#sidebar .logo {
+    height: 6rem;
+    filter: var(--filter-white);
 }
 
 #calender-container {
-  visibility: hidden; /* on first load */
+    visibility: hidden; /* on first load */
 
-  width: 95%;
+    width: 95%;
 
-  padding: 0.5rem 0 0.5rem 0;
-  border-radius: 10px;
+    padding: 0.5rem 0 0.5rem 0;
+    border-radius: 10px;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
 
-  color: var(--color-dark);
-  background-color: white;
+    color: var(--color-dark);
+    background-color: white;
 }
 
 #calender-container .title {
-  font-size: 1.2rem;
-  text-align: center;
+    font-size: 1.2rem;
+    text-align: center;
 }
+
 #calender-container .explanation {
-  text-align: center;
-  font-size: 0.8rem;
-  font-style: italic;
-  margin-top: -0.5rem;
+    text-align: center;
+    font-size: 0.8rem;
+    font-style: italic;
+    margin-top: -0.5rem;
 }
 
 calendar-grid {
-  width: 95%;
+    width: 95%;
 }
