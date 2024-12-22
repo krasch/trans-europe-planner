@@ -17,7 +17,6 @@
     <link rel="stylesheet" href="style/sidebar.css">
     <link rel="stylesheet" href="style/calendar.css">
     <link rel="stylesheet" href="style/map/map.css">
-    <!--link rel="stylesheet" href="style/card.css"-->
 
     <!-- style scripts -->
     <script src="style/map/layers.js"></script> <!-- only contains css styles for map in js -->
@@ -50,6 +49,7 @@
     <script src="script/components/map/cities.js"></script>
     <script src="script/components/map/edges.js"></script>
     <script src="script/components/map/util.js"></script>
+    <script src="script/components/sidebar.js"></script>
 
     <title>Trans-Europe-Planner</title>
     <link rel="stylesheet" href="style/sidebar.css">
@@ -176,15 +176,18 @@
         </div>
     </div>
 
+    <div>
+        <h2>Reisedatum auswählen</h2>
+        <div id="date-picker">
+            <a class="hidden" id="decrease-date">◀</a>
+            <input type="date"/>
+            <a class="hidden" id="increase-date">▶</a>
+        </div>
+    </div>
+
     <!-- All calendar elements will be added into the container below dynamically -->
     <div id="calender-container">
-        <div class="title">Reisevorschlag anpassen</div>
-        <div class="explanation">
-            Hier kannst du Zugverbindungen einfach
-            <strong>hin und her schieben</strong> um
-            Umsteigezeiten anzupassen oder die Reise
-            auf mehrere Tage zu verteilen.
-        </div>
+        <h2>Reisevorschlag anpassen</h2>
         <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
     </div>
 </div>
@@ -198,6 +201,7 @@
 
         const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3); // starts async loading map
         const calendar = document.getElementById("calendar");
+        const sidebar = new Sidebar(document.getElementById("sidebar"));
 
         // all necessary data is there, let's go!
         const params = new URLSearchParams(window.location.search);
@@ -206,7 +210,7 @@
         if (home && ["Berlin", "Hamburg", "Köln", "München"].includes(home)) {
 
             try {
-                main(home, map, calendar);
+                main(home, map, calendar, sidebar);
             } catch (error) {
                 console.error(error);
             }

@@ -41,8 +41,6 @@ body {
 
   width: 35rem;
   height: 100%;
-
-  /*visibility: hidden;*/
 }
 
 #modal {
@@ -58,11 +56,13 @@ body {
   min-width: 50%;
 }
 
-.header h1,
-.header h2,
-.header h3 {
+h1, h2, h3 {
   margin: 0;
   font-weight: normal;
+}
+
+.hidden {
+  visibility: hidden;
 }
 
 /*******************************************************

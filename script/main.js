@@ -6,7 +6,7 @@ function initUpdateViews(map, calendar, database) {
   return updateViews;
 }
 
-async function main(home, map, calendar) {
+async function main(home, map, calendar, sidebar) {
   // init state
   const state = {
     journeys: new JourneyCollection(),
@@ -64,9 +64,7 @@ async function main(home, map, calendar) {
 
   map.on("showCalendar", (journeyId) => {
     calendar.show();
-    document
-      .getElementById("sidebar")
-      .style.setProperty("visibility", "visible");
+    sidebar.show();
   });
 
   map.on("cutJourney", (cityName) => {
