@@ -7,9 +7,6 @@
 
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 2rem;
 
     background-color: var(--color-sidebar-light);
     color: var(--color-sidebar-dark);
@@ -19,52 +16,44 @@
 
 #sidebar > * {
     width: calc(100% - 2*2rem);
-    padding-left: 2rem;
-    padding-right: 2rem;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
+    padding: 2rem;
 }
 
 #sidebar .header {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-
     display: flex;
     flex-direction: row;
-    align-self: start;
-    align-items: center;
-    gap: 1rem;
+    justify-content: space-between;
+    gap: 3rem;
 
     background-color: var(--color-sidebar-dark);
     color: var(--color-sidebar-light);
 }
 
-#sidebar .header .claim {
+#sidebar .header .logo {
+    height: 6rem;
+    filter: var(--filter-sidebar-light);
+}
+
+#sidebar .header div {
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: center;
+    gap: 1rem;
 }
 
-#sidebar .logo {
-    height: 6rem;
-    filter: var(--filter-white);
-}
-
-#date-picker {
+#sidebar .header #date-picker {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 1rem;
 }
 
 #date-picker a {
     font-size: 1.2rem;
     cursor: pointer;
+}
 
-    text-shadow: 2px 2px 3px grey;
+#date-picker a:hover {
+    text-shadow: 2px 2px 3px lightgrey;
 }
 
 #date-picker input {
@@ -83,11 +72,6 @@
 #calender-container {
     visibility: hidden; /* on first load */
 
-    width: 95%;
-
-    padding: 0.5rem 0 0.5rem 0;
-    border-radius: 10px;
-
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -98,7 +82,6 @@
 }
 
 #calender-container .title {
-    font-size: 1.2rem;
     text-align: center;
 }
 

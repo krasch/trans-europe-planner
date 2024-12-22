@@ -170,22 +170,19 @@
 <div id="sidebar">
     <div class="header">
         <img class="logo" src="images/logo.svg" alt="logo for the trans-europe-planner">
-        <div class="claim">
-            <h1>Trans Europe Planner</h1>
-            <h3><em>Einfacher mit dem Zug quer durch Europa</em></h3>
+        <div>
+            <h2><label for="date-picker-input">Abreisedatum: </label></h2>
+            <div id="date-picker">
+                <a class="hidden" id="decrease-date" title="One day earlier">◀</a>
+                <input type="date" id="date-picker-input"/>
+                <a class="hidden" id="increase-date" title="One day later">▶</a>
+            </div>
         </div>
-    </div>
-
-    <div id="date-picker">
-        <h2><label for="date-picker-input">Abreisedatum: </label></h2>
-        <a class="hidden" id="decrease-date" title="One day earlier">◀</a>
-        <input type="date" id="date-picker-input"/>
-        <a class="hidden" id="increase-date" title="One day later">▶</a>
     </div>
 
     <!-- All calendar elements will be added into the container below dynamically -->
     <div id="calender-container">
-        <h2>Reisevorschlag anpassen</h2>
+        <h2>Reisevorschlag</h2>
         <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
     </div>
 </div>
