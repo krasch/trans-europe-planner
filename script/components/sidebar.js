@@ -79,8 +79,8 @@ class Sidebar {
   on(eventName, callback) {
     this.#callbacks[eventName] = callback;
 
-    if (eventName === "dateChanged" && this.#currentDate !== null)
-      this.#callbacks["dateChanged"](this.#currentDate);
+    //if (eventName === "dateChanged" && this.#currentDate !== null)
+    //  this.#callbacks["dateChanged"](this.#currentDate);
   }
 
   updateView(data) {}
