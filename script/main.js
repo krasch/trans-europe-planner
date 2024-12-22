@@ -63,7 +63,6 @@ async function main(home, map, calendar, sidebar) {
   });
 
   map.on("showCalendar", (journeyId) => {
-    calendar.show();
     sidebar.show();
   });
 
@@ -74,6 +73,8 @@ async function main(home, map, calendar, sidebar) {
   // hovering over map or calender
   calendar.on("entryHoverStart", (leg) => map.setLegHoverState(leg, true));
   calendar.on("entryHoverStop", (leg) => map.setLegHoverState(leg, false));
+
+  sidebar.on("dateChanged", () => calendar.show());
 
   // now have done all we can do without having the map ready
   await mapLoadedPromise;

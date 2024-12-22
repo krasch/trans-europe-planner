@@ -176,13 +176,11 @@
         </div>
     </div>
 
-    <div>
-        <h2>Reisedatum auswählen</h2>
-        <div id="date-picker">
-            <a class="hidden" id="decrease-date">◀</a>
-            <input type="date"/>
-            <a class="hidden" id="increase-date">▶</a>
-        </div>
+    <div id="date-picker">
+        <h2><label for="date-picker-input">Abreisedatum: </label></h2>
+        <a class="hidden" id="decrease-date" title="One day earlier">◀</a>
+        <input type="date" id="date-picker-input"/>
+        <a class="hidden" id="increase-date" title="One day later">▶</a>
     </div>
 
     <!-- All calendar elements will be added into the container below dynamically -->

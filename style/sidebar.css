@@ -14,7 +14,7 @@
     background-color: var(--color-sidebar-light);
     color: var(--color-sidebar-dark);
 
-    opacity: 95%;
+    opacity: 90%;
 }
 
 #sidebar > * {
@@ -63,6 +63,8 @@
 #date-picker a {
     font-size: 1.2rem;
     cursor: pointer;
+
+    text-shadow: 2px 2px 3px grey;
 }
 
 #date-picker input {

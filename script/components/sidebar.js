@@ -23,6 +23,7 @@ class Sidebar {
     this.#decreaseDateElement = this.#container.querySelector(".decrease-date");
     this.#increaseDateElement = this.#container.querySelector(".increase-date");
 
+    // if doing callback here it won't be heard because .on is done later
     if (this.#currentDate !== null) this.#showArrows();
 
     this.#container.addEventListener("input", (e) => {
@@ -49,6 +50,9 @@ class Sidebar {
 
   on(eventName, callback) {
     this.#callbacks[eventName] = callback;
+
+    if (eventName === "dateChanged" && this.#currentDate !== null)
+      this.#callbacks["dateChanged"](this.currentDate);
   }
 
   updateView(data) {}
