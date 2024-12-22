@@ -42,6 +42,7 @@ async function main(home, map, calendar, sidebar) {
   // selecting a different journey
   map.on("selectJourney", (journeyId) => {
     state.journeys.setActive(journeyId);
+    sidebar.show();
     updateViews(state);
   });
 
@@ -59,6 +60,7 @@ async function main(home, map, calendar, sidebar) {
     }
 
     state.journeys.setShortestAsActive();
+    sidebar.show();
     updateViews(state);
   });
 
