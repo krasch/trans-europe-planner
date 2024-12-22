@@ -39,10 +39,8 @@ body {
   left: 0;
   top: 0;
 
+  width: 35rem;
   height: 100%;
-  width: 500px;
-
-  visibility: hidden;
 }
 
 #modal {
@@ -56,6 +54,15 @@ body {
 
   min-height: 50%;
   min-width: 50%;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  font-weight: normal;
+}
+
+.hidden {
+  visibility: hidden;
 }
 
 /*******************************************************

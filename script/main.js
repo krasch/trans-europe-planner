@@ -1,14 +1,24 @@
-function initUpdateViews(map, calendar, database) {
+function initUpdateViews(map, calendar, sidebar, database) {
   function updateViews(state) {
     map.updateView(prepareDataForMap(state.journeys, database));
     calendar.updateView(prepareDataForCalendar(state.journeys, database));
+
+    if (state.journeys.hasActiveJourney) {
+      sidebar.show();
+      if (state.date !== null) calendar.show();
+      else calendar.hide();
+    } else {
+      sidebar.hide();
+      calendar.hide();
+    }
   }
   return updateViews;
 }
 
-async function main(home, map, calendar) {
+async function main(home, map, calendar, sidebar) {
   // init state
   const state = {
+    date: sidebar.currentDate,
     journeys: new JourneyCollection(),
   };
 
@@ -31,7 +41,7 @@ async function main(home, map, calendar) {
   const mapLoadedPromise = map.load(initialMapData);
 
   // init update views
-  const updateViews = initUpdateViews(map, calendar, database);
+  const updateViews = initUpdateViews(map, calendar, sidebar, database);
 
   // moving things around in the calendar
   calendar.on("legChanged", (connectionId) => {
@@ -62,12 +72,9 @@ async function main(home, map, calendar) {
     updateViews(state);
   });
 
-  map.on("showCalendar", (journeyId) => {
-    calendar.show();
-    document
-      .getElementById("sidebar")
-      .style.setProperty("visibility", "visible");
-  });
+  /*map.on("showCalendar", (journeyId) => {
+    sidebar.show();
+  });*/
 
   map.on("cutJourney", (cityName) => {
     state.journeys.cutActiveJourney(cityName, database);
@@ -76,6 +83,11 @@ async function main(home, map, calendar) {
   // hovering over map or calender
   calendar.on("entryHoverStart", (leg) => map.setLegHoverState(leg, true));
   calendar.on("entryHoverStop", (leg) => map.setLegHoverState(leg, false));
+
+  sidebar.on("dateChanged", (date) => {
+    state.date = date;
+    updateViews(state); // todo if a date is still set this might trigger an updateViews before the initial updateViews
+  });
 
   // now have done all we can do without having the map ready
   await mapLoadedPromise;

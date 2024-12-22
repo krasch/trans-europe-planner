@@ -1,72 +1,97 @@
 #sidebar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 3rem;
+    --color-sidebar-light: white;
+    --filter-sidebar-light: var(--filter-white);
 
-  background-color: var(--color-background);
-  color: var(--color-light);
+    --color-sidebar-dark: var(--color-dark);
+    --filter-sidebar-dark: var(--filter-dark);
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: var(--color-sidebar-light);
+    color: var(--color-sidebar-dark);
+
+    opacity: 90%;
 }
 
-#logo {
-  padding-top: 2rem;
-  height: 3rem;
-
-  font-size: 1.5rem;
+#sidebar > * {
+    width: calc(100% - 2*2rem);
+    padding: 2rem;
 }
 
-#logo {
+#sidebar .header {
     display: flex;
     flex-direction: row;
-    gap: 0.5rem;
+    justify-content: space-between;
+    gap: 3rem;
+
+    background-color: var(--color-sidebar-dark);
+    color: var(--color-sidebar-light);
+}
+
+#sidebar .header .logo {
+    height: 6rem;
+    filter: var(--filter-sidebar-light);
+}
+
+#sidebar .header div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+#sidebar .header #date-picker {
+    display: flex;
+    flex-direction: row;
     align-items: center;
 }
 
-#logo img {
-    /* https://codepen.io/sosuke/pen/Pjoqqp */
-    filter: var(--filter-beige);
-    height: 100%;
+#date-picker a {
+    font-size: 1.2rem;
+    cursor: pointer;
 }
 
-
-#logo div {
-  flex-direction: row;
-  align-content: center;
+#date-picker a:hover {
+    text-shadow: 2px 2px 3px lightgrey;
 }
 
-#logo .claim {
-  font-size: 1rem;
+#date-picker input {
+    width: 10rem;
+    padding: 1rem;
+
+    border: 1px solid var(--color-sidebar-dark);
+    border-radius: 5px;
+
+    color: var(--color-sidebar-dark);
+    font-size: 1rem;
+    font-family: helvetica, arial, sans-serif;
 }
+
 
 #calender-container {
-  visibility: hidden; /* on first load */
+    visibility: hidden; /* on first load */
 
-  width: 95%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
 
-  padding: 0.5rem 0 0.5rem 0;
-  border-radius: 10px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-
-  color: var(--color-dark);
-  background-color: white;
+    color: var(--color-dark);
+    background-color: white;
 }
 
 #calender-container .title {
-  font-size: 1.2rem;
-  text-align: center;
+    text-align: center;
 }
+
 #calender-container .explanation {
-  text-align: center;
-  font-size: 0.8rem;
-  font-style: italic;
-  margin-top: -0.5rem;
+    text-align: center;
+    font-size: 0.8rem;
+    font-style: italic;
+    margin-top: -0.5rem;
 }
 
 calendar-grid {
-  width: 95%;
+    width: 95%;
 }

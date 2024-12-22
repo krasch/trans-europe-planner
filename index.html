@@ -17,7 +17,6 @@
     <link rel="stylesheet" href="style/sidebar.css">
     <link rel="stylesheet" href="style/calendar.css">
     <link rel="stylesheet" href="style/map/map.css">
-    <!--link rel="stylesheet" href="style/card.css"-->
 
     <!-- style scripts -->
     <script src="style/map/layers.js"></script> <!-- only contains css styles for map in js -->
@@ -50,6 +49,7 @@
     <script src="script/components/map/cities.js"></script>
     <script src="script/components/map/edges.js"></script>
     <script src="script/components/map/util.js"></script>
+    <script src="script/components/sidebar.js"></script>
 
     <title>Trans-Europe-Planner</title>
     <link rel="stylesheet" href="style/sidebar.css">
@@ -132,45 +132,22 @@
             <div class="title"><span class="from"></span> &nbsp;⮕&nbsp;<span class="to"></span></div>
         </li>
         <li><span>Reisezeit: &nbsp;<strong class="travel-time"></strong></span></li>
-        <li>
+        <!--li>
             <button value="showCalendar">
                 <img src="images/icons/calendar.svg" alt="icon of a calendar"/>
                 Reisekalender anzeigen
             </button>
-        </li>
+        </li-->
     </menu>
 </template>
 
-
-<div id="sidebar">
-    <div id="logo">
-        <img src="images/logo.svg" alt="logo for the trans-europe-planner">
-        <div>
-            <div>Trans Europe Planner</div>
-            <div class="claim"><em>Einfacher mit dem Zug quer durch Europa</em></div>
-        </div>
-    </div>
-
-    <!-- All calendar elements will be added into the container below dynamically -->
-    <div id="calender-container">
-        <div class="title">Reisevorschlag anpassen</div>
-        <div class="explanation">
-            Hier kannst du Zugverbindungen einfach
-            <strong>hin und her schieben</strong> um
-            Umsteigezeiten anzupassen oder die Reise
-            auf mehrere Tage zu verteilen.
-        </div>
-        <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
-    </div>
-</div>
+<img id="icon" src="images/logo.svg" alt="logo for the trans-europe-planner">
 
 <div id="map"></div>
 
-<img id="icon" src="images/logo.svg" alt="logo for the trans-europe-planner">
-
 <div id="modal">
     <img class="logo" src="images/logo.svg" alt="logo for the trans-europe-planner">
-    <div class="title">
+    <div class="header">
         <h1>Willkommen beim Trans Europa Planer</h1>
         <h3><em>Einfacher mit dem Zug quer durch Europa</em></h3>
     </div>
@@ -190,6 +167,26 @@
     <div class="bottom"></div>
 </div>
 
+<div id="sidebar" class="hidden">
+    <div class="header">
+        <img class="logo" src="images/logo.svg" alt="logo for the trans-europe-planner">
+        <div>
+            <h2><label for="date-picker-input">Abreisedatum: </label></h2>
+            <div id="date-picker">
+                <a class="hidden" id="decrease-date" title="One day earlier">◀</a>
+                <input type="date" id="date-picker-input"/>
+                <a class="hidden" id="increase-date" title="One day later">▶</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- All calendar elements will be added into the container below dynamically -->
+    <div id="calender-container">
+        <h2>Reisevorschlag</h2>
+        <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
+    </div>
+</div>
+
 
 <script>
 
@@ -199,6 +196,7 @@
 
         const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3); // starts async loading map
         const calendar = document.getElementById("calendar");
+        const sidebar = new Sidebar(document.getElementById("sidebar"));
 
         // all necessary data is there, let's go!
         const params = new URLSearchParams(window.location.search);
@@ -207,7 +205,7 @@
         if (home && ["Berlin", "Hamburg", "Köln", "München"].includes(home)) {
 
             try {
-                main(home, map, calendar);
+                main(home, map, calendar, sidebar);
             } catch (error) {
                 console.error(error);
             }
