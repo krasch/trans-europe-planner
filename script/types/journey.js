@@ -49,6 +49,10 @@ class JourneyCollection {
   #journeys = [];
   #activeId = null;
 
+  get hasActiveJourney() {
+    return this.#activeId !== null;
+  }
+
   get activeJourney() {
     if (this.#activeId === null) return null;
     for (let j of this.#journeys) if (j.id === this.#activeId) return j;

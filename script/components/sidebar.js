@@ -55,13 +55,8 @@ class Sidebar {
     }
 
     this.#container.addEventListener("input", (e) => {
-      if (this.#currentDate === null) {
-        this.#showHideArrows();
-        this.#callbacks["dateReset"]();
-      } else {
-        this.#showHideArrows();
-        this.#callbacks["dateChanged"](this.#currentDate);
-      }
+      this.#showHideArrows();
+      this.#callbacks["dateChanged"](this.#currentDate);
     });
 
     this.#container.addEventListener("click", (e) => {
@@ -78,9 +73,6 @@ class Sidebar {
 
   on(eventName, callback) {
     this.#callbacks[eventName] = callback;
-
-    //if (eventName === "dateChanged" && this.#currentDate !== null)
-    //  this.#callbacks["dateChanged"](this.#currentDate);
   }
 
   updateView(data) {}
@@ -91,6 +83,10 @@ class Sidebar {
 
   hide() {
     this.#container.classList.add("hidden");
+  }
+
+  get currentDate() {
+    return this.#currentDate;
   }
 
   get #currentDate() {
