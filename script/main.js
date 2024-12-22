@@ -77,6 +77,7 @@ async function main(home, map, calendar, sidebar) {
   calendar.on("entryHoverStop", (leg) => map.setLegHoverState(leg, false));
 
   sidebar.on("dateChanged", () => calendar.show());
+  sidebar.on("dateReset", () => calendar.hide());
 
   // now have done all we can do without having the map ready
   await mapLoadedPromise;
