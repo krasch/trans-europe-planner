@@ -4,12 +4,25 @@ function incDecDate(date, deltaDays) {
   return new Date(result);
 }
 
+function numDaysDiff(firstDate, laterDate) {
+  return (
+    Math.round(Math.abs(laterDate - firstDate) / (24 * 60 * 60 * 1000)) + 1
+  );
+}
+
+function toISOString(date) {
+  return date.toLocaleDateString("sv");
+}
+
 class Sidebar {
   #container;
 
-  #datePickerElement;
+  #inputElement;
   #decreaseDateElement;
   #increaseDateElement;
+
+  #start;
+  #end;
 
   #callbacks = {
     dateChanged: () => {},
@@ -19,19 +32,34 @@ class Sidebar {
   constructor(container) {
     this.#container = container;
 
-    this.#datePickerElement = this.#container.querySelector("input");
-    this.#decreaseDateElement = this.#container.querySelector(".decrease-date");
-    this.#increaseDateElement = this.#container.querySelector(".increase-date");
+    this.#inputElement = this.#container.querySelector("input");
+    this.#decreaseDateElement = this.#container.querySelector("#decrease-date");
+    this.#increaseDateElement = this.#container.querySelector("#increase-date");
 
-    // if doing callback here it won't be heard because .on is done later
-    if (this.#currentDate !== null) this.#showArrows();
+    const today = new Date();
+    this.#start = incDecDate(today, 1);
+    this.#end = incDecDate(today, 3 * 30);
+
+    this.#inputElement.min = toISOString(this.#start);
+    this.#inputElement.max = toISOString(this.#end);
+
+    // previously picked date might still be set after reloading the page
+    if (this.#currentDate !== null) {
+      // it is no longer within the valid range, reset it
+      if (this.#currentDate < this.#start || this.#currentDate > this.#end)
+        this.#currentDate = null;
+      // it is still within the valid range, keep it
+      else {
+        this.#showHideArrows();
+      }
+    }
 
     this.#container.addEventListener("input", (e) => {
       if (this.#currentDate === null) {
-        this.#hideArrows();
+        this.#showHideArrows();
         this.#callbacks["dateReset"]();
       } else {
-        this.#showArrows();
+        this.#showHideArrows();
         this.#callbacks["dateChanged"](this.#currentDate);
       }
     });
@@ -52,7 +80,7 @@ class Sidebar {
     this.#callbacks[eventName] = callback;
 
     if (eventName === "dateChanged" && this.#currentDate !== null)
-      this.#callbacks["dateChanged"](this.currentDate);
+      this.#callbacks["dateChanged"](this.#currentDate);
   }
 
   updateView(data) {}
@@ -66,21 +94,25 @@ class Sidebar {
   }
 
   get #currentDate() {
-    if (this.#datePickerElement.value.length === 0) return null;
-    return new Date(this.#datePickerElement.value);
+    if (this.#inputElement.value.length === 0) return null;
+    return new Date(this.#inputElement.value);
   }
 
   set #currentDate(value) {
-    this.#datePickerElement.value = value.toLocaleDateString("sv");
+    this.#inputElement.value = toISOString(value);
   }
 
-  #showArrows() {
-    for (let arrow of this.#container.querySelectorAll("a"))
-      arrow.classList.remove("hidden");
-  }
+  #showHideArrows() {
+    if (this.#currentDate === null) {
+      this.#decreaseDateElement.classList.add("hidden");
+      this.#increaseDateElement.classList.add("hidden");
+      return;
+    }
 
-  #hideArrows() {
-    for (let arrow of this.#container.querySelectorAll("a"))
-      arrow.classList.add("hidden");
+    if (incDecDate(this.#currentDate, -1) >= this.#start)
+      this.#decreaseDateElement.classList.remove("hidden");
+
+    if (incDecDate(this.#currentDate, +1) <= this.#end)
+      this.#increaseDateElement.classList.remove("hidden");
   }
 }
