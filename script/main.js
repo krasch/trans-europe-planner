@@ -1,5 +1,7 @@
 function initUpdateViews(map, calendar, sidebar, database) {
   function updateViews(state) {
+    calendar.setAttribute("start", toISOString(state.date));
+
     map.updateView(prepareDataForMap(state.journeys, database));
     calendar.updateView(prepareDataForCalendar(state.journeys, database));
 

@@ -1,7 +1,7 @@
 const LOCALE = new Intl.NumberFormat().resolvedOptions().locale;
 
 class CalendarGrid extends HTMLElement {
-  static observedAttributes = ["start", "end", "resolution"];
+  static observedAttributes = ["start", "numDays", "resolution"];
 
   constructor() {
     super();
@@ -23,7 +23,12 @@ class CalendarGrid extends HTMLElement {
   connectedCallback() {
     this.#initHourLabels();
     this.#initEmptyCalendarCells();
-    this.#initTableHeader();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "start" && oldValue !== newValue) {
+      this.#initUpdateTableHeader();
+    }
   }
 
   addToGrid(element) {
@@ -72,13 +77,14 @@ class CalendarGrid extends HTMLElement {
         );
         if (i % this.resolution === 0) element.classList.add("border-top");
 
-        element.id = `calender-cell-${day}-${i}`;
+        element.id = `calender-cell-${day}-${i}`; // todo is this necessary?
         this.#addToGrid(element, day, i, i + 1);
       }
     }
   }
 
-  #initTableHeader() {
+  // todo meh
+  #initUpdateTableHeader() {
     const start = new Date(this.startDay);
 
     for (let day = 0; day < this.numDays; day++) {
@@ -94,12 +100,19 @@ class CalendarGrid extends HTMLElement {
         },
       };
 
-      const element = createElementFromTemplate(
-        "template-calendar-grid-date",
-        data,
-      );
+      const id = `calendar-header-${day}`;
 
-      this.#addToGrid(element, day, -8, 0);
+      let element = document.getElementById(id);
+      if (element === null) {
+        element = createElementFromTemplate(
+          "template-calendar-grid-date",
+          data,
+        );
+        element.id = id;
+        this.#addToGrid(element, day, -8, 0);
+      } else {
+        updateElement(element, data);
+      }
     }
   }
 }

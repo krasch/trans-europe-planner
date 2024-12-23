@@ -4,12 +4,6 @@ function incDecDate(date, deltaDays) {
   return new Date(result);
 }
 
-function numDaysDiff(firstDate, laterDate) {
-  return (
-    Math.round(Math.abs(laterDate - firstDate) / (24 * 60 * 60 * 1000)) + 1
-  );
-}
-
 function toISOString(date) {
   return date.toLocaleDateString("sv");
 }
