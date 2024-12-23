@@ -69,13 +69,12 @@ const incrementalId = initIncrementalId();
 
 function createConnection(stops) {
   const train = incrementalId();
-  const date = stops[0][0];
 
   const stopsEnriched = [];
   for (let [date, time, stationId] of stops) {
     stopsEnriched.push({
-      arrival: new CustomDateTime(date, time + ":00"),
-      departure: new CustomDateTime(date, time + ":00"),
+      arrival: new Date(date + " " + time + ":00"),
+      departure: new Date(date + " " + time + ":00"),
       stationId: stationId,
       stationName: testStations[stationId].name,
       stationIsPreferred: testStations[stationId].preferred,
@@ -84,7 +83,7 @@ function createConnection(stops) {
     });
   }
 
-  return new Connection(train, date, "test", "train", stopsEnriched);
+  return new Connection(train, "test", "train", stopsEnriched);
 }
 
 initCityNameToId(testCities);

@@ -21,6 +21,15 @@ class SlicingError extends Error {
   }
 }
 
+function shiftDate(date, deltaDays) {
+  const result = date.setDate(date.getDate() + deltaDays);
+  return new Date(result);
+}
+
+function dateOnlyISOString(date) {
+  return date.toLocaleDateString("sv");
+}
+
 class Leg {
   constructor(startCityName, endCityName) {
     this.startCityName = startCityName;
@@ -66,32 +75,46 @@ class ConnectionId {
 }
 
 class Connection {
-  constructor(train, date, name, type, stops) {
+  constructor(train, name, type, stops) {
     this.name = name;
     this.type = type;
     this.stops = stops;
 
-    this.start = stops[0];
-    this.end = stops.at(-1);
+    this.date = dateOnlyISOString(this.stops[0].departure); // todo not nice
 
-    this.leg = new Leg(this.start.cityName, this.end.cityName);
-    this.id = new ConnectionId(train, date, this.leg);
+    this.leg = new Leg(this.stops[0].cityName, this.stops.at(-1).cityName);
+    this.id = new ConnectionId(train, this.date, this.leg);
   }
 
   get isMultiday() {
-    return this.start.departure.dateString !== this.end.arrival.dateString;
+    const start = this.stops[0].departure;
+    const end = this.stops.at(-1).arrival;
+
+    return (
+      start.getFullYear() !== end.getFullYear() ||
+      start.getMonth() !== end.getMonth() ||
+      start.getDate() !== end.getDate()
+    );
   }
 
   slice(startCity, endCity) {
     const sliced = this.#getPartialStops(this.stops, startCity, endCity);
+    return new Connection(this.id.train, this.name, this.type, sliced);
+  }
 
-    return new Connection(
-      this.id.train,
-      this.id.date,
-      this.name,
-      this.type,
-      sliced,
-    );
+  changeDate(newDepartureDate) {
+    const diffTime = newDepartureDate - this.stops[0].departure;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    const stops = [];
+
+    for (let stop of this.stops) {
+      const copy = new Object(stop); // shallow copy
+      copy.arrival = shiftDate(copy.arrival, diffDays);
+      copy.departure = shiftDate(copy.departure, diffDays);
+      stops.push(copy);
+    }
+    return new Connection(this.id.train, this.name, this.type, stops);
   }
 
   get edges() {
@@ -125,10 +148,6 @@ class Connection {
   }
 
   #getPartialStops(stops, startCity, endCity) {
-    // nothing to be done
-    if (startCity === this.start.cityName && endCity === this.end.cityName)
-      return stops;
-
     let startIndex = null;
     let endIndex = null;
 
