@@ -5,6 +5,26 @@ class CreatingItineraryNotPossible extends Error {
   }
 }
 
+function diffDays(datetime, laterDatetime) {
+  // get rid of hours/minutes/seconds
+  datetime = new Date(datetime.toDateString());
+  laterDatetime = new Date(laterDatetime.toDateString());
+
+  const diffMillis = laterDatetime - datetime;
+  return Math.ceil(diffMillis / (1000 * 60 * 60 * 24));
+}
+
+function diffMinutes(datetime, laterDatetime) {
+  const diffMillis = laterDatetime - datetime;
+  return Math.ceil(diffMillis / (1000 * 60));
+}
+
+function minutesSinceMidnight(datetime) {
+  const hours = datetime.getHours();
+  const minutes = datetime.getMinutes();
+  return hours * 60 + minutes;
+}
+
 function cartesianProduct(a) {
   if (a.length === 1) return a;
 
@@ -18,9 +38,8 @@ function isValidItinerary(itinerary) {
 
     const arrival = itinerary[i - 1].stops.at(-1).arrival;
     const departure = itinerary[i].stops.at(0).departure;
-    const changeTime = departure.minutesSince(arrival);
 
-    if (changeTime < 30) return false;
+    if (diffMinutes(arrival, departure) < 30) return false;
   }
 
   return true;
@@ -29,9 +48,10 @@ function isValidItinerary(itinerary) {
 function itinerarySummary(itinerary) {
   // assumes you are passing in a valid itinerary
 
-  const departure = itinerary[0].stops[0].departure;
-  const arrival = itinerary.at(-1).stops.at(-1).arrival;
-  const totalTravelDays = arrival.daysSince(departure.dateString) + 1;
+  const itineraryDeparture = itinerary[0].stops[0].departure;
+  const itineraryArrival = itinerary.at(-1).stops.at(-1).arrival;
+
+  const totalTravelDays = diffDays(itineraryDeparture, itineraryArrival) + 1;
 
   // initialise an array with one entry per travel day
   // each entry is initialised as an empty array
@@ -43,7 +63,7 @@ function itinerarySummary(itinerary) {
   // group connections by travel day (offset from departure)
   // this keeps current order within the connections for a travel day
   for (let connection of itinerary) {
-    const day = connection.stops[0].departure.daysSince(departure.dateString);
+    const day = diffDays(itineraryDeparture, connection.stops[0].departure);
     connectionsByTravelDay[day].push(connection);
   }
 
@@ -58,24 +78,25 @@ function itinerarySummary(itinerary) {
   };
 
   // calculate summary by going over each travel day
-  connectionsByTravelDay.forEach((connections, i) => {
+  connectionsByTravelDay.forEach((connectionsForDay, i) => {
     // no connections on this day
-    if (connections.length === 0) return;
+    if (connectionsForDay.length === 0) return;
 
-    const departure = connections[0].stops[0].departure;
-    const arrival = connections.at(-1).stops.at(-1).arrival;
+    const departure = connectionsForDay[0].stops[0].departure;
+    const arrival = connectionsForDay.at(-1).stops.at(-1).arrival;
 
-    const travelTime =
-      arrival.minutesSinceMidnight - departure.minutesSinceMidnight;
+    const travelTime = diffMinutes(departure, arrival);
+    const departureMinutes = minutesSinceMidnight(departure);
+    const arrivalMinutes = minutesSinceMidnight(arrival);
 
-    if (departure.minutesSinceMidnight < summary.earliestDeparture)
-      summary.earliestDeparture = departure.minutesSinceMidnight;
+    if (departureMinutes < summary.earliestDeparture)
+      summary.earliestDeparture = departureMinutes;
 
-    if (departure.minutesSinceMidnight > summary.latestDeparture)
-      summary.latestDeparture = departure.minutesSinceMidnight;
+    if (departureMinutes > summary.latestDeparture)
+      summary.latestDeparture = departureMinutes;
 
-    if (arrival.minutesSinceMidnight > summary.latestArrival)
-      summary.latestArrival = arrival.minutesSinceMidnight;
+    if (arrivalMinutes > summary.latestArrival)
+      summary.latestArrival = arrivalMinutes;
 
     if (travelTime > summary.longestDailyTravelTime) {
       summary.longestDailyTravelTime = travelTime;
@@ -219,31 +240,12 @@ function createStupidItineraryForRoute(legs, database) {
   return connectionIds;
 }
 
-function pickFittingConnection(connectionIds, desiredLeg, database) {
-  const connections = connectionIds.map((i) => database.connection(i));
-  connections.sort((a, b) =>
-    a.stops.at(-1).arrival.compareTo(b.stops.at(-1).arrival),
-  );
-
-  const currentArrival = connections.at(-1).stops.at(-1).arrival;
-
-  const candidates = database.connectionsForLeg(desiredLeg);
-
-  const later = candidates.filter(
-    (c) => c.stops[0].departure.minutesSince(currentArrival) > 0,
-  );
-
-  if (later.length > 0) return later[0].id;
-  else return candidates[0].id; // fallback: pick earliest
-}
-
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.cartesianProduct = cartesianProduct;
   module.exports.isValidItinerary = isValidItinerary;
   module.exports.itinerarySummary = itinerarySummary;
   module.exports.chooseItinerary = chooseItinerary;
-  module.exports.pickFittingConnection = pickFittingConnection;
   module.exports.createItineraryForRoute = createItineraryForRoute;
   module.exports.createStupidItineraryForRoute = createStupidItineraryForRoute;
 }

@@ -88,6 +88,10 @@ class Connection {
     return this.stops[0].departure;
   }
 
+  get uniqueId() {
+    return { id: this.id, date: this.date, leg: this.leg };
+  }
+
   get isMultiday() {
     const start = this.stops[0].departure;
     const end = this.stops.at(-1).arrival;
@@ -106,7 +110,7 @@ class Connection {
 
   changeDate(newDepartureDate) {
     const diffTime = newDepartureDate - this.stops[0].departure;
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     const stops = [];
 

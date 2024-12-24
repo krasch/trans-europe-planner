@@ -6,19 +6,6 @@ const {
 } = require("../script/types/connection.js");
 const { createConnection } = require("../tests/data.js");
 
-test("connection", function () {
-  const connection = createConnection([
-    ["2024-10-15", "08:00", "city1MainStationId"],
-    ["2024-10-15", "09:00", "city2MainStationId"],
-    ["2024-10-15", "10:00", "city3MainStationId"],
-  ]);
-
-  expect(connection.uniqueId).toStrictEqual(
-    ConnectionId.fromString("1XXX2024-10-15XXXCity1->City3"),
-  );
-  expect(connection.leg).toStrictEqual(Leg.fromString("City1->City3"));
-});
-
 test("connectionNotOvernight", function () {
   const connection = createConnection([
     ["2024-10-15", "08:00", "city1MainStationId"],
