@@ -5,6 +5,11 @@ class DatabaseError extends Error {
   }
 }
 
+// workaround because can not import SlicingError because of way tests are set up
+function isSlicingError(error) {
+  return error.constructor.name === "SlicingError";
+}
+
 function enrichAndTemporalizeConnection(template, stations, cities, dates) {
   const result = [];
 
@@ -33,60 +38,80 @@ function enrichAndTemporalizeConnection(template, stations, cities, dates) {
 }
 
 class Database {
-  #fullConnections;
+  // these templates use a dummy date and have the full run of all stops
+  // {id: Connection}
+  #templates;
 
-  #slicedConnectionIdsByLeg;
-  #slicedConnectionsById;
+  // the sliced templates are for a specific leg but still use a dummy date
+  // {[id, leg]: Connection}
+  #sliced = {};
 
-  constructor(connections) {
-    this.#fullConnections = connections;
+  // and here will be sliced, dated connections
+  // {[id, leg, date]: Connection}
+  #connections = {};
 
-    // this will be filled with all the connections the UI is interested in
-    // should always be accessed using connectionsForLeg to make sure that leg has been indexed
-    this.#slicedConnectionIdsByLeg = {};
-    this.#slicedConnectionsById = {};
+  constructor(templates) {
+    this.#templates = {};
+    for (let t of templates) this.#templates[t.id] = t;
   }
 
-  connection(id) {
-    if (typeof id === "string") id = ConnectionId.fromString(id);
+  connection(id, date, leg) {
+    // because often trouble with this, do some type checking
+    if (!(date instanceof Date))
+      throw new DatabaseError(
+        `Expected Date input, found ${typeof date} with value ${date}`,
+      );
 
-    if (!this.#slicedConnectionIdsByLeg[id.leg]) this.#indexLeg(id.leg);
+    const compositeId = `${id}XXX${leg.toString()}XXX${date.toLocaleDateString("sv")}`;
 
-    if (!this.#slicedConnectionsById[id])
-      throw new DatabaseError(`Unknown connection ${id}`);
-    return this.#slicedConnectionsById[id];
-  }
-
-  connectionsForLeg(leg) {
-    if (typeof leg === "string") leg = Leg.fromString(leg);
-
-    if (!this.#slicedConnectionIdsByLeg[leg]) this.#indexLeg(leg);
-
-    const connectionIds = this.#slicedConnectionIdsByLeg[leg];
-    if (connectionIds.length === 0)
-      throw new DatabaseError(`No connections available for leg ${leg}`);
-
-    // todo return list instead of dict?
-    return connectionIds.map((c) => this.connection(c));
-  }
-
-  #indexLeg(leg) {
-    this.#slicedConnectionIdsByLeg[leg] = [];
-
-    for (let connection of this.#fullConnections) {
-      let sliced;
-
-      try {
-        sliced = connection.slice(leg.startCityName, leg.endCityName);
-      } catch (Error) {
-        // can not use specific error because of issue with testing setup (imports)
-        // there is no such slice -> can not fulfill this leg with this connection
-        continue;
-      }
-
-      this.#slicedConnectionIdsByLeg[leg].push(sliced.id);
-      this.#slicedConnectionsById[sliced.id] = sliced;
+    if (!this.#connections[compositeId]) {
+      const sliced = this.#getSliced(id, leg);
+      this.#connections[compositeId] = sliced.changeDate(date);
     }
+
+    return this.#connections[compositeId];
+  }
+
+  connectionsForLeg(leg, dates) {
+    const result = [];
+
+    for (let id in this.#templates) {
+      for (let date of dates) {
+        try {
+          result.push(this.connection(id, date, leg));
+        } catch (error) {
+          // this connection does not have this leg, no need to try the other dates
+          if (isSlicingError(error)) break;
+          // all other errors should bubble up
+          throw error;
+        }
+      }
+    }
+
+    return result;
+  }
+
+  #getTemplate(id) {
+    if (!this.#templates[id])
+      throw new DatabaseError(`Unknown connection ${id}`);
+    return this.#templates[id];
+  }
+
+  #getSliced(id, leg) {
+    const compositeId = `${id}XXX${leg.toString()}`;
+
+    if (!this.#sliced[compositeId]) {
+      const template = this.#getTemplate(id);
+
+      // can throw slicing error
+      // todo calling this even if I already know from previous attempts that the slice does not exist
+      this.#sliced[compositeId] = template.slice(
+        leg.startCityName,
+        leg.endCityName,
+      );
+    }
+
+    return this.#sliced[compositeId];
   }
 }
 
@@ -94,4 +119,5 @@ class Database {
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.Database = Database;
   module.exports.DatabaseError = DatabaseError;
+  module.exports.isSlicingError = isSlicingError;
 }

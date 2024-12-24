@@ -75,15 +75,17 @@ class ConnectionId {
 }
 
 class Connection {
-  constructor(train, name, type, stops) {
+  constructor(id, name, type, stops) {
+    this.id = id;
     this.name = name;
     this.type = type;
     this.stops = stops;
 
-    this.date = dateOnlyISOString(this.stops[0].departure); // todo not nice
+    this.leg = new Leg(this.stops[0].cityName, this.stops.at(-1).cityName); // todo remove?
+  }
 
-    this.leg = new Leg(this.stops[0].cityName, this.stops.at(-1).cityName);
-    this.id = new ConnectionId(train, this.date, this.leg);
+  get date() {
+    return this.stops[0].departure;
   }
 
   get isMultiday() {
@@ -99,7 +101,7 @@ class Connection {
 
   slice(startCity, endCity) {
     const sliced = this.#getPartialStops(this.stops, startCity, endCity);
-    return new Connection(this.id.train, this.name, this.type, sliced);
+    return new Connection(this.id, this.name, this.type, sliced);
   }
 
   changeDate(newDepartureDate) {
@@ -114,7 +116,7 @@ class Connection {
       copy.departure = shiftDate(copy.departure, diffDays);
       stops.push(copy);
     }
-    return new Connection(this.id.train, this.name, this.type, stops);
+    return new Connection(this.id, this.name, this.type, stops);
   }
 
   get edges() {
@@ -145,6 +147,10 @@ class Connection {
   hasStop(city) {
     for (let stop of this.stops) if (stop.cityName === city) return true;
     return false;
+  }
+
+  toString() {
+    return `id=${this.id}, date=${this.date.toLocaleDateString("sv")}, leg=${this.leg.toString()}`;
   }
 
   #getPartialStops(stops, startCity, endCity) {

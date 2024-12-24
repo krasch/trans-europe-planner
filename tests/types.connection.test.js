@@ -13,7 +13,7 @@ test("connection", function () {
     ["2024-10-15", "10:00", "city3MainStationId"],
   ]);
 
-  expect(connection.id).toStrictEqual(
+  expect(connection.uniqueId).toStrictEqual(
     ConnectionId.fromString("1XXX2024-10-15XXXCity1->City3"),
   );
   expect(connection.leg).toStrictEqual(Leg.fromString("City1->City3"));
@@ -59,7 +59,7 @@ test("sliceRemoveFirstAndLast", function () {
 
   const got = connection.slice("City2", "City3");
   const exp = new Connection(
-    connection.id.train,
+    connection.id,
     connection.name,
     connection.type,
     connection.stops.slice(1, 3),
@@ -80,7 +80,7 @@ test("sliceMultipleStationsPerCity", function () {
 
   const got = connection.slice("City1", "City3");
   const exp = new Connection(
-    connection.id.train,
+    connection.id,
     connection.name,
     connection.type,
     connection.stops.slice(1, 4),
@@ -124,19 +124,16 @@ test("changeDateBackward", function () {
 
   const got = c1.changeDate(new Date("2024-10-11"));
 
-  const expId = new ConnectionId(c1.id.train, "2024-10-11", c1.leg);
   const expStop1 = new Object(c1.stops[0]);
   expStop1.arrival = new Date("2024-10-11 08:00:00");
   expStop1.departure = expStop1.arrival;
+
   const expStop2 = new Object(c1.stops[1]);
   expStop2.arrival = new Date("2024-10-12 09:00:00");
   expStop2.departure = expStop2.arrival;
 
-  expect(got.name).toBe(c1.name);
-  expect(got.type).toBe(c1.type);
-  expect(got.leg).toStrictEqual(c1.leg);
-  expect(got.id).toStrictEqual(expId);
-  expect(got.stops).toStrictEqual([expStop1, expStop2]);
+  const exp = new Connection(c1.id, c1.name, c1.type, [expStop1, expStop2]);
+  expect(got).toStrictEqual(exp);
 });
 
 test("changeDateForward", function () {
@@ -147,19 +144,37 @@ test("changeDateForward", function () {
 
   const got = c1.changeDate(new Date("2024-11-03"));
 
-  const expId = new ConnectionId(c1.id.train, "2024-11-03", c1.leg);
   const expStop1 = new Object(c1.stops[0]);
   expStop1.arrival = new Date("2024-11-03 08:00:00");
   expStop1.departure = expStop1.arrival;
+
   const expStop2 = new Object(c1.stops[1]);
   expStop2.arrival = new Date("2024-11-04 09:00:00");
   expStop2.departure = expStop2.arrival;
 
-  expect(got.name).toBe(c1.name);
-  expect(got.type).toBe(c1.type);
-  expect(got.leg).toStrictEqual(c1.leg);
-  expect(got.id).toStrictEqual(expId);
-  expect(got.stops).toStrictEqual([expStop1, expStop2]);
+  const exp = new Connection(c1.id, c1.name, c1.type, [expStop1, expStop2]);
+  expect(got).toStrictEqual(exp);
+});
+
+test("sliceAndChangeDateMultiday", function () {
+  const c1 = createConnection([
+    ["2024-10-15", "08:00", "city1MainStationId"],
+    ["2024-10-16", "09:00", "city2MainStationId"],
+    ["2024-10-16", "09:00", "city3MainStationId"],
+  ]);
+
+  const got = c1.slice("City2", "City3").changeDate(new Date("2024-11-03"));
+
+  const expStop1 = new Object(c1.stops[1]);
+  expStop1.arrival = new Date("2024-11-03 09:00:00");
+  expStop1.departure = expStop1.arrival;
+
+  const expStop2 = new Object(c1.stops[2]);
+  expStop2.arrival = new Date("2024-11-03 10:00:00");
+  expStop2.departure = expStop2.arrival;
+
+  const exp = new Connection(c1.id, c1.name, c1.type, [expStop1, expStop2]);
+  expect(got).toStrictEqual(exp);
 });
 
 test("hasStop", function () {
