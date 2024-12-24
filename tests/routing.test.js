@@ -1,45 +1,6 @@
-const {
-  cartesianProduct,
-  isValidItinerary,
-  itinerarySummary,
-  chooseItinerary,
-  pickFittingConnection,
-} = require("../script/routing.js");
+const { isValidItinerary, itinerarySummary } = require("../script/routing.js");
 const { Database } = require("../script/database.js");
-const { Leg } = require("../script/types/connection.js");
 const { createConnection } = require("../tests/data.js");
-
-test("cartesianProductSingleArraySingleItem", function () {
-  const array1 = ["a"];
-  const expected = [["a"]];
-
-  expect(cartesianProduct([array1])).toStrictEqual(expected);
-});
-
-test("cartesianProductTwoArraysSingleItem", function () {
-  const array1 = ["a"];
-  const array2 = ["b"];
-  const expected = [["a", "b"]];
-
-  expect(cartesianProduct([array1, array2])).toStrictEqual(expected);
-});
-
-test("cartesianProductMultipleArraysMultipleItems", function () {
-  const array1 = ["a", "b", "c"];
-  const array2 = ["x"];
-  const array3 = ["1", "2"];
-
-  const expected = [
-    ["a", "x", "1"],
-    ["a", "x", "2"],
-    ["b", "x", "1"],
-    ["b", "x", "2"],
-    ["c", "x", "1"],
-    ["c", "x", "2"],
-  ];
-
-  expect(cartesianProduct([array1, array2, array3])).toStrictEqual(expected);
-});
 
 test("isValidItineraryOneLeg", function () {
   const c1 = createConnection([
@@ -177,59 +138,4 @@ test("itinerarySummaryMultipleTravelDaysWithGap", function () {
   };
 
   expect(actual).toStrictEqual(expected);
-});
-
-test("chooseItinerarySingleItinerary", function () {
-  const it0 = {
-    travelDays: 2,
-    earliestDeparture: 8 * 60,
-    latestArrival: 22 * 60,
-    longestDailyTravelTime: 10 * 60,
-    totalTravelTime: 20 * 60,
-  };
-
-  const actual = chooseItinerary([it0]);
-  expect(actual).toStrictEqual(0);
-});
-
-test("chooseItineraryOneDayVersusTwoDays", function () {
-  const it0 = {
-    travelDays: 2,
-    earliestDeparture: 8 * 60,
-    latestArrival: 22 * 60,
-    longestDailyTravelTime: 10 * 60,
-    totalTravelTime: 20 * 60,
-  };
-
-  const it1 = {
-    travelDays: 1,
-    earliestDeparture: 8 * 60,
-    latestArrival: 22 * 60,
-    longestDailyTravelTime: 10 * 60,
-    totalTravelTime: 10 * 60,
-  };
-
-  const actual = chooseItinerary([it0, it1]);
-  expect(actual).toStrictEqual(1);
-});
-
-test("chooseItinerarySameExceptForTotalTravelTime", function () {
-  const it0 = {
-    travelDays: 2,
-    earliestDeparture: 8 * 60,
-    latestArrival: 22 * 60,
-    longestDailyTravelTime: 10 * 60,
-    totalTravelTime: 20 * 60,
-  };
-
-  const it1 = {
-    travelDays: 2,
-    earliestDeparture: 8 * 60,
-    latestArrival: 22 * 60,
-    longestDailyTravelTime: 10 * 60,
-    totalTravelTime: 10 * 60,
-  };
-
-  const actual = chooseItinerary([it0, it1]);
-  expect(actual).toStrictEqual(1);
 });

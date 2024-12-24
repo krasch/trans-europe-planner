@@ -1,10 +1,3 @@
-class CreatingItineraryNotPossible extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "CreatingItineraryNotPossible";
-  }
-}
-
 function diffDays(datetime, laterDatetime) {
   // get rid of hours/minutes/seconds
   datetime = new Date(datetime.toDateString());
@@ -123,57 +116,6 @@ function judgeItinerary(summary) {
   );
 }
 
-function chooseItinerary(summaries) {
-  // give points for number of travel days and some other rules
-  const points = summaries.map(judgeItinerary);
-  const maxPoints = Math.max(...points);
-
-  // keep only itineraries with most points
-  const indices = summaries.map((s, i) => i);
-  const best = indices.filter((i) => points[i] === maxPoints);
-
-  // tie-breaker is total travel time
-  const travelTimes = best.map((i) => summaries[i].totalTravelTime);
-  const minTravelTime = Math.min(...travelTimes);
-
-  // get all that have roughly optimal travel time
-  const threshold = minTravelTime;
-  const bestAndShortest = best.filter(
-    (i) => summaries[i].totalTravelTime <= threshold,
-  );
-
-  // of those take the first
-  return bestAndShortest[0];
-}
-
-function createItineraryForRoute(legs, database) {
-  if (legs.length === 0) return [];
-
-  // look up all necessary data from database
-  const connections = legs.map((l) =>
-    Object.values(database.connectionsForLeg(l)),
-  );
-
-  // all possible combinations
-  const allItineraries = cartesianProduct(connections);
-
-  // keep only those that are actually valid, i.e. the timings of the connections work out
-  const itineraries = allItineraries.filter((i) => isValidItinerary(i));
-
-  // there is no combination of connections that work out
-  if (itineraries.length === 0) throw new CreatingItineraryNotPossible();
-
-  // calculate a bunch of stats about each itinerary (e.g. #travel days)
-  const summaries = itineraries.map(itinerarySummary);
-
-  // return the best one
-  const bestIndex = chooseItinerary(summaries);
-  const best = itineraries[bestIndex];
-
-  // only need connection ids
-  return best.map((connections) => connections.id);
-}
-
 function createEarliestItinerary(firstConnection, connectionsForOtherLegs) {
   const itinerary = [firstConnection];
 
@@ -242,10 +184,7 @@ function createStupidItineraryForRoute(legs, database) {
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
-  module.exports.cartesianProduct = cartesianProduct;
   module.exports.isValidItinerary = isValidItinerary;
   module.exports.itinerarySummary = itinerarySummary;
-  module.exports.chooseItinerary = chooseItinerary;
-  module.exports.createItineraryForRoute = createItineraryForRoute;
   module.exports.createStupidItineraryForRoute = createStupidItineraryForRoute;
 }
