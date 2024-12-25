@@ -10,31 +10,23 @@ function isSlicingError(error) {
   return error.constructor.name === "SlicingError";
 }
 
-function enrichAndTemporalizeConnection(template, stations, cities, dates) {
-  const result = [];
-
-  for (let date of dates) {
-    const stops = [];
-    for (let stop of template.stops) {
-      stops.push({
-        // temporalize
-        arrival: new CustomDateTime(date, stop.arrival),
-        departure: new CustomDateTime(date, stop.departure),
-        // enrich with additional station and city info
-        stationId: stop.station,
-        stationName: stations[stop.station].name,
-        stationIsPreferred: stations[stop.station].preferred,
-        cityId: stations[stop.station].city,
-        cityName: cities[stations[stop.station].city].name,
-      });
-    }
-
-    result.push(
-      new Connection(template.id, date, template.name, template.type, stops),
-    );
+function enrichConnection(template, stations, cities, dummyDate) {
+  const stops = [];
+  for (let stop of template.stops) {
+    stops.push({
+      // temporalize
+      arrival: new Date(dummyDate + " " + stop.arrival),
+      departure: new Date(dummyDate + " " + stop.departure),
+      // enrich with additional station and city info
+      stationId: stop.station,
+      stationName: stations[stop.station].name,
+      stationIsPreferred: stations[stop.station].preferred,
+      cityId: stations[stop.station].city,
+      cityName: cities[stations[stop.station].city].name,
+    });
   }
 
-  return result;
+  return new Connection(template.id, template.name, template.type, stops);
 }
 
 class Database {

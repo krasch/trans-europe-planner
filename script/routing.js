@@ -28,7 +28,7 @@ function minutesSinceMidnight(datetime) {
 }
 
 function shiftDate(date, deltaDays) {
-  const copy = new Date(date); // make copy
+  const copy = new Date(date.getTime());
   copy.setDate(copy.getDate() + deltaDays);
   return copy;
 }
@@ -140,7 +140,7 @@ function createEarliestItinerary(
 
   // loop over legs
   for (let connectionsForLeg of connectionsByLegForOtherLegs) {
-    const previousArrival = itinerary.at(-1)["stops"].at(-1)["arrival"];
+    const previousArrival = itinerary.at(-1).stops.at(-1).arrival;
     const relevantConnections = connectionsForLeg.filter(
       (c) =>
         diffMinutes(previousArrival, c.stops[0].departure) >= TRANSFER_TIME,
@@ -282,7 +282,7 @@ class RouteDatabase {
   }
 
   #cacheKey(startCityName, endCityName, date) {
-    return `${this.#key(startCityName, endCityName)}${date.toLocaleDateString("sv")}`;
+    return `${this.#key(startCityName, endCityName)}XX${date.toLocaleDateString("sv")}`;
   }
 
   #parseLeg(leg) {

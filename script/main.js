@@ -1,6 +1,9 @@
+const DUMMY_DATE_STRING = "2024-12-01";
+const DUMMY_DATE = new Date(DUMMY_DATE_STRING);
+
 function initUpdateViews(map, calendar, sidebar, database) {
   function updateViews(state) {
-    calendar.setAttribute("start", dateOnlyISOString(state.date));
+    //calendar.setAttribute("start", dateOnlyISOString(state.date));
 
     map.updateView(prepareDataForMap(state.journeys, database));
     calendar.updateView(prepareDataForCalendar(state.journeys, database));
@@ -24,21 +27,21 @@ async function main(home, map, calendar, sidebar) {
     journeys: new JourneyCollection(),
   };
 
-  //addIsDestinationInfo(CITIES, ROUTES); // hack
-
   // prepare database
-  const DATES = ["2024-12-01", "2024-12-02", "2024-12-03"];
   const connections = CONNECTIONS.flatMap((c) =>
-    enrichAndTemporalizeConnection(c, STATIONS, CITIES, DATES),
+    enrichConnection(c, STATIONS, CITIES, DUMMY_DATE_STRING),
   );
   const database = new Database(connections);
 
-  // initial drawing of all necessary geo information
+  // prepare routes
+  const routeDatabase = new RouteDatabase(ROUTES);
+
+  // prepare all geo etc data that map needs
   const initialMapData = prepareInitialDataForMap(
     home,
     CITIES,
     connections,
-    ROUTES,
+    routeDatabase,
   );
   const mapLoadedPromise = map.load(initialMapData);
 
@@ -59,18 +62,18 @@ async function main(home, map, calendar, sidebar) {
 
   // clicking on a city
   map.on("showCityRoutes", (cityName) => {
-    const target = `${home}->${cityName}`;
-    if (!ROUTES[target]) return; // todo handle error
+    const itineraries = routeDatabase.getItineraries(
+      home,
+      cityName,
+      state.date || DUMMY_DATE,
+      database,
+    );
+    const journeys = itineraries.map((i) => new Journey(i));
 
     state.journeys.reset();
+    for (let j of journeys) state.journeys.addJourney(j);
+    state.journeys.setActive(journeys[0].id); // first journey is the one with the fewest transfers
 
-    for (let route of ROUTES[target]) {
-      if (typeof route === "string") continue; // inline "comments" in routes file
-      const connectionIds = createStupidItineraryForRoute(route, database);
-      state.journeys.addJourney(connectionIds);
-    }
-
-    state.journeys.setShortestAsActive();
     updateViews(state);
   });
 
