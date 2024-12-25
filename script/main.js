@@ -6,16 +6,21 @@ function initUpdateViews(map, calendar, sidebar, database) {
     //calendar.setAttribute("start", dateOnlyISOString(state.date));
 
     map.updateView(prepareDataForMap(state.journeys, database));
-    calendar.updateView(prepareDataForCalendar(state.journeys, database));
+    calendar.updateView(
+      prepareDataForCalendar(state.date, state.journeys, database),
+    );
 
-    if (state.journeys.hasActiveJourney) {
+    sidebar.show();
+    calendar.show();
+
+    /*if (state.journeys.hasActiveJourney) {
       sidebar.show();
       if (state.date !== null) calendar.show();
       else calendar.hide();
     } else {
       sidebar.hide();
       calendar.hide();
-    }
+    }*/
   }
   return updateViews;
 }
@@ -23,7 +28,7 @@ function initUpdateViews(map, calendar, sidebar, database) {
 async function main(home, map, calendar, sidebar) {
   // init state
   const state = {
-    date: sidebar.currentDate,
+    date: sidebar.currentDate || DUMMY_DATE,
     journeys: new JourneyCollection(),
   };
 
@@ -49,8 +54,8 @@ async function main(home, map, calendar, sidebar) {
   const updateViews = initUpdateViews(map, calendar, sidebar, database);
 
   // moving things around in the calendar
-  calendar.on("legChanged", (connectionId) => {
-    state.journeys.activeJourney.updateLeg(connectionId);
+  calendar.on("legChanged", (newConnectionId) => {
+    state.journeys.activeJourney.replaceLeg(newConnectionId);
     updateViews(state);
   });
 
@@ -65,7 +70,7 @@ async function main(home, map, calendar, sidebar) {
     const itineraries = routeDatabase.getItineraries(
       home,
       cityName,
-      state.date || DUMMY_DATE,
+      state.date,
       database,
     );
     const journeys = itineraries.map((i) => new Journey(i));

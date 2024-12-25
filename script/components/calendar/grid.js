@@ -1,5 +1,14 @@
 const LOCALE = new Intl.NumberFormat().resolvedOptions().locale;
 
+function diffDays(datetime, laterDatetime) {
+  // get rid of hours/minutes/seconds
+  datetime = new Date(datetime.toDateString());
+  laterDatetime = new Date(laterDatetime.toDateString());
+
+  const diffMillis = laterDatetime - datetime;
+  return Math.ceil(diffMillis / (1000 * 60 * 60 * 24));
+}
+
 class CalendarGrid extends HTMLElement {
   static observedAttributes = ["start", "numDays", "resolution"];
 
@@ -12,7 +21,7 @@ class CalendarGrid extends HTMLElement {
   }
 
   get startDay() {
-    return this.getAttribute("start");
+    return new Date(this.getAttribute("start"));
   }
 
   get numDays() {
@@ -32,14 +41,16 @@ class CalendarGrid extends HTMLElement {
   }
 
   addToGrid(element) {
-    const column = element.startDateTime.daysSince(this.startDay);
+    const column = diffDays(this.startDay, element.startDateTime);
     const rowStart = this.#getRow(element.startDateTime);
     const rowEnd = this.#getRow(element.endDateTime);
     this.#addToGrid(element, column, rowStart, rowEnd);
   }
 
   #getRow(datetime) {
-    return Math.round((datetime.minutesSinceMidnight / 60.0) * this.resolution);
+    const minutesSinceMidnight =
+      datetime.getHours() * 60 + datetime.getMinutes();
+    return Math.round((minutesSinceMidnight / 60.0) * this.resolution);
   }
 
   #addToGrid(element, column, rowStart, rowEnd) {

@@ -52,17 +52,16 @@ function toEdgeString(startCityName, endCityName) {
   return `${startCityName}->${endCityName}`;
 }
 
-function prepareDataForCalendar(journeys, database) {
+function prepareDataForCalendar(calendarStartDate, journeys, database) {
   const data = [];
 
   if (!journeys.hasActiveJourney) return data;
 
   const connectionsActiveJourney = journeys.activeJourney.connections(database);
-  const startDate = connectionsActiveJourney[0].date;
 
   const dates = [];
   for (let i = 0; i < NUM_DAYS_CALENDAR; i++)
-    dates.push(shiftDate(startDate, i));
+    dates.push(shiftDate(calendarStartDate, i));
 
   for (let i in connectionsActiveJourney) {
     const currentlyChosenConnection = connectionsActiveJourney[i];
@@ -74,15 +73,17 @@ function prepareDataForCalendar(journeys, database) {
     );
 
     for (let option of connectionsForLeg) {
+      const legString = toEdgeString(option.startCityName, option.endCityName);
+
       data.push({
-        id: option.id,
+        uniqueId: option.uniqueId,
+        // used for communicating with map
+        leg: legString,
+        // for display
         name: option.name,
         type: option.type,
-        date: option.date,
-        startCityName: currentlyChosenConnection.startCityName,
         startStation: option.stops[0].stationName,
         startDateTime: option.stops[0].departure,
-        endCityName: currentlyChosenConnection.endCityName,
         endStation: option.stops.at(-1).stationName,
         endDateTime: option.stops.at(-1).arrival,
         color: getColor(i),

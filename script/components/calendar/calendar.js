@@ -21,11 +21,16 @@ class Calendar extends CalendarGrid {
     });
 
     // user can change leg to use different connection using drag&drop
-    enableDragAndDrop(this, (connectionIdString) =>
-      this.#callbacks["legChanged"](
-        ConnectionId.fromString(connectionIdString),
-      ),
-    );
+    enableDragAndDrop(this, (closest) => {
+      // todo just store the unique ids somewhere in here as a mapping rather than doing this?
+      const uniqueId = {
+        id: closest.dataset.id,
+        startCityName: closest.dataset.startCityName,
+        endCityName: closest.dataset.endCityName,
+        date: new Date(closest.dataset.date),
+      };
+      this.#callbacks["legChanged"](uniqueId);
+    });
   }
 
   on(name, callback) {
@@ -41,26 +46,32 @@ class Calendar extends CalendarGrid {
   }
 
   updateView(connections) {
+    // need string id as html element
+    const connectionsMap = {};
+    for (let c of connections) connectionsMap[this.#idString(c.uniqueId)] = c;
+
     // remove entries that are currently in calendar but no longer necessary
-    const connectionIds = connections.map((c) => c.id);
+    const connectionIds = Object.keys(connectionsMap);
     for (let entry of this.entries) {
       if (!connectionIds.includes(entry.id)) entry.remove();
     }
 
     // add entries that are not yet in calendar
-    for (let connection of connections) {
-      if (!this.entry(connection.id)) {
-        const entry = createCalendarEntry(connection);
+    for (let id in connectionsMap) {
+      if (!this.entry(id)) {
+        const entry = createCalendarEntry(connectionsMap[id]);
+        entry.id = id;
         entry.draggable = true; // todo this should not be here
         this.addToGrid(entry);
       }
     }
 
     // only show the currently active entries
-    for (let connection of connections) {
-      const entry = this.entry(connection.id);
+    for (let id in connectionsMap) {
+      const connection = connectionsMap[id];
+      const entry = this.entry(id);
 
-      if (connection.active) entry.visibility = "full";
+      if (connection.selected) entry.visibility = "full";
       else entry.visibility = "hidden";
 
       entry.color = connection.color;
@@ -90,6 +101,10 @@ class Calendar extends CalendarGrid {
     document
       .getElementById("calender-container")
       .style.setProperty("visibility", "visible");
+  }
+
+  #idString(id) {
+    return `${id.id}XX${id.startCityName}->${id.endCityName}XX${id.date.toLocaleDateString("sv")}`;
   }
 }
 

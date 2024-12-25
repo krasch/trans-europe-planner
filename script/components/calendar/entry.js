@@ -1,15 +1,25 @@
+function timeString(datetime) {
+  const hours = datetime.getHours().toString();
+  const minutes = datetime.getMinutes().toString();
+  return `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}`;
+}
+
 class CalendarEntry extends HTMLElement {
   #visibilityStates = ["hidden", "indicator", "preview", "full"];
 
-  constructor(id, group, startDateTime, endDateTime) {
+  constructor(connection) {
     // todo this constructor will not work if placed in HTML directly
     // because using custom JS class and because of not using attributes
     super();
 
-    this.id = id;
-    this.group = group;
-    this.startDateTime = startDateTime;
-    this.endDateTime = endDateTime;
+    this.group = connection.leg;
+    this.startDateTime = connection.startDateTime;
+    this.endDateTime = connection.endDateTime;
+
+    this.dataset.id = connection.uniqueId.id;
+    this.dataset.startCityName = connection.uniqueId.startCityName;
+    this.dataset.endCityName = connection.uniqueId.endCityName;
+    this.dataset.date = connection.uniqueId.date.toLocaleDateString("sv");
 
     // does not work with older browsers
     // this._internals = this.attachInternals();
@@ -40,33 +50,19 @@ class CalendarEntry extends HTMLElement {
 function createCalendarEntry(connection) {
   const templateData = {
     ".connection-icon": { src: `images/icons/${connection.type}.svg` },
-    ".connection-number": { innerText: connection.displayId },
+    ".connection-number": { innerText: connection.name },
     ".connection-start-time": {
-      innerText: connection.startDateTime.timeString,
+      innerText: timeString(connection.startDateTime),
     },
     ".connection-start-station": { innerText: connection.startStation },
-    ".connection-end-time": { innerText: connection.endDateTime.timeString },
+    ".connection-end-time": { innerText: timeString(connection.endDateTime) },
     ".connection-end-station": { innerText: connection.endStation },
   };
 
   let templateId = "template-calendar-connection";
-  // todo better fallback
-  /*let templateId = "template-calendar-connection";
-  if (connection.endDateTime.minutesSince(connection.startDateTime) < 4 * 60) {
-    templateId = "template-calendar-connection-short";
-  }
-  if (connection.endDateTime.minutesSince(connection.startDateTime) < 2 * 60) {
-    templateId = "template-calendar-connection-tiny";
-  }*/
-
   const element = createElementFromTemplate(templateId, templateData);
 
-  const entry = new CalendarEntry(
-    connection.id,
-    connection.leg,
-    connection.startDateTime,
-    connection.endDateTime,
-  );
+  const entry = new CalendarEntry(connection);
   entry.appendChild(element);
 
   return entry;

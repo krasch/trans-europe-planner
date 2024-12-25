@@ -58,7 +58,7 @@ function initIncrementalId() {
 
   function increment() {
     id += 1;
-    return `connection${id}`;
+    return `c${id}`;
   }
 
   return increment;
