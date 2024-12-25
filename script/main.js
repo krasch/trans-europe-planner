@@ -1,10 +1,19 @@
-const DUMMY_DATE_STRING = "2024-12-01";
-const DUMMY_DATE = new Date(DUMMY_DATE_STRING);
+// dummy date for initialising
+// today so that it is in range for date picker
+// double "new Date" so that can get rid of time component
+const TODAY = new Date(new Date().toLocaleDateString("sv"));
+
+function diffDays(datetime, laterDatetime) {
+  // get rid of hours/minutes/seconds
+  datetime = new Date(datetime.toDateString());
+  laterDatetime = new Date(laterDatetime.toDateString());
+
+  const diffMillis = laterDatetime - datetime;
+  return Math.ceil(diffMillis / (1000 * 60 * 60 * 24));
+}
 
 function initUpdateViews(map, calendar, sidebar, database) {
   function updateViews(state) {
-    //calendar.setAttribute("start", dateOnlyISOString(state.date));
-
     map.updateView(prepareDataForMap(state.journeys, database));
     calendar.updateView(
       prepareDataForCalendar(state.date, state.journeys, database),
@@ -28,14 +37,18 @@ function initUpdateViews(map, calendar, sidebar, database) {
 async function main(home, map, calendar, sidebar) {
   // init state
   const state = {
-    date: sidebar.currentDate || DUMMY_DATE,
+    date: sidebar.currentDate || TODAY,
     journeys: new JourneyCollection(),
   };
 
+  // redraw calendar header
+  calendar.setAttribute("start", dateOnlyISOString(state.date));
+
   // prepare database
+  // todo having troubles with trains starting before 01:00 because than diffDays does not work correctly
   const connections = CONNECTIONS.flatMap((c) =>
-    enrichConnection(c, STATIONS, CITIES, DUMMY_DATE_STRING),
-  );
+    enrichConnection(c, STATIONS, CITIES, TODAY.toLocaleDateString("sv")),
+  ).filter((c) => c.stops[0].departure.getHours() > 0);
   const database = new Database(connections);
 
   // prepare routes
@@ -59,13 +72,11 @@ async function main(home, map, calendar, sidebar) {
     updateViews(state);
   });
 
-  // selecting a different journey
   map.on("selectJourney", (journeyId) => {
     state.journeys.setActive(journeyId);
     updateViews(state);
   });
 
-  // clicking on a city
   map.on("showCityRoutes", (cityName) => {
     const itineraries = routeDatabase.getItineraries(
       home,
@@ -82,21 +93,22 @@ async function main(home, map, calendar, sidebar) {
     updateViews(state);
   });
 
-  /*map.on("showCalendar", (journeyId) => {
-    sidebar.show();
-  });*/
-
   map.on("cutJourney", (cityName) => {
-    state.journeys.cutActiveJourney(cityName, database);
+    state.journeys.activeJourney.split(cityName); // todo option to split only for active journey? or pass journey id back here
   });
 
-  // hovering over map or calender
   calendar.on("entryHoverStart", (leg) => map.setLegHoverState(leg, true));
   calendar.on("entryHoverStop", (leg) => map.setLegHoverState(leg, false));
 
   sidebar.on("dateChanged", (date) => {
+    const diff = diffDays(state.date, date);
+    if (diff === 0) return;
+
+    state.journeys.shiftDate(diff, database);
     state.date = date;
-    updateViews(state); // todo if a date is still set this might trigger an updateViews before the initial updateViews
+    calendar.setAttribute("start", dateOnlyISOString(state.date));
+
+    updateViews(state);
   });
 
   // now have done all we can do without having the map ready

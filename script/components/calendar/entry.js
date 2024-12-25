@@ -15,14 +15,6 @@ class CalendarEntry extends HTMLElement {
     this.group = connection.leg;
     this.startDateTime = connection.startDateTime;
     this.endDateTime = connection.endDateTime;
-
-    this.dataset.id = connection.uniqueId.id;
-    this.dataset.startCityName = connection.uniqueId.startCityName;
-    this.dataset.endCityName = connection.uniqueId.endCityName;
-    this.dataset.date = connection.uniqueId.date.toLocaleDateString("sv");
-
-    // does not work with older browsers
-    // this._internals = this.attachInternals();
   }
 
   set visibility(status) {

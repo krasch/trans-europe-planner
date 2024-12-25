@@ -1,7 +1,7 @@
-// https://stackoverflow.com/a/3818198
-function incDecDate(date, deltaDays) {
-  const result = date.setDate(date.getDate() + deltaDays);
-  return new Date(result);
+function shiftDate(date, deltaDays) {
+  const copy = new Date(date.getTime());
+  copy.setDate(copy.getDate() + deltaDays);
+  return copy;
 }
 
 function toISOString(date) {
@@ -31,8 +31,8 @@ class Sidebar {
     this.#increaseDateElement = this.#container.querySelector("#increase-date");
 
     const today = new Date();
-    this.#start = incDecDate(today, 1);
-    this.#end = incDecDate(today, 3 * 30);
+    this.#start = shiftDate(today, 1);
+    this.#end = shiftDate(today, 3 * 30);
 
     this.#inputElement.min = toISOString(this.#start);
     this.#inputElement.max = toISOString(this.#end);
@@ -55,12 +55,14 @@ class Sidebar {
 
     this.#container.addEventListener("click", (e) => {
       if (e.target.id === "decrease-date") {
-        this.#currentDate = incDecDate(this.#currentDate, -1);
+        this.#currentDate = shiftDate(this.#currentDate, -1);
         this.#callbacks["dateChanged"](this.#currentDate);
+        this.#showHideArrows();
       }
       if (e.target.id === "increase-date") {
-        this.#currentDate = incDecDate(this.#currentDate, +1);
+        this.#currentDate = shiftDate(this.#currentDate, +1);
         this.#callbacks["dateChanged"](this.#currentDate);
+        this.#showHideArrows();
       }
     });
   }
@@ -89,7 +91,8 @@ class Sidebar {
   }
 
   set #currentDate(value) {
-    this.#inputElement.value = toISOString(value);
+    if (value === null) this.#inputElement.value = null;
+    else this.#inputElement.value = toISOString(value);
   }
 
   #showHideArrows() {
@@ -99,10 +102,13 @@ class Sidebar {
       return;
     }
 
-    if (incDecDate(this.#currentDate, -1) >= this.#start)
+    // todo only add/remove if actually changes?
+    if (shiftDate(this.#currentDate, -1) >= this.#start)
       this.#decreaseDateElement.classList.remove("hidden");
+    else this.#decreaseDateElement.classList.add("hidden");
 
-    if (incDecDate(this.#currentDate, +1) <= this.#end)
+    if (shiftDate(this.#currentDate, +1) <= this.#end)
       this.#increaseDateElement.classList.remove("hidden");
+    else this.#increaseDateElement.classList.add("hidden");
   }
 }

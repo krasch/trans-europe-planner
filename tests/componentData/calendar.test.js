@@ -104,6 +104,37 @@ test("prepareDataForCalendarSingleJourneyNoAlternativesDifferentStartDate", func
   expect(got).toEqual(exp);
 });
 
+test("prepareDataForCalendarSingleJourneyAfterShift", function () {
+  const c1 = createConnection([
+    ["2024-10-15", "06:00", "city1MainStationId"],
+    ["2024-10-15", "07:00", "city2MainStationId"],
+  ]);
+
+  const calendarStartDate = new Date("2024-10-16");
+
+  const j1 = new Journey([c1.uniqueId]);
+  const database = new Database([c1]);
+
+  const journeys = new JourneyCollection();
+  journeys.addJourney(j1);
+  journeys.setActive(j1.id);
+
+  journeys.shiftDate(1, database);
+
+  const c1_day0 = c1.changeDate(new Date("2024-10-16"));
+  const c1_day1 = c1.changeDate(new Date("2024-10-17"));
+  const c1_day2 = c1.changeDate(new Date("2024-10-18"));
+
+  const exp = [
+    expected(c1_day0, true, getColor(0)),
+    expected(c1_day1, false, getColor(0)),
+    expected(c1_day2, false, getColor(0)),
+  ];
+
+  const got = prepareDataForCalendar(calendarStartDate, journeys, database);
+  expect(got).toEqual(exp);
+});
+
 test("prepareDataForCalendarTwoJourneysNoAlternatives", function () {
   const c1 = createConnection([
     ["2024-10-15", "06:00", "city1MainStationId"],

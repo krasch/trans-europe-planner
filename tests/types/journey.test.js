@@ -71,7 +71,7 @@ test("testSetConnectionKnownLeg", function () {
   expect(journey.connections(database)).toEqual([c1, c2_alt, c3]);
 });
 
-test("changeDateSameDay", function () {
+test("shiftDateSameDay", function () {
   const c1 = createConnection([
     ["2024-10-15", "08:00", "city1MainStationId"],
     ["2024-10-16", "09:00", "city2MainStationId"],
@@ -84,7 +84,7 @@ test("changeDateSameDay", function () {
   const database = new Database([c1, c2]);
   const journey = new Journey([c1.uniqueId, c2.uniqueId]);
 
-  journey.changeDate(new Date("2024-10-15"), database);
+  journey.shiftDate(0, database);
   expect(journey.connectionIds).toStrictEqual([
     {
       id: c1.id,
@@ -101,7 +101,7 @@ test("changeDateSameDay", function () {
   ]);
 });
 
-test("changeDateForward", function () {
+test("shiftDateForward", function () {
   const c1 = createConnection([
     ["2024-10-15", "08:00", "city1MainStationId"],
     ["2024-10-16", "09:00", "city2MainStationId"],
@@ -114,24 +114,24 @@ test("changeDateForward", function () {
   const database = new Database([c1, c2]);
   const journey = new Journey([c1.uniqueId, c2.uniqueId]);
 
-  journey.changeDate(new Date("2025-03-01"), database);
+  journey.shiftDate(3, database);
   expect(journey.connectionIds).toStrictEqual([
     {
       id: c1.id,
       startCityName: "City1",
       endCityName: "City2",
-      date: new Date("2025-03-01"),
+      date: new Date("2024-10-18"),
     },
     {
       id: c2.id,
       startCityName: "City2",
       endCityName: "City3",
-      date: new Date("2025-03-03"),
+      date: new Date("2024-10-20"),
     },
   ]);
 });
 
-test("changeDateBackward", function () {
+test("shiftDateBackward", function () {
   const c1 = createConnection([
     ["2024-10-15", "08:00", "city1MainStationId"],
     ["2024-10-16", "09:00", "city2MainStationId"],
@@ -144,19 +144,19 @@ test("changeDateBackward", function () {
   const database = new Database([c1, c2]);
   const journey = new Journey([c1.uniqueId, c2.uniqueId]);
 
-  journey.changeDate(new Date("2023-03-01"), database);
+  journey.shiftDate(-4, database);
   expect(journey.connectionIds).toStrictEqual([
     {
       id: c1.id,
       startCityName: "City1",
       endCityName: "City2",
-      date: new Date("2023-03-01"),
+      date: new Date("2024-10-11"),
     },
     {
       id: c2.id,
       startCityName: "City2",
       endCityName: "City3",
-      date: new Date("2023-03-03"),
+      date: new Date("2024-10-13"),
     },
   ]);
 });
@@ -329,6 +329,7 @@ test("journeyCollection", function () {
   const j2 = new Journey([c2.uniqueId]);
 
   const journeys = new JourneyCollection();
+  const database = new Database([c1, c2]);
 
   journeys.addJourney(j1);
   journeys.addJourney(j2);
@@ -345,4 +346,14 @@ test("journeyCollection", function () {
   expect(journeys.hasActiveJourney).toBe(false);
   expect(journeys.activeJourney).toBe(null);
   expect(journeys.journeys).toStrictEqual([]);
+
+  journeys.addJourney(j1);
+  journeys.addJourney(j2);
+  expect(journeys.hasActiveJourney).toBe(false);
+  expect(journeys.activeJourney).toBe(null);
+  expect(journeys.journeys).toStrictEqual([j1, j2]);
+
+  journeys.shiftDate(1, database);
+  expect(j1.connectionIds[0].date.toLocaleDateString("sv")).toBe("2024-10-16");
+  expect(j2.connectionIds[0].date.toLocaleDateString("sv")).toBe("2024-10-18");
 });

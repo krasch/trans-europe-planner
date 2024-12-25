@@ -1,11 +1,15 @@
-// important todo: sort collections by departure
-
 class Calendar extends CalendarGrid {
   #callbacks = {
     legChanged: () => {},
     entryHoverStart: () => {},
     entryHoverStop: () => {},
   };
+
+  // maps from id to entry
+  #entries = {};
+
+  // maps from string id to original composite connection id
+  #connectionIds = {};
 
   constructor() {
     super();
@@ -22,14 +26,7 @@ class Calendar extends CalendarGrid {
 
     // user can change leg to use different connection using drag&drop
     enableDragAndDrop(this, (closest) => {
-      // todo just store the unique ids somewhere in here as a mapping rather than doing this?
-      const uniqueId = {
-        id: closest.dataset.id,
-        startCityName: closest.dataset.startCityName,
-        endCityName: closest.dataset.endCityName,
-        date: new Date(closest.dataset.date),
-      };
-      this.#callbacks["legChanged"](uniqueId);
+      this.#callbacks["legChanged"](this.#connectionIds[closest.id]);
     });
   }
 
@@ -37,58 +34,39 @@ class Calendar extends CalendarGrid {
     this.#callbacks[name] = callback; // todo check that name valid
   }
 
-  setHoverEntry(group) {
-    for (let e of this.entriesForGroup(group)) e.hover = true;
+  setHoverEntry(leg) {
+    for (let e of this.entriesForGroup(leg)) e.hover = true;
   }
 
-  setNoHoverEntry(group) {
-    for (let e of this.entriesForGroup(group)) e.hover = false;
+  setNoHoverEntry(leg) {
+    for (let e of this.entriesForGroup(leg)) e.hover = false;
   }
 
   updateView(connections) {
-    // need string id as html element
-    const connectionsMap = {};
-    for (let c of connections) connectionsMap[this.#idString(c.uniqueId)] = c;
+    // remove all entries because they might be invalid anyway
+    // because the calendar start date might have changed
+    // which means that their column should have been updated (but which we currently don't do)
+    for (let key in this.#entries) this.#entries[key].remove();
+    this.#entries = {};
+    this.#connectionIds = {};
 
-    // remove entries that are currently in calendar but no longer necessary
-    const connectionIds = Object.keys(connectionsMap);
-    for (let entry of this.entries) {
-      if (!connectionIds.includes(entry.id)) entry.remove();
-    }
+    // sort such that earliest will be first child etc
+    // otherwise they might overlay each other and drag&drop won't work
+    connections.sort((c1, c2) => c1.startDateTime - c2.startDateTime);
 
-    // add entries that are not yet in calendar
-    for (let id in connectionsMap) {
-      if (!this.entry(id)) {
-        const entry = createCalendarEntry(connectionsMap[id]);
-        entry.id = id;
-        entry.draggable = true; // todo this should not be here
-        this.addToGrid(entry);
-      }
-    }
-
-    // only show the currently active entries
-    for (let id in connectionsMap) {
-      const connection = connectionsMap[id];
-      const entry = this.entry(id);
+    for (let connection of connections) {
+      const entry = createCalendarEntry(connection);
+      entry.id = this.#idString(connection.uniqueId);
+      entry.draggable = true; // todo this should not be here
 
       if (connection.selected) entry.visibility = "full";
       else entry.visibility = "hidden";
-
       entry.color = connection.color;
+
+      this.addToGrid(entry);
+      this.#entries[entry.id] = entry;
+      this.#connectionIds[entry.id] = connection.uniqueId;
     }
-  }
-
-  get entries() {
-    // arrayfrom is important!
-    return Array.from(this.getElementsByTagName("calendar-entry"));
-  }
-
-  entriesForGroup(group) {
-    return this.entries.filter((e) => e.group === group);
-  }
-
-  entry(id) {
-    return document.getElementById(id); // todo
   }
 
   hide() {
@@ -105,6 +83,14 @@ class Calendar extends CalendarGrid {
 
   #idString(id) {
     return `${id.id}XX${id.startCityName}->${id.endCityName}XX${id.date.toLocaleDateString("sv")}`;
+  }
+
+  //also used by drag and drop
+  entriesForGroup(leg) {
+    const result = [];
+    for (let entry of Object.values(this.#entries))
+      if (entry.group === leg) result.push(entry);
+    return result;
   }
 }
 

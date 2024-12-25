@@ -35,8 +35,8 @@ class CalendarGrid extends HTMLElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if (name === "start" && oldValue !== newValue) {
-      this.#initUpdateTableHeader();
+    if (name === "start") {
+      this.#updateTableHeader();
     }
   }
 
@@ -95,7 +95,7 @@ class CalendarGrid extends HTMLElement {
   }
 
   // todo meh
-  #initUpdateTableHeader() {
+  #updateTableHeader() {
     const start = new Date(this.startDay);
 
     for (let day = 0; day < this.numDays; day++) {

@@ -11,15 +11,6 @@ function shiftDate(date, deltaDays) {
   return copy;
 }
 
-function diffDays(datetime, laterDatetime) {
-  // get rid of hours/minutes/seconds
-  datetime = new Date(datetime.toDateString());
-  laterDatetime = new Date(laterDatetime.toDateString());
-
-  const diffMillis = laterDatetime - datetime;
-  return Math.ceil(diffMillis / (1000 * 60 * 60 * 24));
-}
-
 function diffMinutes(datetime, laterDatetime) {
   const diffMillis = laterDatetime - datetime;
   return Math.ceil(diffMillis / (1000 * 60));
@@ -61,14 +52,7 @@ class Journey {
     this.#connectionIds[index] = replacementConnectionId;
   }
 
-  changeDate(newDate, database) {
-    const currentDate = this.#connectionIds[0].date;
-    if (newDate.toDateString() === currentDate.toDateString()) return;
-
-    // todo unify all diffDays implementations, like why does this one need -1?
-    // the -1 also makes that this does not work when date is the same, hence the extra check above
-    const deltaDays = diffDays(currentDate, newDate) - 1;
-
+  shiftDate(deltaDays, database) {
     for (let i in this.#connectionIds) {
       const id = this.#connectionIds[i];
 
@@ -230,8 +214,13 @@ class JourneyCollection {
     this.#activeId = journeyId;
   }
 
+  shiftDate(deltaDays, database) {
+    for (let id in this.#journeys)
+      this.#journeys[id].shiftDate(deltaDays, database);
+  }
+
   reset() {
-    this.#journeys = [];
+    this.#journeys = {};
     this.#activeId = null;
   }
 }
