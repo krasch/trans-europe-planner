@@ -1,3 +1,5 @@
+let NUM_DAYS_CALENDAR = 3;
+
 let COLORS = [
   // backup colors (mostly for tests)
   "0, 255, 0",
@@ -30,82 +32,71 @@ function getColor(i) {
   return COLORS[i % COLORS.length];
 }
 
-function sortConnectionsByDeparture(connections) {
-  connections = connections.slice(); // make a copy
-  connections.sort((a, b) => a.start.departure.minutesSince(b.start.departure));
-  return connections;
+function shiftDate(date, deltaDays) {
+  const copy = new Date(date.getTime());
+  copy.setDate(copy.getDate() + deltaDays);
+  return copy;
 }
 
-function getSortedJourneyConnections(journey, database) {
-  const connections = journey.connectionIds.map((c) => database.connection(c));
-  return sortConnectionsByDeparture(connections);
+function sortByDepartureTime(connections) {
+  connections.sort((c1, c2) => c1.stops[0].departure - c2.stops[0].departure);
 }
 
-function getJourneySummary(connections) {
-  const startCity = connections[0].start.cityName;
-  const endCity = connections.at(-1).end.cityName;
-
-  const startTime = connections[0].start.departure;
-  const endTime = connections.at(-1).end.arrival;
-  const travelTime = endTime.humanReadableSince(startTime);
-
-  const vias = [];
-  for (let c of connections) {
-    for (let city of [c.start.cityName, c.end.cityName]) {
-      if (city !== startCity && city !== endCity && !vias.includes(city))
-        vias.push(city);
-    }
-  }
-
-  let numTransfer = "direkt (ohne Umstieg)";
-  if (vias.length === 1) {
-    numTransfer = `${vias.length} Umstieg: `;
-  } else if (vias.length > 1) {
-    numTransfer = `${vias.length} Umstiege: `;
-  }
-
-  return {
-    from: startCity,
-    to: endCity,
-    via: vias.join(", "),
-    numTransfer: numTransfer,
-    travelTime: travelTime,
-  };
+function toAlphabeticEdgeString(startCityName, endCityName) {
+  const cities = [startCityName, endCityName];
+  cities.sort();
+  return toEdgeString(cities[0], cities[1]);
 }
 
-function prepareDataForCalendar(journeys, database) {
+function toEdgeString(startCityName, endCityName) {
+  return `${startCityName}->${endCityName}`;
+}
+
+function prepareDataForCalendar(calendarStartDate, journeys, database) {
   const data = [];
 
-  if (!journeys.activeJourney) return data;
+  if (!journeys.hasActiveJourney) return data;
 
-  const connectionIds = journeys.activeJourney.connectionIds;
+  const connectionsActiveJourney = journeys.activeJourney.connections(database);
 
-  for (let i in connectionIds) {
-    const leg = connectionIds[i].leg;
-    const color = getColor(i);
+  const dates = [];
+  for (let i = 0; i < NUM_DAYS_CALENDAR; i++)
+    dates.push(shiftDate(calendarStartDate, i));
 
-    let connectionsForLeg = database.connectionsForLeg(leg);
-    connectionsForLeg = sortConnectionsByDeparture(connectionsForLeg);
+  for (let i in connectionsActiveJourney) {
+    const currentlyChosenConnection = connectionsActiveJourney[i];
 
-    for (let connection of connectionsForLeg) {
+    let connectionsForLeg = database.connectionsForLeg(
+      currentlyChosenConnection.startCityName,
+      currentlyChosenConnection.endCityName,
+      dates,
+    );
+
+    for (let option of connectionsForLeg) {
+      const legString = toEdgeString(option.startCityName, option.endCityName);
+
       data.push({
-        id: connection.id.toString(),
-        displayId: connection.name,
-        type: connection.type,
-        leg: connection.leg.toString(),
-        startStation: connection.start.stationName,
-        startDateTime: connection.start.departure,
-        endStation: connection.end.stationName,
-        endDateTime: connection.end.arrival,
-        active: connection.id.toString() === connectionIds[i].toString(),
-        color: color,
+        uniqueId: option.uniqueId,
+        // used for communicating with map
+        leg: legString,
+        // for display
+        name: option.name,
+        type: option.type,
+        startStation: option.stops[0].stationName,
+        startDateTime: option.stops[0].departure,
+        endStation: option.stops.at(-1).stationName,
+        endDateTime: option.stops.at(-1).arrival,
+        color: getColor(i),
+        selected:
+          option.id === currentlyChosenConnection.id &&
+          option.date.toString() === currentlyChosenConnection.date.toString(),
       });
     }
   }
   return data;
 }
 
-function prepareInitialDataForMap(home, cityInfo, connections, allRoutes) {
+function prepareInitialDataForMap(home, cityInfo, connections, routeDatabase) {
   const cities = { geo: {}, defaults: {} };
   const edges = { geo: {}, defaults: {} };
 
@@ -115,10 +106,7 @@ function prepareInitialDataForMap(home, cityInfo, connections, allRoutes) {
 
       const id = CITY_NAME_TO_ID[cityName];
 
-      const target = `${home}->${cityName}`;
-      const routes = (allRoutes[target] ?? []).filter(
-        (r) => typeof r !== "string",
-      );
+      const routes = routeDatabase.getRoutes(home, cityName);
 
       cities.geo[id] = {
         name: cityInfo[id].name,
@@ -135,7 +123,7 @@ function prepareInitialDataForMap(home, cityInfo, connections, allRoutes) {
     }
 
     for (let edge of c.edges) {
-      const id = edge.toAlphabeticString();
+      const id = toAlphabeticEdgeString(edge.startCityName, edge.endCityName);
       if (edges.geo[id] !== undefined) continue; // already done this edge
 
       const start = cityInfo[CITY_NAME_TO_ID[edge.startCityName]];
@@ -158,11 +146,12 @@ function prepareDataForMap(journeys, database) {
   const journeyInfo = {};
 
   const activeJourney = journeys.activeJourney; // might be null
+
   for (let journey of journeys.journeys) {
     const active = activeJourney !== null && journey.id === activeJourney.id;
-    const connections = getSortedJourneyConnections(journey, database); // only needs to be sorted for journey summary
 
-    journeyInfo[journey.id] = getJourneySummary(connections);
+    const connections = journey.connections(database);
+    journeyInfo[journey.id] = journey.summary(database); // also calls journey.connections :-(
 
     for (let i in connections) {
       const color = active ? `rgb(${getColor(i)})` : null;
@@ -186,8 +175,11 @@ function prepareDataForMap(journeys, database) {
       }
 
       for (let edge of connections[i].edges) {
-        const id = edge.toAlphabeticString();
-        const leg = connections[i].leg.toString();
+        const id = toAlphabeticEdgeString(edge.startCityName, edge.endCityName);
+        const leg = toEdgeString(
+          connections[i].startCityName,
+          connections[i].endCityName,
+        );
 
         // get current state data for this edge or init new if first time we see this edge
         const state = edges.state[id] ?? {};
@@ -219,8 +211,7 @@ function prepareDataForMap(journeys, database) {
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.getColor = getColor;
   module.exports.initCityNameToId = initCityNameToId;
-  module.exports.sortConnectionsByDeparture = sortConnectionsByDeparture;
-  module.exports.getJourneySummary = getJourneySummary;
+  module.exports.sortByDepartureTime = sortByDepartureTime;
   module.exports.prepareDataForCalendar = prepareDataForCalendar;
   module.exports.prepareDataForMap = prepareDataForMap;
   module.exports.prepareInitialDataForMap = prepareInitialDataForMap;

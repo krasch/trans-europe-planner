@@ -69,7 +69,7 @@ function enableDragAndDrop(calendar, onDropCallback) {
     const closest = e.target.closest("calendar-entry");
 
     // hide original item from calendar -> global state, should callback
-    onDropCallback(closest.id);
+    onDropCallback(closest);
   });
 
   calendar.addEventListener("dragend", (e) => {
@@ -78,7 +78,7 @@ function enableDragAndDrop(calendar, onDropCallback) {
     // no drop event fired, drag&drop was aborted, redraw previous state
     if (e.dataTransfer.dropEffect === "none") {
       const closest = e.target.closest("calendar-entry");
-      onDropCallback(closest.id);
+      onDropCallback(closest);
     }
   });
 }

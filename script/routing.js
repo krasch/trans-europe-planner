@@ -1,15 +1,40 @@
-class CreatingItineraryNotPossible extends Error {
+const TRANSFER_TIME = 30; // minutes
+
+class RoutingError extends Error {
   constructor(message) {
     super(message);
-    this.name = "CreatingItineraryNotPossible";
+    this.name = "RoutingError";
   }
 }
 
-function cartesianProduct(a) {
-  if (a.length === 1) return a;
+function diffDays(datetime, laterDatetime) {
+  // get rid of hours/minutes/seconds
+  datetime = new Date(datetime.toDateString());
+  laterDatetime = new Date(laterDatetime.toDateString());
 
-  // https://stackoverflow.com/a/43053803
-  return a.reduce((a, b) => a.flatMap((d) => b.map((e) => [d, e].flat())));
+  const diffMillis = laterDatetime - datetime;
+  return Math.ceil(diffMillis / (1000 * 60 * 60 * 24));
+}
+
+function diffMinutes(datetime, laterDatetime) {
+  const diffMillis = laterDatetime - datetime;
+  return Math.ceil(diffMillis / (1000 * 60));
+}
+
+function minutesSinceMidnight(datetime) {
+  const hours = datetime.getHours();
+  const minutes = datetime.getMinutes();
+  return hours * 60 + minutes;
+}
+
+function shiftDate(date, deltaDays) {
+  const copy = new Date(date.getTime());
+  copy.setDate(copy.getDate() + deltaDays);
+  return copy;
+}
+
+function sortByDepartureTime(connections) {
+  connections.sort((c1, c2) => c1.stops[0].departure - c2.stops[0].departure);
 }
 
 function isValidItinerary(itinerary) {
@@ -18,9 +43,8 @@ function isValidItinerary(itinerary) {
 
     const arrival = itinerary[i - 1].stops.at(-1).arrival;
     const departure = itinerary[i].stops.at(0).departure;
-    const changeTime = departure.minutesSince(arrival);
 
-    if (changeTime < 30) return false;
+    if (diffMinutes(arrival, departure) < TRANSFER_TIME) return false;
   }
 
   return true;
@@ -29,9 +53,10 @@ function isValidItinerary(itinerary) {
 function itinerarySummary(itinerary) {
   // assumes you are passing in a valid itinerary
 
-  const departure = itinerary[0].stops[0].departure;
-  const arrival = itinerary.at(-1).stops.at(-1).arrival;
-  const totalTravelDays = arrival.daysSince(departure.dateString) + 1;
+  const itineraryDeparture = itinerary[0].stops[0].departure;
+  const itineraryArrival = itinerary.at(-1).stops.at(-1).arrival;
+
+  const totalTravelDays = diffDays(itineraryDeparture, itineraryArrival) + 1;
 
   // initialise an array with one entry per travel day
   // each entry is initialised as an empty array
@@ -43,7 +68,7 @@ function itinerarySummary(itinerary) {
   // group connections by travel day (offset from departure)
   // this keeps current order within the connections for a travel day
   for (let connection of itinerary) {
-    const day = connection.stops[0].departure.daysSince(departure.dateString);
+    const day = diffDays(itineraryDeparture, connection.stops[0].departure);
     connectionsByTravelDay[day].push(connection);
   }
 
@@ -58,24 +83,25 @@ function itinerarySummary(itinerary) {
   };
 
   // calculate summary by going over each travel day
-  connectionsByTravelDay.forEach((connections, i) => {
+  connectionsByTravelDay.forEach((connectionsForDay, i) => {
     // no connections on this day
-    if (connections.length === 0) return;
+    if (connectionsForDay.length === 0) return;
 
-    const departure = connections[0].stops[0].departure;
-    const arrival = connections.at(-1).stops.at(-1).arrival;
+    const departure = connectionsForDay[0].stops[0].departure;
+    const arrival = connectionsForDay.at(-1).stops.at(-1).arrival;
 
-    const travelTime =
-      arrival.minutesSinceMidnight - departure.minutesSinceMidnight;
+    const travelTime = diffMinutes(departure, arrival);
+    const departureMinutes = minutesSinceMidnight(departure);
+    const arrivalMinutes = minutesSinceMidnight(arrival);
 
-    if (departure.minutesSinceMidnight < summary.earliestDeparture)
-      summary.earliestDeparture = departure.minutesSinceMidnight;
+    if (departureMinutes < summary.earliestDeparture)
+      summary.earliestDeparture = departureMinutes;
 
-    if (departure.minutesSinceMidnight > summary.latestDeparture)
-      summary.latestDeparture = departure.minutesSinceMidnight;
+    if (departureMinutes > summary.latestDeparture)
+      summary.latestDeparture = departureMinutes;
 
-    if (arrival.minutesSinceMidnight > summary.latestArrival)
-      summary.latestArrival = arrival.minutesSinceMidnight;
+    if (arrivalMinutes > summary.latestArrival)
+      summary.latestArrival = arrivalMinutes;
 
     if (travelTime > summary.longestDailyTravelTime) {
       summary.longestDailyTravelTime = travelTime;
@@ -102,99 +128,71 @@ function judgeItinerary(summary) {
   );
 }
 
-function chooseItinerary(summaries) {
-  // give points for number of travel days and some other rules
-  const points = summaries.map(judgeItinerary);
-  const maxPoints = Math.max(...points);
+function createEarliestItinerary(
+  connectionForFirstLeg,
+  connectionsByLegForOtherLegs,
+) {
+  // connectionForFirstLeg = create itinerary that starts with this connection
+  // connectionsPerLegForOtherLegs = [[conns_for_leg_2], [conns_for_leg_3], ...]
+  // where each conns for conns_for_leg is sorted by departure time
 
-  // keep only itineraries with most points
-  const indices = summaries.map((s, i) => i);
-  const best = indices.filter((i) => points[i] === maxPoints);
+  const itinerary = [connectionForFirstLeg];
 
-  // tie-breaker is total travel time
-  const travelTimes = best.map((i) => summaries[i].totalTravelTime);
-  const minTravelTime = Math.min(...travelTimes);
-
-  // get all that have roughly optimal travel time
-  const threshold = minTravelTime;
-  const bestAndShortest = best.filter(
-    (i) => summaries[i].totalTravelTime <= threshold,
-  );
-
-  // of those take the first
-  return bestAndShortest[0];
-}
-
-function createItineraryForRoute(legs, database) {
-  if (legs.length === 0) return [];
-
-  // look up all necessary data from database
-  const connections = legs.map((l) =>
-    Object.values(database.connectionsForLeg(l)),
-  );
-
-  // all possible combinations
-  const allItineraries = cartesianProduct(connections);
-
-  // keep only those that are actually valid, i.e. the timings of the connections work out
-  const itineraries = allItineraries.filter((i) => isValidItinerary(i));
-
-  // there is no combination of connections that work out
-  if (itineraries.length === 0) throw new CreatingItineraryNotPossible();
-
-  // calculate a bunch of stats about each itinerary (e.g. #travel days)
-  const summaries = itineraries.map(itinerarySummary);
-
-  // return the best one
-  const bestIndex = chooseItinerary(summaries);
-  const best = itineraries[bestIndex];
-
-  // only need connection ids
-  return best.map((connections) => connections.id);
-}
-
-function createEarliestItinerary(firstConnection, connectionsForOtherLegs) {
-  const itinerary = [firstConnection];
-
-  for (let i in connectionsForOtherLegs) {
-    const previousArrival = itinerary.at(-1)["stops"].at(-1)["arrival"];
-    const relevantConnections = connectionsForOtherLegs[i].filter(
-      (c) => c.stops[0].departure.minutesSince(previousArrival) > 30,
+  // loop over legs
+  for (let connectionsForLeg of connectionsByLegForOtherLegs) {
+    const previousArrival = itinerary.at(-1).stops.at(-1).arrival;
+    const relevantConnections = connectionsForLeg.filter(
+      (c) =>
+        diffMinutes(previousArrival, c.stops[0].departure) >= TRANSFER_TIME,
     );
-    itinerary.push(relevantConnections[0]);
+
+    if (relevantConnections.length === 0) throw new RoutingError();
+
+    itinerary.push(relevantConnections[0]); // earliest we can catch for this leg
   }
 
   return itinerary;
 }
 
 // todo max length?
-const routeCache = new Map();
+//const routeCache = new Map();
 
-function createStupidItineraryForRoute(legs, database) {
+function createStupidItineraryForRoute(legs, date, database) {
   if (legs.length === 0) return [];
 
-  const cacheKey = legs.map((l) => l.toString()).join(";");
-  if (routeCache.has(cacheKey)) return routeCache.get(cacheKey);
+  //const cacheKey = legs.map((l) => l.toString()).join(";");
+  //if (routeCache.has(cacheKey)) return routeCache.get(cacheKey);
+
+  // want connections on travel day + 2 extra days
+  const dates = [];
+  for (let day of [0, 1, 2]) dates.push(shiftDate(date, day));
 
   // look up all necessary data from database and sort by departure time
-  const connections = legs.map((l) => {
-    const connsForLeg = Object.values(database.connectionsForLeg(l));
-    connsForLeg.sort((a, b) =>
-      a.stops[0].departure.compareTo(b.stops[0].departure),
+  const connectionsByLeg = legs.map((l) => {
+    const connections = database.connectionsForLeg(
+      l.startCityName,
+      l.endCityName,
+      dates,
     );
-    return connsForLeg;
+    sortByDepartureTime(connections);
+    return connections;
   });
 
-  const connectionsForFirstLeg = connections[0];
-  const connectionsForOtherLegs = connections.slice(1, connections.length);
+  const connectionsFirstLeg = connectionsByLeg[0];
+  if (connectionsFirstLeg.length === 0) throw new RoutingError();
+
+  const connectionsByLegForOtherLegs = connectionsByLeg.slice(
+    1,
+    connectionsByLeg.length,
+  );
 
   let itinerary = null;
   let points = -1000000;
 
-  for (let i in connectionsForFirstLeg) {
+  for (let i in connectionsFirstLeg) {
     const candidate = createEarliestItinerary(
-      connectionsForFirstLeg[i],
-      connectionsForOtherLegs,
+      connectionsFirstLeg[i],
+      connectionsByLegForOtherLegs,
     );
     const pointsCandidate = judgeItinerary(itinerarySummary(candidate));
 
@@ -213,37 +211,93 @@ function createStupidItineraryForRoute(legs, database) {
     }
   }
 
-  const connectionIds = itinerary.map((c) => c.id);
-  routeCache.set(cacheKey, connectionIds);
+  const connectionIds = itinerary.map((c) => c.uniqueId);
+  //routeCache.set(cacheKey, connectionIds);
 
   return connectionIds;
 }
 
-function pickFittingConnection(connectionIds, desiredLeg, database) {
-  const connections = connectionIds.map((i) => database.connection(i));
-  connections.sort((a, b) =>
-    a.stops.at(-1).arrival.compareTo(b.stops.at(-1).arrival),
-  );
+class RouteDatabase {
+  #routes = {};
 
-  const currentArrival = connections.at(-1).stops.at(-1).arrival;
+  #cachedItineraries = {};
 
-  const candidates = database.connectionsForLeg(desiredLeg);
+  constructor(routes) {
+    for (let key in routes) {
+      // filter out comments
+      const filtered = routes[key].filter((r) => typeof r !== "string");
 
-  const later = candidates.filter(
-    (c) => c.stops[0].departure.minutesSince(currentArrival) > 0,
-  );
+      const parsed = filtered.map((route) =>
+        route.map((leg) => this.#parseLeg(leg)),
+      );
 
-  if (later.length > 0) return later[0].id;
-  else return candidates[0].id; // fallback: pick earliest
+      // sort so that route with mininum transfers first
+      parsed.sort((route1, route2) => route1.length - route2.length);
+
+      this.#routes[key] = parsed;
+    }
+  }
+
+  hasRoutes(startCityName, endCityName) {
+    return this.#routes[this.#key(startCityName, endCityName)] !== undefined;
+  }
+
+  getRoutes(startCityName, endCityName) {
+    if (!this.hasRoutes(startCityName, endCityName)) return [];
+    return this.#routes[this.#key(startCityName, endCityName)];
+  }
+
+  getItineraries(startCityName, endCityName, date, database) {
+    const cacheKey = this.#cacheKey(startCityName, endCityName, date);
+    if (this.#cachedItineraries[cacheKey])
+      return this.#cachedItineraries[cacheKey];
+
+    const key = `${startCityName}->${endCityName}`;
+    const routes = this.#routes[key];
+    if (!routes)
+      throw new RoutingError(
+        `No route available for ${startCityName}->${endCityName}`,
+      );
+
+    const itineraries = [];
+    for (let legs of routes) {
+      try {
+        itineraries.push(createStupidItineraryForRoute(legs, date, database));
+      } catch (error) {
+        // does not work on that day
+        // if (error instanceof RoutingError) continue; // todo for now better to bubble up, all connections exist anyway on all dates
+        throw error;
+      }
+    }
+
+    if (itineraries.length === 0)
+      throw new RoutingError(`No itineraries possible for ${key} on ${date}`);
+
+    this.#cachedItineraries[cacheKey] = itineraries;
+    return itineraries;
+  }
+
+  #key(startCityName, endCityName) {
+    return `${startCityName}->${endCityName}`;
+  }
+
+  #cacheKey(startCityName, endCityName, date) {
+    return `${this.#key(startCityName, endCityName)}XX${date.toLocaleDateString("sv")}`;
+  }
+
+  #parseLeg(leg) {
+    const [start, end] = leg.split("->");
+    return { startCityName: start, endCityName: end };
+  }
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
-  module.exports.cartesianProduct = cartesianProduct;
+  module.exports.sortByDepartureTime = sortByDepartureTime;
   module.exports.isValidItinerary = isValidItinerary;
   module.exports.itinerarySummary = itinerarySummary;
-  module.exports.chooseItinerary = chooseItinerary;
-  module.exports.pickFittingConnection = pickFittingConnection;
-  module.exports.createItineraryForRoute = createItineraryForRoute;
+  module.exports.createEarliestItinerary = createEarliestItinerary;
   module.exports.createStupidItineraryForRoute = createStupidItineraryForRoute;
+  module.exports.RoutingError = RoutingError;
+  module.exports.RouteDatabase = RouteDatabase;
 }

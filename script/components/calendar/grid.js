@@ -1,7 +1,16 @@
 const LOCALE = new Intl.NumberFormat().resolvedOptions().locale;
 
+function diffDays(datetime, laterDatetime) {
+  // get rid of hours/minutes/seconds
+  datetime = new Date(datetime.toDateString());
+  laterDatetime = new Date(laterDatetime.toDateString());
+
+  const diffMillis = laterDatetime - datetime;
+  return Math.ceil(diffMillis / (1000 * 60 * 60 * 24));
+}
+
 class CalendarGrid extends HTMLElement {
-  static observedAttributes = ["start", "end", "resolution"];
+  static observedAttributes = ["start", "numDays", "resolution"];
 
   constructor() {
     super();
@@ -12,7 +21,7 @@ class CalendarGrid extends HTMLElement {
   }
 
   get startDay() {
-    return this.getAttribute("start");
+    return new Date(this.getAttribute("start"));
   }
 
   get numDays() {
@@ -23,18 +32,25 @@ class CalendarGrid extends HTMLElement {
   connectedCallback() {
     this.#initHourLabels();
     this.#initEmptyCalendarCells();
-    this.#initTableHeader();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "start") {
+      this.#updateTableHeader();
+    }
   }
 
   addToGrid(element) {
-    const column = element.startDateTime.daysSince(this.startDay);
+    const column = diffDays(this.startDay, element.startDateTime);
     const rowStart = this.#getRow(element.startDateTime);
     const rowEnd = this.#getRow(element.endDateTime);
     this.#addToGrid(element, column, rowStart, rowEnd);
   }
 
   #getRow(datetime) {
-    return Math.round((datetime.minutesSinceMidnight / 60.0) * this.resolution);
+    const minutesSinceMidnight =
+      datetime.getHours() * 60 + datetime.getMinutes();
+    return Math.round((minutesSinceMidnight / 60.0) * this.resolution);
   }
 
   #addToGrid(element, column, rowStart, rowEnd) {
@@ -72,13 +88,14 @@ class CalendarGrid extends HTMLElement {
         );
         if (i % this.resolution === 0) element.classList.add("border-top");
 
-        element.id = `calender-cell-${day}-${i}`;
+        element.id = `calender-cell-${day}-${i}`; // todo is this necessary?
         this.#addToGrid(element, day, i, i + 1);
       }
     }
   }
 
-  #initTableHeader() {
+  // todo meh
+  #updateTableHeader() {
     const start = new Date(this.startDay);
 
     for (let day = 0; day < this.numDays; day++) {
@@ -94,12 +111,19 @@ class CalendarGrid extends HTMLElement {
         },
       };
 
-      const element = createElementFromTemplate(
-        "template-calendar-grid-date",
-        data,
-      );
+      const id = `calendar-header-${day}`;
 
-      this.#addToGrid(element, day, -8, 0);
+      let element = document.getElementById(id);
+      if (element === null) {
+        element = createElementFromTemplate(
+          "template-calendar-grid-date",
+          data,
+        );
+        element.id = id;
+        this.#addToGrid(element, day, -8, 0);
+      } else {
+        updateElement(element, data);
+      }
     }
   }
 }

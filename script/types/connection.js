@@ -5,13 +5,6 @@ class InvalidConnectionIdFormat extends Error {
   }
 }
 
-class InvalidLegFormat extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "InvalidLegFormat";
-  }
-}
-
 class SlicingError extends Error {
   constructor(connectionId, startCity, endCity) {
     super(
@@ -21,29 +14,14 @@ class SlicingError extends Error {
   }
 }
 
-class Leg {
-  constructor(startCityName, endCityName) {
-    this.startCityName = startCityName;
-    this.endCityName = endCityName;
-  }
+function shiftDate(date, deltaDays) {
+  const copy = new Date(date.getTime());
+  copy.setDate(copy.getDate() + deltaDays);
+  return copy;
+}
 
-  toString() {
-    return `${this.startCityName}->${this.endCityName}`;
-  }
-
-  toAlphabeticString() {
-    const cities = [this.startCityName, this.endCityName];
-    cities.sort();
-
-    return `${cities[0]}->${cities[1]}`;
-  }
-
-  static fromString(string) {
-    const [cityA, cityB] = string.split("->");
-    if (!cityA || !cityB) throw new InvalidLegFormat(string);
-
-    return new Leg(cityA, cityB);
-  }
+function dateOnlyISOString(date) {
+  return date.toLocaleDateString("sv");
 }
 
 class ConnectionId {
@@ -66,32 +44,64 @@ class ConnectionId {
 }
 
 class Connection {
-  constructor(train, date, name, type, stops) {
+  constructor(id, name, type, stops) {
+    this.id = id; // this is the original ID of the connection template, it is not unique!
     this.name = name;
     this.type = type;
     this.stops = stops;
+  }
 
-    this.start = stops[0];
-    this.end = stops.at(-1);
+  get startCityName() {
+    return this.stops[0].cityName;
+  }
 
-    this.leg = new Leg(this.start.cityName, this.end.cityName);
-    this.id = new ConnectionId(train, date, this.leg);
+  get endCityName() {
+    return this.stops.at(-1).cityName;
+  }
+
+  get date() {
+    return new Date(this.stops[0].departure.toLocaleDateString("sv"));
+  }
+
+  get uniqueId() {
+    return {
+      id: this.id,
+      date: this.date,
+      startCityName: this.startCityName,
+      endCityName: this.endCityName,
+    };
   }
 
   get isMultiday() {
-    return this.start.departure.dateString !== this.end.arrival.dateString;
+    const start = this.stops[0].departure;
+    const end = this.stops.at(-1).arrival;
+
+    return (
+      start.getFullYear() !== end.getFullYear() ||
+      start.getMonth() !== end.getMonth() ||
+      start.getDate() !== end.getDate()
+    );
   }
 
   slice(startCity, endCity) {
     const sliced = this.#getPartialStops(this.stops, startCity, endCity);
+    return new Connection(this.id, this.name, this.type, sliced);
+  }
 
-    return new Connection(
-      this.id.train,
-      this.id.date,
-      this.name,
-      this.type,
-      sliced,
-    );
+  changeDate(newDepartureDate) {
+    const diffTime = newDepartureDate - this.stops[0].departure;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    const stops = [];
+
+    for (let stop of this.stops) {
+      const copy = structuredClone(stop);
+      copy.arrival = shiftDate(copy.arrival, diffDays);
+      copy.departure = shiftDate(copy.departure, diffDays);
+      stops.push(copy);
+    }
+
+    return new Connection(this.id, this.name, this.type, stops);
   }
 
   get edges() {
@@ -101,7 +111,7 @@ class Connection {
     for (let i in cities) {
       if (i === "0") continue;
 
-      edges.push(new Leg(cities[i - 1], cities[i]));
+      edges.push({ startCityName: cities[i - 1], endCityName: cities[i] });
     }
 
     return edges;
@@ -125,10 +135,6 @@ class Connection {
   }
 
   #getPartialStops(stops, startCity, endCity) {
-    // nothing to be done
-    if (startCity === this.start.cityName && endCity === this.end.cityName)
-      return stops;
-
     let startIndex = null;
     let endIndex = null;
 
@@ -160,6 +166,5 @@ class Connection {
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.Connection = Connection;
   module.exports.ConnectionId = ConnectionId;
-  module.exports.Leg = Leg;
   module.exports.SlicingError = SlicingError;
 }
