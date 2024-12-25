@@ -19,17 +19,14 @@ function initUpdateViews(map, calendar, sidebar, database) {
       prepareDataForCalendar(state.date, state.journeys, database),
     );
 
-    sidebar.show();
-    calendar.show();
-
-    /*if (state.journeys.hasActiveJourney) {
+    if (state.journeys.hasActiveJourney) {
       sidebar.show();
-      if (state.date !== null) calendar.show();
+      if (sidebar.currentDate !== null) calendar.show();
       else calendar.hide();
     } else {
       sidebar.hide();
       calendar.hide();
-    }*/
+    }
   }
   return updateViews;
 }
