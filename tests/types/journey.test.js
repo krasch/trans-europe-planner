@@ -1,11 +1,10 @@
-const { createConnection } = require("../tests/data.js");
+const { createConnection } = require("../../tests/data.js");
 const {
   Journey,
   JourneyError,
   JourneyCollection,
-} = require("../script/types/journey.js");
-const { Database } = require("../script/database.js");
-const { getJourneySummary } = require("../script/components/componentData.js");
+} = require("../../script/types/journey.js");
+const { Database } = require("../../script/database.js");
 
 test("testDerivedAttributes", function () {
   const c1 = createConnection([

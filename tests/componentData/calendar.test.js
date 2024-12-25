@@ -1,10 +1,10 @@
 const {
   prepareDataForCalendar,
   getColor,
-} = require("../script/components/componentData.js");
-const { Journey, JourneyCollection } = require("../script/types/journey.js");
-const { Database } = require("../script/database.js");
-const { createConnection } = require("../tests/data.js");
+} = require("../../script/components/componentData.js");
+const { Journey, JourneyCollection } = require("../../script/types/journey.js");
+const { Database } = require("../../script/database.js");
+const { createConnection } = require("../../tests/data.js");
 
 function expectedOption(connection, selected) {
   return {

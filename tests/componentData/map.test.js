@@ -2,11 +2,11 @@ const {
   getColor,
   prepareDataForMap,
   prepareInitialDataForMap,
-} = require("../script/components/componentData.js");
-const { Journey, JourneyCollection } = require("../script/types/journey.js");
-const { Database } = require("../script/database.js");
-const { RouteDatabase } = require("../script/routing.js");
-const { createConnection, testCities } = require("../tests/data.js");
+} = require("../../script/components/componentData.js");
+const { Journey, JourneyCollection } = require("../../script/types/journey.js");
+const { Database } = require("../../script/database.js");
+const { RouteDatabase } = require("../../script/routing.js");
+const { createConnection, testCities } = require("../../tests/data.js");
 
 test("prepareInitialDataForMap", function () {
   const home = "City1";

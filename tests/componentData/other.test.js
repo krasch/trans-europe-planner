@@ -1,7 +1,7 @@
 const {
   sortByDepartureTime,
-} = require("../script/components/componentData.js");
-const { createConnection } = require("../tests/data.js");
+} = require("../../script/components/componentData.js");
+const { createConnection } = require("../../tests/data.js");
 
 test("sortConnectionsByDeparture", function () {
   const c1 = createConnection([
