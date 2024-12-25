@@ -31,7 +31,7 @@ function dateOnlyISOString(date) {
   return date.toLocaleDateString("sv");
 }
 
-class Leg {
+/*class Leg {
   constructor(startCityName, endCityName) {
     this.startCityName = startCityName;
     this.endCityName = endCityName;
@@ -54,7 +54,7 @@ class Leg {
 
     return new Leg(cityA, cityB);
   }
-}
+}*/
 
 class ConnectionId {
   constructor(train, date, leg) {
@@ -143,7 +143,7 @@ class Connection {
     for (let i in cities) {
       if (i === "0") continue;
 
-      edges.push(new Leg(cities[i - 1], cities[i]));
+      edges.push({ startCityName: cities[i - 1], endCityName: cities[i] });
     }
 
     return edges;
@@ -198,6 +198,5 @@ class Connection {
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.Connection = Connection;
   module.exports.ConnectionId = ConnectionId;
-  module.exports.Leg = Leg;
   module.exports.SlicingError = SlicingError;
 }

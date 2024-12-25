@@ -1,8 +1,4 @@
-const {
-  Connection,
-  Leg,
-  SlicingError,
-} = require("../script/types/connection.js");
+const { Connection, SlicingError } = require("../script/types/connection.js");
 const { createConnection } = require("../tests/data.js");
 
 test("derivedAttributes", function () {
@@ -215,7 +211,10 @@ test("testEdges", function () {
   ]);
 
   const got = connection.edges;
-  const exp = [new Leg("City1", "City2"), new Leg("City2", "City3")];
+  const exp = [
+    { startCityName: "City1", endCityName: "City2" },
+    { startCityName: "City2", endCityName: "City3" },
+  ];
 
   expect(got).toStrictEqual(exp);
 });

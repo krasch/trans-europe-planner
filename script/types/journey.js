@@ -34,7 +34,7 @@ class Journey {
     const cities = [this.#connectionIds[0].startCityName];
     for (let c of this.#connectionIds) cities.push(c.endCityName);
 
-    this.id = cities.join(";"); // todo is this unique enough?
+    this.id = cities.join("->"); // todo is this unique enough?
   }
 
   get connectionIds() {

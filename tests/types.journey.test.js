@@ -20,7 +20,7 @@ test("testDerivedAttributes", function () {
   const database = new Database([c1, c2]);
   const journey = new Journey([c1.uniqueId, c2.uniqueId]);
 
-  expect(journey.id).toBe("City1;City2;City3");
+  expect(journey.id).toBe("City1->City2->City3");
   expect(journey.connectionIds).toStrictEqual([c1.uniqueId, c2.uniqueId]);
   expect(journey.start).toBe("City1");
   expect(journey.destination).toBe("City3");

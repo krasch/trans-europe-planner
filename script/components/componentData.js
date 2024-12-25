@@ -42,10 +42,14 @@ function sortByDepartureTime(connections) {
   connections.sort((c1, c2) => c1.stops[0].departure - c2.stops[0].departure);
 }
 
-function getSortedJourneyConnections(journey, database) {
-  const connections = journey.connectionIds.map((c) => database.connection(c));
-  sortByDepartureTime(connections);
-  return connections;
+function toAlphabeticEdgeString(startCityName, endCityName) {
+  const cities = [startCityName, endCityName];
+  cities.sort();
+  return toEdgeString(cities[0], cities[1]);
+}
+
+function toEdgeString(startCityName, endCityName) {
+  return `${startCityName}->${endCityName}`;
 }
 
 function prepareDataForCalendar(journeys, database) {
@@ -126,7 +130,7 @@ function prepareInitialDataForMap(home, cityInfo, connections, allRoutes) {
     }
 
     for (let edge of c.edges) {
-      const id = edge.toAlphabeticString();
+      const id = toAlphabeticEdgeString(edge.startCityName, edge.endCityName);
       if (edges.geo[id] !== undefined) continue; // already done this edge
 
       const start = cityInfo[CITY_NAME_TO_ID[edge.startCityName]];
@@ -149,11 +153,12 @@ function prepareDataForMap(journeys, database) {
   const journeyInfo = {};
 
   const activeJourney = journeys.activeJourney; // might be null
+
   for (let journey of journeys.journeys) {
     const active = activeJourney !== null && journey.id === activeJourney.id;
-    const connections = getSortedJourneyConnections(journey, database); // only needs to be sorted for journey summary
 
-    journeyInfo[journey.id] = getJourneySummary(connections);
+    const connections = journey.connections(database);
+    journeyInfo[journey.id] = journey.summary(database); // also calls journey.connections :-(
 
     for (let i in connections) {
       const color = active ? `rgb(${getColor(i)})` : null;
@@ -177,8 +182,11 @@ function prepareDataForMap(journeys, database) {
       }
 
       for (let edge of connections[i].edges) {
-        const id = edge.toAlphabeticString();
-        const leg = connections[i].leg.toString();
+        const id = toAlphabeticEdgeString(edge.startCityName, edge.endCityName);
+        const leg = toEdgeString(
+          connections[i].startCityName,
+          connections[i].endCityName,
+        );
 
         // get current state data for this edge or init new if first time we see this edge
         const state = edges.state[id] ?? {};
