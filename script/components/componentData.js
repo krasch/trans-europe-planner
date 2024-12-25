@@ -66,36 +66,31 @@ function prepareDataForCalendar(journeys, database) {
 
   for (let i in connectionsActiveJourney) {
     const currentlyChosenConnection = connectionsActiveJourney[i];
-    const group = {
-      startCityName: currentlyChosenConnection.startCityName,
-      endCityName: currentlyChosenConnection.endCityName,
-      color: getColor(i),
-      options: [],
-    };
 
     let connectionsForLeg = database.connectionsForLeg(
-      group.startCityName,
-      group.endCityName,
+      currentlyChosenConnection.startCityName,
+      currentlyChosenConnection.endCityName,
       dates,
     );
 
     for (let option of connectionsForLeg) {
-      group.options.push({
+      data.push({
         id: option.id,
         name: option.name,
         type: option.type,
         date: option.date,
+        startCityName: currentlyChosenConnection.startCityName,
         startStation: option.stops[0].stationName,
         startDateTime: option.stops[0].departure,
+        endCityName: currentlyChosenConnection.endCityName,
         endStation: option.stops.at(-1).stationName,
         endDateTime: option.stops.at(-1).arrival,
+        color: getColor(i),
         selected:
           option.id === currentlyChosenConnection.id &&
           option.date.toString() === currentlyChosenConnection.date.toString(),
       });
     }
-
-    data.push(group);
   }
   return data;
 }

@@ -6,17 +6,20 @@ const { Journey, JourneyCollection } = require("../../script/types/journey.js");
 const { Database } = require("../../script/database.js");
 const { createConnection } = require("../../tests/data.js");
 
-function expectedOption(connection, selected) {
+function expected(connection, selected, color) {
   return {
     id: connection.id,
     name: connection.name,
     type: connection.type,
     date: connection.date,
+    startCityName: connection.startCityName,
     startStation: connection.stops[0].stationName,
     startDateTime: connection.stops[0].departure,
+    endCityName: connection.endCityName,
     endStation: connection.stops.at(-1).stationName,
     endDateTime: connection.stops.at(-1).arrival,
     selected: selected,
+    color: color,
   };
 }
 
@@ -63,16 +66,9 @@ test("prepareDataForCalendarSingleJourneyNoAlternatives", function () {
   const c1_day2 = c1.changeDate(new Date("2024-10-17"));
 
   const exp = [
-    {
-      startCityName: "City1",
-      endCityName: "City2",
-      color: getColor(0),
-      options: [
-        expectedOption(c1_day0, true),
-        expectedOption(c1_day1, false),
-        expectedOption(c1_day2, false),
-      ],
-    },
+    expected(c1_day0, true, getColor(0)),
+    expected(c1_day1, false, getColor(0)),
+    expected(c1_day2, false, getColor(0)),
   ];
 
   const got = prepareDataForCalendar(journeys, database);
@@ -103,16 +99,9 @@ test("prepareDataForCalendarTwoJourneysNoAlternatives", function () {
   const c2_day2 = c2.changeDate(new Date("2024-10-18"));
 
   const exp = [
-    {
-      startCityName: "City2",
-      endCityName: "City3",
-      color: getColor(0),
-      options: [
-        expectedOption(c2_day0, true),
-        expectedOption(c2_day1, false),
-        expectedOption(c2_day2, false),
-      ],
-    },
+    expected(c2_day0, true, getColor(0)),
+    expected(c2_day1, false, getColor(0)),
+    expected(c2_day2, false, getColor(0)),
   ];
 
   const got = prepareDataForCalendar(journeys, database);
@@ -152,32 +141,19 @@ test("prepareDataForCalendarSingleJourneyMultipleConnectionsWithAlternatives", f
   const c2_alt_day1 = c2_alt.changeDate(new Date("2024-10-16"));
   const c2_alt_day2 = c2_alt;
 
+  // not sorting this for simplicity
+  // if implementation changes, test might fail
   const exp = [
-    {
-      startCityName: "City1",
-      endCityName: "City2",
-      color: getColor(0),
-      options: [
-        expectedOption(c1_day0, true),
-        expectedOption(c1_day1, false),
-        expectedOption(c1_day2, false),
-      ],
-    },
-    {
-      startCityName: "City2",
-      endCityName: "City3",
-      color: getColor(1),
-      options: [
-        // not sorting this for simplicity
-        // if implementation changes, test might fail
-        expectedOption(c2_day0, false),
-        expectedOption(c2_day1, true),
-        expectedOption(c2_day2, false),
-        expectedOption(c2_alt_day0, false),
-        expectedOption(c2_alt_day1, false),
-        expectedOption(c2_alt_day2, false),
-      ],
-    },
+    expected(c1_day0, true, getColor(0)),
+    expected(c1_day1, false, getColor(0)),
+    expected(c1_day2, false, getColor(0)),
+
+    expected(c2_day0, false, getColor(1)),
+    expected(c2_day1, true, getColor(1)),
+    expected(c2_day2, false, getColor(1)),
+    expected(c2_alt_day0, false, getColor(1)),
+    expected(c2_alt_day1, false, getColor(1)),
+    expected(c2_alt_day2, false, getColor(1)),
   ];
 
   const got = prepareDataForCalendar(journeys, database);
