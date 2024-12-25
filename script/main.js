@@ -98,6 +98,8 @@ async function main(home, map, calendar, sidebar) {
   calendar.on("entryHoverStop", (leg) => map.setLegHoverState(leg, false));
 
   sidebar.on("dateChanged", (date) => {
+    if (date === null) date = TODAY;
+
     const diff = diffDays(state.date, date);
     if (diff === 0) return;
 
