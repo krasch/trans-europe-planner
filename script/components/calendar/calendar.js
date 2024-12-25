@@ -1,3 +1,5 @@
+// important todo: sort collections by departure
+
 class Calendar extends CalendarGrid {
   #callbacks = {
     legChanged: () => {},

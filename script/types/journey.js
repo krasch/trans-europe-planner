@@ -44,6 +44,14 @@ class Journey {
     return this.#connectionIds.at(-1).endCityName;
   }
 
+  connectionsInLegOrder(database) {
+    return this.#lookupConnections(database);
+  }
+
+  connectionsInDepartureOrder() {
+    // todo necessary?
+  }
+
   replaceLeg(replacementConnectionId) {
     const index = this.#legIndex(
       replacementConnectionId.startCityName,
@@ -76,9 +84,7 @@ class Journey {
   }
 
   split(splitCityName, database) {
-    const connections = this.connectionIds.map((c) =>
-      database.connection(c.id, c.startCityName, c.endCityName, c.date),
-    );
+    const connections = this.#lookupConnections(database);
 
     let idx = null;
     for (let i in connections) {
@@ -135,6 +141,30 @@ class Journey {
     this.#connectionIds.splice(idx + 1, 0, split2.uniqueId); // insert and shift
   }
 
+  undoSplit(cityName, database) {
+    // todo this is WIP
+    // issue: if after splitting have moved the connections, can not super easily join them again
+    // need to rewrite their timings etc, lots of work, not important enough right now
+
+    let idx = null;
+
+    for (let i = 1; i < this.#connectionIds.length; i++) {
+      i = Number(i);
+
+      const prev = this.#connectionIds[i - 1];
+      const cur = this.#connectionIds[i];
+
+      // will not notice if there are multiple places where the below is true
+      // but that would be an illegal journey anyway
+      if (
+        prev.endCityName === cityName &&
+        cur.endCityName === cityName &&
+        prev.id === cur.id // needs to be the same train
+      )
+        idx = i;
+    }
+  }
+
   #legIndex(startCityName, endCityName) {
     for (let i in this.#connectionIds) {
       const id = this.connectionIds[i];
@@ -142,6 +172,12 @@ class Journey {
         return Number(i);
     }
     throw new JourneyError(`Unknown leg ${startCityName}->${endCityName}`);
+  }
+
+  #lookupConnections(database) {
+    return this.connectionIds.map((c) =>
+      database.connection(c.id, c.startCityName, c.endCityName, c.date),
+    );
   }
 }
 

@@ -16,12 +16,15 @@ test("testDerivedAttributes", function () {
     ["2024-10-16", "09:00", "city3MainStationId"],
   ]);
 
+  const database = new Database([c1, c2]);
   const journey = new Journey([c1.uniqueId, c2.uniqueId]);
 
   expect(journey.id).toBe("City1;City2;City3");
   expect(journey.connectionIds).toStrictEqual([c1.uniqueId, c2.uniqueId]);
   expect(journey.start).toBe("City1");
   expect(journey.destination).toBe("City3");
+
+  expect(journey.connectionsInLegOrder(database)).toEqual([c1, c2]);
 });
 
 test("testSetConnectionUnknownLeg", function () {
@@ -56,6 +59,7 @@ test("testSetConnectionKnownLeg", function () {
     ["2024-10-16", "13:00", "city4MainStationId"],
   ]);
 
+  const database = new Database([c1, c2, c2_alt, c3]);
   const journey = new Journey([c1.uniqueId, c2.uniqueId, c3.uniqueId]);
   journey.replaceLeg(c2_alt.uniqueId);
 
@@ -64,6 +68,7 @@ test("testSetConnectionKnownLeg", function () {
     c2_alt.uniqueId,
     c3.uniqueId,
   ]);
+  expect(journey.connectionsInLegOrder(database)).toEqual([c1, c2_alt, c3]);
 });
 
 test("changeDateSameDay", function () {

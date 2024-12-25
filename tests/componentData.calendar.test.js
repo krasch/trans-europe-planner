@@ -2,9 +2,23 @@ const {
   prepareDataForCalendar,
   getColor,
 } = require("../script/components/componentData.js");
-const { JourneyCollection } = require("../script/types/journey.js");
+const { Journey, JourneyCollection } = require("../script/types/journey.js");
 const { Database } = require("../script/database.js");
 const { createConnection } = require("../tests/data.js");
+
+function expectedOption(connection, selected) {
+  return {
+    id: connection.id,
+    name: connection.name,
+    type: connection.type,
+    date: connection.date,
+    startStation: connection.stops[0].stationName,
+    startDateTime: connection.stops[0].departure,
+    endStation: connection.stops.at(-1).stationName,
+    endDateTime: connection.stops.at(-1).arrival,
+    selected: selected,
+  };
+}
 
 test("prepareDataForCalendarEmpty", function () {
   const database = new Database([]);
@@ -31,73 +45,141 @@ test("prepareDataForCalendarNoActiveJourney", function () {
   expect(got).toStrictEqual([]);
 });
 
-test("prepareDataForCalendar", function () {
-  const c1To2_1 = createConnection([
+test("prepareDataForCalendarSingleJourneyNoAlternatives", function () {
+  const c1 = createConnection([
     ["2024-10-15", "06:00", "city1MainStationId"],
     ["2024-10-15", "07:00", "city2MainStationId"],
   ]);
-  const c1To2_2 = createConnection([
-    ["2024-10-16", "06:00", "city1MainStationId"],
-    ["2024-10-16", "07:00", "city2MainStationId"],
-  ]);
-  const c2To3 = createConnection([
-    ["2024-10-16", "08:00", "city2MainStationId"],
-    ["2024-10-16", "09:00", "city3MainStationId"],
-  ]);
-  const c1To3 = createConnection([
-    ["2024-10-16", "09:00", "city1MainStationId"],
-    ["2024-10-16", "10:00", "city3MainStationId"],
-  ]);
 
-  // switching order of the two c1 to make sure that connections get properly sorted
-  const database = new Database([c1To2_2, c1To2_1, c2To3, c1To3]);
+  const j1 = new Journey([c1.uniqueId]);
+  const database = new Database([c1]);
 
-  // first two conns do the same leg on different days, but only first is used in the journey
   const journeys = new JourneyCollection();
-  const j1 = journeys.addJourney([c1To2_1.id, c2To3.id]);
-  const j2 = journeys.addJourney([c1To3.id]);
-  journeys.setActive(j1);
+  journeys.addJourney(j1);
+  journeys.setActive(j1.id);
 
-  // only expect legs for the active journey j1
+  const c1_day0 = c1;
+  const c1_day1 = c1.changeDate(new Date("2024-10-16"));
+  const c1_day2 = c1.changeDate(new Date("2024-10-17"));
+
   const exp = [
     {
-      id: c1To2_1.id.toString(),
-      displayId: c1To2_1.name,
-      type: "train",
-      leg: c1To2_1.leg.toString(),
-      startStation: "City 1 Main Station",
-      endStation: "City 2 Main Station",
-      startDateTime: c1To2_1.start.departure,
-      endDateTime: c1To2_1.end.arrival,
+      startCityName: "City1",
+      endCityName: "City2",
       color: getColor(0),
-      active: true,
-    },
-    {
-      id: c1To2_2.id.toString(),
-      displayId: c1To2_2.name,
-      type: "train",
-      leg: c1To2_2.leg.toString(),
-      startStation: "City 1 Main Station",
-      endStation: "City 2 Main Station",
-      startDateTime: c1To2_2.start.departure,
-      endDateTime: c1To2_2.end.arrival,
-      color: getColor(0),
-      active: false,
-    },
-    {
-      id: c2To3.id.toString(),
-      displayId: c2To3.name,
-      type: "train",
-      leg: c2To3.leg.toString(),
-      startStation: "City 2 Main Station",
-      endStation: "City 3 Main Station",
-      startDateTime: c2To3.start.departure,
-      endDateTime: c2To3.end.arrival,
-      color: getColor(1),
-      active: true,
+      options: [
+        expectedOption(c1_day0, true),
+        expectedOption(c1_day1, false),
+        expectedOption(c1_day2, false),
+      ],
     },
   ];
 
   const got = prepareDataForCalendar(journeys, database);
-  expect(got).toStrictEqual(exp);
+  expect(got).toEqual(exp);
+});
+
+test("prepareDataForCalendarTwoJourneysNoAlternatives", function () {
+  const c1 = createConnection([
+    ["2024-10-15", "06:00", "city1MainStationId"],
+    ["2024-10-15", "07:00", "city2MainStationId"],
+  ]);
+  const c2 = createConnection([
+    ["2024-10-16", "06:00", "city2MainStationId"],
+    ["2024-10-16", "07:00", "city3MainStationId"],
+  ]);
+
+  const j1 = new Journey([c1.uniqueId]); // irrelevant because not active
+  const j2 = new Journey([c2.uniqueId]);
+  const database = new Database([c1, c2]);
+
+  const journeys = new JourneyCollection();
+  journeys.addJourney(j1);
+  journeys.addJourney(j2);
+  journeys.setActive(j2.id);
+
+  const c2_day0 = c2;
+  const c2_day1 = c2.changeDate(new Date("2024-10-17"));
+  const c2_day2 = c2.changeDate(new Date("2024-10-18"));
+
+  const exp = [
+    {
+      startCityName: "City2",
+      endCityName: "City3",
+      color: getColor(0),
+      options: [
+        expectedOption(c2_day0, true),
+        expectedOption(c2_day1, false),
+        expectedOption(c2_day2, false),
+      ],
+    },
+  ];
+
+  const got = prepareDataForCalendar(journeys, database);
+  expect(got).toEqual(exp);
+});
+
+test("prepareDataForCalendarSingleJourneyMultipleConnectionsWithAlternatives", function () {
+  const c1 = createConnection([
+    ["2024-10-15", "06:00", "city1MainStationId"],
+    ["2024-10-15", "07:00", "city2MainStationId"],
+  ]);
+  const c2 = createConnection([
+    ["2024-10-16", "06:00", "city2MainStationId"],
+    ["2024-10-16", "07:00", "city3MainStationId"],
+  ]);
+  const c2_alt = createConnection([
+    ["2024-10-17", "08:00", "city2MainStationId"],
+    ["2024-10-17", "09:00", "city3ExtraStationId"],
+  ]);
+
+  const j1 = new Journey([c1.uniqueId, c2.uniqueId]);
+  const database = new Database([c1, c2, c2_alt]);
+
+  const journeys = new JourneyCollection();
+  journeys.addJourney(j1);
+  journeys.setActive(j1.id);
+
+  const c1_day0 = c1;
+  const c1_day1 = c1.changeDate(new Date("2024-10-16"));
+  const c1_day2 = c1.changeDate(new Date("2024-10-17"));
+
+  const c2_day0 = c2.changeDate(new Date("2024-10-15"));
+  const c2_day1 = c2;
+  const c2_day2 = c2.changeDate(new Date("2024-10-17"));
+
+  const c2_alt_day0 = c2_alt.changeDate(new Date("2024-10-15"));
+  const c2_alt_day1 = c2_alt.changeDate(new Date("2024-10-16"));
+  const c2_alt_day2 = c2_alt;
+
+  const exp = [
+    {
+      startCityName: "City1",
+      endCityName: "City2",
+      color: getColor(0),
+      options: [
+        expectedOption(c1_day0, true),
+        expectedOption(c1_day1, false),
+        expectedOption(c1_day2, false),
+      ],
+    },
+    {
+      startCityName: "City2",
+      endCityName: "City3",
+      color: getColor(1),
+      options: [
+        // not sorting this for simplicity
+        // if implementation changes, test might fail
+        expectedOption(c2_day0, false),
+        expectedOption(c2_day1, true),
+        expectedOption(c2_day2, false),
+        expectedOption(c2_alt_day0, false),
+        expectedOption(c2_alt_day1, false),
+        expectedOption(c2_alt_day2, false),
+      ],
+    },
+  ];
+
+  const got = prepareDataForCalendar(journeys, database);
+  expect(got).toEqual(exp);
 });

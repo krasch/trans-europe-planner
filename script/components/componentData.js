@@ -1,3 +1,5 @@
+let NUM_DAYS_CALENDAR = 3;
+
 let COLORS = [
   // backup colors (mostly for tests)
   "0, 255, 0",
@@ -30,15 +32,20 @@ function getColor(i) {
   return COLORS[i % COLORS.length];
 }
 
-function sortConnectionsByDeparture(connections) {
-  connections = connections.slice(); // make a copy
-  connections.sort((a, b) => a.start.departure.minutesSince(b.start.departure));
-  return connections;
+function shiftDate(date, deltaDays) {
+  const copy = new Date(date.getTime());
+  copy.setDate(copy.getDate() + deltaDays);
+  return copy;
+}
+
+function sortByDepartureTime(connections) {
+  connections.sort((c1, c2) => c1.stops[0].departure - c2.stops[0].departure);
 }
 
 function getSortedJourneyConnections(journey, database) {
   const connections = journey.connectionIds.map((c) => database.connection(c));
-  return sortConnectionsByDeparture(connections);
+  sortByDepartureTime(connections);
+  return connections;
 }
 
 function getJourneySummary(connections) {
@@ -76,31 +83,48 @@ function getJourneySummary(connections) {
 function prepareDataForCalendar(journeys, database) {
   const data = [];
 
-  if (!journeys.activeJourney) return data;
+  if (!journeys.hasActiveJourney) return data;
 
-  const connectionIds = journeys.activeJourney.connectionIds;
+  const connectionsActiveJourney =
+    journeys.activeJourney.connectionsInLegOrder(database);
+  const startDate = connectionsActiveJourney[0].date;
 
-  for (let i in connectionIds) {
-    const leg = connectionIds[i].leg;
-    const color = getColor(i);
+  const dates = [];
+  for (let i = 0; i < NUM_DAYS_CALENDAR; i++)
+    dates.push(shiftDate(startDate, i));
 
-    let connectionsForLeg = database.connectionsForLeg(leg);
-    connectionsForLeg = sortConnectionsByDeparture(connectionsForLeg);
+  for (let i in connectionsActiveJourney) {
+    const currentlyChosenConnection = connectionsActiveJourney[i];
+    const group = {
+      startCityName: currentlyChosenConnection.startCityName,
+      endCityName: currentlyChosenConnection.endCityName,
+      color: getColor(i),
+      options: [],
+    };
 
-    for (let connection of connectionsForLeg) {
-      data.push({
-        id: connection.id.toString(),
-        displayId: connection.name,
-        type: connection.type,
-        leg: connection.leg.toString(),
-        startStation: connection.start.stationName,
-        startDateTime: connection.start.departure,
-        endStation: connection.end.stationName,
-        endDateTime: connection.end.arrival,
-        active: connection.id.toString() === connectionIds[i].toString(),
-        color: color,
+    let connectionsForLeg = database.connectionsForLeg(
+      group.startCityName,
+      group.endCityName,
+      dates,
+    );
+
+    for (let option of connectionsForLeg) {
+      group.options.push({
+        id: option.id,
+        name: option.name,
+        type: option.type,
+        date: option.date,
+        startStation: option.stops[0].stationName,
+        startDateTime: option.stops[0].departure,
+        endStation: option.stops.at(-1).stationName,
+        endDateTime: option.stops.at(-1).arrival,
+        selected:
+          option.id === currentlyChosenConnection.id &&
+          option.date.toString() === currentlyChosenConnection.date.toString(),
       });
     }
+
+    data.push(group);
   }
   return data;
 }
@@ -219,7 +243,6 @@ function prepareDataForMap(journeys, database) {
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.getColor = getColor;
   module.exports.initCityNameToId = initCityNameToId;
-  module.exports.sortConnectionsByDeparture = sortConnectionsByDeparture;
   module.exports.getJourneySummary = getJourneySummary;
   module.exports.prepareDataForCalendar = prepareDataForCalendar;
   module.exports.prepareDataForMap = prepareDataForMap;

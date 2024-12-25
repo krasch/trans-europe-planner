@@ -1,6 +1,5 @@
 const { initCityNameToId } = require("../script/components/componentData.js");
 const { Connection } = require("../script/types/connection.js");
-const { CustomDateTime } = require("../script/types/datetime.js");
 
 const testCities = {
   cityId1: { name: "City1", latitude: 10, longitude: 10, rank: 1 },
@@ -59,7 +58,7 @@ function initIncrementalId() {
 
   function increment() {
     id += 1;
-    return String(id);
+    return `connection${id}`;
   }
 
   return increment;
