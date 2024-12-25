@@ -43,11 +43,11 @@ class Database {
   #templates;
 
   // the sliced templates are for a specific leg but still use a dummy date
-  // {[id, leg]: Connection}
+  // {[id, startCity, endCity]: Connection}
   #sliced = {};
 
   // and here will be sliced, dated connections
-  // {[id, leg, date]: Connection}
+  // {[id, startCity, endCity, date]: Connection}
   #connections = {};
 
   constructor(templates) {
@@ -55,30 +55,31 @@ class Database {
     for (let t of templates) this.#templates[t.id] = t;
   }
 
-  connection(id, date, leg) {
+  connection(id, startCityName, endCityName, date) {
     // because often trouble with this, do some type checking
     if (!(date instanceof Date))
       throw new DatabaseError(
         `Expected Date input, found ${typeof date} with value ${date}`,
       );
 
-    const compositeId = `${id}XXX${leg.toString()}XXX${date.toLocaleDateString("sv")}`;
+    const dateString = date.toLocaleDateString("sv");
+    const compositeId = [id, startCityName, endCityName, dateString].join("XX");
 
     if (!this.#connections[compositeId]) {
-      const sliced = this.#getSliced(id, leg);
+      const sliced = this.#getSliced(id, startCityName, endCityName);
       this.#connections[compositeId] = sliced.changeDate(date);
     }
 
     return this.#connections[compositeId];
   }
 
-  connectionsForLeg(leg, dates) {
+  connectionsForLeg(startCityName, endCityName, dates) {
     const result = [];
 
     for (let id in this.#templates) {
       for (let date of dates) {
         try {
-          result.push(this.connection(id, date, leg));
+          result.push(this.connection(id, startCityName, endCityName, date));
         } catch (error) {
           // this connection does not have this leg, no need to try the other dates
           if (isSlicingError(error)) break;
@@ -87,6 +88,8 @@ class Database {
         }
       }
     }
+
+    //for (let c of result) console.log(c.toString());
 
     return result;
   }
@@ -97,18 +100,15 @@ class Database {
     return this.#templates[id];
   }
 
-  #getSliced(id, leg) {
-    const compositeId = `${id}XXX${leg.toString()}`;
+  #getSliced(id, startCityName, endCityName) {
+    const compositeId = `${id}XX${startCityName}XX${endCityName}`;
 
     if (!this.#sliced[compositeId]) {
       const template = this.#getTemplate(id);
 
       // can throw slicing error
       // todo calling this even if I already know from previous attempts that the slice does not exist
-      this.#sliced[compositeId] = template.slice(
-        leg.startCityName,
-        leg.endCityName,
-      );
+      this.#sliced[compositeId] = template.slice(startCityName, endCityName);
     }
 
     return this.#sliced[compositeId];

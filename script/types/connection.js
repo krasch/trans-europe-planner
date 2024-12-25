@@ -22,8 +22,9 @@ class SlicingError extends Error {
 }
 
 function shiftDate(date, deltaDays) {
-  const result = date.setDate(date.getDate() + deltaDays);
-  return new Date(result);
+  const copy = new Date(date.getTime());
+  copy.setDate(copy.getDate() + deltaDays);
+  return copy;
 }
 
 function dateOnlyISOString(date) {
@@ -81,15 +82,18 @@ class Connection {
     this.type = type;
     this.stops = stops;
 
-    this.leg = new Leg(this.stops[0].cityName, this.stops.at(-1).cityName); // todo remove?
-  }
-
-  get date() {
-    return this.stops[0].departure;
+    this.date = new Date(this.stops[0].departure.toLocaleDateString("sv")); // perhaps should be string?
+    this.startCityName = this.stops[0].cityName;
+    this.endCityName = this.stops.at(-1).cityName;
   }
 
   get uniqueId() {
-    return { id: this.id, date: this.date, leg: this.leg };
+    return {
+      id: this.id,
+      date: this.date,
+      startCityName: this.startCityName,
+      endCityName: this.endCityName,
+    };
   }
 
   get isMultiday() {
@@ -115,11 +119,12 @@ class Connection {
     const stops = [];
 
     for (let stop of this.stops) {
-      const copy = new Object(stop); // shallow copy
+      const copy = structuredClone(stop);
       copy.arrival = shiftDate(copy.arrival, diffDays);
       copy.departure = shiftDate(copy.departure, diffDays);
       stops.push(copy);
     }
+
     return new Connection(this.id, this.name, this.type, stops);
   }
 
@@ -151,10 +156,6 @@ class Connection {
   hasStop(city) {
     for (let stop of this.stops) if (stop.cityName === city) return true;
     return false;
-  }
-
-  toString() {
-    return `id=${this.id}, date=${this.date.toLocaleDateString("sv")}, leg=${this.leg.toString()}`;
   }
 
   #getPartialStops(stops, startCity, endCity) {

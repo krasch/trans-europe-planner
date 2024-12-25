@@ -1,10 +1,24 @@
 const {
   Connection,
-  ConnectionId,
   Leg,
   SlicingError,
 } = require("../script/types/connection.js");
 const { createConnection } = require("../tests/data.js");
+
+test("derivedAttributes", function () {
+  const connection = createConnection([
+    ["2024-10-15", "08:00", "city1MainStationId"],
+    ["2024-10-15", "09:00", "city2MainStationId"],
+  ]);
+
+  const date = "2024-10-15";
+
+  expect(connection.date.toLocaleDateString("sv")).toStrictEqual(date);
+  expect(connection.uniqueId.id).toBe(connection.id);
+  expect(connection.uniqueId.date.toLocaleDateString("sv")).toStrictEqual(date);
+  expect(connection.uniqueId.startCityName).toStrictEqual("City1");
+  expect(connection.uniqueId.endCityName).toStrictEqual("City2");
+});
 
 test("connectionNotOvernight", function () {
   const connection = createConnection([
@@ -111,16 +125,21 @@ test("changeDateBackward", function () {
 
   const got = c1.changeDate(new Date("2024-10-11"));
 
-  const expStop1 = new Object(c1.stops[0]);
+  const expStop1 = structuredClone(c1.stops[0]);
   expStop1.arrival = new Date("2024-10-11 08:00:00");
   expStop1.departure = expStop1.arrival;
 
-  const expStop2 = new Object(c1.stops[1]);
+  const expStop2 = structuredClone(c1.stops[1]);
   expStop2.arrival = new Date("2024-10-12 09:00:00");
   expStop2.departure = expStop2.arrival;
 
   const exp = new Connection(c1.id, c1.name, c1.type, [expStop1, expStop2]);
   expect(got).toStrictEqual(exp);
+
+  // original connection should not get overwritten
+  expect(c1.stops[0].departure.toLocaleDateString("sv")).toStrictEqual(
+    "2024-10-15",
+  );
 });
 
 test("changeDateForward", function () {
@@ -131,23 +150,28 @@ test("changeDateForward", function () {
 
   const got = c1.changeDate(new Date("2024-11-03"));
 
-  const expStop1 = new Object(c1.stops[0]);
+  const expStop1 = structuredClone(c1.stops[0]);
   expStop1.arrival = new Date("2024-11-03 08:00:00");
   expStop1.departure = expStop1.arrival;
 
-  const expStop2 = new Object(c1.stops[1]);
+  const expStop2 = structuredClone(c1.stops[1]);
   expStop2.arrival = new Date("2024-11-04 09:00:00");
   expStop2.departure = expStop2.arrival;
 
   const exp = new Connection(c1.id, c1.name, c1.type, [expStop1, expStop2]);
   expect(got).toStrictEqual(exp);
+
+  // original connection should not get overwritten
+  expect(c1.stops[0].departure.toLocaleDateString("sv")).toStrictEqual(
+    "2024-10-15",
+  );
 });
 
 test("sliceAndChangeDateMultiday", function () {
   const c1 = createConnection([
     ["2024-10-15", "08:00", "city1MainStationId"],
     ["2024-10-16", "09:00", "city2MainStationId"],
-    ["2024-10-16", "09:00", "city3MainStationId"],
+    ["2024-10-16", "10:00", "city3MainStationId"],
   ]);
 
   const got = c1.slice("City2", "City3").changeDate(new Date("2024-11-03"));
@@ -161,7 +185,7 @@ test("sliceAndChangeDateMultiday", function () {
   expStop2.departure = expStop2.arrival;
 
   const exp = new Connection(c1.id, c1.name, c1.type, [expStop1, expStop2]);
-  expect(got).toStrictEqual(exp);
+  expect(got).toEqual(exp);
 });
 
 test("hasStop", function () {
