@@ -5,6 +5,7 @@ const {
   JourneyCollection,
 } = require("../script/types/journey.js");
 const { Database } = require("../script/database.js");
+const { getJourneySummary } = require("../script/components/componentData.js");
 
 test("testDerivedAttributes", function () {
   const c1 = createConnection([
@@ -24,7 +25,7 @@ test("testDerivedAttributes", function () {
   expect(journey.start).toBe("City1");
   expect(journey.destination).toBe("City3");
 
-  expect(journey.connectionsInLegOrder(database)).toEqual([c1, c2]);
+  expect(journey.connections(database)).toEqual([c1, c2]);
 });
 
 test("testSetConnectionUnknownLeg", function () {
@@ -68,7 +69,7 @@ test("testSetConnectionKnownLeg", function () {
     c2_alt.uniqueId,
     c3.uniqueId,
   ]);
-  expect(journey.connectionsInLegOrder(database)).toEqual([c1, c2_alt, c3]);
+  expect(journey.connections(database)).toEqual([c1, c2_alt, c3]);
 });
 
 test("changeDateSameDay", function () {
@@ -263,6 +264,56 @@ test("splitLegMiddle", function () {
       date: new Date("2024-10-19"),
     },
   ]);
+});
+
+test("journeySummaryNoVias", () => {
+  const c1 = createConnection([
+    ["2024-10-15", "06:01", "city1MainStationId"],
+    ["2024-10-15", "06:10", "city2MainStationId"],
+  ]);
+
+  const database = new Database([c1]);
+  const journey = new Journey([c1.uniqueId]);
+
+  // no VIA's
+  const exp = {
+    from: "City1",
+    numTransfer: 0,
+    to: "City2",
+    travelTime: 9,
+    via: [],
+  };
+  expect(journey.summary(database)).toStrictEqual(exp);
+});
+
+test("journeySummaryTwoVias", function () {
+  const c1 = createConnection([
+    ["2024-10-15", "06:01", "city1MainStationId"],
+    ["2024-10-15", "06:10", "city2MainStationId"],
+  ]);
+
+  const c2 = createConnection([
+    ["2024-10-15", "07:01", "city2MainStationId"],
+    ["2024-10-15", "07:10", "city3MainStationId"],
+  ]);
+
+  const c3 = createConnection([
+    ["2024-10-15", "08:01", "city3MainStationId"],
+    ["2024-10-15", "08:10", "city4MainStationId"],
+  ]);
+
+  const database = new Database([c1, c2, c3]);
+  const journey = new Journey([c1.uniqueId, c2.uniqueId, c3.uniqueId]);
+
+  // no VIA's
+  const exp = {
+    from: "City1",
+    numTransfer: 2,
+    to: "City4",
+    travelTime: 2 * 60 + 9,
+    via: ["City2", "City3"],
+  };
+  expect(journey.summary(database)).toStrictEqual(exp);
 });
 
 test("journeyCollection", function () {

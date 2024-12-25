@@ -1,6 +1,5 @@
 const {
-  sortConnectionsByDeparture,
-  getJourneySummary,
+  sortByDepartureTime,
 } = require("../script/components/componentData.js");
 const { createConnection } = require("../tests/data.js");
 
@@ -19,69 +18,7 @@ test("sortConnectionsByDeparture", function () {
   ]);
 
   const connections = [c3, c1, c2];
-  expect(sortConnectionsByDeparture(connections)).toStrictEqual([c1, c2, c3]);
-});
+  sortByDepartureTime(connections);
 
-test("getJourneySummaryNoVias", function () {
-  const c = createConnection([
-    ["2024-10-15", "06:01", "city1MainStationId"],
-    ["2024-10-15", "06:10", "city2MainStationId"],
-  ]);
-
-  // no VIA's
-  const exp = {
-    from: "City1",
-    numTransfer: "direkt (ohne Umstieg)",
-    to: "City2",
-    travelTime: "9min",
-    via: "",
-  };
-  expect(getJourneySummary([c])).toStrictEqual(exp);
-});
-
-test("getJourneySummaryOneVia", function () {
-  const c1 = createConnection([
-    ["2024-10-15", "06:01", "city1MainStationId"],
-    ["2024-10-15", "06:10", "city2MainStationId"],
-  ]);
-
-  const c2 = createConnection([
-    ["2024-10-15", "07:01", "city2MainStationId"],
-    ["2024-10-15", "07:10", "city3MainStationId"],
-  ]);
-
-  const exp = {
-    from: "City1",
-    numTransfer: "1 Umstieg: ",
-    to: "City3",
-    travelTime: "1h 9min",
-    via: "City2",
-  };
-  expect(getJourneySummary([c1, c2])).toStrictEqual(exp);
-});
-
-test("getJourneySummaryTwoVias", function () {
-  const c1 = createConnection([
-    ["2024-10-15", "06:01", "city1MainStationId"],
-    ["2024-10-15", "06:10", "city2MainStationId"],
-  ]);
-
-  const c2 = createConnection([
-    ["2024-10-15", "07:01", "city2MainStationId"],
-    ["2024-10-15", "07:10", "city3MainStationId"],
-  ]);
-
-  const c3 = createConnection([
-    ["2024-10-15", "08:01", "city3MainStationId"],
-    ["2024-10-15", "08:10", "city4MainStationId"],
-  ]);
-
-  const exp = {
-    from: "City1",
-    numTransfer: "2 Umstiege: ",
-    to: "City4",
-    travelTime: "2h 9min",
-    via: "City2, City3",
-  };
-  expect(getJourneySummary([c1, c2, c3])).toStrictEqual(exp);
+  expect(connections).toStrictEqual([c1, c2, c3]);
 });

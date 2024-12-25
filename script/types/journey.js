@@ -20,6 +20,11 @@ function diffDays(datetime, laterDatetime) {
   return Math.ceil(diffMillis / (1000 * 60 * 60 * 24));
 }
 
+function diffMinutes(datetime, laterDatetime) {
+  const diffMillis = laterDatetime - datetime;
+  return Math.ceil(diffMillis / (1000 * 60));
+}
+
 class Journey {
   #connectionIds;
 
@@ -44,12 +49,8 @@ class Journey {
     return this.#connectionIds.at(-1).endCityName;
   }
 
-  connectionsInLegOrder(database) {
+  connections(database) {
     return this.#lookupConnections(database);
-  }
-
-  connectionsInDepartureOrder() {
-    // todo necessary?
   }
 
   replaceLeg(replacementConnectionId) {
@@ -163,6 +164,29 @@ class Journey {
       )
         idx = i;
     }
+  }
+
+  summary(database) {
+    const connections = this.#lookupConnections(database);
+
+    const vias = [];
+    for (let c of this.#connectionIds) {
+      if (c.startCityName !== this.start && !vias.includes(c.startCityName))
+        vias.push(c.startCityName);
+      if (c.endCityName !== this.destination && !vias.includes(c.endCityName))
+        vias.push(c.endCityName);
+    }
+
+    return {
+      from: this.start,
+      to: this.destination,
+      numTransfer: vias.length,
+      travelTime: diffMinutes(
+        connections[0].stops[0].departure,
+        connections.at(-1).stops.at(-1).arrival,
+      ),
+      via: vias,
+    };
   }
 
   #legIndex(startCityName, endCityName) {

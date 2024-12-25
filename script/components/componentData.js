@@ -48,45 +48,12 @@ function getSortedJourneyConnections(journey, database) {
   return connections;
 }
 
-function getJourneySummary(connections) {
-  const startCity = connections[0].start.cityName;
-  const endCity = connections.at(-1).end.cityName;
-
-  const startTime = connections[0].start.departure;
-  const endTime = connections.at(-1).end.arrival;
-  const travelTime = endTime.humanReadableSince(startTime);
-
-  const vias = [];
-  for (let c of connections) {
-    for (let city of [c.start.cityName, c.end.cityName]) {
-      if (city !== startCity && city !== endCity && !vias.includes(city))
-        vias.push(city);
-    }
-  }
-
-  let numTransfer = "direkt (ohne Umstieg)";
-  if (vias.length === 1) {
-    numTransfer = `${vias.length} Umstieg: `;
-  } else if (vias.length > 1) {
-    numTransfer = `${vias.length} Umstiege: `;
-  }
-
-  return {
-    from: startCity,
-    to: endCity,
-    via: vias.join(", "),
-    numTransfer: numTransfer,
-    travelTime: travelTime,
-  };
-}
-
 function prepareDataForCalendar(journeys, database) {
   const data = [];
 
   if (!journeys.hasActiveJourney) return data;
 
-  const connectionsActiveJourney =
-    journeys.activeJourney.connectionsInLegOrder(database);
+  const connectionsActiveJourney = journeys.activeJourney.connections(database);
   const startDate = connectionsActiveJourney[0].date;
 
   const dates = [];
@@ -243,7 +210,7 @@ function prepareDataForMap(journeys, database) {
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.getColor = getColor;
   module.exports.initCityNameToId = initCityNameToId;
-  module.exports.getJourneySummary = getJourneySummary;
+  module.exports.sortByDepartureTime = sortByDepartureTime;
   module.exports.prepareDataForCalendar = prepareDataForCalendar;
   module.exports.prepareDataForMap = prepareDataForMap;
   module.exports.prepareInitialDataForMap = prepareInitialDataForMap;
