@@ -242,6 +242,11 @@ class RouteDatabase {
     return this.#routes[this.#key(startCityName, endCityName)] !== undefined;
   }
 
+  getRoutes(startCityName, endCityName) {
+    if (!this.hasRoutes(startCityName, endCityName)) return [];
+    return this.#routes[this.#key(startCityName, endCityName)];
+  }
+
   getItineraries(startCityName, endCityName, date, database) {
     const cacheKey = this.#cacheKey(startCityName, endCityName, date);
     if (this.#cachedItineraries[cacheKey])

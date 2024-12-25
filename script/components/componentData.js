@@ -100,7 +100,7 @@ function prepareDataForCalendar(journeys, database) {
   return data;
 }
 
-function prepareInitialDataForMap(home, cityInfo, connections, allRoutes) {
+function prepareInitialDataForMap(home, cityInfo, connections, routeDatabase) {
   const cities = { geo: {}, defaults: {} };
   const edges = { geo: {}, defaults: {} };
 
@@ -110,10 +110,7 @@ function prepareInitialDataForMap(home, cityInfo, connections, allRoutes) {
 
       const id = CITY_NAME_TO_ID[cityName];
 
-      const target = `${home}->${cityName}`;
-      const routes = (allRoutes[target] ?? []).filter(
-        (r) => typeof r !== "string",
-      );
+      const routes = routeDatabase.getRoutes(home, cityName);
 
       cities.geo[id] = {
         name: cityInfo[id].name,

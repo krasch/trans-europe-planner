@@ -5,6 +5,7 @@ const {
 } = require("../script/components/componentData.js");
 const { Journey, JourneyCollection } = require("../script/types/journey.js");
 const { Database } = require("../script/database.js");
+const { RouteDatabase } = require("../script/routing.js");
 const { createConnection, testCities } = require("../tests/data.js");
 
 test("prepareInitialDataForMap", function () {
@@ -30,7 +31,7 @@ test("prepareInitialDataForMap", function () {
     ["2024-10-15", "09:00", "city1MainStationId"],
   ]);
 
-  const routes = { "City1->City3": [["City1->City3"]] };
+  const routes = new RouteDatabase({ "City1->City3": [["City1->City3"]] });
 
   const got = prepareInitialDataForMap(home, testCities, [c1, c2, c3], routes);
   const expCities = {
