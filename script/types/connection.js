@@ -5,13 +5,6 @@ class InvalidConnectionIdFormat extends Error {
   }
 }
 
-class InvalidLegFormat extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "InvalidLegFormat";
-  }
-}
-
 class SlicingError extends Error {
   constructor(connectionId, startCity, endCity) {
     super(
@@ -30,31 +23,6 @@ function shiftDate(date, deltaDays) {
 function dateOnlyISOString(date) {
   return date.toLocaleDateString("sv");
 }
-
-/*class Leg {
-  constructor(startCityName, endCityName) {
-    this.startCityName = startCityName;
-    this.endCityName = endCityName;
-  }
-
-  toString() {
-    return `${this.startCityName}->${this.endCityName}`;
-  }
-
-  toAlphabeticString() {
-    const cities = [this.startCityName, this.endCityName];
-    cities.sort();
-
-    return `${cities[0]}->${cities[1]}`;
-  }
-
-  static fromString(string) {
-    const [cityA, cityB] = string.split("->");
-    if (!cityA || !cityB) throw new InvalidLegFormat(string);
-
-    return new Leg(cityA, cityB);
-  }
-}*/
 
 class ConnectionId {
   constructor(train, date, leg) {
