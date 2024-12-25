@@ -5,43 +5,138 @@ class JourneyError extends Error {
   }
 }
 
+function shiftDate(date, deltaDays) {
+  const copy = new Date(date.getTime());
+  copy.setDate(copy.getDate() + deltaDays);
+  return copy;
+}
+
+function diffDays(datetime, laterDatetime) {
+  // get rid of hours/minutes/seconds
+  datetime = new Date(datetime.toDateString());
+  laterDatetime = new Date(laterDatetime.toDateString());
+
+  const diffMillis = laterDatetime - datetime;
+  return Math.ceil(diffMillis / (1000 * 60 * 60 * 24));
+}
+
 class Journey {
   #connectionIds;
-  #legs;
 
-  constructor(id, connectionIds) {
-    this.id = id;
+  constructor(connectionIds) {
     this.#connectionIds = connectionIds;
-
-    this.#legs = this.#connectionIds.map((c) => c.leg);
   }
 
   get connectionIds() {
     return this.#connectionIds;
   }
 
-  get legs() {
-    return this.#legs;
-  }
-
   get start() {
-    return this.#legs[0].startCityName;
+    return this.#connectionIds[0].startCityName;
   }
 
   get destination() {
-    return this.#legs.at(-1).endCityName;
+    return this.#connectionIds.at(-1).endCityName;
   }
 
-  updateLeg(connectionId) {
-    const index = this.#legIndex(connectionId.leg);
-    this.#connectionIds[index] = connectionId;
+  replaceLeg(replacementConnectionId) {
+    const index = this.#legIndex(
+      replacementConnectionId.startCityName,
+      replacementConnectionId.endCityName,
+    );
+    this.#connectionIds[index] = replacementConnectionId;
   }
 
-  #legIndex(leg) {
-    for (let i in this.#legs) {
-      if (this.#legs[i].toString() === leg.toString()) return Number(i);
+  changeDate(newDate, database) {
+    const currentDate = this.#connectionIds[0].date;
+    if (newDate.toDateString() === currentDate.toDateString()) return;
+
+    // todo unify all diffDays implementations, like why does this one need -1?
+    // the -1 also makes that this does not work when date is the same, hence the extra check above
+    const deltaDays = diffDays(currentDate, newDate) - 1;
+
+    for (let i in this.#connectionIds) {
+      const id = this.#connectionIds[i];
+
+      // will throw database error if no suitable connection can be found
+      // currently this won't happen because all connections available on all dates
+      const connection = database.connection(
+        id.id,
+        id.startCityName,
+        id.endCityName,
+        shiftDate(id.date, deltaDays),
+      );
+      this.#connectionIds[i] = connection.uniqueId;
     }
-    throw new JourneyError(`Unknown leg ${leg}`);
+  }
+
+  split(splitCityName, database) {
+    const connections = this.connectionIds.map((c) =>
+      database.connection(c.id, c.startCityName, c.endCityName, c.date),
+    );
+
+    let idx = null;
+    for (let i in connections) {
+      idx = Number(i); // important to convert to Number, otherwise slice/splice will give weird results
+
+      if (connections[i].hasStop(splitCityName)) {
+        // is already split, nothing to do
+        if (
+          connections[i].startCityName === splitCityName ||
+          connections[i].endCityName === splitCityName
+        )
+          return;
+
+        // will not notice if there are multiple connections in the journey stopping in this city
+        // but that would be an illegal journey anyway
+        break;
+      }
+    }
+
+    if (idx === null)
+      throw new JourneyError(
+        `Journey has no stop in ${splitCityName}, can not split`,
+      );
+
+    // splitting like this makes sure that the correct stop dates are used
+    // splitting by asking the database for pieces makes this more complicated
+    // todo perhaps add a splitConnection method to database?
+    let split1 = connections[idx].slice(
+      this.#connectionIds[idx].startCityName,
+      splitCityName,
+    );
+    let split2 = connections[idx].slice(
+      splitCityName,
+      this.#connectionIds[idx].endCityName,
+    );
+
+    // since we worked around the database with the previous step,
+    // just make sure that database knows the split pieces
+    // should really logically not go wrong
+    split1 = database.connection(
+      split1.id,
+      split1.startCityName,
+      split1.endCityName,
+      split1.date,
+    );
+    split2 = database.connection(
+      split2.id,
+      split2.startCityName,
+      split2.endCityName,
+      split2.date,
+    );
+
+    this.#connectionIds[idx] = split1.uniqueId;
+    this.#connectionIds.splice(idx + 1, 0, split2.uniqueId); // insert and shift
+  }
+
+  #legIndex(startCityName, endCityName) {
+    for (let i in this.#connectionIds) {
+      const id = this.connectionIds[i];
+      if (id.startCityName === startCityName && id.endCityName === endCityName)
+        return Number(i);
+    }
+    throw new JourneyError(`Unknown leg ${startCityName}->${endCityName}`);
   }
 }
 

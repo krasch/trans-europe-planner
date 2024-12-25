@@ -14,6 +14,8 @@ test("derivedAttributes", function () {
   const date = "2024-10-15";
 
   expect(connection.date.toLocaleDateString("sv")).toStrictEqual(date);
+  expect(connection.startCityName).toStrictEqual("City1");
+  expect(connection.endCityName).toStrictEqual("City2");
   expect(connection.uniqueId.id).toBe(connection.id);
   expect(connection.uniqueId.date.toLocaleDateString("sv")).toStrictEqual(date);
   expect(connection.uniqueId.startCityName).toStrictEqual("City1");

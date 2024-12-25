@@ -77,14 +77,22 @@ class ConnectionId {
 
 class Connection {
   constructor(id, name, type, stops) {
-    this.id = id;
+    this.id = id; // this is the original ID of the connection template, it is not unique!
     this.name = name;
     this.type = type;
     this.stops = stops;
+  }
 
-    this.date = new Date(this.stops[0].departure.toLocaleDateString("sv")); // perhaps should be string?
-    this.startCityName = this.stops[0].cityName;
-    this.endCityName = this.stops.at(-1).cityName;
+  get startCityName() {
+    return this.stops[0].cityName;
+  }
+
+  get endCityName() {
+    return this.stops.at(-1).cityName;
+  }
+
+  get date() {
+    return new Date(this.stops[0].departure.toLocaleDateString("sv"));
   }
 
   get uniqueId() {

@@ -89,8 +89,6 @@ class Database {
       }
     }
 
-    //for (let c of result) console.log(c.toString());
-
     return result;
   }
 
