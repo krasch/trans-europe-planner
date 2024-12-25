@@ -1,5 +1,9 @@
 const { createConnection } = require("../tests/data.js");
-const { Journey, JourneyError } = require("../script/types/journey.js");
+const {
+  Journey,
+  JourneyError,
+  JourneyCollection,
+} = require("../script/types/journey.js");
 const { Database } = require("../script/database.js");
 
 test("testDerivedAttributes", function () {
@@ -14,6 +18,7 @@ test("testDerivedAttributes", function () {
 
   const journey = new Journey([c1.uniqueId, c2.uniqueId]);
 
+  expect(journey.id).toBe("City1;City2;City3");
   expect(journey.connectionIds).toStrictEqual([c1.uniqueId, c2.uniqueId]);
   expect(journey.start).toBe("City1");
   expect(journey.destination).toBe("City3");
@@ -253,4 +258,36 @@ test("splitLegMiddle", function () {
       date: new Date("2024-10-19"),
     },
   ]);
+});
+
+test("journeyCollection", function () {
+  const c1 = createConnection([
+    ["2024-10-15", "08:00", "city1MainStationId"],
+    ["2024-10-16", "09:00", "city2MainStationId"],
+  ]);
+  const c2 = createConnection([
+    ["2024-10-17", "08:00", "city2MainStationId"],
+    ["2024-10-17", "09:00", "city3MainStationId"],
+  ]);
+
+  const j1 = new Journey([c1.uniqueId]);
+  const j2 = new Journey([c2.uniqueId]);
+
+  const journeys = new JourneyCollection();
+
+  journeys.addJourney(j1);
+  journeys.addJourney(j2);
+  expect(journeys.hasActiveJourney).toBe(false);
+  expect(journeys.activeJourney).toBe(null);
+  expect(journeys.journeys).toStrictEqual([j1, j2]);
+
+  journeys.setActive(j2.id);
+  expect(journeys.hasActiveJourney).toBe(true);
+  expect(journeys.activeJourney).toBe(j2);
+  expect(journeys.journeys).toStrictEqual([j1, j2]);
+
+  journeys.reset();
+  expect(journeys.hasActiveJourney).toBe(false);
+  expect(journeys.activeJourney).toBe(null);
+  expect(journeys.journeys).toStrictEqual([]);
 });

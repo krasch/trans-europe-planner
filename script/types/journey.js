@@ -25,6 +25,11 @@ class Journey {
 
   constructor(connectionIds) {
     this.#connectionIds = connectionIds;
+
+    const cities = [this.#connectionIds[0].startCityName];
+    for (let c of this.#connectionIds) cities.push(c.endCityName);
+
+    this.id = cities.join(";"); // todo is this unique enough?
   }
 
   get connectionIds() {
@@ -141,7 +146,7 @@ class Journey {
 }
 
 class JourneyCollection {
-  #journeys = [];
+  #journeys = {};
   #activeId = null;
 
   get hasActiveJourney() {
@@ -150,41 +155,19 @@ class JourneyCollection {
 
   get activeJourney() {
     if (this.#activeId === null) return null;
-    for (let j of this.#journeys) if (j.id === this.#activeId) return j;
+    return this.#journeys[this.#activeId];
   }
 
   get journeys() {
-    return this.#journeys;
+    return Array.from(Object.values(this.#journeys));
   }
 
-  addJourney(connections) {
-    const legs = connections.map((c) => c.leg.toString());
-    const id = legs.join(";");
-    this.#journeys.push(new Journey(id, connections));
-    return id;
+  addJourney(journey) {
+    this.#journeys[journey.id] = journey;
   }
 
   setActive(journeyId) {
     this.#activeId = journeyId;
-  }
-
-  setShortestAsActive() {
-    if (this.#journeys.length === 0) return;
-
-    let shortest = this.#journeys[0];
-    for (let journey of this.#journeys.slice(1))
-      if (journey.legs.length < shortest.legs.length) shortest = journey;
-
-    this.setActive(shortest.id);
-  }
-
-  cutActiveJourney(cityName, database) {
-    if (!this.#activeId) return;
-
-    const active = this.activeJourney;
-    for (let id of active.connectionIds) {
-      const connection = database.connection(id);
-    }
   }
 
   reset() {
