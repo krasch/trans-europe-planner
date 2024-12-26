@@ -53,6 +53,27 @@
     height: var(--logo-size);
 }
 
+a#hide-sidebar,
+a#show-sidebar{
+    position: absolute;
+    top: 0.3rem;
+    --offset-right: 0.5rem;
+
+    padding-left: 0.1rem;
+    padding-right: 0.1rem;
+
+    font-size: 1.5rem;
+
+}
+
+a#show-sidebar {
+    right: calc(100% - var(--logo-size-with-padding)  + var(--offset-right));
+}
+
+a#hide-sidebar {
+    right: var(--offset-right);
+}
+
 #date-picker {
     display: flex;
     flex-direction: row;
@@ -107,6 +128,20 @@
     color: var(--color-sidebar-dark);
     opacity: 95%;
 }
+
+a#hide-sidebar,
+a#show-sidebar{
+    color: var(--color-sidebar-light);
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 5px;
+}
+
+a#hide-sidebar:hover,
+a#show-sidebar:hover {
+    border-color: var(--color-sidebar-light);
+}
+
 
 #date-picker a {
     font-size: 1.2rem;
