@@ -3,9 +3,8 @@
 ************************************************/
 
 #sidebar {
-    --padding: 2rem;
-    --logo-size: 6rem;
-    --logo-size-with-padding: calc(var(--logo-size) + 2 * var(--padding));
+    --logo-size: 7rem;
+    --logo-size-with-padding: 10rem;
 
     --border-radius: 1rem;
 

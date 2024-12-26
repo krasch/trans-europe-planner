@@ -167,7 +167,7 @@
 
 <div id="sidebar">
     <div class="logo"><img src="images/logo.svg" alt="logo for the trans-europe-planner"></div>
-    <div class="header">
+    <div class="header hidden">
         <h2><label for="date-picker-input">Abreisedatum: </label></h2>
         <div id="date-picker">
             <a id="decrease-date" title="One day earlier">◀</a>
@@ -176,7 +176,7 @@
         </div>
     </div>
 
-    <div class="content">
+    <div class="content hidden">
         <h2>Reisevorschlag</h2>
         <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
     </div>
@@ -185,8 +185,9 @@
 <div id="map"></div>
 <div id="footer">
     <span>Trans Europe Planner - <em>Einfacher mit dem Zug quer durch Europa</em></span>
-    <a href="">About</a>
-    <a href="">Impressum</a>
+    <span>Blog</span>
+    <span>About</span>
+    <span>Impressum</span>
 </div>
 
 <script>
