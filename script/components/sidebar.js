@@ -13,9 +13,6 @@ class Sidebar {
     this.#logoContainer = container.querySelector(".logo");
     this.#datePickerContainer = container.querySelector(".header");
     this.#calendarContainer = container.querySelector(".content");
-
-    this.#hideDatePicker();
-    this.#hideCalendar();
   }
 
   updateView(hasDate, hasActiveJourney) {
@@ -43,23 +40,50 @@ class Sidebar {
   }
 
   #showDatePicker() {
-    this.#datePickerContainer.classList.remove("hidden");
-    this.#logoContainer.style.borderBottomRightRadius = 0;
+    this.#removeBorderRadius(this.#logoContainer);
+    this.#slideIn(this.#datePickerContainer);
   }
 
   #hideDatePicker() {
-    this.#datePickerContainer.classList.add("hidden");
+    this.#slideOut(this.#datePickerContainer);
     this.#logoContainer.style.borderBottomRightRadius = this.#borderRadius;
   }
 
   #showCalendar() {
-    this.#calendarContainer.classList.remove("hidden");
-    this.#datePickerContainer.style.borderBottomRightRadius = 0;
+    this.#removeBorderRadius(this.#datePickerContainer);
+    this.#slideIn(this.#calendarContainer);
   }
 
   #hideCalendar() {
-    this.#calendarContainer.classList.add("hidden");
-    this.#datePickerContainer.style.borderBottomRightRadius =
-      this.#borderRadius;
+    this.#slideOut(this.#calendarContainer);
+    this.#addBorderRadius(this.#datePickerContainer);
+  }
+
+  #slideIn(element) {
+    const width = window.getComputedStyle(element).getPropertyValue("width");
+
+    element.classList.remove("hidden");
+    element.animate([{ width: "0" }, { width: width }], {
+      duration: 200,
+      iterations: 1,
+    });
+  }
+
+  #slideOut(element) {
+    const width = window.getComputedStyle(element).getPropertyValue("width");
+
+    const animation = element.animate([{ width: width }, { width: 0 }], {
+      duration: 200,
+      iterations: 1,
+    });
+    animation.onfinish = () => element.classList.add("hidden");
+  }
+
+  #removeBorderRadius(element) {
+    element.style.borderBottomRightRadius = 0;
+  }
+
+  #addBorderRadius(element) {
+    element.style.borderBottomRightRadius = this.#borderRadius;
   }
 }

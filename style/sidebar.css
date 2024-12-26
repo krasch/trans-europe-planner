@@ -43,6 +43,11 @@
     border-bottom-right-radius: var(--border-radius);
 }
 
+#sidebar > .header,
+#sidebar > .content {
+    overflow: hidden;  /*during animation sometimes not enough space for elements*/
+}
+
 #sidebar > .logo > img {
     width: var(--logo-size);
     height: var(--logo-size);
