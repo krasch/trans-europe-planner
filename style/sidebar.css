@@ -61,37 +61,19 @@
     padding: 1rem;
 }
 
-
-
-/*
-
-
-#calender-container {
-    visibility: hidden;
+#sidebar .content {
+    padding: 2rem;
 
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
-
-    color: var(--color-dark);
-    background-color: white;
+    gap: 2rem;
 }
 
-#calender-container .title {
-    text-align: center;
+#sidebar .content calendar-grid {
+    width: 100%;
 }
 
-#calender-container .explanation {
-    text-align: center;
-    font-size: 0.8rem;
-    font-style: italic;
-    margin-top: -0.5rem;
-}
-
-calendar-grid {
-    width: 95%;
-}*/
 
 /***********************************************
  style

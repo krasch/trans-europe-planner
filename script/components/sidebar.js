@@ -13,6 +13,9 @@ class Sidebar {
     this.#logoContainer = container.querySelector(".logo");
     this.#datePickerContainer = container.querySelector(".header");
     this.#calendarContainer = container.querySelector(".content");
+
+    this.#hideDatePicker();
+    this.#hideCalendar();
   }
 
   updateView(hasDate, hasActiveJourney) {
