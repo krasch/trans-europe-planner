@@ -69,18 +69,6 @@ class Calendar extends CalendarGrid {
     }
   }
 
-  hide() {
-    document
-      .getElementById("calender-container")
-      .style.setProperty("visibility", "hidden");
-  }
-
-  show() {
-    document
-      .getElementById("calender-container")
-      .style.setProperty("visibility", "visible");
-  }
-
   #idString(id) {
     return `${id.id}XX${id.startCityName}->${id.endCityName}XX${id.date.toLocaleDateString("sv")}`;
   }

@@ -12,39 +12,36 @@ function diffDays(datetime, laterDatetime) {
   return Math.ceil(diffMillis / (1000 * 60 * 60 * 24));
 }
 
-function initUpdateViews(map, calendar, sidebar, database) {
+function initUpdateViews(views, database) {
   function updateViews(state) {
-    map.updateView(prepareDataForMap(state.journeys, database));
-    calendar.updateView(
+    views.map.updateView(prepareDataForMap(state.journeys, database));
+    views.calendar.updateView(
       prepareDataForCalendar(state.date, state.journeys, database),
     );
 
-    if (state.journeys.hasActiveJourney) {
-      sidebar.show();
-      if (sidebar.currentDate !== null) calendar.show();
-      else calendar.hide();
-    } else {
-      sidebar.hide();
-      calendar.hide();
-    }
+    views.sidebar.updateView(
+      views.datePicker.currentDate !== null,
+      state.journeys.hasActiveJourney,
+    );
   }
   return updateViews;
 }
 
-async function main(home, map, calendar, sidebar) {
+async function main(home, views) {
   // init state
   const state = {
-    date: sidebar.currentDate || TODAY,
+    date: views.datePicker.currentDate || TODAY,
     journeys: new JourneyCollection(),
   };
 
   // redraw calendar header
-  calendar.setAttribute("start", dateOnlyISOString(state.date));
+  views.calendar.setAttribute("start", dateOnlyISOString(state.date));
 
   // prepare database
   // todo having troubles with trains starting before 01:00 because than diffDays does not work correctly
-  const connections = CONNECTIONS.flatMap((c) =>
-    enrichConnection(c, STATIONS, CITIES, TODAY.toLocaleDateString("sv")),
+  const connections = CONNECTIONS.flatMap(
+    (c) =>
+      enrichConnection(c, STATIONS, CITIES, TODAY.toLocaleDateString("sv")), // todo can use state.date here?
   ).filter((c) => c.stops[0].departure.getHours() > 0);
   const database = new Database(connections);
 
@@ -58,23 +55,23 @@ async function main(home, map, calendar, sidebar) {
     connections,
     routeDatabase,
   );
-  const mapLoadedPromise = map.load(initialMapData);
+  const mapLoadedPromise = views.map.load(initialMapData);
 
   // init update views
-  const updateViews = initUpdateViews(map, calendar, sidebar, database);
+  const updateViews = initUpdateViews(views, database);
 
   // moving things around in the calendar
-  calendar.on("legChanged", (newConnectionId) => {
+  views.calendar.on("legChanged", (newConnectionId) => {
     state.journeys.activeJourney.replaceLeg(newConnectionId);
     updateViews(state);
   });
 
-  map.on("selectJourney", (journeyId) => {
+  views.map.on("selectJourney", (journeyId) => {
     state.journeys.setActive(journeyId);
     updateViews(state);
   });
 
-  map.on("showCityRoutes", (cityName) => {
+  views.map.on("showCityRoutes", (cityName) => {
     const itineraries = routeDatabase.getItineraries(
       home,
       cityName,
@@ -90,14 +87,19 @@ async function main(home, map, calendar, sidebar) {
     updateViews(state);
   });
 
-  map.on("cutJourney", (cityName) => {
+  views.map.on("cutJourney", (cityName) => {
     state.journeys.activeJourney.split(cityName); // todo option to split only for active journey? or pass journey id back here
   });
 
-  calendar.on("entryHoverStart", (leg) => map.setLegHoverState(leg, true));
-  calendar.on("entryHoverStop", (leg) => map.setLegHoverState(leg, false));
+  views.calendar.on("entryHoverStart", (leg) =>
+    views.map.setLegHoverState(leg, true),
+  );
 
-  sidebar.on("dateChanged", (date) => {
+  views.calendar.on("entryHoverStop", (leg) =>
+    views.map.setLegHoverState(leg, false),
+  );
+
+  views.datePicker.on("dateChanged", (date) => {
     if (date === null) date = TODAY;
 
     const diff = diffDays(state.date, date);
@@ -105,7 +107,7 @@ async function main(home, map, calendar, sidebar) {
 
     state.journeys.shiftDate(diff, database);
     state.date = date;
-    calendar.setAttribute("start", dateOnlyISOString(state.date));
+    views.calendar.setAttribute("start", dateOnlyISOString(state.date));
 
     updateViews(state);
   });

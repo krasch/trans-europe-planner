@@ -40,6 +40,7 @@
 
     <!-- components -->
     <script src="script/components/componentData.js"></script>
+    <script src="script/components/sidebar.js"></script>
     <script src="script/components/calendar/grid.js"></script>
     <script src="script/components/calendar/entry.js"></script>
     <script src="script/components/calendar/calendar.js"></script>
@@ -48,7 +49,7 @@
     <script src="script/components/map/cities.js"></script>
     <script src="script/components/map/edges.js"></script>
     <script src="script/components/map/util.js"></script>
-    <script src="script/components/sidebar.js"></script>
+    <script src="script/components/datepicker.js"></script>
 
     <title>Trans-Europe-Planner</title>
     <link rel="stylesheet" href="style/sidebar.css">
@@ -140,11 +141,6 @@
     </menu>
 </template>
 
-<div id="icon">
-    <img src="images/logo.svg" alt="logo for the trans-europe-planner">
-</div>
-
-<div id="map"></div>
 
 <div id="modal">
     <img class="logo" src="images/logo.svg" alt="logo for the trans-europe-planner">
@@ -169,25 +165,24 @@
     <div class="bottom"></div>
 </div>
 
-<div id="sidebar" class="hidden">
-    <div class="header">
-        <img class="logo" src="images/logo.svg" alt="logo for the trans-europe-planner">
-        <div>
-            <h2><label for="date-picker-input">Abreisedatum: </label></h2>
-            <div id="date-picker">
-                <a class="hidden" id="decrease-date" title="One day earlier">◀</a>
-                <input type="date" id="date-picker-input"/>
-                <a class="hidden" id="increase-date" title="One day later">▶</a>
-            </div>
+<div id="sidebar">
+    <div class="logo"><img src="images/logo.svg" alt="logo for the trans-europe-planner"></div>
+    <div class="header hidden">
+        <h2><label for="date-picker-input">Abreisedatum: </label></h2>
+        <div id="date-picker">
+            <a id="decrease-date" title="One day earlier">◀</a>
+            <input type="date" id="date-picker-input"/>
+            <a id="increase-date" title="One day later">▶</a>
         </div>
     </div>
 
-    <!-- All calendar elements will be added into the container below dynamically -->
-    <div id="calender-container">
+    <div class="content hidden">
         <h2>Reisevorschlag</h2>
         <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
     </div>
 </div>
+
+<div id="map"></div>
 
 
 <script>
@@ -198,9 +193,12 @@
         initColors();
         initCityNameToId(CITIES);
 
-        const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3); // starts async loading map
-        const calendar = document.getElementById("calendar");
-        const sidebar = new Sidebar(document.getElementById("sidebar"));
+        const views = {
+            map: new MapWrapper('map', [10.0821932, 49.786322], 4.3), // starts async loading map
+            calendar: document.getElementById("calendar"),
+            datePicker: new Datepicker(document.getElementById("date-picker")),
+            sidebar: new Sidebar(document.getElementById("sidebar"))
+        }
 
         // all necessary data is there, let's go!
         const params = new URLSearchParams(window.location.search);
@@ -209,7 +207,7 @@
         if (home && ["Berlin", "Hamburg", "Köln", "München", "Stockholm"].includes(home)) {
 
             try {
-                main(home, map, calendar, sidebar);
+                main(home, views);
             } catch (error) {
                 console.error(error);
             }

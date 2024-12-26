@@ -20,25 +20,6 @@ body {
     width: 100%;
 }
 
-#icon {
-    z-index: 2;
-
-    position: absolute;
-    left: 0;
-    top: 0;
-
-    padding: 2rem;
-    border-bottom-right-radius: 1rem;
-
-    background: var(--color-dark);
-    opacity: 90%;
-}
-
-#icon img {
-    height: 6rem;
-    filter: var(--filter-white);
-}
-
 #sidebar {
     z-index: 3;
 
