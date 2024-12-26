@@ -2,6 +2,8 @@ body {
     margin: 0;
     padding: 0;
     font-family: helvetica, arial, sans-serif;
+
+    --footer-height: 2rem;
 }
 
 html,
@@ -16,12 +18,12 @@ body {
     left: 0;
     top: 0;
 
-    height: 100%;
+    height: calc(100% - var(--footer-height));
     width: 100%;
 }
 
 #sidebar {
-    z-index: 3;
+    z-index: 2;
 
     position: absolute;
     left: 0;
@@ -29,6 +31,33 @@ body {
 
     width: 35rem;
     height: 100%;
+}
+
+#footer {
+    z-index: 2;
+
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    width: calc(100% - 2 * 2rem);
+    height: var(--footer-height);
+
+    padding-left: 2rem;
+    padding-right: 2rem;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+    justify-content: flex-end;
+
+    background-color: var(--color-dark);
+    color: var(--color-light);
+}
+
+#footer a {
+    color: var(--color-light);
 }
 
 #modal {
