@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "node node_modules/.bin/jest",
-    "check-pretty": "node node_modules/.bin/prettier script/ style/map/layers.js --check",
-    "make-pretty": "node node_modules/.bin/prettier script/ style/map/layers.js --write"
+    "check-pretty": "node node_modules/.bin/prettier data/ script/ style/map/layers.js --check",
+    "make-pretty": "node node_modules/.bin/prettier data/ script/ style/map/layers.js --write"
   },
   "devDependencies": {
     "jest": "^29.7.0",

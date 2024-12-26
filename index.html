@@ -159,6 +159,7 @@
                 <a href="?start=Hamburg">Hamburg</a>
                 <a href="?start=Köln">Köln</a>
                 <a href="?start=München">München</a>
+                <a href="?start=Stockholm">Stockholm</a>
             </div>
             <em>(Weitere Startpunkte bald verfügbar)</em>
         </div>
@@ -203,7 +204,7 @@
         const params = new URLSearchParams(window.location.search);
         const home = params.get("start");
 
-        if (home && ["Berlin", "Hamburg", "Köln", "München"].includes(home)) {
+        if (home && ["Berlin", "Hamburg", "Köln", "München", "Stockholm"].includes(home)) {
 
             try {
                 main(home, map, calendar, sidebar);
