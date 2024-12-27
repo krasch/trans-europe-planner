@@ -10,6 +10,8 @@ function diffDays(datetime, laterDatetime) {
 }
 
 class CalendarGrid extends HTMLElement {
+  dateChanged = true;
+
   static observedAttributes = ["start", "numDays", "resolution"];
 
   constructor() {
@@ -37,6 +39,7 @@ class CalendarGrid extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === "start") {
       this.#updateTableHeader();
+      this.dateChanged = true;
     }
   }
 
