@@ -1,4 +1,6 @@
 class Sidebar {
+  #initialUpdate = true;
+
   #borderRadius;
 
   // relevant HTML elements
@@ -38,6 +40,11 @@ class Sidebar {
   }
 
   updateView(hasDate, hasActiveJourney) {
+    if (this.#initialUpdate) {
+      this.#setVisible(this.#logo);
+      this.#initialUpdate = false;
+    }
+
     this.#datePickerShouldBeVisible = hasActiveJourney;
     this.#calendarShouldBeVisible = hasActiveJourney && hasDate;
     this.#updateView();
