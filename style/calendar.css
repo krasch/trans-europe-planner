@@ -46,7 +46,15 @@ calendar-entry {
 
     border-radius: 5px;
     overflow: hidden;
+
+    animation: fadein 1s;
 }
+
+@keyframes fadein {
+  from { opacity: 0}
+  to   { opacity: 1}
+}
+
 
 /* calendar entry is fully visible */
 calendar-entry.full {
