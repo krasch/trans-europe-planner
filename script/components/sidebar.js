@@ -51,7 +51,7 @@ class Sidebar {
   }
 
   #updateView() {
-    if (this.#collapsed) {
+    /*if (this.#collapsed) {
       this.#hideDatePicker();
       this.#hideCalendar();
       return;
@@ -61,7 +61,7 @@ class Sidebar {
     else this.#hideDatePicker();
 
     if (this.#calendarShouldBeVisible) this.#showCalendar();
-    else this.#hideCalendar();
+    else this.#hideCalendar();*/
   }
 
   #showDatePicker() {
