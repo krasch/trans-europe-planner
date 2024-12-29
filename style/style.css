@@ -1,0 +1,136 @@
+body {
+    font-family: helvetica, arial, sans-serif;
+
+    /* colors for connections */
+    --color1: 27, 158, 119;
+    --color2: 217, 95, 2;
+    --color3: 117, 112, 179;
+    --color4: 231, 41, 138;
+    --color5: 102, 166, 30;
+
+    --color-light: white;
+    --color-dark: #286099;
+
+    /* https://codepen.io/sosuke/pen/Pjoqqp */
+    --filter-white: invert(100%);
+    /* #f9f3ea */
+    --filter-beige: invert(95%) sepia(9%) saturate(656%) hue-rotate(315deg) brightness(105%) contrast(95%);
+    --filter-darkgrey: invert(73%) sepia(0%) saturate(0%) hue-rotate(158deg) brightness(94%) contrast(89%);
+    /* #286099 */
+    --filter-dark: invert(32%) sepia(12%) saturate(3883%) hue-rotate(173deg) brightness(95%) contrast(86%);
+}
+
+
+/***********************************************
+  Logo & data picker
+************************************************/
+
+#logo,
+#date-picker {
+    --border-radius: 1rem;
+    border-bottom-right-radius: var(--border-radius);
+
+    color: var(--color-light);
+    background-color: var(--color-dark);
+}
+
+#logo img {
+    filter: var(--filter-white)
+}
+
+a#show-sidebar,
+a#hide-sidebar {
+    cursor: pointer;
+
+    color: var(--color-light);
+    font-size: 1.5rem;
+}
+
+a#hide-sidebar:hover,
+a#show-sidebar:hover {
+    text-shadow: 2px 2px 3px lightgrey;
+}
+
+#date-picker a {
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+#date-picker a:hover {
+    text-shadow: 2px 2px 3px lightgrey;
+}
+
+#date-picker input {
+    border: 1px solid var(--color-dark);
+    border-radius: 5px;
+
+    color: var(--color-dark);
+    font-size: 1rem;
+    font-family: helvetica, arial, sans-serif;
+}
+
+/***********************************************
+  Journey details
+************************************************/
+
+#journey-details {
+    background: var(--color-light);
+    opacity: 90%;
+}
+
+#journey-details input[type="radio"] {
+    display: none;
+}
+
+#tab1 + label,
+#tab2 + label {
+    border: 1px solid var(--color-dark);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+    color: var(--color-dark);
+}
+
+#tab1 + label {
+    border-right: 0; /* no double borders */
+}
+
+#tab1:checked + label,
+#tab2:checked + label {
+    border-bottom: 0;
+
+    /*color: var(--color-light);
+    background-color: var(--color-dark);*/
+}
+
+#tab1-content,
+#tab2-content {
+    border: 1px solid var(--color-dark);
+    border-top: 0;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+#tab1:checked + label + #tab1-content,
+#tab2:checked + label + #tab2-content {
+    /*background-color: var(--color-dark);*/
+}
+
+#journey-overview {
+    color: var(--color-dark);
+    background-color: var(--color-light);
+}
+
+
+/***********************************************
+  Footer
+************************************************/
+
+#footer {
+    background-color: var(--color-dark);
+    color: var(--color-light);
+}
+
+#footer a {
+    color: var(--color-light);
+}

@@ -1,63 +1,77 @@
-body {
+h1, h2, h3 {
     margin: 0;
-    padding: 0;
-    font-family: helvetica, arial, sans-serif;
-
-    --footer-height: 2rem;
+    font-weight: normal;
 }
 
-html,
+.hidden {
+    visibility: hidden;
+}
+
+/***********************************************
+ Placing things in main page layout
+************************************************/
+
+html {
+    height: 100%;
+}
+
 body {
     height: 100%;
+    width: 100%;
+
+    margin: 0;
+    padding: 0;
+
+    --logo-size: 6rem;
+    --logo-padding: 1.5rem;
+    --logo-size-with-padding: calc(var(--logo-size) + 2 * var(--logo-padding));
+    --sidebar-width: 20rem; /* excluding logo */
+    --footer-height: 2rem;
+
+    display: grid;
+    grid-template-columns: var(--logo-size-with-padding) var(--sidebar-width) 1fr;
+    grid-template-rows: var(--logo-size-with-padding) 1fr var(--footer-height);
+
+    grid-template-areas:
+      "logo             date-picker      map"
+      "journey-details  journey-details  map"
+      "footer           footer           footer";
 }
 
 #map {
-    z-index: 1;
-
-    position: absolute;
-    left: 0;
-    top: 0;
-
-    height: calc(100% - var(--footer-height));
-    width: 100%;
+    grid-row: 1/3;
+    grid-column: 1/4;
 }
 
-#sidebar {
+#logo {
     z-index: 2;
+    grid-area: logo;
+}
 
-    position: absolute;
-    left: 0;
-    top: 0;
+#date-picker {
+    z-index: 2;
+    grid-area: date-picker;
+    overflow: hidden; /* for animations */
+}
 
-    width: 35rem;
-    height: 100%;
+#journey-details {
+    z-index: 2;
+    grid-area: journey-details;
+    overflow: hidden; /* for animations */
 }
 
 #footer {
-    z-index: 2;
-
-    position: absolute;
-    left: 0;
-    bottom: 0;
-
-    width: calc(100% - 2 * 2rem);
-    height: var(--footer-height);
-
-    padding-left: 2rem;
-    padding-right: 2rem;
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 2rem;
-    justify-content: flex-end;
-
-    background-color: var(--color-dark);
-    color: var(--color-light);
+    grid-area: footer;
 }
 
-#footer a {
-    color: var(--color-light);
+a#show-sidebar {
+    z-index: 3;
+    grid-area: logo;
+}
+
+a#hide-sidebar {
+    z-index: 3;
+    grid-area: date-picker;
 }
 
 #modal {
@@ -73,14 +87,114 @@ body {
     min-width: 50%;
 }
 
-h1, h2, h3 {
-    margin: 0;
-    font-weight: normal;
+/***********************************************
+ Layout for logo and date picker
+************************************************/
+
+#logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-.hidden {
-    visibility: hidden;
+#logo img {
+    height: var(--logo-size);
 }
+
+#date-picker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+#date-picker input {
+    width: 9rem;
+    padding: 0.5rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+a#show-sidebar,
+a#hide-sidebar {
+    justify-self: end;
+    height: 2rem;
+    margin-top: 0.3rem;
+    margin-right: 0.5rem;
+}
+
+/***********************************************
+ Layout for journey details
+************************************************/
+
+#journey-details {
+    padding: 1.5rem;
+
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 2.5rem 1fr;
+    grid-template-areas:
+       "tab1 tab2"
+       "content content";
+}
+
+#tab1 {
+    grid-area: tab1;
+}
+
+#tab2 {
+    grid-area: tab2;
+}
+
+#tab1-content,
+#tab2-content {
+    grid-area: content;
+    display: none;
+
+    flex-direction: column;
+    align-items: center;
+
+    padding: 0.5rem;
+}
+
+#tab1:checked + label + #tab1-content,
+#tab2:checked + label + #tab2-content {
+    display: flex;
+}
+
+#tab1 + label,
+#tab2 + label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#journey-overview {
+    height: 100%;
+    width: 100%;
+
+    color: var(--color-dark);
+    background-color: var(--color-light);
+}
+
+/***********************************************
+ Layout for footer
+************************************************/
+
+#footer {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2rem;
+
+    padding-right: 2rem;
+}
+
 
 /*******************************************************
  the card/menu with title, used in map, calendar

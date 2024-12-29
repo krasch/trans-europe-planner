@@ -6,7 +6,7 @@ class Sidebar {
   // relevant HTML elements
   #logo;
   #datePicker;
-  #calendar;
+  #journeyDetails;
   #showSidebarButton;
   #hideSidebarButton;
 
@@ -16,15 +16,15 @@ class Sidebar {
   #collapsed = false;
 
   constructor(container) {
-    this.#borderRadius = window
-      .getComputedStyle(container)
-      .getPropertyValue("--border-radius");
-
-    this.#logo = container.querySelector(".logo");
-    this.#datePicker = container.querySelector(".header");
-    this.#calendar = container.querySelector(".content");
+    this.#logo = container.querySelector("#logo");
     this.#showSidebarButton = container.querySelector("#show-sidebar");
     this.#hideSidebarButton = container.querySelector("#hide-sidebar");
+    this.#datePicker = container.querySelector("#date-picker");
+    this.#journeyDetails = container.querySelector("#journey-details");
+
+    this.#borderRadius = window
+      .getComputedStyle(this.#logo)
+      .getPropertyValue("--border-radius");
 
     container.addEventListener("click", (e) => {
       if (e.target.id === this.#hideSidebarButton.id) {
@@ -51,17 +51,17 @@ class Sidebar {
   }
 
   #updateView() {
-    /*if (this.#collapsed) {
+    if (this.#collapsed) {
       this.#hideDatePicker();
-      this.#hideCalendar();
+      this.#hideJourneyDetails();
       return;
     }
 
     if (this.#datePickerShouldBeVisible) this.#showDatePicker();
     else this.#hideDatePicker();
 
-    if (this.#calendarShouldBeVisible) this.#showCalendar();
-    else this.#hideCalendar();*/
+    if (this.#calendarShouldBeVisible) this.#showJourneyDetails();
+    else this.#hideJourneyDetails();
   }
 
   #showDatePicker() {
@@ -88,20 +88,20 @@ class Sidebar {
     });
   }
 
-  #showCalendar() {
-    if (this.#isVisible(this.#calendar)) return; // nothing to do
+  #showJourneyDetails() {
+    if (this.#isVisible(this.#journeyDetails)) return; // nothing to do
 
     this.#removeBorderRadius(this.#datePicker);
-    this.#slideIn(this.#calendar);
-    this.#setVisible(this.#calendar);
+    this.#slideIn(this.#journeyDetails);
+    this.#setVisible(this.#journeyDetails);
   }
 
-  #hideCalendar() {
-    if (!this.#isVisible(this.#calendar)) return; // nothing to do
+  #hideJourneyDetails() {
+    if (!this.#isVisible(this.#journeyDetails)) return; // nothing to do
 
-    this.#slideOut(this.#calendar, () => {
+    this.#slideOut(this.#journeyDetails, () => {
       this.#addBorderRadius(this.#datePicker);
-      this.#setInvisible(this.#calendar);
+      this.#setInvisible(this.#journeyDetails);
     });
   }
 

@@ -11,10 +11,8 @@
     <script src="external/maplibre-gl@4.6.0/maplibre-gl.js"></script>
 
     <!-- styles -->
-    <link rel="stylesheet" href="style/colors.css">
     <link rel="stylesheet" href="style/layout.css">
-    <link rel="stylesheet" href="style/modal.css">
-    <link rel="stylesheet" href="style/sidebar.css">
+    <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="style/calendar.css">
     <link rel="stylesheet" href="style/map/map.css">
 
@@ -52,7 +50,7 @@
     <script src="script/components/datepicker.js"></script>
 
     <title>Trans-Europe-Planner</title>
-    <link rel="stylesheet" href="style/sidebar.css">
+    <link rel="stylesheet" href="style/map/map.css">
 
 </head>
 
@@ -142,7 +140,7 @@
 </template>
 
 
-<div id="modal">
+<!--div id="modal">
     <img class="logo" src="images/logo.svg" alt="logo for the trans-europe-planner">
     <div class="header">
         <h1>Willkommen beim Trans Europa Planer</h1>
@@ -163,57 +161,47 @@
         </div>
     </div>
     <div class="bottom"></div>
+</div-->
+
+<div id="logo"><img src="images/logo.svg" alt="logo for the trans-europe-planner"></div>
+<a id="show-sidebar" class="hidden" title="Show sidebar">››</a>
+<a id="hide-sidebar" class="hidden" title="Hide sidebar">‹‹</a>
+
+<div id="date-picker" class="hidden">
+    <h2><label for="date-picker-input">Abreisedatum: </label></h2>
+    <div>
+        <a id="decrease-date" title="One day earlier">◀</a>
+        <input type="date" id="date-picker-input"/>
+        <a id="increase-date" title="One day later">▶</a>
+    </div>
 </div>
 
-<div id="sidebar">
-    <a id="show-sidebar" title="Show sidebar" class="hidden">››</a>
-    <a id="hide-sidebar" title="Hide sidebar" class="hidden">‹‹</a>
-
-    <div class="logo"><img src="images/logo.svg" alt="logo for the trans-europe-planner"></div>
-    <div class="header">
-        <h2><label for="date-picker-input">Abreisedatum: </label></h2>
-        <div id="date-picker">
-            <a id="decrease-date" title="One day earlier">◀</a>
-            <input type="date" id="date-picker-input"/>
-            <a id="increase-date" title="One day later">▶</a>
-        </div>
-    </div>
-
-    <div class="content">
-        <div class="tabbed">
-            <div class="tab selected">🛈 &nbsp; Reiseübersicht</div>
-            <div class="tab">🖉 &nbsp; Reise anpassen</div>
-            <div class="content">
-                <calendar-grid style="display: none" id="calendar" start="2024-12-01" num-days="3"
-                               resolution="4"></calendar-grid>
-                <div id="journey-overview">
-                    <h2><span class="from">Berlin</span> &nbsp;⮕&nbsp;<span class="to">Antanarivo</span></h2>
-                    <div class="via">via Paris, London</div>
-                    <div class="travel-time">Reisezeit 10 Stunden und 20 Minuten</div>
-                </div>
-            </div>
-        </div>
-        <!--div id="journey-overview">
+<div id="journey-details" class="hidden">
+    <input type="radio" name="tab" id="tab1" checked>
+    <label for="tab1">🛈 &nbsp;Reiseübersicht</label>
+    <div id="tab1-content">
+        <div id="journey-overview">
             <h2><span class="from">Berlin</span> &nbsp;⮕&nbsp;<span class="to">Antanarivo</span></h2>
             <div class="via">via Paris, London</div>
             <div class="travel-time">Reisezeit 10 Stunden und 20 Minuten</div>
-        </div-->
-        <!--div id="journey-details">
-            <div class="header">
-                <h3 class="tab">🛈 &nbsp; Reiseübersicht</h3>
-                <h3 class="tab selected">🖉 &nbsp; Reise anpassen</h3>
-            </div>
-        </div-->
+        </div>
+    </div>
+
+    <input type="radio" name="tab" id="tab2">
+    <label for="tab2">🖉 &nbsp;Reise anpassen</label>
+    <div id="tab2-content">
+        <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
     </div>
 </div>
 
-<div id="map"></div>
 <div id="footer">
     <span>Trans Europe Planner - <em>Einfacher mit dem Zug quer durch Europa</em></span>
     <span>Blog</span>
     <span>About</span>
     <span>Impressum</span>
 </div>
+
+<div id="map"></div>
 
 <script>
 
@@ -227,7 +215,7 @@
             map: new MapWrapper('map', [10.0821932, 49.786322], 4.3), // starts async loading map
             calendar: document.getElementById("calendar"),
             datePicker: new Datepicker(document.getElementById("date-picker")),
-            sidebar: new Sidebar(document.getElementById("sidebar"))
+            sidebar: new Sidebar(document.body)
         }
 
         // all necessary data is there, let's go!
