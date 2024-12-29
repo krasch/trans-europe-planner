@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="style/calendar.css">
     <link rel="stylesheet" href="style/map/map.css">
+    <link rel="stylesheet" href="style/modal.css">
 
     <!-- style scripts -->
     <script src="style/map/layers.js"></script> <!-- only contains css styles for map in js -->
@@ -38,7 +39,7 @@
 
     <!-- components -->
     <script src="script/components/componentData.js"></script>
-    <script src="script/components/sidebar.js"></script>
+    <script src="script/components/layout.js"></script>
     <script src="script/components/calendar/grid.js"></script>
     <script src="script/components/calendar/entry.js"></script>
     <script src="script/components/calendar/calendar.js"></script>
@@ -140,7 +141,7 @@
 </template>
 
 
-<!--div id="modal">
+<div id="modal" class="hidden">
     <img class="logo" src="images/logo.svg" alt="logo for the trans-europe-planner">
     <div class="header">
         <h1>Willkommen beim Trans Europa Planer</h1>
@@ -161,9 +162,11 @@
         </div>
     </div>
     <div class="bottom"></div>
-</div-->
+</div>
 
-<div id="logo"><img src="images/logo.svg" alt="logo for the trans-europe-planner"></div>
+<div id="logo" class="hidden">
+    <img src="images/logo.svg" alt="logo for the trans-europe-planner">
+</div>
 <a id="show-sidebar" class="hidden" title="Show sidebar">››</a>
 <a id="hide-sidebar" class="hidden" title="Hide sidebar">‹‹</a>
 
@@ -207,6 +210,16 @@
 
     "use strict";
 
+    function getHome() {
+        const params = new URLSearchParams(window.location.search);
+        const home = params.get("start");
+
+        if (home && ["Berlin", "Hamburg", "Köln", "München", "Stockholm"].includes(home))
+            return home;
+
+        return null;
+    }
+
     onload = async (event) => {
         initColors();
         initCityNameToId(CITIES);
@@ -215,25 +228,18 @@
             map: new MapWrapper('map', [10.0821932, 49.786322], 4.3), // starts async loading map
             calendar: document.getElementById("calendar"),
             datePicker: new Datepicker(document.getElementById("date-picker")),
-            sidebar: new Sidebar(document.body)
+            layout: new Layout(document.body)
         }
 
-        // all necessary data is there, let's go!
-        const params = new URLSearchParams(window.location.search);
-        const home = params.get("start");
-
-        if (home && ["Berlin", "Hamburg", "Köln", "München", "Stockholm"].includes(home)) {
-
+        const home = getHome()
+        if (home) {
             try {
                 main(home, views);
             } catch (error) {
                 console.error(error);
             }
-        }
-        // necessary data missing, ask the user
-        else {
-            document.getElementById("map").style.setProperty("opacity", "30%");
-            document.getElementById("modal").style.setProperty("visibility", "visible");
+        } else {
+            views.layout.showModal();
         }
     };
 </script>

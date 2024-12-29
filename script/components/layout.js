@@ -1,4 +1,4 @@
-class Sidebar {
+class Layout {
   #initialUpdate = true;
 
   #borderRadius;
@@ -9,18 +9,22 @@ class Sidebar {
   #journeyDetails;
   #showSidebarButton;
   #hideSidebarButton;
+  #map;
+  #modal;
 
   // state
   #datePickerShouldBeVisible = false;
-  #calendarShouldBeVisible = false;
+  #journeyDetailsShouldBeVisible = false;
   #collapsed = false;
 
   constructor(container) {
     this.#logo = container.querySelector("#logo");
-    this.#showSidebarButton = container.querySelector("#show-sidebar");
-    this.#hideSidebarButton = container.querySelector("#hide-sidebar");
     this.#datePicker = container.querySelector("#date-picker");
     this.#journeyDetails = container.querySelector("#journey-details");
+    this.#showSidebarButton = container.querySelector("#show-sidebar");
+    this.#hideSidebarButton = container.querySelector("#hide-sidebar");
+    this.#map = container.querySelector("#map");
+    this.#modal = container.querySelector("#modal");
 
     this.#borderRadius = window
       .getComputedStyle(this.#logo)
@@ -46,8 +50,14 @@ class Sidebar {
     }
 
     this.#datePickerShouldBeVisible = hasActiveJourney;
-    this.#calendarShouldBeVisible = hasActiveJourney && hasDate;
+    this.#journeyDetailsShouldBeVisible = hasActiveJourney && hasDate;
     this.#updateView();
+  }
+
+  showModal() {
+    this.#map.style.opacity = "30%";
+    this.#setInvisible(this.#logo);
+    this.#setVisible(this.#modal);
   }
 
   #updateView() {
@@ -60,7 +70,7 @@ class Sidebar {
     if (this.#datePickerShouldBeVisible) this.#showDatePicker();
     else this.#hideDatePicker();
 
-    if (this.#calendarShouldBeVisible) this.#showJourneyDetails();
+    if (this.#journeyDetailsShouldBeVisible) this.#showJourneyDetails();
     else this.#hideJourneyDetails();
   }
 
@@ -121,7 +131,7 @@ class Sidebar {
     const width = window.getComputedStyle(element).getPropertyValue("width");
 
     const animation = element.animate([{ width: "0" }, { width: width }], {
-      duration: 200,
+      duration: 300,
       iterations: 1,
     });
     animation.onfinish = onFinish;
@@ -131,7 +141,7 @@ class Sidebar {
     const width = window.getComputedStyle(element).getPropertyValue("width");
 
     const animation = element.animate([{ width: width }, { width: 0 }], {
-      duration: 200,
+      duration: 300,
       iterations: 1,
     });
     animation.onfinish = onFinish;

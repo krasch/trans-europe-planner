@@ -12,8 +12,6 @@
 
   border-radius: 1rem;
   overflow: hidden; /* this is necessary to really get the round corners */
-
-  visibility: hidden;
 }
 
 #modal > * {
@@ -30,6 +28,10 @@
   top: var(--padding);
   left: var(--padding);
   height: var(--logo-height);
+}
+
+#model > .logo img {
+  height: 100%;
 }
 
 #modal .header {

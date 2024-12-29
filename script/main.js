@@ -19,7 +19,7 @@ function initUpdateViews(views, database) {
       prepareDataForCalendar(state.date, state.journeys, database),
     );
 
-    views.sidebar.updateView(
+    views.layout.updateView(
       views.datePicker.currentDate !== null,
       state.journeys.hasActiveJourney,
     );
