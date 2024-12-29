@@ -1,7 +1,5 @@
 calendar-grid {
     width: 100%;
-    height: 100%;
-
     display: grid;
     font-size: 0.8rem;
 
@@ -9,11 +7,8 @@ calendar-grid {
     --num-days: 3;
     --num-rows: calc(24*var(--resolution) + 8);
 
-    --min-row-height: 0.3rem;
-    --row-height: max(var(--min-row-height), calc(100% / var(--num-rows)));
-
     grid-auto-flow: column;
-    grid-template-rows: repeat(var(--num-rows), var(--row-height));
+    grid-template-rows: repeat(var(--num-rows), 0.4rem);
     grid-template-columns: 3rem repeat(var(--num-days), 1fr);
 
     border: 1px solid darkgray;
@@ -26,8 +21,7 @@ calendar-grid {
 
 
 /* line to the left of each day */
-calendar-grid > .calendar-grid-cell
-{
+calendar-grid > .calendar-grid-cell {
     border-left: 1px dashed lightgrey;
 }
 
