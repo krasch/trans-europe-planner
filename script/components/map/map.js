@@ -75,6 +75,14 @@ class MapWrapper {
 
   init(data) {
     this.map.getCanvas().style.cursor = "default";
+    this.map.addControl(
+      new maplibregl.NavigationControl({ showCompass: false, showZoom: true }),
+    );
+
+    // disable map rotation
+    this.map.dragRotate.disable();
+    this.map.touchZoomRotate.disableRotation();
+    this.map.keyboard.disableRotation();
 
     const [cities, edges] = data;
 
