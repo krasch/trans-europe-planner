@@ -130,21 +130,31 @@ class Layout {
   #slideIn(element, onFinish = () => {}) {
     const width = window.getComputedStyle(element).getPropertyValue("width");
 
+    for (let e of element.children) this.#setInvisible(e);
+
     const animation = element.animate([{ width: "0" }, { width: width }], {
       duration: 300,
       iterations: 1,
     });
-    animation.onfinish = onFinish;
+    animation.onfinish = () => {
+      for (let e of element.children) this.#setVisible(e);
+      onFinish();
+    };
   }
 
   #slideOut(element, onFinish = () => {}) {
     const width = window.getComputedStyle(element).getPropertyValue("width");
 
+    for (let e of element.children) this.#setInvisible(e);
+
     const animation = element.animate([{ width: width }, { width: 0 }], {
       duration: 300,
       iterations: 1,
     });
-    animation.onfinish = onFinish;
+    animation.onfinish = () => {
+      for (let e of element.children) this.#setVisible(e);
+      onFinish();
+    };
   }
 
   #removeBorderRadius(element) {

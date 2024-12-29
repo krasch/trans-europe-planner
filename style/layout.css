@@ -51,13 +51,11 @@ body {
 #date-picker {
     z-index: 2;
     grid-area: date-picker;
-    overflow: hidden; /* for animations */
 }
 
 #journey-details {
     z-index: 2;
     grid-area: journey-details;
-    overflow: hidden; /* for animations */
 }
 
 #footer {
@@ -105,22 +103,25 @@ a#hide-sidebar {
 #date-picker {
     display: flex;
     flex-direction: column;
+    gap: 0.5rem;
+
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
 }
 
 #date-picker input {
     width: 9rem;
     padding: 0.5rem;
+
     margin-left: 1rem;
     margin-right: 1rem;
 }
 
 a#show-sidebar,
 a#hide-sidebar {
-    justify-self: end;
     height: 2rem;
+
+    justify-self: end;
     margin-top: 0.3rem;
     margin-right: 0.5rem;
 }
