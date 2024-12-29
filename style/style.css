@@ -103,6 +103,13 @@ a#show-sidebar:hover {
     background-color: var(--color-dark);*/
 }
 
+#tab1:not(:checked) + label:hover,
+#tab2:not(:checked) + label:hover {
+    cursor: pointer;
+    text-shadow: 2px 2px 3px lightgrey;
+}
+
+
 #tab1-content,
 #tab2-content {
     border: 1px solid var(--color-dark);
