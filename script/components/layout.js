@@ -61,7 +61,7 @@ class Layout {
   }
 
   #updateView() {
-    /*if (this.#collapsed) {
+    if (this.#collapsed) {
       this.#hideDatePicker();
       this.#hideJourneyDetails();
       return;
@@ -71,7 +71,7 @@ class Layout {
     else this.#hideDatePicker();
 
     if (this.#journeyDetailsShouldBeVisible) this.#showJourneyDetails();
-    else this.#hideJourneyDetails();*/
+    else this.#hideJourneyDetails();
   }
 
   #showDatePicker() {
