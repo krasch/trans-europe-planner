@@ -189,7 +189,16 @@ a#hide-sidebar {
 
 .perlschnur-summary {
     padding-top: 2rem;
-    padding-bottom: 2rem;
+}
+
+.perlschnur-summary > *:last-child {
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+}
+
+.perlschnur-connection {
+    margin-left: 1rem;
+    margin-right: 1rem;
 }
 
 .perlschnur-connection h3 {
@@ -272,8 +281,6 @@ a#hide-sidebar {
 .card {
     --padding: 5px;
 
-    margin: 0;
-    padding: 0;
     list-style-type: none;
 
     border-radius: var(--padding);

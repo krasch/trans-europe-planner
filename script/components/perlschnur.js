@@ -15,18 +15,17 @@ class Perlschnur {
   }
 
   updateView(data) {
-    for (let el of this.#container.querySelectorAll(".perlschnur-connection"))
-      el.remove();
-    for (let el of this.#container.querySelectorAll(".perlschnur-transfer"))
-      el.remove();
+    const elements = [];
 
-    this.#container.appendChild(this.#createSummary(data.summary));
+    elements.push(this.#createSummary(data.summary));
 
     for (let i in data.connections) {
-      this.#container.appendChild(this.#createConnection(data.connections[i]));
+      elements.push(this.#createConnection(data.connections[i]));
       if (Number(i) < data.connections.length - 1)
-        this.#container.appendChild(this.#createTransfer(data.transfers[i]));
+        elements.push(this.#createTransfer(data.transfers[i]));
     }
+
+    this.#container.replaceChildren(...elements);
   }
 
   #createSummary(summary) {
