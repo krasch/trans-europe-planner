@@ -187,14 +187,21 @@ a#hide-sidebar {
     gap: 0.5rem;
 }
 
+.perlschnur-summary {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
 .perlschnur-connection h3 {
     height: 2rem;
     font-size: 1rem;
     justify-content: flex-start;
 }
 
-.perlschnur-connection h3 .connection-number {
+.perlschnur-connection h3 .connection-travel-time {
+    padding-left: 1rem;
     flex-grow: 1;
+    font-size: 0.8rem;
 }
 
 .perlschnur-connection h3 .connection-plus,
@@ -232,6 +239,10 @@ a#hide-sidebar {
 
     border-radius: 50%;
     border: 1px solid black;
+}
+
+.perlschnur-stop .date:empty {
+    display: none;
 }
 
 .perlschnur-transfer {

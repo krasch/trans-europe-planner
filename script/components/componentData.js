@@ -142,6 +142,12 @@ function prepareDataForPerlschnur(journeys, database) {
 
   return data;*/
   return {
+    summary: {
+      from: "Berlin",
+      to: "London",
+      via: "via Köln, Bruxelles",
+      totalTime: humanReadableTimeDelta(2000),
+    },
     transfers: [
       { time: humanReadableTimeDelta(200) },
       { time: humanReadableTimeDelta(10) },
@@ -151,6 +157,7 @@ function prepareDataForPerlschnur(journeys, database) {
         color: "27, 158, 119",
         type: "train",
         name: "ICE405",
+        travelTime: humanReadableTimeDelta(100),
         stops: [
           {
             time: "09:08",
@@ -215,6 +222,7 @@ function prepareDataForPerlschnur(journeys, database) {
         name: "TGV1",
         stops: [
           {
+            date: "(12. Okt)",
             time: "18:51",
             station: "Bruxelles-Midi Eurostar",
           },

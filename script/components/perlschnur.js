@@ -15,15 +15,28 @@ class Perlschnur {
   }
 
   updateView(data) {
-    const elements = [];
+    for (let el of this.#container.querySelectorAll(".perlschnur-connection"))
+      el.remove();
+    for (let el of this.#container.querySelectorAll(".perlschnur-transfer"))
+      el.remove();
+
+    this.#container.appendChild(this.#createSummary(data.summary));
 
     for (let i in data.connections) {
-      elements.push(this.#createConnection(data.connections[i]));
+      this.#container.appendChild(this.#createConnection(data.connections[i]));
       if (Number(i) < data.connections.length - 1)
-        elements.push(this.#createTransfer(data.transfers[i]));
+        this.#container.appendChild(this.#createTransfer(data.transfers[i]));
     }
+  }
 
-    this.#container.replaceChildren(...elements);
+  #createSummary(summary) {
+    const element = createElementFromTemplate("template-perlschnur-summary", {
+      ".total-time": { innerText: summary.totalTime },
+      ".from": { innerText: summary.from },
+      ".to": { innerText: summary.to },
+      ".via": { innerText: summary.via },
+    });
+    return element;
   }
 
   #createConnection(connection) {
@@ -32,6 +45,7 @@ class Perlschnur {
       {
         ".connection-icon": { src: `images/icons/${connection.type}.svg` },
         ".connection-number": { innerText: connection.name },
+        ".connection-travel-time": { innerText: connection.travelTime },
       },
     );
     element.style.setProperty("--color", connection.color);
@@ -49,6 +63,7 @@ class Perlschnur {
 
       const li = createElementFromTemplate("template-perlschnur-stop", {
         ".time": { innerText: connection.stops[i].time },
+        ".date": { innerText: connection.stops[i].date || "" },
         ".station": { innerText: connection.stops[i].station },
       });
       ul.appendChild(li);
