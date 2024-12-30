@@ -23,7 +23,7 @@ function initDestinationMarker(lngLat) {
 function initCityMenu(id, name, numTransfer, lngLat) {
   const element = createElementFromTemplate("template-city-menu", {
     $root$: { "data-city-id": id },
-    ".title": { innerText: name },
+    h3: { innerText: name },
     ".num-transfers": { innerText: getNumTransfersText(numTransfer) },
   });
 
@@ -40,8 +40,8 @@ function initCityMenu(id, name, numTransfer, lngLat) {
 
   popup.updateElement = (state) => {
     if (state.isDestination !== undefined) {
-      updateVisibility(buttonShowRoutes, state.isDestination);
-      updateVisibility(textNumTransfers, state.isDestination);
+      updateVisibility(buttonShowRoutes.parentElement, state.isDestination);
+      updateVisibility(textNumTransfers.parentElement, state.isDestination);
     }
     if (state.isTransfer !== undefined && state.isStop !== undefined) {
       //updateVisibility(buttonMakeCut, state.isStop && !state.isTransfer);
@@ -149,10 +149,10 @@ class Cities {
     this.#map._container.addEventListener("click", (e) => {
       if (e.target.tagName !== "BUTTON") return;
 
-      const menu = e.target.parentElement.parentElement;
-      if (!menu.classList.contains("city-menu")) return;
+      const container = e.target.parentElement.parentElement.parentElement;
+      if (!container.classList.contains("city-menu")) return;
 
-      const id = menu.dataset.cityId;
+      const id = container.dataset.cityId;
       this.#hideCityMenu(id);
       this.#callbacks["menuClick"](id, e.target.value);
     });

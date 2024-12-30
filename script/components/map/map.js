@@ -137,7 +137,7 @@ class MapWrapper {
       }
 
       // second click = show menu
-      this.edges.showJourneyMenu(journeyId, this.#journeys[journeyId], lngLat);
+      //this.edges.showJourneyMenu(journeyId, this.#journeys[journeyId], lngLat);
     });
 
     this.edges.on("menuClick", (journeyId, entry) => {

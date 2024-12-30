@@ -97,6 +97,8 @@
 .edge-menu {
   width: 12rem;
 
+  --color: var(--color-dark);
+
   --color-menu-light: white;
   --filter-menu-light: var(--filter-white);
 
@@ -106,18 +108,22 @@
   border-color: var(--color-menu-dark);
 }
 
-.city-menu .title,
-.edge-menu .title {
+.city-menu h3,
+.edge-menu h3 {
   letter-spacing: 0.02rem;
+  height: 1.8rem;
 
   color: var(--color-menu-light);
   background-color: var(--color-menu-dark);
 }
 
+.city-menu li,
+.edge-menu li {
+  height: 1.5rem;
+}
+
 .city-menu button,
 .edge-menu button {
-  border: 0;
-
   color: var(--color-menu-dark);
   background: var(--color-menu-light);
 }

@@ -49,6 +49,7 @@
     <script src="script/components/map/edges.js"></script>
     <script src="script/components/map/util.js"></script>
     <script src="script/components/datepicker.js"></script>
+    <script src="script/components/perlschnur.js"></script>
 
     <title>Trans-Europe-Planner</title>
     <link rel="stylesheet" href="style/map/map.css">
@@ -95,6 +96,41 @@
     </div>
 </template>
 
+<template id="template-perlschnur-connection">
+    <div class="card perlschnur-connection">
+        <h3>
+            <img class="connection-icon">
+            <span class="connection-number"></span>
+            <a class="connection-plus hidden">››</a>
+            <a class="connection-minus hidden">‹‹</a>
+        </h3>
+        <ul></ul>
+    </div>
+</template>
+
+<template id="template-perlschnur-stop">
+    <li class="perlschnur-stop">
+        <span></span> <!--otherwise circle is elipse-->
+        <span class="circle"></span>
+        <span class="time"></span>
+        <span class="station"></span>
+        <!--span class="date">Mon 10. November 2024</span-->
+    </li>
+</template>
+
+<template id="template-perlschnur-collapse">
+    <li class="perlschnur-collapse">
+        <span>... <span class="count"></span> weitere Halte</span>
+    </li>
+</template>
+
+
+<template id="template-perlschnur-transfer">
+    <div class="perlschnur-transfer">
+        Umstiegszeit <span class="transfer-time"></span>
+    </div>
+</template>
+
 <template id="template-city-marker-home">
     <div class="city-marker-home" data-city-id="to-be-filled"></div>
 </template>
@@ -107,38 +143,40 @@
 </template>
 
 <template id="template-city-menu">
-    <menu class="city-menu" data-city-id="to-be-filled">
-        <li><span class="title"></span></li>
-        <li><em class="num-transfers hidden"></em></li>
-        <li>
-            <button class="hidden" value="showRoutes">
-                <img src="images/icons/eye.svg" alt="icon of eye"/>
-                Reiserouten anzeigen
-            </button>
-        </li>
-        <li>
-            <button class="hidden" value="makeCut">
-                <img src="images/icons/scissors.svg" alt="icon of a pair of scissors"/>
-                Aufenthalt einfügen
-            </button>
-        </li>
-    </menu>
+    <div class="card city-menu" data-city-id="to-be-filled">
+        <h3></h3> <!-- title -->
+        <menu>
+            <li class="hidden"><em class="num-transfers"></em></li>
+            <li class="hidden">
+                <button value="showRoutes">
+                    <img src="images/icons/eye.svg" alt="icon of eye"/>
+                    Reiserouten anzeigen
+                </button>
+            </li>
+            <li class="hidden">
+                <button value="makeCut">
+                    <img src="images/icons/scissors.svg" alt="icon of a pair of scissors"/>
+                    Aufenthalt einfügen
+                </button>
+            </li>
+        </menu>
+    </div>
 </template>
 
-<template id="template-edge-menu">
-    <menu class="edge-menu" data-journey-id="to-be-filled">
-        <li>
-            <div class="title"><span class="from"></span> &nbsp;⮕&nbsp;<span class="to"></span></div>
-        </li>
-        <li><span>Reisezeit: &nbsp;<strong class="travel-time"></strong></span></li>
-        <!--li>
-            <button value="showCalendar">
-                <img src="images/icons/calendar.svg" alt="icon of a calendar"/>
-                Reisekalender anzeigen
-            </button>
-        </li-->
-    </menu>
-</template>
+<!--template id="template-edge-menu">
+    <div class="card edge-menu" data-journey-id="to-be-filled">
+        <h3><span class="from"></span> &nbsp;⮕&nbsp;<span class="to"></span></h3>
+        <menu class="edge-menu" data-journey-id="to-be-filled">
+            <li><span>Reisezeit: &nbsp;<strong class="travel-time"></strong></span></li>
+            <li>
+                <button value="showCalendar">
+                    <img src="images/icons/calendar.svg" alt="icon of a calendar"/>
+                    Reisekalender anzeigen
+                </button>
+            </li>
+        </menu>
+    </div>
+</template-->
 
 
 <div id="modal" class="hidden">
@@ -179,14 +217,14 @@
     </div>
 </div>
 
-<div id="journey-details" class="hidden">
+<div id="journey-details">
     <input type="radio" name="tab" id="tab1" checked>
     <label for="tab1">🛈 &nbsp;Reiseübersicht</label>
     <div id="tab1-content">
-        <div id="journey-overview">
-            <h2><span class="from">Berlin</span> &nbsp;⮕&nbsp;<span class="to">Antanarivo</span></h2>
+        <div id="perlschnur">
+            <!--h2><span class="from">Berlin</span> &nbsp;⮕&nbsp;<span class="to">Antanarivo</span></h2>
             <div class="via">via Paris, London</div>
-            <div class="travel-time">Reisezeit 10 Stunden und 20 Minuten</div>
+            <div class="travel-time">Reisezeit 10 Stunden und 20 Minuten</div-->
         </div>
     </div>
 
@@ -227,7 +265,8 @@
         const views = {
             map: new MapWrapper('map', [10.0821932, 49.786322], 4.3), // starts async loading map
             calendar: document.getElementById("calendar"),
-            datePicker: new Datepicker(document.getElementById("date-picker")),
+            perlschnur: new Perlschnur(document.getElementById("perlschnur")),
+            datepicker: new Datepicker(document.getElementById("date-picker")),
             layout: new Layout(document.body)
         }
 

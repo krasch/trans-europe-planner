@@ -128,7 +128,7 @@ a#hide-sidebar {
 }
 
 /***********************************************
- Layout for journey details
+ Layout for journey details tabbing setup
 ************************************************/
 
 #journey-details {
@@ -174,13 +174,70 @@ a#hide-sidebar {
     justify-content: center;
 }
 
-#journey-overview {
+/***********************************************
+ Layout for perlschnur
+************************************************/
+
+#perlschnur {
     height: 100%;
     width: 100%;
 
-    color: var(--color-dark);
-    background-color: var(--color-light);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
+
+.perlschnur-connection h3 {
+    height: 2rem;
+    font-size: 1rem;
+    justify-content: flex-start;
+}
+
+.perlschnur-connection h3 .connection-number {
+    flex-grow: 1;
+}
+
+.perlschnur-connection h3 .connection-plus,
+.perlschnur-connection h3 .connection-minus {
+    padding-right: 1.5rem;
+    font-size: 1.5rem;
+    transform: rotate(90deg) translate(0.75rem, 0);
+}
+
+.perlschnur-connection h3 .connection-minus.hidden,
+.perlschnur-connection h3 .connection-minus.hidden {
+    display: none;
+}
+
+.perlschnur-connection li {
+    height: 1.5rem;
+}
+
+.perlschnur-connection li:first-child {
+    padding-top: 0.5rem;
+}
+
+.perlschnur-connection li:last-child {
+    padding-bottom: 0.5rem;
+}
+
+.perlschnur-connection li.perlschnur-collapse {
+    padding-left: 2rem;
+}
+
+.perlschnur-connection .circle {
+    height: 8px;
+    width: 8px;
+    display: inline-block;
+
+    border-radius: 50%;
+    border: 1px solid black;
+}
+
+.perlschnur-transfer {
+    padding-left: 2rem;
+}
+
 
 /***********************************************
  Layout for footer
@@ -197,59 +254,67 @@ a#hide-sidebar {
     padding-right: 2rem;
 }
 
-
 /*******************************************************
- the card/menu with title, used in map, calendar
+ the card/menu with title, used in map, calendar, perlschnur
 *******************************************************/
 
-menu {
+.card {
     --padding: 5px;
 
     margin: 0;
     padding: 0;
     list-style-type: none;
 
-    display: flex;
-    flex-direction: column;
-
     border-radius: var(--padding);
     overflow: hidden; /* this is necessary to really get the round corners */
 }
 
-menu > li {
+.card h3,
+.card li {
+    width: 100%;
+
     display: flex;
     flex-direction: row;
-    align-items: start;
+    align-items: center;
+    gap: 0.5rem;
+}
 
-    margin: 0;
+.card menu,
+.card ul {
     padding: 0;
-}
-
-menu > li > *:only-child {
-    width: 100%;
-    /*
-    want the padding on child element because it is the child element
-    that is being styled with background colour, because then it is easier
-    to apply hover effects etc
-    */
-    padding: var(--padding);
     margin: 0;
+    list-style-type: none;
 }
 
-menu > li > *:only-child.hidden {
+.card h3,
+.card li > *:first-child {
+    padding-left: var(--padding);
+}
+
+.card li.hidden {
     display: none;
 }
 
-menu button {
+.card button {
+    height: 100%;
+    width: 100%;
+
     display: flex;
     flex-direction: row;
-    align-items: center; /* center vertically */
+    align-items: center;
+
+    gap: 0.5rem;
 
     text-align: left;
     cursor: pointer;
+
+    border: 0;
 }
 
-menu img {
+.card img {
     height: 1rem;
-    padding-right: 0.3rem;
+    padding: 0;
+    margin: 0;
 }
+
+

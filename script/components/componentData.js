@@ -52,6 +52,26 @@ function toEdgeString(startCityName, endCityName) {
   return `${startCityName}->${endCityName}`;
 }
 
+function humanReadableTimeDelta(minutes) {
+  const days = Math.floor(minutes / (60 * 24));
+  minutes = minutes - days * (60 * 24);
+
+  const hours = Math.floor(minutes / 60);
+  minutes = minutes - hours * 60;
+
+  let daysString = "";
+  if (days > 0) daysString = `${days}d`;
+
+  let hoursString = "";
+  if (hours > 0) hoursString = `${hours}h`;
+
+  let minutesString = "";
+  if (minutes > 0) minutesString = `${minutes}min`;
+
+  const result = [daysString, hoursString, minutesString];
+  return result.filter((e) => e.length > 0).join(" ");
+}
+
 function prepareDataForCalendar(calendarStartDate, journeys, database) {
   const data = [];
 
@@ -94,6 +114,122 @@ function prepareDataForCalendar(calendarStartDate, journeys, database) {
     }
   }
   return data;
+}
+
+function prepareDataForPerlschnur(journeys, database) {
+  /*const data = [];
+
+  if (!journeys.hasActiveJourney) return data;
+
+  const connectionsActiveJourney = journeys.activeJourney.connections(database);
+
+  for (let i in connectionsActiveJourney) {
+    const connection = connectionsActiveJourney[i];
+    const stops = [];
+
+    for (let stop of connection.stops) {
+      stops.push({
+        time: stop.departure.toString(), // todo
+        station: stop.stationName,
+      });
+    }
+
+    data.push({
+      color: getColor(i),
+      stops: stops,
+    });
+  }
+
+  return data;*/
+  return {
+    transfers: [
+      { time: humanReadableTimeDelta(200) },
+      { time: humanReadableTimeDelta(10) },
+    ],
+    connections: [
+      {
+        color: "27, 158, 119",
+        type: "train",
+        name: "ICE405",
+        stops: [
+          {
+            time: "09:08",
+            station: "Berlin Hbf",
+          },
+          {
+            time: "09:27",
+            station: "Berlin-Spandau",
+          },
+          {
+            time: "10:56",
+            station: "Hannover Hbf",
+          },
+          {
+            time: "12:06",
+            station: "Osnabrück Hbf",
+          },
+          {
+            time: "12:32",
+            station: "Münster (Westf) Hbf",
+          },
+          {
+            time: "13:05",
+            station: "Recklinghausen Hbf",
+          },
+          {
+            time: "13:25",
+            station: "Essen Hbf",
+          },
+          {
+            time: "13:38",
+            station: "Duisburg Hbf",
+          },
+          {
+            time: "13:52",
+            station: "Düsseldorf Hbf",
+          },
+          {
+            time: "14:21",
+            station: "Köln Hbf",
+          },
+        ],
+      },
+      {
+        color: "217, 95, 2",
+        type: "train",
+        name: "IR24",
+        stops: [
+          {
+            time: "15:47",
+            station: "Köln-Ehrenfeld",
+          },
+          {
+            time: "17:28",
+            station: "Bruxelles-Nord",
+          },
+        ],
+      },
+      {
+        color: "117, 112, 179",
+        type: "train",
+        name: "TGV1",
+        stops: [
+          {
+            time: "18:51",
+            station: "Bruxelles-Midi Eurostar",
+          },
+          {
+            time: "19:31",
+            station: "Lille Europe Eurostar",
+          },
+          {
+            time: "19:59",
+            station: "London St-Pancras",
+          },
+        ],
+      },
+    ],
+  };
 }
 
 function prepareInitialDataForMap(home, cityInfo, connections, routeDatabase) {
