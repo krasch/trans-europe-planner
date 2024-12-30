@@ -1,17 +1,19 @@
 calendar-grid {
+    width: 100%;
     display: grid;
     font-size: 0.8rem;
 
-    --resolution: 4; /* must also change n-th child below */
+    --resolution: 4;
     --num-days: 3;
     --num-rows: calc(24*var(--resolution) + 8);
 
     grid-auto-flow: column;
-    grid-template-rows: repeat(var(--num-rows), 0.4rem); /* todo instead set total height?*/
+    grid-template-rows: repeat(var(--num-rows), 0.4rem);
     grid-template-columns: 3rem repeat(var(--num-days), 1fr);
 
-    border: 1px solid var(--color-background);
-    border-radius: 5px;
+    border: 1px solid darkgray;
+
+    border-radius: 5px 5px 5px 5px;
     background-color: white;
     color: #2e210d;
 }
@@ -19,8 +21,7 @@ calendar-grid {
 
 
 /* line to the left of each day */
-calendar-grid > .calendar-grid-cell
-{
+calendar-grid > .calendar-grid-cell {
     border-left: 1px dashed lightgrey;
 }
 

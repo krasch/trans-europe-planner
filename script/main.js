@@ -18,9 +18,12 @@ function initUpdateViews(views, database) {
     views.calendar.updateView(
       prepareDataForCalendar(state.date, state.journeys, database),
     );
+    views.perlschnur.updateView(
+      prepareDataForPerlschnur(state.journeys, database),
+    );
 
-    views.sidebar.updateView(
-      views.datePicker.currentDate !== null,
+    views.layout.updateView(
+      views.datepicker.currentDate !== null,
       state.journeys.hasActiveJourney,
     );
   }
@@ -30,7 +33,7 @@ function initUpdateViews(views, database) {
 async function main(home, views) {
   // init state
   const state = {
-    date: views.datePicker.currentDate || TODAY,
+    date: views.datepicker.currentDate || TODAY,
     journeys: new JourneyCollection(),
   };
 
@@ -99,7 +102,7 @@ async function main(home, views) {
     views.map.setLegHoverState(leg, false),
   );
 
-  views.datePicker.on("dateChanged", (date) => {
+  views.datepicker.on("dateChanged", (date) => {
     if (date === null) date = TODAY;
 
     const diff = diffDays(state.date, date);

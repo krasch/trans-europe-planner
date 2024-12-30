@@ -1,63 +1,76 @@
-body {
+h1, h2, h3 {
     margin: 0;
-    padding: 0;
-    font-family: helvetica, arial, sans-serif;
-
-    --footer-height: 2rem;
+    font-weight: normal;
 }
 
-html,
+.hidden {
+    visibility: hidden;
+}
+
+/***********************************************
+ Placing things in main page layout
+************************************************/
+
+html {
+    height: 100%;
+}
+
 body {
     height: 100%;
+    width: 100%;
+
+    margin: 0;
+    padding: 0;
+
+    --logo-size: 6rem;
+    --logo-padding: 1.5rem;
+    --logo-size-with-padding: calc(var(--logo-size) + 2 * var(--logo-padding));
+    --sidebar-width: 20rem; /* excluding logo */
+    --footer-height: 2rem;
+
+    display: grid;
+    grid-template-columns: var(--logo-size-with-padding) var(--sidebar-width) 1fr;
+    grid-template-rows: var(--logo-size-with-padding) 1fr var(--footer-height);
+
+    grid-template-areas:
+      "logo             date-picker      map"
+      "journey-details  journey-details  map"
+      "footer           footer           footer";
 }
 
 #map {
-    z-index: 1;
-
-    position: absolute;
-    left: 0;
-    top: 0;
-
-    height: calc(100% - var(--footer-height));
-    width: 100%;
+    grid-row: 1/3;
+    grid-column: 1/4;
 }
 
-#sidebar {
+#logo {
     z-index: 2;
+    grid-area: logo;
+}
 
-    position: absolute;
-    left: 0;
-    top: 0;
+#date-picker {
+    z-index: 2;
+    grid-area: date-picker;
+}
 
-    width: 35rem;
-    height: 100%;
+#journey-details {
+    z-index: 2;
+    grid-area: journey-details;
+    overflow-y: auto;
 }
 
 #footer {
-    z-index: 2;
-
-    position: absolute;
-    left: 0;
-    bottom: 0;
-
-    width: calc(100% - 2 * 2rem);
-    height: var(--footer-height);
-
-    padding-left: 2rem;
-    padding-right: 2rem;
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 2rem;
-    justify-content: flex-end;
-
-    background-color: var(--color-dark);
-    color: var(--color-light);
+    grid-area: footer;
 }
 
-#footer a {
-    color: var(--color-light);
+a#show-sidebar {
+    z-index: 3;
+    grid-area: logo;
+}
+
+a#hide-sidebar {
+    z-index: 3;
+    grid-area: date-picker;
 }
 
 #modal {
@@ -73,67 +86,253 @@ body {
     min-width: 50%;
 }
 
-h1, h2, h3 {
-    margin: 0;
-    font-weight: normal;
+/***********************************************
+ Layout for logo and date picker
+************************************************/
+
+#logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-.hidden {
-    visibility: hidden;
+#logo img {
+    height: var(--logo-size);
 }
 
-/*******************************************************
- the card/menu with title, used in map, calendar
-*******************************************************/
+#date-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 
-menu {
-    --padding: 5px;
+    align-items: center;
+    justify-content: center;
+}
 
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
+#date-picker input {
+    width: 9rem;
+    padding: 0.5rem;
+
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+a#show-sidebar,
+a#hide-sidebar {
+    height: 2rem;
+
+    justify-self: end;
+    margin-top: 0.3rem;
+    margin-right: 0.5rem;
+}
+
+/***********************************************
+ Layout for journey details tabbing setup
+************************************************/
+
+#journey-details {
+    padding: 1.5rem;
+
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 2.5rem 1fr;
+    grid-template-areas:
+       "tab1 tab2"
+       "content content";
+}
+
+#tab1 {
+    grid-area: tab1;
+}
+
+#tab2 {
+    grid-area: tab2;
+}
+
+#tab1-content,
+#tab2-content {
+    grid-area: content;
+    display: none;
+
+    flex-direction: column;
+    align-items: center;
+
+    padding: 0.5rem;
+}
+
+#tab1:checked + label + #tab1-content,
+#tab2:checked + label + #tab2-content {
+    display: flex;
+}
+
+#tab1 + label,
+#tab2 + label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+/***********************************************
+ Layout for perlschnur
+************************************************/
+
+#perlschnur {
+    height: 100%;
+    width: 100%;
 
     display: flex;
     flex-direction: column;
+    gap: 0.5rem;
+}
+
+.perlschnur-summary {
+    padding-top: 2rem;
+}
+
+.perlschnur-summary > *:last-child {
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+}
+
+.perlschnur-connection {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.perlschnur-connection h3 {
+    height: 2rem;
+    font-size: 1rem;
+    justify-content: flex-start;
+}
+
+.perlschnur-connection h3 .connection-travel-time {
+    padding-left: 1rem;
+    flex-grow: 1;
+    font-size: 0.8rem;
+}
+
+.perlschnur-connection h3 .connection-plus,
+.perlschnur-connection h3 .connection-minus {
+    padding-right: 1.5rem;
+    font-size: 1.5rem;
+    transform: rotate(90deg) translate(0.75rem, 0);
+}
+
+.perlschnur-connection h3 .connection-minus.hidden,
+.perlschnur-connection h3 .connection-minus.hidden {
+    display: none;
+}
+
+.perlschnur-connection li {
+    height: 1.5rem;
+}
+
+.perlschnur-connection li:first-child {
+    padding-top: 0.5rem;
+}
+
+.perlschnur-connection li:last-child {
+    padding-bottom: 0.5rem;
+}
+
+.perlschnur-connection li.perlschnur-collapse {
+    padding-left: 2rem;
+}
+
+.perlschnur-connection .circle {
+    height: 8px;
+    width: 8px;
+    display: inline-block;
+
+    border-radius: 50%;
+    border: 1px solid black;
+}
+
+.perlschnur-stop .date:empty {
+    display: none;
+}
+
+.perlschnur-transfer {
+    padding-left: 2rem;
+}
+
+
+/***********************************************
+ Layout for footer
+************************************************/
+
+#footer {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2rem;
+
+    padding-right: 2rem;
+}
+
+/*******************************************************
+ the card/menu with title, used in map, calendar, perlschnur
+*******************************************************/
+
+.card {
+    --padding: 5px;
+
+    list-style-type: none;
 
     border-radius: var(--padding);
     overflow: hidden; /* this is necessary to really get the round corners */
 }
 
-menu > li {
+.card h3,
+.card li {
+    width: 100%;
+
     display: flex;
     flex-direction: row;
-    align-items: start;
+    align-items: center;
+    gap: 0.5rem;
+}
 
-    margin: 0;
+.card menu,
+.card ul {
     padding: 0;
-}
-
-menu > li > *:only-child {
-    width: 100%;
-    /*
-    want the padding on child element because it is the child element
-    that is being styled with background colour, because then it is easier
-    to apply hover effects etc
-    */
-    padding: var(--padding);
     margin: 0;
+    list-style-type: none;
 }
 
-menu > li > *:only-child.hidden {
+.card h3,
+.card li > *:first-child {
+    padding-left: var(--padding);
+}
+
+.card li.hidden {
     display: none;
 }
 
-menu button {
+.card button {
+    height: 100%;
+    width: 100%;
+
     display: flex;
     flex-direction: row;
-    align-items: center; /* center vertically */
+    align-items: center;
+
+    gap: 0.5rem;
 
     text-align: left;
     cursor: pointer;
+
+    border: 0;
 }
 
-menu img {
+.card img {
     height: 1rem;
-    padding-right: 0.3rem;
+    padding: 0;
+    margin: 0;
 }
+
+

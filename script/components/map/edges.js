@@ -71,11 +71,11 @@ class Edges {
     this.#map._container.addEventListener("click", (e) => {
       if (e.target.tagName !== "BUTTON") return;
 
-      const menu = e.target.parentElement.parentElement;
-      if (!menu.classList.contains("edge-menu")) return;
+      const container = e.target.parentElement.parentElement.parentElement;
+      if (!container.classList.contains("edge-menu")) return;
 
       this.#hideJourneyMenu();
-      this.#callbacks["menuClick"](menu.dataset.journeyId, e.target.value);
+      this.#callbacks["menuClick"](container.dataset.journeyId, e.target.value);
     });
 
     // initial drawing

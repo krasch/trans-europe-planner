@@ -1,4 +1,4 @@
-class Sidebar {
+class Layout {
   #initialUpdate = true;
 
   #borderRadius;
@@ -6,25 +6,29 @@ class Sidebar {
   // relevant HTML elements
   #logo;
   #datePicker;
-  #calendar;
+  #journeyDetails;
   #showSidebarButton;
   #hideSidebarButton;
+  #map;
+  #modal;
 
   // state
   #datePickerShouldBeVisible = false;
-  #calendarShouldBeVisible = false;
+  #journeyDetailsShouldBeVisible = false;
   #collapsed = false;
 
   constructor(container) {
-    this.#borderRadius = window
-      .getComputedStyle(container)
-      .getPropertyValue("--border-radius");
-
-    this.#logo = container.querySelector(".logo");
-    this.#datePicker = container.querySelector(".header");
-    this.#calendar = container.querySelector(".content");
+    this.#logo = container.querySelector("#logo");
+    this.#datePicker = container.querySelector("#date-picker");
+    this.#journeyDetails = container.querySelector("#journey-details");
     this.#showSidebarButton = container.querySelector("#show-sidebar");
     this.#hideSidebarButton = container.querySelector("#hide-sidebar");
+    this.#map = container.querySelector("#map");
+    this.#modal = container.querySelector("#modal");
+
+    this.#borderRadius = window
+      .getComputedStyle(this.#logo)
+      .getPropertyValue("--border-radius");
 
     container.addEventListener("click", (e) => {
       if (e.target.id === this.#hideSidebarButton.id) {
@@ -46,22 +50,28 @@ class Sidebar {
     }
 
     this.#datePickerShouldBeVisible = hasActiveJourney;
-    this.#calendarShouldBeVisible = hasActiveJourney && hasDate;
+    this.#journeyDetailsShouldBeVisible = hasActiveJourney && hasDate;
     this.#updateView();
+  }
+
+  showModal() {
+    this.#map.style.opacity = "30%";
+    this.#setInvisible(this.#logo);
+    this.#setVisible(this.#modal);
   }
 
   #updateView() {
     if (this.#collapsed) {
       this.#hideDatePicker();
-      this.#hideCalendar();
+      this.#hideJourneyDetails();
       return;
     }
 
     if (this.#datePickerShouldBeVisible) this.#showDatePicker();
     else this.#hideDatePicker();
 
-    if (this.#calendarShouldBeVisible) this.#showCalendar();
-    else this.#hideCalendar();
+    if (this.#journeyDetailsShouldBeVisible) this.#showJourneyDetails();
+    else this.#hideJourneyDetails();
   }
 
   #showDatePicker() {
@@ -88,20 +98,20 @@ class Sidebar {
     });
   }
 
-  #showCalendar() {
-    if (this.#isVisible(this.#calendar)) return; // nothing to do
+  #showJourneyDetails() {
+    if (this.#isVisible(this.#journeyDetails)) return; // nothing to do
 
     this.#removeBorderRadius(this.#datePicker);
-    this.#slideIn(this.#calendar);
-    this.#setVisible(this.#calendar);
+    this.#slideIn(this.#journeyDetails);
+    this.#setVisible(this.#journeyDetails);
   }
 
-  #hideCalendar() {
-    if (!this.#isVisible(this.#calendar)) return; // nothing to do
+  #hideJourneyDetails() {
+    if (!this.#isVisible(this.#journeyDetails)) return; // nothing to do
 
-    this.#slideOut(this.#calendar, () => {
+    this.#slideOut(this.#journeyDetails, () => {
       this.#addBorderRadius(this.#datePicker);
-      this.#setInvisible(this.#calendar);
+      this.#setInvisible(this.#journeyDetails);
     });
   }
 
@@ -120,21 +130,31 @@ class Sidebar {
   #slideIn(element, onFinish = () => {}) {
     const width = window.getComputedStyle(element).getPropertyValue("width");
 
+    for (let e of element.children) this.#setInvisible(e);
+
     const animation = element.animate([{ width: "0" }, { width: width }], {
-      duration: 200,
+      duration: 300,
       iterations: 1,
     });
-    animation.onfinish = onFinish;
+    animation.onfinish = () => {
+      for (let e of element.children) this.#setVisible(e);
+      onFinish();
+    };
   }
 
   #slideOut(element, onFinish = () => {}) {
     const width = window.getComputedStyle(element).getPropertyValue("width");
 
+    for (let e of element.children) this.#setInvisible(e);
+
     const animation = element.animate([{ width: width }, { width: 0 }], {
-      duration: 200,
+      duration: 300,
       iterations: 1,
     });
-    animation.onfinish = onFinish;
+    animation.onfinish = () => {
+      for (let e of element.children) this.#setVisible(e);
+      onFinish();
+    };
   }
 
   #removeBorderRadius(element) {

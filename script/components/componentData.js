@@ -52,6 +52,43 @@ function toEdgeString(startCityName, endCityName) {
   return `${startCityName}->${endCityName}`;
 }
 
+function diffMinutes(datetime, laterDatetime) {
+  const diffMillis = laterDatetime - datetime;
+  return Math.ceil(diffMillis / (1000 * 60));
+}
+
+function humanReadableTimedelta(minutes) {
+  const days = Math.floor(minutes / (60 * 24));
+  minutes = minutes - days * (60 * 24);
+
+  const hours = Math.floor(minutes / 60);
+  minutes = minutes - hours * 60;
+
+  let daysString = "";
+  if (days > 0) daysString = `${days}d`;
+
+  let hoursString = "";
+  if (hours > 0) hoursString = `${hours}h`;
+
+  let minutesString = "";
+  if (minutes > 0) minutesString = `${minutes}min`;
+
+  const result = [daysString, hoursString, minutesString];
+  return result.filter((e) => e.length > 0).join(" ");
+}
+
+function timeString(timedelta) {
+  return timedelta.toTimeString().slice(0, 5); // todo timezones
+}
+
+function dateString(timedelta) {
+  const formatted = timedelta.toLocaleDateString("default", {
+    month: "short",
+    day: "numeric",
+  });
+  return `(${formatted})`;
+}
+
 function prepareDataForCalendar(calendarStartDate, journeys, database) {
   const data = [];
 
@@ -93,6 +130,79 @@ function prepareDataForCalendar(calendarStartDate, journeys, database) {
       });
     }
   }
+  return data;
+}
+
+function prepareDataForPerlschnur(journeys, database) {
+  const data = {
+    summary: {},
+    transfers: [],
+    connections: [],
+  };
+
+  if (!journeys.hasActiveJourney) return data;
+
+  const summary = journeys.activeJourney.summary(database);
+  data.summary.from = summary.from;
+  data.summary.to = summary.to;
+  data.summary.totalTime = humanReadableTimedelta(summary.travelTime);
+  if (summary.via.length > 0)
+    data.summary.via = "via " + summary.via.join(", ");
+  else data.summary.via = "";
+
+  const connectionsActiveJourney = journeys.activeJourney.connections(database);
+  for (let i = 0; i < connectionsActiveJourney.length; i++) {
+    const connection = connectionsActiveJourney[i];
+    data.connections.push({
+      color: getColor(i),
+      name: connection.name,
+      type: connection.type,
+      travelTime: humanReadableTimedelta(
+        diffMinutes(
+          connection.stops[0].departure,
+          connection.stops.at(-1).arrival,
+        ),
+      ),
+      stops: connection.stops.map((s, idx) => ({
+        station: s.stationName,
+        time: idx === 0 ? timeString(s.departure) : timeString(s.arrival),
+        date: idx === 0 ? dateString(s.departure) : dateString(s.arrival),
+      })),
+    });
+
+    if (i >= connectionsActiveJourney.length - 1) continue;
+
+    const nextConnection = connectionsActiveJourney[i + 1];
+    data.transfers.push({
+      time: humanReadableTimedelta(
+        diffMinutes(
+          connection.stops.at(-1).arrival,
+          nextConnection.stops[0].departure,
+        ),
+      ),
+    });
+  }
+
+  // todo insanity
+  const toRemove = [[0, 0]];
+  for (let i = 0; i < data.connections.length; i++) {
+    for (let j = 0; j < data.connections[i].stops.length - 1; j++) {
+      if (
+        data.connections[i].stops[j].date ===
+        data.connections[i].stops[j + 1].date
+      )
+        toRemove.push([i, j + 1]);
+    }
+    if (i < data.connections.length - 1)
+      if (
+        data.connections[i].stops.at(-1).date ===
+        data.connections[i + 1].stops[0].date
+      )
+        toRemove.push([i + 1, 0]);
+  }
+
+  for (let [i, j] of toRemove) delete data.connections[i].stops[j].date;
+
   return data;
 }
 
@@ -212,7 +322,10 @@ if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.getColor = getColor;
   module.exports.initCityNameToId = initCityNameToId;
   module.exports.sortByDepartureTime = sortByDepartureTime;
+  module.exports.humanReadableTimedelta = humanReadableTimedelta;
+  module.exports.dateString = dateString;
   module.exports.prepareDataForCalendar = prepareDataForCalendar;
+  module.exports.prepareDataForPerlschnur = prepareDataForPerlschnur;
   module.exports.prepareDataForMap = prepareDataForMap;
   module.exports.prepareInitialDataForMap = prepareInitialDataForMap;
 }

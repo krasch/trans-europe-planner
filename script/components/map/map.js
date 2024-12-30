@@ -75,6 +75,14 @@ class MapWrapper {
 
   init(data) {
     this.map.getCanvas().style.cursor = "default";
+    this.map.addControl(
+      new maplibregl.NavigationControl({ showCompass: false, showZoom: true }),
+    );
+
+    // disable map rotation
+    this.map.dragRotate.disable();
+    this.map.touchZoomRotate.disableRotation();
+    this.map.keyboard.disableRotation();
 
     const [cities, edges] = data;
 
@@ -129,7 +137,7 @@ class MapWrapper {
       }
 
       // second click = show menu
-      this.edges.showJourneyMenu(journeyId, this.#journeys[journeyId], lngLat);
+      //this.edges.showJourneyMenu(journeyId, this.#journeys[journeyId], lngLat);
     });
 
     this.edges.on("menuClick", (journeyId, entry) => {
