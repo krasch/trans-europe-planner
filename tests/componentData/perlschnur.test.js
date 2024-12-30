@@ -2,6 +2,7 @@ const {
   prepareDataForPerlschnur,
   getColor,
   humanReadableTimedelta,
+  dateString,
 } = require("../../script/components/componentData.js");
 const { Journey, JourneyCollection } = require("../../script/types/journey.js");
 const { Database } = require("../../script/database.js");
@@ -221,7 +222,7 @@ test("prepareDataForPerlschnurMultipleConnectionsMultipleDays", function () {
             station: "City 2 Main Station",
           },
           {
-            date: "(16 Oct)",
+            date: dateString(new Date("2024-10-16")),
             time: "09:00",
             station: "City 3 Main Station",
           },
@@ -234,7 +235,7 @@ test("prepareDataForPerlschnurMultipleConnectionsMultipleDays", function () {
         travelTime: humanReadableTimedelta(60),
         stops: [
           {
-            date: "(17 Oct)",
+            date: dateString(new Date("2024-10-17")),
             time: "10:00",
             station: "City 3 Main Station",
           },

@@ -323,6 +323,7 @@ if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.initCityNameToId = initCityNameToId;
   module.exports.sortByDepartureTime = sortByDepartureTime;
   module.exports.humanReadableTimedelta = humanReadableTimedelta;
+  module.exports.dateString = dateString;
   module.exports.prepareDataForCalendar = prepareDataForCalendar;
   module.exports.prepareDataForPerlschnur = prepareDataForPerlschnur;
   module.exports.prepareDataForMap = prepareDataForMap;
