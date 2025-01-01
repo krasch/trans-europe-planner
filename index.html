@@ -96,19 +96,6 @@
     </div>
 </template>
 
-
-<template id="template-perlschnur-summary">
-    <div class="perlschnur-summary">
-        <h3>
-            Von <span class="from">London</span>
-            nach <span class="to">Berlin</span>
-            <span class="via">via x, y</span>
-        </h3>
-        <div>Gesamte Reisezeit: <span class="total-time"></span></div>
-        <h3>Reiseverlauf:</h3>
-    </div>
-</template>
-
 <template id="template-perlschnur-connection">
     <div class="card perlschnur-connection">
         <h3>
@@ -235,12 +222,22 @@
     <input type="radio" name="tab" id="tab1" checked>
     <label for="tab1">🛈 &nbsp;Reiseübersicht</label>
     <div id="tab1-content">
+        <div>
+            <h3>Von <span class="from"></span> nach <span class="to"></span></h3> <span class="via"></span>
+            <div>Gesamte Reisezeit: <span class="total-time"></span></div>
+        </div>
+        <h3>Reiseverlauf:</h3>
         <div id="perlschnur"></div>
+        <div id="bottom-buttons">
+            <button onclick="alert('coming soon');">🔗 Teilen</button>
+            <button onclick="alert('coming soon');">🎫 Buchen</button>
+        </div>
     </div>
 
     <input type="radio" name="tab" id="tab2">
     <label for="tab2">🖉 &nbsp;Reise anpassen</label>
     <div id="tab2-content">
+        <button id="help-calendar" onclick="alert('coming soon');">❓ Was kann ich hier machen?</button>
         <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
     </div>
 </div>
@@ -275,7 +272,7 @@
         const views = {
             map: new MapWrapper('map', [10.0821932, 49.786322], 4.3), // starts async loading map
             calendar: document.getElementById("calendar"),
-            perlschnur: new Perlschnur(document.getElementById("perlschnur")),
+            perlschnur: new Perlschnur(document.getElementById("tab1-content")),
             datepicker: new Datepicker(document.getElementById("date-picker")),
             layout: new Layout(document.body)
         }
