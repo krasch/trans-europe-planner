@@ -178,27 +178,22 @@ a#hide-sidebar {
  Layout for perlschnur
 ************************************************/
 
+#tab1-content {
+    align-items: start;
+    padding: 1rem;
+    gap: 1rem;
+}
+
 #perlschnur {
+    padding: 0.5rem;
+    align-self: center;
+
     height: 100%;
     width: 100%;
 
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-}
-
-.perlschnur-summary {
-    padding-top: 2rem;
-}
-
-.perlschnur-summary > *:last-child {
-    padding-top: 2rem;
-    padding-bottom: 1rem;
-}
-
-.perlschnur-connection {
-    margin-left: 1rem;
-    margin-right: 1rem;
 }
 
 .perlschnur-connection h3 {

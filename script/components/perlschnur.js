@@ -15,27 +15,21 @@ class Perlschnur {
   }
 
   updateView(data) {
+    updateElement(this.#container, {
+      ".total-time": { innerText: data.summary.totalTime },
+      ".from": { innerText: data.summary.from },
+      ".to": { innerText: data.summary.to },
+      ".via": { innerText: data.summary.via },
+    });
+
     const elements = [];
-
-    elements.push(this.#createSummary(data.summary));
-
     for (let i in data.connections) {
       elements.push(this.#createConnection(data.connections[i]));
       if (Number(i) < data.connections.length - 1)
         elements.push(this.#createTransfer(data.transfers[i]));
     }
 
-    this.#container.replaceChildren(...elements);
-  }
-
-  #createSummary(summary) {
-    const element = createElementFromTemplate("template-perlschnur-summary", {
-      ".total-time": { innerText: summary.totalTime },
-      ".from": { innerText: summary.from },
-      ".to": { innerText: summary.to },
-      ".via": { innerText: summary.via },
-    });
-    return element;
+    this.#container.querySelector("#perlschnur").replaceChildren(...elements);
   }
 
   #createConnection(connection) {

@@ -119,8 +119,13 @@ a#show-sidebar:hover {
  Perlschnur
 ************************************************/
 
-#perlschnur {
+#tab1-content {
     background-color: var(--color-light);
+}
+
+#perlschnur {
+    border: 1px solid lightgrey;
+    border-radius: 5px;
 }
 
 .perlschnur-connection {
