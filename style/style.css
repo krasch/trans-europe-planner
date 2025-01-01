@@ -123,6 +123,18 @@ a#show-sidebar:hover {
     background-color: var(--color-light);
 }
 
+#tab1-content button {
+    color: var(--color-dark);
+    background-color: var(--color-light);
+    border: 1px solid var(--color-dark);
+    border-radius: 5px;
+    padding: 0.2rem;
+}
+
+#tab1-content button:hover {
+    cursor: pointer;
+}
+
 #perlschnur {
     border: 1px solid lightgrey;
     border-radius: 5px;

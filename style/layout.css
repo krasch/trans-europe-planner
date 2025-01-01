@@ -253,6 +253,13 @@ a#hide-sidebar {
     padding-left: 2rem;
 }
 
+#bottom-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 2rem;
+}
+
 
 /***********************************************
  Layout for footer
