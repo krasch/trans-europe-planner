@@ -5,6 +5,7 @@ const {
   JourneyCollection,
 } = require("../../script/types/journey.js");
 const { Database } = require("../../script/database.js");
+const { DateTime } = require("luxon");
 
 test("testDerivedAttributes", function () {
   const c1 = createConnection([
@@ -90,13 +91,13 @@ test("shiftDateSameDay", function () {
       id: c1.id,
       startCityName: "City1",
       endCityName: "City2",
-      date: new Date("2024-10-15"),
+      date: DateTime.fromISO("2024-10-15"),
     },
     {
       id: c2.id,
       startCityName: "City2",
       endCityName: "City3",
-      date: new Date("2024-10-17"),
+      date: DateTime.fromISO("2024-10-17"),
     },
   ]);
 });
@@ -120,13 +121,13 @@ test("shiftDateForward", function () {
       id: c1.id,
       startCityName: "City1",
       endCityName: "City2",
-      date: new Date("2024-10-18"),
+      date: DateTime.fromISO("2024-10-18"),
     },
     {
       id: c2.id,
       startCityName: "City2",
       endCityName: "City3",
-      date: new Date("2024-10-20"),
+      date: DateTime.fromISO("2024-10-20"),
     },
   ]);
 });
@@ -150,13 +151,13 @@ test("shiftDateBackward", function () {
       id: c1.id,
       startCityName: "City1",
       endCityName: "City2",
-      date: new Date("2024-10-11"),
+      date: DateTime.fromISO("2024-10-11"),
     },
     {
       id: c2.id,
       startCityName: "City2",
       endCityName: "City3",
-      date: new Date("2024-10-13"),
+      date: DateTime.fromISO("2024-10-13"),
     },
   ]);
 });
@@ -190,13 +191,13 @@ test("splitLegSingleConnection", function () {
       id: c1.id,
       startCityName: "City1",
       endCityName: "City2",
-      date: new Date("2024-10-15"),
+      date: DateTime.fromISO("2024-10-15"),
     },
     {
       id: c1.id,
       startCityName: "City2",
       endCityName: "City3",
-      date: new Date("2024-10-16"),
+      date: DateTime.fromISO("2024-10-16"),
     },
   ]);
 });
@@ -242,25 +243,25 @@ test("splitLegMiddle", function () {
       id: c1.id,
       startCityName: "City1",
       endCityName: "City2",
-      date: new Date("2024-10-15"),
+      date: DateTime.fromISO("2024-10-15"),
     },
     {
       id: c2.id,
       startCityName: "City2",
       endCityName: "City3",
-      date: new Date("2024-10-17"),
+      date: DateTime.fromISO("2024-10-17"),
     },
     {
       id: c2.id,
       startCityName: "City3",
       endCityName: "City4",
-      date: new Date("2024-10-17"),
+      date: DateTime.fromISO("2024-10-17"),
     },
     {
       id: c3.id,
       startCityName: "City4",
       endCityName: "City5",
-      date: new Date("2024-10-19"),
+      date: DateTime.fromISO("2024-10-19"),
     },
   ]);
 });
@@ -354,6 +355,6 @@ test("journeyCollection", function () {
   expect(journeys.journeys).toStrictEqual([j1, j2]);
 
   journeys.shiftDate(1, database);
-  expect(j1.connectionIds[0].date.toLocaleDateString("sv")).toBe("2024-10-16");
-  expect(j2.connectionIds[0].date.toLocaleDateString("sv")).toBe("2024-10-18");
+  expect(j1.connectionIds[0].date.toISODate()).toBe("2024-10-16");
+  expect(j2.connectionIds[0].date.toISODate()).toBe("2024-10-18");
 });

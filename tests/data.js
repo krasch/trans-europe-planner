@@ -1,5 +1,6 @@
 const { initCityNameToId } = require("../script/components/componentData.js");
-const { Connection } = require("../script/types/connection.js");
+const { Stop, Connection } = require("../script/types/connection.js");
+const { DateTime } = require("luxon");
 
 const testCities = {
   cityId1: { name: "City1", latitude: 10, longitude: 10, rank: 1 },
@@ -66,20 +67,22 @@ function initIncrementalId() {
 
 const incrementalId = initIncrementalId();
 
-function createConnection(stops) {
-  const train = incrementalId();
+function createConnection(stops, id = null) {
+  const train = id ?? incrementalId();
 
   const stopsEnriched = [];
   for (let [date, time, stationId] of stops) {
-    stopsEnriched.push({
-      arrival: new Date(date + " " + time + ":00"),
-      departure: new Date(date + " " + time + ":00"),
-      stationId: stationId,
-      stationName: testStations[stationId].name,
-      stationIsPreferred: testStations[stationId].preferred,
-      cityId: testStations[stationId].city,
-      cityName: testCities[testStations[stationId].city].name,
-    });
+    stopsEnriched.push(
+      new Stop(
+        DateTime.fromISO(date + "T" + time),
+        DateTime.fromISO(date + "T" + time),
+        stationId,
+        testStations[stationId].name,
+        testStations[stationId].preferred,
+        testStations[stationId].city,
+        testCities[testStations[stationId].city].name,
+      ),
+    );
   }
 
   return new Connection(train, "test", "train", stopsEnriched);

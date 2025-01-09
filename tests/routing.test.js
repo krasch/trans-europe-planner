@@ -7,9 +7,9 @@ const {
   RoutingError,
   RouteDatabase,
 } = require("../script/routing.js");
-const { Leg } = require("../script/types/connection.js");
 const { Database } = require("../script/database.js");
 const { createConnection } = require("../tests/data.js");
+const { DateTime } = require("luxon");
 
 test("sortByDepartureTime", function () {
   const c1 = createConnection([
@@ -278,7 +278,7 @@ test("createStupidItinerary", function () {
       { startCityName: "City2", endCityName: "City3" },
       { startCityName: "City3", endCityName: "City4" },
     ],
-    new Date("2024-10-15"),
+    DateTime.fromISO("2024-10-15"),
     database,
   );
 
@@ -314,7 +314,7 @@ test("routeDatabase", function () {
   const got = routesDatabase.getItineraries(
     "City1",
     "City3",
-    new Date("2024-10-15"),
+    DateTime.fromISO("2024-10-15"),
     database,
   );
 

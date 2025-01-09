@@ -1,9 +1,3 @@
-function timeString(datetime) {
-  const hours = datetime.getHours().toString();
-  const minutes = datetime.getMinutes().toString();
-  return `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}`;
-}
-
 class CalendarEntry extends HTMLElement {
   #visibilityStates = ["hidden", "indicator", "preview", "full"];
 
@@ -44,10 +38,12 @@ function createCalendarEntry(connection) {
     ".connection-icon": { src: `images/icons/${connection.type}.svg` },
     ".connection-number": { innerText: connection.name },
     ".connection-start-time": {
-      innerText: timeString(connection.startDateTime),
+      innerText: connection.startDateTime.toFormat("HH:mm"),
     },
     ".connection-start-station": { innerText: connection.startStation },
-    ".connection-end-time": { innerText: timeString(connection.endDateTime) },
+    ".connection-end-time": {
+      innerText: connection.endDateTime.toFormat("HH:mm"),
+    },
     ".connection-end-station": { innerText: connection.endStation },
   };
 

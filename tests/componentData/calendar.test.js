@@ -5,6 +5,7 @@ const {
 const { Journey, JourneyCollection } = require("../../script/types/journey.js");
 const { Database } = require("../../script/database.js");
 const { createConnection } = require("../../tests/data.js");
+const { DateTime } = require("luxon");
 
 function expected(connection, selected, color) {
   return {
@@ -12,10 +13,10 @@ function expected(connection, selected, color) {
     leg: `${connection.startCityName}->${connection.endCityName}`,
     name: connection.name,
     type: connection.type,
-    startStation: connection.stops[0].stationName,
-    startDateTime: connection.stops[0].departure,
-    endStation: connection.stops.at(-1).stationName,
-    endDateTime: connection.stops.at(-1).arrival,
+    startStation: connection.startStationName,
+    startDateTime: connection.departure,
+    endStation: connection.endStationName,
+    endDateTime: connection.arrival,
     selected: selected,
     color: color,
   };
@@ -52,7 +53,7 @@ test("prepareDataForCalendarSingleJourneyNoAlternatives", function () {
     ["2024-10-15", "07:00", "city2MainStationId"],
   ]);
 
-  const calendarStartDate = new Date("2024-10-15");
+  const calendarStartDate = DateTime.fromISO("2024-10-15");
 
   const j1 = new Journey([c1.uniqueId]);
   const database = new Database([c1]);
@@ -61,9 +62,9 @@ test("prepareDataForCalendarSingleJourneyNoAlternatives", function () {
   journeys.addJourney(j1);
   journeys.setActive(j1.id);
 
-  const c1_day0 = c1.changeDate(new Date("2024-10-15"));
-  const c1_day1 = c1.changeDate(new Date("2024-10-16"));
-  const c1_day2 = c1.changeDate(new Date("2024-10-17"));
+  const c1_day0 = c1.changeDate(DateTime.fromISO("2024-10-15"));
+  const c1_day1 = c1.changeDate(DateTime.fromISO("2024-10-16"));
+  const c1_day2 = c1.changeDate(DateTime.fromISO("2024-10-17"));
 
   const exp = [
     expected(c1_day0, true, getColor(0)),
@@ -81,7 +82,7 @@ test("prepareDataForCalendarSingleJourneyNoAlternativesDifferentStartDate", func
     ["2024-10-15", "07:00", "city2MainStationId"],
   ]);
 
-  const calendarStartDate = new Date("2024-10-13");
+  const calendarStartDate = DateTime.fromISO("2024-10-13");
 
   const j1 = new Journey([c1.uniqueId]);
   const database = new Database([c1]);
@@ -90,9 +91,9 @@ test("prepareDataForCalendarSingleJourneyNoAlternativesDifferentStartDate", func
   journeys.addJourney(j1);
   journeys.setActive(j1.id);
 
-  const c1_day0 = c1.changeDate(new Date("2024-10-13"));
-  const c1_day1 = c1.changeDate(new Date("2024-10-14"));
-  const c1_day2 = c1.changeDate(new Date("2024-10-15"));
+  const c1_day0 = c1.changeDate(DateTime.fromISO("2024-10-13"));
+  const c1_day1 = c1.changeDate(DateTime.fromISO("2024-10-14"));
+  const c1_day2 = c1.changeDate(DateTime.fromISO("2024-10-15"));
 
   const exp = [
     expected(c1_day0, false, getColor(0)),
@@ -110,7 +111,7 @@ test("prepareDataForCalendarSingleJourneyAfterShift", function () {
     ["2024-10-15", "07:00", "city2MainStationId"],
   ]);
 
-  const calendarStartDate = new Date("2024-10-16");
+  const calendarStartDate = DateTime.fromISO("2024-10-16");
 
   const j1 = new Journey([c1.uniqueId]);
   const database = new Database([c1]);
@@ -121,9 +122,9 @@ test("prepareDataForCalendarSingleJourneyAfterShift", function () {
 
   journeys.shiftDate(1, database);
 
-  const c1_day0 = c1.changeDate(new Date("2024-10-16"));
-  const c1_day1 = c1.changeDate(new Date("2024-10-17"));
-  const c1_day2 = c1.changeDate(new Date("2024-10-18"));
+  const c1_day0 = c1.changeDate(DateTime.fromISO("2024-10-16"));
+  const c1_day1 = c1.changeDate(DateTime.fromISO("2024-10-17"));
+  const c1_day2 = c1.changeDate(DateTime.fromISO("2024-10-18"));
 
   const exp = [
     expected(c1_day0, true, getColor(0)),
@@ -145,7 +146,7 @@ test("prepareDataForCalendarTwoJourneysNoAlternatives", function () {
     ["2024-10-15", "09:00", "city3MainStationId"],
   ]);
 
-  const calendarStartDate = new Date("2024-10-15");
+  const calendarStartDate = DateTime.fromISO("2024-10-15");
 
   const j1 = new Journey([c1.uniqueId]); // irrelevant because not active
   const j2 = new Journey([c2.uniqueId]);
@@ -156,9 +157,9 @@ test("prepareDataForCalendarTwoJourneysNoAlternatives", function () {
   journeys.addJourney(j2);
   journeys.setActive(j2.id);
 
-  const c2_day0 = c2.changeDate(new Date("2024-10-15"));
-  const c2_day1 = c2.changeDate(new Date("2024-10-16"));
-  const c2_day2 = c2.changeDate(new Date("2024-10-17"));
+  const c2_day0 = c2.changeDate(DateTime.fromISO("2024-10-15"));
+  const c2_day1 = c2.changeDate(DateTime.fromISO("2024-10-16"));
+  const c2_day2 = c2.changeDate(DateTime.fromISO("2024-10-17"));
 
   const exp = [
     expected(c2_day0, true, getColor(0)),
@@ -184,7 +185,7 @@ test("prepareDataForCalendarSingleJourneyMultipleConnectionsWithAlternatives", f
     ["2024-10-17", "09:00", "city3ExtraStationId"],
   ]);
 
-  const calendarStartDate = new Date("2024-10-15");
+  const calendarStartDate = DateTime.fromISO("2024-10-15");
 
   const j1 = new Journey([c1.uniqueId, c2.uniqueId]);
   const database = new Database([c1, c2, c2_alt]);
@@ -193,17 +194,17 @@ test("prepareDataForCalendarSingleJourneyMultipleConnectionsWithAlternatives", f
   journeys.addJourney(j1);
   journeys.setActive(j1.id);
 
-  const c1_day0 = c1.changeDate(new Date("2024-10-15"));
-  const c1_day1 = c1.changeDate(new Date("2024-10-16"));
-  const c1_day2 = c1.changeDate(new Date("2024-10-17"));
+  const c1_day0 = c1.changeDate(DateTime.fromISO("2024-10-15"));
+  const c1_day1 = c1.changeDate(DateTime.fromISO("2024-10-16"));
+  const c1_day2 = c1.changeDate(DateTime.fromISO("2024-10-17"));
 
-  const c2_day0 = c2.changeDate(new Date("2024-10-15"));
-  const c2_day1 = c2.changeDate(new Date("2024-10-16"));
-  const c2_day2 = c2.changeDate(new Date("2024-10-17"));
+  const c2_day0 = c2.changeDate(DateTime.fromISO("2024-10-15"));
+  const c2_day1 = c2.changeDate(DateTime.fromISO("2024-10-16"));
+  const c2_day2 = c2.changeDate(DateTime.fromISO("2024-10-17"));
 
-  const c2_alt_day0 = c2_alt.changeDate(new Date("2024-10-15"));
-  const c2_alt_day1 = c2_alt.changeDate(new Date("2024-10-16"));
-  const c2_alt_day2 = c2_alt.changeDate(new Date("2024-10-17"));
+  const c2_alt_day0 = c2_alt.changeDate(DateTime.fromISO("2024-10-15"));
+  const c2_alt_day1 = c2_alt.changeDate(DateTime.fromISO("2024-10-16"));
+  const c2_alt_day2 = c2_alt.changeDate(DateTime.fromISO("2024-10-17"));
 
   // not sorting this for simplicity
   // if implementation changes, test might fail
