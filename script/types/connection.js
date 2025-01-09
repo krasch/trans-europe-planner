@@ -1,10 +1,3 @@
-class InvalidConnectionIdFormat extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "InvalidConnectionId";
-  }
-}
-
 class SlicingError extends Error {
   constructor(connectionId, startCity, endCity) {
     super(
@@ -14,32 +7,35 @@ class SlicingError extends Error {
   }
 }
 
-function shiftDate(date, deltaDays) {
-  const copy = new Date(date.getTime());
-  copy.setDate(copy.getDate() + deltaDays);
-  return copy;
-}
-
-function dateOnlyISOString(date) {
-  return date.toLocaleDateString("sv");
-}
-
-class ConnectionId {
-  constructor(train, date, leg) {
-    this.train = train;
-    this.date = date;
-    this.leg = leg;
+class Stop {
+  constructor(
+    arrival,
+    departure,
+    stationId,
+    stationName,
+    stationIsPreferred,
+    cityId,
+    cityName,
+  ) {
+    this.arrival = arrival;
+    this.departure = departure;
+    this.stationId = stationId;
+    this.stationName = stationName;
+    this.stationIsPreferred = stationIsPreferred;
+    this.cityId = cityId;
+    this.cityName = cityName;
   }
 
-  toString() {
-    return `${this.train}XXX${this.date}XXX${this.leg.toString()}`;
-  }
-
-  static fromString(string) {
-    const [train, date, leg] = string.split("XXX");
-    if (!train || !date || !leg) throw new InvalidConnectionIdFormat(string);
-
-    return new ConnectionId(train, date, Leg.fromString(leg));
+  shiftDate(numDays) {
+    return new Stop(
+      this.arrival.plus({ days: numDays }),
+      this.departure.plus({ days: numDays }),
+      this.stationId,
+      this.stationName,
+      this.stationIsPreferred,
+      this.cityId,
+      this.cityName,
+    );
   }
 }
 
@@ -49,59 +45,55 @@ class Connection {
     this.name = name;
     this.type = type;
     this.stops = stops;
-  }
 
-  get startCityName() {
-    return this.stops[0].cityName;
-  }
+    const first = this.stops[0];
+    const last = this.stops.at(-1);
 
-  get endCityName() {
-    return this.stops.at(-1).cityName;
-  }
+    this.startStationName = first.stationName;
+    this.endStationName = last.stationName;
+    this.startCityName = first.cityName;
+    this.endCityName = last.cityName;
 
-  get date() {
-    return new Date(this.stops[0].departure.toLocaleDateString("sv"));
-  }
+    this.departure = first.departure;
+    this.arrival = last.arrival;
+    this.travelTime = last.arrival.diff(first.departure).as("minutes");
 
-  get uniqueId() {
-    return {
+    this.date = first.departure.startOf("day"); // todo can be string?
+    this.uniqueId = {
       id: this.id,
       date: this.date,
-      startCityName: this.startCityName,
-      endCityName: this.endCityName,
+      startCityName: first.cityName,
+      endCityName: last.cityName,
     };
   }
 
   get isMultiday() {
-    const start = this.stops[0].departure;
-    const end = this.stops.at(-1).arrival;
+    const start = this.departure.startOf("day");
+    const end = this.arrival.startOf("day");
 
-    return (
-      start.getFullYear() !== end.getFullYear() ||
-      start.getMonth() !== end.getMonth() ||
-      start.getDate() !== end.getDate()
-    );
+    return start.toMillis() !== end.toMillis();
   }
 
   slice(startCity, endCity) {
-    const sliced = this.#getPartialStops(this.stops, startCity, endCity);
-    return new Connection(this.id, this.name, this.type, sliced);
+    return new Connection(
+      this.id,
+      this.name,
+      this.type,
+      this.#getPartialStops(this.stops, startCity, endCity),
+    );
   }
 
   changeDate(newDepartureDate) {
-    const diffTime = newDepartureDate - this.stops[0].departure;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = newDepartureDate
+      .diff(this.departure.startOf("day"), "days")
+      .as("days");
 
-    const stops = [];
-
-    for (let stop of this.stops) {
-      const copy = structuredClone(stop);
-      copy.arrival = shiftDate(copy.arrival, diffDays);
-      copy.departure = shiftDate(copy.departure, diffDays);
-      stops.push(copy);
-    }
-
-    return new Connection(this.id, this.name, this.type, stops);
+    return new Connection(
+      this.id,
+      this.name,
+      this.type,
+      this.stops.map((s) => s.shiftDate(diffDays)),
+    );
   }
 
   get edges() {
@@ -134,6 +126,10 @@ class Connection {
     return false;
   }
 
+  transferTime(nextConnection) {
+    return nextConnection.departure.diff(this.arrival).as("minutes");
+  }
+
   #getPartialStops(stops, startCity, endCity) {
     let startIndex = null;
     let endIndex = null;
@@ -164,7 +160,7 @@ class Connection {
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
+  module.exports.Stop = Stop;
   module.exports.Connection = Connection;
-  module.exports.ConnectionId = ConnectionId;
   module.exports.SlicingError = SlicingError;
 }

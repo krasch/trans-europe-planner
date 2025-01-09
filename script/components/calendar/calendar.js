@@ -91,7 +91,7 @@ class Calendar extends CalendarGrid {
   }
 
   #idString(id) {
-    return `${id.id}XX${id.startCityName}->${id.endCityName}XX${id.date.toLocaleDateString("sv")}`;
+    return `${id.id}XX${id.startCityName}->${id.endCityName}XX${id.date.toISODate()}`;
   }
 
   //also used by drag and drop

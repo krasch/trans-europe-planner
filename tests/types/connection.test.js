@@ -3,6 +3,7 @@ const {
   SlicingError,
 } = require("../../script/types/connection.js");
 const { createConnection } = require("../../tests/data.js");
+const { DateTime } = require("luxon");
 
 test("derivedAttributes", function () {
   const connection = createConnection([
@@ -10,13 +11,20 @@ test("derivedAttributes", function () {
     ["2024-10-15", "09:00", "city2MainStationId"],
   ]);
 
-  const date = "2024-10-15";
+  const departure = DateTime.fromISO("2024-10-15T08:00");
+  const arrival = DateTime.fromISO("2024-10-15T09:00");
 
-  expect(connection.date.toLocaleDateString("sv")).toStrictEqual(date);
   expect(connection.startCityName).toStrictEqual("City1");
   expect(connection.endCityName).toStrictEqual("City2");
-  expect(connection.uniqueId.id).toBe(connection.id);
-  expect(connection.uniqueId.date.toLocaleDateString("sv")).toStrictEqual(date);
+  expect(connection.startStationName).toStrictEqual("City 1 Main Station");
+  expect(connection.endStationName).toStrictEqual("City 2 Main Station");
+
+  expect(connection.departure).toStrictEqual(departure);
+  expect(connection.arrival).toStrictEqual(arrival);
+  expect(connection.travelTime).toStrictEqual(60);
+
+  expect(connection.uniqueId.id).toBe("c1");
+  expect(connection.uniqueId.date.toISODate()).toStrictEqual("2024-10-15");
   expect(connection.uniqueId.startCityName).toStrictEqual("City1");
   expect(connection.uniqueId.endCityName).toStrictEqual("City2");
 });
@@ -36,6 +44,54 @@ test("connectionOvernight", function () {
     ["2024-10-16", "09:00", "city2MainStationId"],
   ]);
   expect(connection.isMultiday).toBe(true);
+});
+
+test("changeDateNoChange", function () {
+  const connection = createConnection([
+    ["2024-10-15", "08:00", "city1MainStationId"],
+    ["2024-10-16", "09:00", "city2MainStationId"],
+  ]);
+
+  const got = connection.changeDate(DateTime.fromISO("2024-10-15"));
+  expect(got.id).toStrictEqual(connection.id);
+  expect(got.departure).toStrictEqual(connection.departure);
+  expect(got.arrival).toStrictEqual(connection.arrival);
+});
+
+test("changeDateForward", function () {
+  const connection = createConnection([
+    ["2024-10-15", "08:00", "city1MainStationId"],
+    ["2024-10-16", "09:00", "city2MainStationId"],
+  ]);
+
+  const got = connection.changeDate(DateTime.fromISO("2024-11-02"));
+  const exp = createConnection(
+    [
+      ["2024-11-02", "08:00", "city1MainStationId"],
+      ["2024-11-03", "09:00", "city2MainStationId"],
+    ],
+    connection.id,
+  );
+
+  expect(got).toStrictEqual(exp);
+});
+
+test("changeDateBackward", function () {
+  const connection = createConnection([
+    ["2024-10-15", "08:00", "city1MainStationId"],
+    ["2024-10-16", "09:00", "city2MainStationId"],
+  ]);
+
+  const got = connection.changeDate(DateTime.fromISO("2024-02-10"));
+  const exp = createConnection(
+    [
+      ["2024-02-10", "08:00", "city1MainStationId"],
+      ["2024-02-11", "09:00", "city2MainStationId"],
+    ],
+    connection.id,
+  );
+
+  expect(got).toStrictEqual(exp);
 });
 
 test("sliceNoSlicingNeeded", function () {
@@ -118,77 +174,6 @@ test("sliceWrongDirection", function () {
   expect(() => connection.slice("City2", "City1")).toThrow(SlicingError);
 });
 
-test("changeDateBackward", function () {
-  const c1 = createConnection([
-    ["2024-10-15", "08:00", "city1MainStationId"],
-    ["2024-10-16", "09:00", "city2MainStationId"],
-  ]);
-
-  const got = c1.changeDate(new Date("2024-10-11"));
-
-  const expStop1 = structuredClone(c1.stops[0]);
-  expStop1.arrival = new Date("2024-10-11 08:00:00");
-  expStop1.departure = expStop1.arrival;
-
-  const expStop2 = structuredClone(c1.stops[1]);
-  expStop2.arrival = new Date("2024-10-12 09:00:00");
-  expStop2.departure = expStop2.arrival;
-
-  const exp = new Connection(c1.id, c1.name, c1.type, [expStop1, expStop2]);
-  expect(got).toStrictEqual(exp);
-
-  // original connection should not get overwritten
-  expect(c1.stops[0].departure.toLocaleDateString("sv")).toStrictEqual(
-    "2024-10-15",
-  );
-});
-
-test("changeDateForward", function () {
-  const c1 = createConnection([
-    ["2024-10-15", "08:00", "city1MainStationId"],
-    ["2024-10-16", "09:00", "city2MainStationId"],
-  ]);
-
-  const got = c1.changeDate(new Date("2024-11-03"));
-
-  const expStop1 = structuredClone(c1.stops[0]);
-  expStop1.arrival = new Date("2024-11-03 08:00:00");
-  expStop1.departure = expStop1.arrival;
-
-  const expStop2 = structuredClone(c1.stops[1]);
-  expStop2.arrival = new Date("2024-11-04 09:00:00");
-  expStop2.departure = expStop2.arrival;
-
-  const exp = new Connection(c1.id, c1.name, c1.type, [expStop1, expStop2]);
-  expect(got).toStrictEqual(exp);
-
-  // original connection should not get overwritten
-  expect(c1.stops[0].departure.toLocaleDateString("sv")).toStrictEqual(
-    "2024-10-15",
-  );
-});
-
-test("sliceAndChangeDateMultiday", function () {
-  const c1 = createConnection([
-    ["2024-10-15", "08:00", "city1MainStationId"],
-    ["2024-10-16", "09:00", "city2MainStationId"],
-    ["2024-10-16", "10:00", "city3MainStationId"],
-  ]);
-
-  const got = c1.slice("City2", "City3").changeDate(new Date("2024-11-03"));
-
-  const expStop1 = new Object(c1.stops[1]);
-  expStop1.arrival = new Date("2024-11-03 09:00:00");
-  expStop1.departure = expStop1.arrival;
-
-  const expStop2 = new Object(c1.stops[2]);
-  expStop2.arrival = new Date("2024-11-03 10:00:00");
-  expStop2.departure = expStop2.arrival;
-
-  const exp = new Connection(c1.id, c1.name, c1.type, [expStop1, expStop2]);
-  expect(got).toEqual(exp);
-});
-
 test("hasStop", function () {
   const connection = createConnection([
     ["2024-10-15", "08:00", "city1MainStationId"],
@@ -202,6 +187,40 @@ test("hasStop", function () {
   expect(connection.hasStop("City2")).toBe(true);
   expect(connection.hasStop("City3")).toBe(true);
   expect(connection.hasStop("City4")).toBe(false);
+});
+
+test("transferTime", function () {
+  const connection = createConnection([
+    ["2024-10-15", "08:00", "city1MainStationId"],
+    ["2024-10-15", "09:00", "city2MainStationId"],
+  ]);
+
+  const connection2 = createConnection([
+    ["2024-10-17", "08:00", "city2MainStationId"],
+    ["2024-10-20", "09:00", "city3MainStationId"],
+  ]);
+
+  const exp = 47 * 60;
+  const got = connection.transferTime(connection2);
+
+  expect(got).toBe(exp);
+});
+
+test("transferTimeNextEarlier", function () {
+  const connection = createConnection([
+    ["2024-10-15", "08:00", "city1MainStationId"],
+    ["2024-10-15", "09:00", "city2MainStationId"],
+  ]);
+
+  const connection2 = createConnection([
+    ["2024-10-15", "07:00", "city2MainStationId"],
+    ["2024-10-15", "08:00", "city3MainStationId"],
+  ]);
+
+  const exp = -120;
+  const got = connection.transferTime(connection2);
+
+  expect(got).toBe(exp);
 });
 
 test("testEdges", function () {

@@ -7,44 +7,29 @@ class RoutingError extends Error {
   }
 }
 
-function diffDays(datetime, laterDatetime) {
-  // get rid of hours/minutes/seconds
-  datetime = new Date(datetime.toDateString());
-  laterDatetime = new Date(laterDatetime.toDateString());
-
-  const diffMillis = laterDatetime - datetime;
-  return Math.ceil(diffMillis / (1000 * 60 * 60 * 24));
-}
-
-function diffMinutes(datetime, laterDatetime) {
-  const diffMillis = laterDatetime - datetime;
-  return Math.ceil(diffMillis / (1000 * 60));
+function diffDays(earlierDateTime, laterDateTime) {
+  const earlierDate = earlierDateTime.startOf("day");
+  const laterDate = laterDateTime.startOf("day");
+  return laterDate.diff(earlierDate, "days").as("days");
 }
 
 function minutesSinceMidnight(datetime) {
-  const hours = datetime.getHours();
-  const minutes = datetime.getMinutes();
-  return hours * 60 + minutes;
-}
-
-function shiftDate(date, deltaDays) {
-  const copy = new Date(date.getTime());
-  copy.setDate(copy.getDate() + deltaDays);
-  return copy;
+  const midnight = datetime.startOf("day");
+  return datetime.diff(midnight).as("minutes");
 }
 
 function sortByDepartureTime(connections) {
-  connections.sort((c1, c2) => c1.stops[0].departure - c2.stops[0].departure);
+  connections.sort(
+    (c1, c2) => c1.departure.toMillis() - c2.departure.toMillis(),
+  );
 }
 
 function isValidItinerary(itinerary) {
   for (let i in itinerary) {
     if (i === "0") continue;
 
-    const arrival = itinerary[i - 1].stops.at(-1).arrival;
-    const departure = itinerary[i].stops.at(0).departure;
-
-    if (diffMinutes(arrival, departure) < TRANSFER_TIME) return false;
+    if (itinerary[i - 1].transferTime(itinerary[i]) < TRANSFER_TIME)
+      return false;
   }
 
   return true;
@@ -53,8 +38,8 @@ function isValidItinerary(itinerary) {
 function itinerarySummary(itinerary) {
   // assumes you are passing in a valid itinerary
 
-  const itineraryDeparture = itinerary[0].stops[0].departure;
-  const itineraryArrival = itinerary.at(-1).stops.at(-1).arrival;
+  const itineraryDeparture = itinerary[0].departure;
+  const itineraryArrival = itinerary.at(-1).arrival;
 
   const totalTravelDays = diffDays(itineraryDeparture, itineraryArrival) + 1;
 
@@ -68,7 +53,7 @@ function itinerarySummary(itinerary) {
   // group connections by travel day (offset from departure)
   // this keeps current order within the connections for a travel day
   for (let connection of itinerary) {
-    const day = diffDays(itineraryDeparture, connection.stops[0].departure);
+    const day = diffDays(itineraryDeparture, connection.departure);
     connectionsByTravelDay[day].push(connection);
   }
 
@@ -87,10 +72,10 @@ function itinerarySummary(itinerary) {
     // no connections on this day
     if (connectionsForDay.length === 0) return;
 
-    const departure = connectionsForDay[0].stops[0].departure;
-    const arrival = connectionsForDay.at(-1).stops.at(-1).arrival;
+    const departure = connectionsForDay[0].departure;
+    const arrival = connectionsForDay.at(-1).arrival;
 
-    const travelTime = diffMinutes(departure, arrival);
+    const travelTime = arrival.diff(departure).as("minutes");
     const departureMinutes = minutesSinceMidnight(departure);
     const arrivalMinutes = minutesSinceMidnight(arrival);
 
@@ -140,10 +125,9 @@ function createEarliestItinerary(
 
   // loop over legs
   for (let connectionsForLeg of connectionsByLegForOtherLegs) {
-    const previousArrival = itinerary.at(-1).stops.at(-1).arrival;
+    const previousArrival = itinerary.at(-1).arrival;
     const relevantConnections = connectionsForLeg.filter(
-      (c) =>
-        diffMinutes(previousArrival, c.stops[0].departure) >= TRANSFER_TIME,
+      (c) => c.departure.diff(previousArrival).as("minutes") >= TRANSFER_TIME,
     );
 
     if (relevantConnections.length === 0) throw new RoutingError();
@@ -165,7 +149,7 @@ function createStupidItineraryForRoute(legs, date, database) {
 
   // want connections on travel day + 2 extra days
   const dates = [];
-  for (let day of [0, 1, 2]) dates.push(shiftDate(date, day));
+  for (let day of [0, 1, 2]) dates.push(date.plus({ days: day }));
 
   // look up all necessary data from database and sort by departure time
   const connectionsByLeg = legs.map((l) => {
@@ -282,7 +266,7 @@ class RouteDatabase {
   }
 
   #cacheKey(startCityName, endCityName, date) {
-    return `${this.#key(startCityName, endCityName)}XX${date.toLocaleDateString("sv")}`;
+    return `${this.#key(startCityName, endCityName)}XX${date.toISODate()}`;
   }
 
   #parseLeg(leg) {

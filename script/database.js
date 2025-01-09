@@ -13,17 +13,19 @@ function isSlicingError(error) {
 function enrichConnection(template, stations, cities, dummyDate) {
   const stops = [];
   for (let stop of template.stops) {
-    stops.push({
-      // temporalize
-      arrival: new Date(dummyDate + " " + stop.arrival),
-      departure: new Date(dummyDate + " " + stop.departure),
-      // enrich with additional station and city info
-      stationId: stop.station,
-      stationName: stations[stop.station].name,
-      stationIsPreferred: stations[stop.station].preferred,
-      cityId: stations[stop.station].city,
-      cityName: cities[stations[stop.station].city].name,
-    });
+    stops.push(
+      new Stop(
+        // temporalize
+        luxon.DateTime.fromISO(dummyDate + "T" + stop.arrival),
+        luxon.DateTime.fromISO(dummyDate + "T" + stop.departure),
+        // enrich with additional station and city info
+        stop.station,
+        stations[stop.station].name,
+        stations[stop.station].preferred,
+        stations[stop.station].city,
+        cities[stations[stop.station].city].name,
+      ),
+    );
   }
 
   return new Connection(template.id, template.name, template.type, stops);
@@ -48,13 +50,7 @@ class Database {
   }
 
   connection(id, startCityName, endCityName, date) {
-    // because often trouble with this, do some type checking
-    if (!(date instanceof Date))
-      throw new DatabaseError(
-        `Expected Date input, found ${typeof date} with value ${date}`,
-      );
-
-    const dateString = date.toLocaleDateString("sv");
+    const dateString = date.toISODate();
     const compositeId = [id, startCityName, endCityName, dateString].join("XX");
 
     if (!this.#connections[compositeId]) {

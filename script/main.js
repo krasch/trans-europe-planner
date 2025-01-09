@@ -1,16 +1,7 @@
 // dummy date for initialising
 // today so that it is in range for date picker
 // double "new Date" so that can get rid of time component
-const TODAY = new Date(new Date().toLocaleDateString("sv"));
-
-function diffDays(datetime, laterDatetime) {
-  // get rid of hours/minutes/seconds
-  datetime = new Date(datetime.toDateString());
-  laterDatetime = new Date(laterDatetime.toDateString());
-
-  const diffMillis = laterDatetime - datetime;
-  return Math.ceil(diffMillis / (1000 * 60 * 60 * 24));
-}
+const TODAY = luxon.DateTime.now().startOf("day");
 
 function initUpdateViews(views, database) {
   function updateViews(state) {
@@ -38,14 +29,13 @@ async function main(home, views) {
   };
 
   // redraw calendar header
-  views.calendar.setAttribute("start", dateOnlyISOString(state.date));
+  views.calendar.setAttribute("start", state.date.toISODate());
 
   // prepare database
   // todo having troubles with trains starting before 01:00 because than diffDays does not work correctly
   const connections = CONNECTIONS.flatMap(
-    (c) =>
-      enrichConnection(c, STATIONS, CITIES, TODAY.toLocaleDateString("sv")), // todo can use state.date here?
-  ).filter((c) => c.stops[0].departure.getHours() > 0);
+    (c) => enrichConnection(c, STATIONS, CITIES, TODAY.toISODate()), // todo can use state.date here?
+  );
   const database = new Database(connections);
 
   // prepare routes
@@ -110,7 +100,7 @@ async function main(home, views) {
 
     state.journeys.shiftDate(diff, database);
     state.date = date;
-    views.calendar.setAttribute("start", dateOnlyISOString(state.date));
+    views.calendar.setAttribute("start", state.date.toISODate());
 
     updateViews(state);
   });

@@ -11,7 +11,8 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
-    "prettier": "3.3.3",
-    "jest-environment-jsdom": "^29.7.0"
+    "jest-environment-jsdom": "^29.7.0",
+    "luxon": "^3.5.0",
+    "prettier": "3.3.3"
   }
 }

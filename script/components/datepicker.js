@@ -1,13 +1,3 @@
-function shiftDate(date, deltaDays) {
-  const copy = new Date(date.getTime());
-  copy.setDate(copy.getDate() + deltaDays);
-  return copy;
-}
-
-function toISOString(date) {
-  return date.toLocaleDateString("sv");
-}
-
 class Datepicker {
   #container;
 
@@ -30,12 +20,12 @@ class Datepicker {
     this.#decreaseDateElement = this.#container.querySelector("#decrease-date");
     this.#increaseDateElement = this.#container.querySelector("#increase-date");
 
-    const today = new Date();
-    this.#start = shiftDate(today, 1);
-    this.#end = shiftDate(today, 3 * 30);
+    const today = luxon.DateTime.now().startOf("day");
+    this.#start = today.plus({ days: 1 });
+    this.#end = today.plus({ days: 3 * 30 });
 
-    this.#inputElement.min = toISOString(this.#start);
-    this.#inputElement.max = toISOString(this.#end);
+    this.#inputElement.min = this.#start.toISODate();
+    this.#inputElement.max = this.#end.toISODate();
 
     // previously picked date might still be set after reloading the page
     if (this.#currentDate !== null) {
@@ -55,12 +45,12 @@ class Datepicker {
 
     this.#container.addEventListener("click", (e) => {
       if (e.target.id === "decrease-date") {
-        this.#currentDate = shiftDate(this.#currentDate, -1);
+        this.#currentDate = this.#currentDate.minus({ days: 1 });
         this.#callbacks["dateChanged"](this.#currentDate);
         this.#showHideArrows();
       }
       if (e.target.id === "increase-date") {
-        this.#currentDate = shiftDate(this.#currentDate, +1);
+        this.#currentDate = this.#currentDate.plus({ days: 1 });
         this.#callbacks["dateChanged"](this.#currentDate);
         this.#showHideArrows();
       }
@@ -79,12 +69,12 @@ class Datepicker {
 
   get #currentDate() {
     if (this.#inputElement.value.length === 0) return null;
-    return new Date(this.#inputElement.value);
+    return luxon.DateTime.fromISO(this.#inputElement.value);
   }
 
   set #currentDate(value) {
     if (value === null) this.#inputElement.value = null;
-    else this.#inputElement.value = toISOString(value);
+    else this.#inputElement.value = value.toISODate();
   }
 
   #showHideArrows() {
@@ -94,13 +84,14 @@ class Datepicker {
       return;
     }
 
+    const diffStart = this.currentDate.diff(this.#start, "days").as("days");
+    const diffEnd = this.#end.diff(this.currentDate, "days").as("days");
+
     // todo only add/remove if actually changes?
-    if (shiftDate(this.#currentDate, -1) >= this.#start)
-      this.#decreaseDateElement.classList.remove("hidden");
+    if (diffStart >= 1) this.#decreaseDateElement.classList.remove("hidden");
     else this.#decreaseDateElement.classList.add("hidden");
 
-    if (shiftDate(this.#currentDate, +1) <= this.#end)
-      this.#increaseDateElement.classList.remove("hidden");
+    if (diffEnd >= 1) this.#increaseDateElement.classList.remove("hidden");
     else this.#increaseDateElement.classList.add("hidden");
   }
 }

@@ -5,17 +5,6 @@ class JourneyError extends Error {
   }
 }
 
-function shiftDate(date, deltaDays) {
-  const copy = new Date(date.getTime());
-  copy.setDate(copy.getDate() + deltaDays);
-  return copy;
-}
-
-function diffMinutes(datetime, laterDatetime) {
-  const diffMillis = laterDatetime - datetime;
-  return Math.ceil(diffMillis / (1000 * 60));
-}
-
 class Journey {
   #connectionIds;
 
@@ -62,7 +51,7 @@ class Journey {
         id.id,
         id.startCityName,
         id.endCityName,
-        shiftDate(id.date, deltaDays),
+        id.date.plus({ days: deltaDays }),
       );
       this.#connectionIds[i] = connection.uniqueId;
     }
@@ -161,14 +150,14 @@ class Journey {
         vias.push(c.endCityName);
     }
 
+    const departure = connections[0].stops[0].departure;
+    const arrival = connections.at(-1).stops.at(-1).arrival;
+
     return {
       from: this.start,
       to: this.destination,
       numTransfer: vias.length,
-      travelTime: diffMinutes(
-        connections[0].stops[0].departure,
-        connections.at(-1).stops.at(-1).arrival,
-      ),
+      travelTime: arrival.diff(departure).as("minutes"),
       via: vias,
     };
   }

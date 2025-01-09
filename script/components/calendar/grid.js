@@ -1,14 +1,5 @@
 const LOCALE = new Intl.NumberFormat().resolvedOptions().locale;
 
-function diffDays(datetime, laterDatetime) {
-  // get rid of hours/minutes/seconds
-  datetime = new Date(datetime.toDateString());
-  laterDatetime = new Date(laterDatetime.toDateString());
-
-  const diffMillis = laterDatetime - datetime;
-  return Math.ceil(diffMillis / (1000 * 60 * 60 * 24));
-}
-
 class CalendarGrid extends HTMLElement {
   dateChanged = true;
 
@@ -23,7 +14,7 @@ class CalendarGrid extends HTMLElement {
   }
 
   get startDay() {
-    return new Date(this.getAttribute("start"));
+    return luxon.DateTime.fromISO(this.getAttribute("start"));
   }
 
   get numDays() {
@@ -44,15 +35,18 @@ class CalendarGrid extends HTMLElement {
   }
 
   addToGrid(element) {
-    const column = diffDays(this.startDay, element.startDateTime);
+    const column = element.startDateTime
+      .startOf("day")
+      .diff(this.startDay, "days")
+      .as("days");
     const rowStart = this.#getRow(element.startDateTime);
     const rowEnd = this.#getRow(element.endDateTime);
     this.#addToGrid(element, column, rowStart, rowEnd);
   }
 
   #getRow(datetime) {
-    const minutesSinceMidnight =
-      datetime.getHours() * 60 + datetime.getMinutes();
+    const midnight = datetime.startOf("day");
+    const minutesSinceMidnight = datetime.diff(midnight).as("minutes");
     return Math.round((minutesSinceMidnight / 60.0) * this.resolution);
   }
 

@@ -32,14 +32,10 @@ function getColor(i) {
   return COLORS[i % COLORS.length];
 }
 
-function shiftDate(date, deltaDays) {
-  const copy = new Date(date.getTime());
-  copy.setDate(copy.getDate() + deltaDays);
-  return copy;
-}
-
 function sortByDepartureTime(connections) {
-  connections.sort((c1, c2) => c1.stops[0].departure - c2.stops[0].departure);
+  connections.sort(
+    (c1, c2) => c1.departure.toMillis() - c2.departure.toMillis(),
+  );
 }
 
 function toAlphabeticEdgeString(startCityName, endCityName) {
@@ -50,11 +46,6 @@ function toAlphabeticEdgeString(startCityName, endCityName) {
 
 function toEdgeString(startCityName, endCityName) {
   return `${startCityName}->${endCityName}`;
-}
-
-function diffMinutes(datetime, laterDatetime) {
-  const diffMillis = laterDatetime - datetime;
-  return Math.ceil(diffMillis / (1000 * 60));
 }
 
 function humanReadableTimedelta(minutes) {
@@ -77,18 +68,6 @@ function humanReadableTimedelta(minutes) {
   return result.filter((e) => e.length > 0).join(" ");
 }
 
-function timeString(timedelta) {
-  return timedelta.toTimeString().slice(0, 5); // todo timezones
-}
-
-function dateString(timedelta) {
-  const formatted = timedelta.toLocaleDateString("default", {
-    month: "short",
-    day: "numeric",
-  });
-  return `(${formatted})`;
-}
-
 function prepareDataForCalendar(calendarStartDate, journeys, database) {
   const data = [];
 
@@ -98,7 +77,7 @@ function prepareDataForCalendar(calendarStartDate, journeys, database) {
 
   const dates = [];
   for (let i = 0; i < NUM_DAYS_CALENDAR; i++)
-    dates.push(shiftDate(calendarStartDate, i));
+    dates.push(calendarStartDate.plus({ days: i }));
 
   for (let i in connectionsActiveJourney) {
     const currentlyChosenConnection = connectionsActiveJourney[i];
@@ -119,10 +98,10 @@ function prepareDataForCalendar(calendarStartDate, journeys, database) {
         // for display
         name: option.name,
         type: option.type,
-        startStation: option.stops[0].stationName,
-        startDateTime: option.stops[0].departure,
-        endStation: option.stops.at(-1).stationName,
-        endDateTime: option.stops.at(-1).arrival,
+        startStation: option.startStationName,
+        startDateTime: option.departure,
+        endStation: option.endStationName,
+        endDateTime: option.arrival,
         color: getColor(i),
         selected:
           option.id === currentlyChosenConnection.id &&
@@ -143,43 +122,37 @@ function prepareDataForPerlschnur(journeys, database) {
   if (!journeys.hasActiveJourney) return data;
 
   const summary = journeys.activeJourney.summary(database);
-  data.summary.from = summary.from;
-  data.summary.to = summary.to;
-  data.summary.totalTime = humanReadableTimedelta(summary.travelTime);
-  if (summary.via.length > 0)
-    data.summary.via = "via " + summary.via.join(", ");
-  else data.summary.via = "";
+  data.summary = {
+    from: summary.from,
+    to: summary.to,
+    totalTime: humanReadableTimedelta(summary.travelTime),
+    via: summary.via.length > 0 ? "via " + summary.via.join(", ") : "",
+  };
 
   const connectionsActiveJourney = journeys.activeJourney.connections(database);
   for (let i = 0; i < connectionsActiveJourney.length; i++) {
     const connection = connectionsActiveJourney[i];
+
     data.connections.push({
       color: getColor(i),
       name: connection.name,
       type: connection.type,
-      travelTime: humanReadableTimedelta(
-        diffMinutes(
-          connection.stops[0].departure,
-          connection.stops.at(-1).arrival,
-        ),
-      ),
-      stops: connection.stops.map((s, idx) => ({
-        station: s.stationName,
-        time: idx === 0 ? timeString(s.departure) : timeString(s.arrival),
-        date: idx === 0 ? dateString(s.departure) : dateString(s.arrival),
-      })),
+      travelTime: humanReadableTimedelta(connection.travelTime),
+      stops: connection.stops.map((s, idx) => {
+        const datetime = idx === 0 ? s.departure : s.arrival;
+        return {
+          station: s.stationName,
+          time: datetime.toFormat("HH:mm"),
+          date: `(${datetime.toFormat("d LLL")})`,
+        };
+      }),
     });
 
     if (i >= connectionsActiveJourney.length - 1) continue;
 
     const nextConnection = connectionsActiveJourney[i + 1];
     data.transfers.push({
-      time: humanReadableTimedelta(
-        diffMinutes(
-          connection.stops.at(-1).arrival,
-          nextConnection.stops[0].departure,
-        ),
-      ),
+      time: humanReadableTimedelta(connection.transferTime(nextConnection)),
     });
   }
 
@@ -323,7 +296,6 @@ if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.initCityNameToId = initCityNameToId;
   module.exports.sortByDepartureTime = sortByDepartureTime;
   module.exports.humanReadableTimedelta = humanReadableTimedelta;
-  module.exports.dateString = dateString;
   module.exports.prepareDataForCalendar = prepareDataForCalendar;
   module.exports.prepareDataForPerlschnur = prepareDataForPerlschnur;
   module.exports.prepareDataForMap = prepareDataForMap;
