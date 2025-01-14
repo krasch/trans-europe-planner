@@ -158,17 +158,28 @@ class TravelCalendar extends HTMLElement {
     const start = new Date(travelOption.startTime);
     const end = new Date(travelOption.endTime);
 
-    const element = document.createElement("div");
-    element.innerText = "TEST";
-    element.classList.add("entry");
+    const startColumn = this.#getColumn(start);
+    const endColumn = this.#getColumn(end);
 
-    this.#setGridLocation(
-      element,
-      this.#getColumn(start) + 1, // +1 for hour column
-      this.#getRow(start) + 1, // +1 for header row
-      this.#getRow(end) + 1, // +1 for header row
-    );
-    this.shadowRoot.appendChild(element);
+    for (let column = startColumn; column < endColumn + 1; column++) {
+      let startRow = 0; // beginning of day
+      if (column === startColumn) startRow = this.#getRow(start);
+
+      let endRow = 24 * RESOLUTION; // end of day
+      if (column === endColumn) endRow = this.#getRow(end);
+
+      const element = document.createElement("div");
+      element.innerText = "TEST";
+      element.classList.add("entry");
+
+      this.#setGridLocation(
+        element,
+        column + 1, // +1 for hour column
+        startRow + 1, // +1 for header row
+        endRow + 1, // +1 for header row
+      );
+      this.shadowRoot.appendChild(element);
+    }
   }
 
   #removeEntry(travelOption) {

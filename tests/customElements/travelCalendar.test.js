@@ -122,3 +122,41 @@ test("entryThirdDayEndsJustBeforeMidnight", async function () {
   expect(got[0].gridRowStart).toBe(14 * 4 + 2 + ROW_OFFSET);
   expect(got[0].gridRowEnd).toBe(24 * 4 + ROW_OFFSET);
 });
+
+test("entryTwoDays", async function () {
+  const calendar = document.querySelector("#calendar");
+  await addEntry(calendar, `${FIRST_DATE}T16:29`, `${SECOND_DATE}T18:04`);
+
+  const got = getShadowDOMItems(calendar, ".entry");
+
+  expect(got.length).toBe(2);
+
+  expect(got[0].gridColumn).toBe(COLUMN_OFFSET);
+  expect(got[0].gridRowStart).toBe(16 * 4 + 2 + ROW_OFFSET);
+  expect(got[0].gridRowEnd).toBe(24 * 4 + ROW_OFFSET);
+
+  expect(got[1].gridColumn).toBe(1 + COLUMN_OFFSET);
+  expect(got[1].gridRowStart).toBe(ROW_OFFSET);
+  expect(got[1].gridRowEnd).toBe(18 * 4 + ROW_OFFSET);
+});
+
+test("entryThreeDays", async function () {
+  const calendar = document.querySelector("#calendar");
+  await addEntry(calendar, `${FIRST_DATE}T16:29`, `${THIRD_DATE}T18:04`);
+
+  const got = getShadowDOMItems(calendar, ".entry");
+
+  expect(got.length).toBe(3);
+
+  expect(got[0].gridColumn).toBe(COLUMN_OFFSET);
+  expect(got[0].gridRowStart).toBe(16 * 4 + 2 + ROW_OFFSET);
+  expect(got[0].gridRowEnd).toBe(24 * 4 + ROW_OFFSET);
+
+  expect(got[1].gridColumn).toBe(1 + COLUMN_OFFSET);
+  expect(got[1].gridRowStart).toBe(ROW_OFFSET);
+  expect(got[1].gridRowEnd).toBe(24 * 4 + ROW_OFFSET);
+
+  expect(got[2].gridColumn).toBe(2 + COLUMN_OFFSET);
+  expect(got[2].gridRowStart).toBe(ROW_OFFSET);
+  expect(got[2].gridRowEnd).toBe(18 * 4 + ROW_OFFSET);
+});
