@@ -38,6 +38,8 @@ async function addEntry(calendar, startDateTime, endDateTime) {
   const entry = document.createElement("travel-option");
   entry.startTime = startDateTime;
   entry.endTime = endDateTime;
+  entry.startCity = "start-city";
+  entry.endCity = "end-city";
   await calendar.appendChild(entry);
 }
 
@@ -97,6 +99,8 @@ test("entryFirstDayFromMidnight", async function () {
   expect(got[0].gridColumn).toBe(2);
   expect(got[0].gridRowStart).toBe(2);
   expect(got[0].gridRowEnd).toBe(3);
+  expect(got[0].element.innerHTML).toContain("start-city");
+  expect(got[0].element.innerHTML).toContain("end-city");
 });
 
 test("entryFirstDayAfternoon", async function () {
@@ -109,6 +113,10 @@ test("entryFirstDayAfternoon", async function () {
   expect(got[0].gridColumn).toBe(COLUMN_OFFSET);
   expect(got[0].gridRowStart).toBe(16 * 4 + 2 + ROW_OFFSET);
   expect(got[0].gridRowEnd).toBe(18 * 4 + ROW_OFFSET);
+  expect(got[0].element.innerHTML).toContain("start-city");
+  expect(got[0].element.innerHTML).toContain("16:29");
+  expect(got[0].element.innerHTML).toContain("end-city");
+  expect(got[0].element.innerHTML).toContain("18:04");
 });
 
 test("entryThirdDayEndsJustBeforeMidnight", async function () {
@@ -121,6 +129,10 @@ test("entryThirdDayEndsJustBeforeMidnight", async function () {
   expect(got[0].gridColumn).toBe(2 + COLUMN_OFFSET);
   expect(got[0].gridRowStart).toBe(14 * 4 + 2 + ROW_OFFSET);
   expect(got[0].gridRowEnd).toBe(24 * 4 + ROW_OFFSET);
+  expect(got[0].element.innerHTML).toContain("start-city");
+  expect(got[0].element.innerHTML).toContain("14:30");
+  expect(got[0].element.innerHTML).toContain("end-city");
+  expect(got[0].element.innerHTML).toContain("23:59");
 });
 
 test("entryTwoDays", async function () {
@@ -134,10 +146,18 @@ test("entryTwoDays", async function () {
   expect(got[0].gridColumn).toBe(COLUMN_OFFSET);
   expect(got[0].gridRowStart).toBe(16 * 4 + 2 + ROW_OFFSET);
   expect(got[0].gridRowEnd).toBe(24 * 4 + ROW_OFFSET);
+  expect(got[0].element.innerHTML).toContain("start-city");
+  expect(got[0].element.innerHTML).toContain("16:29");
+  expect(got[0].element.innerHTML).not.toContain("end-city");
+  expect(got[0].element.innerHTML).not.toContain("18:04");
 
   expect(got[1].gridColumn).toBe(1 + COLUMN_OFFSET);
   expect(got[1].gridRowStart).toBe(ROW_OFFSET);
   expect(got[1].gridRowEnd).toBe(18 * 4 + ROW_OFFSET);
+  expect(got[1].element.innerHTML).not.toContain("start-city");
+  expect(got[1].element.innerHTML).not.toContain("16:29");
+  expect(got[1].element.innerHTML).toContain("end-city");
+  expect(got[1].element.innerHTML).toContain("18:04");
 });
 
 test("entryThreeDays", async function () {
@@ -151,12 +171,24 @@ test("entryThreeDays", async function () {
   expect(got[0].gridColumn).toBe(COLUMN_OFFSET);
   expect(got[0].gridRowStart).toBe(16 * 4 + 2 + ROW_OFFSET);
   expect(got[0].gridRowEnd).toBe(24 * 4 + ROW_OFFSET);
+  expect(got[0].element.innerHTML).toContain("start-city");
+  expect(got[0].element.innerHTML).toContain("16:29");
+  expect(got[0].element.innerHTML).not.toContain("end-city");
+  expect(got[0].element.innerHTML).not.toContain("18:04");
 
   expect(got[1].gridColumn).toBe(1 + COLUMN_OFFSET);
   expect(got[1].gridRowStart).toBe(ROW_OFFSET);
   expect(got[1].gridRowEnd).toBe(24 * 4 + ROW_OFFSET);
+  expect(got[1].element.innerHTML).not.toContain("start-city");
+  expect(got[1].element.innerHTML).not.toContain("16:29");
+  expect(got[1].element.innerHTML).not.toContain("end-city");
+  expect(got[1].element.innerHTML).not.toContain("18:04");
 
   expect(got[2].gridColumn).toBe(2 + COLUMN_OFFSET);
   expect(got[2].gridRowStart).toBe(ROW_OFFSET);
   expect(got[2].gridRowEnd).toBe(18 * 4 + ROW_OFFSET);
+  expect(got[2].element.innerHTML).not.toContain("start-city");
+  expect(got[2].element.innerHTML).not.toContain("16:29");
+  expect(got[2].element.innerHTML).toContain("end-city");
+  expect(got[2].element.innerHTML).toContain("18:04");
 });

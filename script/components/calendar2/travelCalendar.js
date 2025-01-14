@@ -79,6 +79,16 @@ function formatDateLabel(startDateString, offset) {
   return `${weekday} <br/> ${dateString}`;
 }
 
+function createStopElement(datetime, city) {
+  const element = document.createElement("div");
+  element.innerHTML = `
+   <div>
+       <span class="time">${datetime.toLocaleTimeString(LOCALE, { hour: "2-digit", minute: "2-digit" })}
+       <span class="city">${city}
+   </div>`;
+  return element;
+}
+
 class TravelCalendar extends HTMLElement {
   static observedAttributes = ["start-date"];
 
@@ -155,22 +165,35 @@ class TravelCalendar extends HTMLElement {
   }
 
   #addEntry(travelOption) {
-    const start = new Date(travelOption.startTime);
-    const end = new Date(travelOption.endTime);
+    const startDateTime = new Date(travelOption.startTime);
+    const endDateTime = new Date(travelOption.endTime);
 
-    const startColumn = this.#getColumn(start);
-    const endColumn = this.#getColumn(end);
+    console.log(travelOption.startCity);
+
+    const from = createStopElement(startDateTime, travelOption.startCity);
+    from.classList.add("from");
+
+    const to = createStopElement(endDateTime, travelOption.endCity);
+    to.classList.add("to");
+
+    const startColumn = this.#getColumn(startDateTime);
+    const endColumn = this.#getColumn(endDateTime);
 
     for (let column = startColumn; column < endColumn + 1; column++) {
+      const element = document.createElement("div");
+      element.classList.add("entry");
+
       let startRow = 0; // beginning of day
-      if (column === startColumn) startRow = this.#getRow(start);
+      if (column === startColumn) {
+        startRow = this.#getRow(startDateTime);
+        element.appendChild(from);
+      }
 
       let endRow = 24 * RESOLUTION; // end of day
-      if (column === endColumn) endRow = this.#getRow(end);
-
-      const element = document.createElement("div");
-      element.innerText = "TEST";
-      element.classList.add("entry");
+      if (column === endColumn) {
+        endRow = this.#getRow(endDateTime);
+        element.appendChild(to);
+      }
 
       this.#setGridLocation(
         element,

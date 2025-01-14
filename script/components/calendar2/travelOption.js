@@ -16,12 +16,28 @@ class TravelOption extends HTMLElement {
     this.setAttribute("start-time", dateTime);
   }
 
+  get startCity() {
+    return this.getAttribute("start-city");
+  }
+
+  set startCity(city) {
+    this.setAttribute("start-city", city);
+  }
+
   get endTime() {
     return this.getAttribute("end-time");
   }
 
   set endTime(dateTime) {
     this.setAttribute("end-time", dateTime);
+  }
+
+  get endCity() {
+    return this.getAttribute("end-city");
+  }
+
+  set endCity(city) {
+    this.setAttribute("end-city", city);
   }
 
   get train() {
