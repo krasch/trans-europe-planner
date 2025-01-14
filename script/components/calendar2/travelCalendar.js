@@ -92,7 +92,7 @@ class TravelCalendar extends HTMLElement {
     super();
 
     this.attachShadow({ mode: "open" });
-    this.shadowRoot.innerHTML = style + "<slot></slot>";
+    this.shadowRoot.innerHTML = style; // + "<slot></slot>";
   }
 
   get startDate() {
@@ -111,11 +111,10 @@ class TravelCalendar extends HTMLElement {
         // children added/removed
         if (mutation.type === "childList") {
           for (let node of mutation.addedNodes) {
-            if (node.tagName === "TRAVEL-OPTION") this.#addTravelOption(node);
+            if (node.tagName === "TRAVEL-OPTION") this.#addEntry(node);
           }
           for (let node of mutation.removedNodes) {
-            if (node.tagName === "TRAVEL-OPTION")
-              this.#removeTravelOption(node);
+            if (node.tagName === "TRAVEL-OPTION") this.#removeEntry(node);
           }
         }
 
@@ -125,8 +124,8 @@ class TravelCalendar extends HTMLElement {
             if (mutation.target.attributeName === "style")
               this.#propagateStyle(mutation.target);
             else {
-              this.#removeTravelOption(mutation.target);
-              this.#addTravelOption(mutation.target);
+              this.#removeEntry(mutation.target);
+              this.#addEntry(mutation.target);
             }
           }
         }
@@ -155,27 +154,24 @@ class TravelCalendar extends HTMLElement {
     }
   }
 
-  #addTravelOption(travelOption) {
+  #addEntry(travelOption) {
+    const start = new Date(travelOption.startTime);
+    const end = new Date(travelOption.endTime);
+
     const element = document.createElement("div");
-    element.innerText = "ladida";
-
+    element.innerText = "TEST";
     element.classList.add("entry");
-    element.classList.add(travelOption.status);
 
-    const start = new luxon.DateTime.fromISO(travelOption.startTime);
-    const end = new luxon.DateTime.fromISO(travelOption.endTime);
-    const date = start.getDate() - 16; // todo place in right column
-
-    const startMinute = start.getHours() * 60 + start.getMinutes();
-    const endMinute = end.getHours() * 60 + end.getMinutes();
-
-    this.#placeInGrid(element, date, startMinute, endMinute);
-    this.#entries.set(travelOption, element);
-
-    this.#propagateStyle(travelOption);
+    this.#setGridLocation(
+      element,
+      this.#getColumn(start) + 1, // +1 for hour column
+      this.#getRow(start) + 1, // +1 for header row
+      this.#getRow(end) + 1, // +1 for header row
+    );
+    this.shadowRoot.appendChild(element);
   }
 
-  #removeTravelOption(travelOption) {
+  #removeEntry(travelOption) {
     this.shadowRoot.removeChild(this.#entries.get(travelOption));
     this.#entries.delete(travelOption);
   }
@@ -195,12 +191,13 @@ class TravelCalendar extends HTMLElement {
       element.innerText = `${hour}`.padStart(2, "0");
       element.classList.add("hour-label");
 
-      this.#placeInGrid(
+      this.#setGridLocation(
         element,
         0,
         hour * RESOLUTION + 1, // +1 for header row
         (hour + 1) * RESOLUTION + 1, // +1 for header row
       );
+      this.shadowRoot.appendChild(element);
     }
 
     // date labels at top of calendar
@@ -209,12 +206,13 @@ class TravelCalendar extends HTMLElement {
       element.innerHTML = formatDateLabel(this.startDate, day);
       element.classList.add("date-label");
 
-      this.#placeInGrid(
+      this.#setGridLocation(
         element,
-        day + 1, //+1 for date label column
+        day + 1, //+1 for hour column
         0,
         1,
       );
+      this.shadowRoot.appendChild(element);
     }
 
     // grid cells
@@ -225,30 +223,35 @@ class TravelCalendar extends HTMLElement {
 
         if (row % RESOLUTION === 0) element.classList.add("full-hour");
 
-        this.#placeInGrid(
+        this.#setGridLocation(
           element,
-          day + 1, // +1 for hour label column
+          day + 1, // +1 for hour column
           row + 1, // +1 for header row
           row + 1 + 1, // + 1 for header row
         );
+        this.shadowRoot.appendChild(element);
       }
     }
   }
 
-  #placeInGrid(element, column, startRow, endRow) {
+  #setGridLocation(element, column, startRow, endRow) {
     // +1 because grid is one-indexed (not zero-indexed)
     element.style.gridColumn = column + 1;
     element.style.gridRowStart = startRow + 1;
     element.style.gridRowEnd = endRow + 1;
-    this.shadowRoot.appendChild(element);
   }
 
-  #getRow(minute) {
-    return Math.round((minute / 60.0) * RESOLUTION) + HEADER_ROWS;
+  #getRow(datetime) {
+    // todo time zones, dst
+    const minute = datetime.getHours() * 60 + datetime.getMinutes();
+    return Math.round((minute / 60.0) * RESOLUTION);
   }
 
-  #getColumn(date) {
-    // todo das her habe ich gemacht, beide getRow und getColumn sollen luxon datetime nehmen
+  #getColumn(datetime) {
+    // todo time zones, dst
+    const midnight = new Date(datetime.toDateString());
+    const diffMillis = midnight - new Date(this.startDate);
+    return Math.round(diffMillis / (1000 * 60 * 60 * 24));
   }
 }
 
