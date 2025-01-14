@@ -83,7 +83,7 @@ function createStopElement(datetime, city) {
   const element = document.createElement("div");
   element.innerHTML = `
    <div>
-       <span class="time">${datetime.toLocaleTimeString(LOCALE, { hour: "2-digit", minute: "2-digit" })}
+       <span class="time">${datetime.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}
        <span class="city">${city}
    </div>`;
   return element;
@@ -157,9 +157,15 @@ class TravelCalendar extends HTMLElement {
 
       // this callback might come before the grid has been initialized
       // in this case labels will be empty, which is not an issue
-      // because it will get initialized with that newValue during connectedCallback
+      // because they will get initialized during connectedCallback
       for (let i in labels) {
         labels[i].innerHTML = formatDateLabel(newValue, i);
+      }
+
+      const options = Array.from(this.#entries.keys());
+      for (let travelOption of options) {
+        this.#removeEntry(travelOption);
+        this.#addEntry(travelOption);
       }
     }
   }
@@ -167,8 +173,6 @@ class TravelCalendar extends HTMLElement {
   #addEntry(travelOption) {
     const startDateTime = new Date(travelOption.startTime);
     const endDateTime = new Date(travelOption.endTime);
-
-    console.log(travelOption.startCity);
 
     const from = createStopElement(startDateTime, travelOption.startCity);
     from.classList.add("from");
@@ -179,6 +183,7 @@ class TravelCalendar extends HTMLElement {
     const startColumn = this.#getColumn(startDateTime);
     const endColumn = this.#getColumn(endDateTime);
 
+    const elements = [];
     for (let column = startColumn; column < endColumn + 1; column++) {
       const element = document.createElement("div");
       element.classList.add("entry");
@@ -202,11 +207,16 @@ class TravelCalendar extends HTMLElement {
         endRow + 1, // +1 for header row
       );
       this.shadowRoot.appendChild(element);
+
+      elements.push(element);
     }
+
+    this.#entries.set(travelOption, elements);
   }
 
   #removeEntry(travelOption) {
-    this.shadowRoot.removeChild(this.#entries.get(travelOption));
+    for (let element of this.#entries.get(travelOption))
+      this.shadowRoot.removeChild(element);
     this.#entries.delete(travelOption);
   }
 

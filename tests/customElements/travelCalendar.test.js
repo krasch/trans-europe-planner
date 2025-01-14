@@ -89,6 +89,49 @@ test("dateLabelsAfterDateChanged", async function () {
   expect(got[2].gridRowEnd).toBe(2);
 });
 
+test("entryFirstDate", async function () {
+  const calendar = document.querySelector("#calendar");
+  await addEntry(calendar, `${FIRST_DATE}T14:00`, `${FIRST_DATE}T15:00`);
+
+  const got = getShadowDOMItems(calendar, ".entry");
+
+  expect(got.length).toBe(1);
+  expect(got[0].gridColumn).toBe(COLUMN_OFFSET);
+  expect(got[0].gridRowStart).toBe(14 * 4 + ROW_OFFSET);
+  expect(got[0].gridRowEnd).toBe(15 * 4 + ROW_OFFSET);
+  expect(got[0].element.innerHTML).toContain("start-city");
+  expect(got[0].element.innerHTML).toContain("end-city");
+});
+
+test("entrySecondDate", async function () {
+  const calendar = document.querySelector("#calendar");
+  await addEntry(calendar, `${SECOND_DATE}T14:00`, `${SECOND_DATE}T15:00`);
+
+  const got = getShadowDOMItems(calendar, ".entry");
+
+  expect(got.length).toBe(1);
+  expect(got[0].gridColumn).toBe(1 + COLUMN_OFFSET);
+  expect(got[0].gridRowStart).toBe(14 * 4 + ROW_OFFSET);
+  expect(got[0].gridRowEnd).toBe(15 * 4 + ROW_OFFSET);
+  expect(got[0].element.innerHTML).toContain("start-city");
+  expect(got[0].element.innerHTML).toContain("end-city");
+});
+
+test("entrySecondDateWithCalendarDateChange", async function () {
+  const calendar = document.querySelector("#calendar");
+  await addEntry(calendar, `${SECOND_DATE}T14:00`, `${SECOND_DATE}T15:00`);
+  await calendar.setAttribute("start-date", SECOND_DATE);
+
+  const got = getShadowDOMItems(calendar, ".entry");
+
+  expect(got.length).toBe(1);
+  expect(got[0].gridColumn).toBe(COLUMN_OFFSET);
+  expect(got[0].gridRowStart).toBe(14 * 4 + ROW_OFFSET);
+  expect(got[0].gridRowEnd).toBe(15 * 4 + ROW_OFFSET);
+  expect(got[0].element.innerHTML).toContain("start-city");
+  expect(got[0].element.innerHTML).toContain("end-city");
+});
+
 test("entryFirstDayFromMidnight", async function () {
   const calendar = document.querySelector("#calendar");
   await addEntry(calendar, `${FIRST_DATE}T00:00`, `${FIRST_DATE}T00:15`);
