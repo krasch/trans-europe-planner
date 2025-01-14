@@ -93,7 +93,7 @@ test("entryFirstDate", async function () {
   const calendar = document.querySelector("#calendar");
   await addEntry(calendar, `${FIRST_DATE}T14:00`, `${FIRST_DATE}T15:00`);
 
-  const got = getShadowDOMItems(calendar, ".entry");
+  const got = getShadowDOMItems(calendar, ".entry-part");
 
   expect(got.length).toBe(1);
   expect(got[0].gridColumn).toBe(COLUMN_OFFSET);
@@ -107,7 +107,7 @@ test("entrySecondDate", async function () {
   const calendar = document.querySelector("#calendar");
   await addEntry(calendar, `${SECOND_DATE}T14:00`, `${SECOND_DATE}T15:00`);
 
-  const got = getShadowDOMItems(calendar, ".entry");
+  const got = getShadowDOMItems(calendar, ".entry-part");
 
   expect(got.length).toBe(1);
   expect(got[0].gridColumn).toBe(1 + COLUMN_OFFSET);
@@ -122,7 +122,7 @@ test("entrySecondDateWithCalendarDateChange", async function () {
   await addEntry(calendar, `${SECOND_DATE}T14:00`, `${SECOND_DATE}T15:00`);
   await calendar.setAttribute("start-date", SECOND_DATE);
 
-  const got = getShadowDOMItems(calendar, ".entry");
+  const got = getShadowDOMItems(calendar, ".entry-part");
 
   expect(got.length).toBe(1);
   expect(got[0].gridColumn).toBe(COLUMN_OFFSET);
@@ -132,11 +132,11 @@ test("entrySecondDateWithCalendarDateChange", async function () {
   expect(got[0].element.innerHTML).toContain("end-city");
 });
 
-test("entryFirstDayFromMidnight", async function () {
+test("entryFromMidnight", async function () {
   const calendar = document.querySelector("#calendar");
   await addEntry(calendar, `${FIRST_DATE}T00:00`, `${FIRST_DATE}T00:15`);
 
-  const got = getShadowDOMItems(calendar, ".entry");
+  const got = getShadowDOMItems(calendar, ".entry-part");
 
   expect(got.length).toBe(1);
   expect(got[0].gridColumn).toBe(2);
@@ -146,27 +146,11 @@ test("entryFirstDayFromMidnight", async function () {
   expect(got[0].element.innerHTML).toContain("end-city");
 });
 
-test("entryFirstDayAfternoon", async function () {
-  const calendar = document.querySelector("#calendar");
-  await addEntry(calendar, `${FIRST_DATE}T16:29`, `${FIRST_DATE}T18:04`);
-
-  const got = getShadowDOMItems(calendar, ".entry");
-
-  expect(got.length).toBe(1);
-  expect(got[0].gridColumn).toBe(COLUMN_OFFSET);
-  expect(got[0].gridRowStart).toBe(16 * 4 + 2 + ROW_OFFSET);
-  expect(got[0].gridRowEnd).toBe(18 * 4 + ROW_OFFSET);
-  expect(got[0].element.innerHTML).toContain("start-city");
-  expect(got[0].element.innerHTML).toContain("16:29");
-  expect(got[0].element.innerHTML).toContain("end-city");
-  expect(got[0].element.innerHTML).toContain("18:04");
-});
-
-test("entryThirdDayEndsJustBeforeMidnight", async function () {
+test("entryEndsJustBeforeMidnight", async function () {
   const calendar = document.querySelector("#calendar");
   await addEntry(calendar, `${THIRD_DATE}T14:30`, `${THIRD_DATE}T23:59`);
 
-  const got = getShadowDOMItems(calendar, ".entry");
+  const got = getShadowDOMItems(calendar, ".entry-part");
 
   expect(got.length).toBe(1);
   expect(got[0].gridColumn).toBe(2 + COLUMN_OFFSET);
@@ -182,7 +166,7 @@ test("entryTwoDays", async function () {
   const calendar = document.querySelector("#calendar");
   await addEntry(calendar, `${FIRST_DATE}T16:29`, `${SECOND_DATE}T18:04`);
 
-  const got = getShadowDOMItems(calendar, ".entry");
+  const got = getShadowDOMItems(calendar, ".entry-part");
 
   expect(got.length).toBe(2);
 
@@ -207,7 +191,7 @@ test("entryThreeDays", async function () {
   const calendar = document.querySelector("#calendar");
   await addEntry(calendar, `${FIRST_DATE}T16:29`, `${THIRD_DATE}T18:04`);
 
-  const got = getShadowDOMItems(calendar, ".entry");
+  const got = getShadowDOMItems(calendar, ".entry-part");
 
   expect(got.length).toBe(3);
 

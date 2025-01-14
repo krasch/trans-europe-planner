@@ -186,7 +186,7 @@ class TravelCalendar extends HTMLElement {
     const elements = [];
     for (let column = startColumn; column < endColumn + 1; column++) {
       const element = document.createElement("div");
-      element.classList.add("entry");
+      element.classList.add("entry-part");
 
       let startRow = 0; // beginning of day
       if (column === startColumn) {
