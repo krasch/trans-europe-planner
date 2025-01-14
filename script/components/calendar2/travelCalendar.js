@@ -52,17 +52,34 @@ const style = `
   border-top: var(--calendar-lines);
 }
 
-.entry {
+.entry-part {
   --color: 128,128,128;
   overflow: hidden;
-  border: 1px solid darkgrey;
+  border-radius: 10px;
 }
-.entry.full {
+.entry-part[status=selected] {
     border: 1px solid darkgrey;
-    border-radius: 10px;
     background-color: rgba(var(--color), 0.6);
 }
-.entry.hidden {
+.entry-part[status=selected].hover {
+    background-color: rgba(var(--color), 0.8);
+}
+.entry-part[status=hidden] {
+  visibility: hidden;
+}
+/* faint highlight to show that dropping is possible here */
+.entry-part[status=indicator] {
+  border-top: 1px dashed rgba(var(--color));
+  border-radius: 0;
+}
+.entry-part[status=indicator] > * {
+  visibility: hidden; 
+}
+/* drag&drop mode and user is hovering over this drop zone */
+.entry-part[status=preview] {
+  background-color: rgba(var(--color), 0.8);
+}
+.entry-part[status=preview] > * {
   visibility: hidden;
 }
 </style>`;
@@ -96,13 +113,30 @@ class TravelCalendar extends HTMLElement {
 
   // object can only have string keys
   // whereas map can also have complex keys (e.g. HTMLElements)
-  #entries = new Map();
+  #mappingExternalToInternal = new Map();
+  #mappingInternalToExternal = new Map();
 
   constructor() {
     super();
 
     this.attachShadow({ mode: "open" });
-    this.shadowRoot.innerHTML = style; // + "<slot></slot>";
+    this.shadowRoot.innerHTML = style;
+
+    this.shadowRoot.addEventListener("mouseover", (e) => {
+      const closest = e.target.closest(".entry-part");
+      if (!closest) return;
+
+      for (let part of this.#getAllPartsForEntry(closest))
+        part.classList.add("hover");
+    });
+
+    this.shadowRoot.addEventListener("mouseout", (e) => {
+      const closest = e.target.closest(".entry-part");
+      if (!closest) return;
+
+      for (let part of this.#getAllPartsForEntry(closest))
+        part.classList.remove("hover");
+    });
   }
 
   get startDate() {
@@ -162,7 +196,7 @@ class TravelCalendar extends HTMLElement {
         labels[i].innerHTML = formatDateLabel(newValue, i);
       }
 
-      const options = Array.from(this.#entries.keys());
+      const options = Array.from(this.children);
       for (let travelOption of options) {
         this.#removeEntry(travelOption);
         this.#addEntry(travelOption);
@@ -186,6 +220,7 @@ class TravelCalendar extends HTMLElement {
     const elements = [];
     for (let column = startColumn; column < endColumn + 1; column++) {
       const element = document.createElement("div");
+      element.setAttribute("status", travelOption.status);
       element.classList.add("entry-part");
 
       let startRow = 0; // beginning of day
@@ -211,13 +246,17 @@ class TravelCalendar extends HTMLElement {
       elements.push(element);
     }
 
-    this.#entries.set(travelOption, elements);
+    this.#mappingExternalToInternal.set(travelOption, elements);
+    for (let el of elements)
+      this.#mappingInternalToExternal.set(el, travelOption);
   }
 
   #removeEntry(travelOption) {
-    for (let element of this.#entries.get(travelOption))
+    for (let element of this.#mappingExternalToInternal.get(travelOption)) {
       this.shadowRoot.removeChild(element);
-    this.#entries.delete(travelOption);
+      this.#mappingInternalToExternal.delete(element);
+    }
+    this.#mappingExternalToInternal.delete(travelOption);
   }
 
   #propagateStyle(travelOption) {
@@ -296,6 +335,11 @@ class TravelCalendar extends HTMLElement {
     const midnight = new Date(datetime.toDateString());
     const diffMillis = midnight - new Date(this.startDate);
     return Math.round(diffMillis / (1000 * 60 * 60 * 24));
+  }
+
+  *#getAllPartsForEntry(onePart) {
+    const parent = this.#mappingInternalToExternal.get(onePart);
+    for (let part of this.#mappingExternalToInternal.get(parent)) yield part;
   }
 }
 
