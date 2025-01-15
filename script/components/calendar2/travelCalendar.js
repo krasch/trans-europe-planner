@@ -26,7 +26,7 @@ const style = `
 }
 
 :host([hidden]) { 
-   display: none 
+  display: none 
 }
 
 /* styling the calendar grid */
@@ -56,30 +56,31 @@ const style = `
   --color: 128,128,128;
   overflow: hidden;
   border-radius: 10px;
-}
-.entry-part[status=selected] {
-    border: 1px solid darkgrey;
-    background-color: rgba(var(--color), 0.6);
-}
-.entry-part[status=selected].hover {
-    background-color: rgba(var(--color), 0.8);
-}
-.entry-part[status=hidden] {
   visibility: hidden;
 }
+.entry-part[data-status=active] {
+  visibility: visible;
+  border: 1px solid darkgrey;
+  background-color: rgba(var(--color), 0.6);
+}
+.entry-part[data-status=active].hover {
+  background-color: rgba(var(--color), 0.8);
+}
 /* faint highlight to show that dropping is possible here */
-.entry-part[status=indicator] {
+.entry-part[data-drag-status=indicator] {
+  visibility: visible;
   border-top: 1px dashed rgba(var(--color));
   border-radius: 0;
 }
-.entry-part[status=indicator] > * {
+.entry-part[data-drag-status=indicator] > * {
   visibility: hidden; 
 }
 /* drag&drop mode and user is hovering over this drop zone */
-.entry-part[status=preview] {
+.entry-part[data-drag-status=preview] {
+  visibility: visible;
   background-color: rgba(var(--color), 0.8);
 }
-.entry-part[status=preview] > * {
+.entry-part[data-drag-status=preview] > * {
   visibility: hidden;
 }
 </style>`;
@@ -106,6 +107,117 @@ function createStopElement(datetime, city) {
   return element;
 }
 
+function enableDragAndDrop(calendar, onDropCallback) {
+  const emptyDragImage = new Image();
+  emptyDragImage.src =
+    "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
+
+  // use this function to set up an event listener that only gets called back
+  // when the entry is a valid drop target
+  const addFilteredEventListener = (type, callback) => {
+    calendar.addEntryEventListener(type, (e, entry, groupEntries) => {
+      // the "group" attributes of the element being dragged (source)
+      // chrome only allows us to access the getData in drop event -> workaround
+      let groupSource = e.dataTransfer.types[0];
+
+      // and the group attribute where the mouse is currently over (target)
+      const groupTarget = entry.group;
+
+      // both group attributes must be the same
+      // group source might be lower-case due to chrome workaround
+      // -> compare in lower case
+      if (groupSource.toLocaleLowerCase() === groupTarget.toLocaleLowerCase())
+        callback(e, entry, groupEntries);
+    });
+  };
+
+  calendar.addEntryEventListener("dragstart", (e, entry, groupEntries) => {
+    e.dataTransfer.setDragImage(emptyDragImage, 0, 0);
+
+    // chrome workaround, important that this is not inside the timeout
+    e.dataTransfer.setData(entry.group, entry.group);
+
+    // another chrome-workaround, otherwise it directly fires dragend event
+    setTimeout(() => {
+      e.dataTransfer.dropEffect = "move";
+
+      entry.active = false;
+      for (let entry_ of groupEntries) entry_.dragStatus = "indicator";
+    }, 10);
+  });
+
+  // enters a valid drop target
+  addFilteredEventListener("dragenter", (e, entry) => {
+    e.preventDefault();
+    entry.dragStatus = "preview";
+  });
+
+  // this event is fired every few hundred milliseconds
+  addFilteredEventListener("dragover", (e) => {
+    e.preventDefault();
+  });
+
+  // leaves a valid drop target
+  addFilteredEventListener("dragleave", (e, entry) => {
+    e.preventDefault();
+    entry.dragStatus = "indicator";
+  });
+
+  // drop finished
+  addFilteredEventListener("drop", (e, entry, groupEntries) => {
+    e.preventDefault();
+
+    entry.active = true;
+    for (let entry_ of groupEntries) entry_.dragStatus = null;
+
+    onDropCallback(entry);
+  });
+
+  // no drop event fired, drag&drop was aborted -> reset
+  addFilteredEventListener("dragend", (e, entry, groupEntries) => {
+    e.preventDefault();
+
+    // todo what else could it be besides "none"?
+    if (e.dataTransfer.dropEffect === "none") {
+      entry.active = true;
+      for (let entry_ of groupEntries) entry_.dragStatus = null;
+    }
+  });
+}
+
+class MultipartCalendarEntry {
+  constructor(parts, group) {
+    this.parts = parts;
+    this.group = group; // todo make private?
+    this.active = false;
+    this.dragStatus = undefined;
+  }
+
+  set hover(isHover) {
+    for (let part of this.parts) {
+      if (isHover) part.classList.add("hover");
+      else part.classList.remove("hover");
+    }
+  }
+
+  set active(isActive) {
+    const value = isActive ? "active" : "inactive";
+    for (let part of this.parts) part.dataset.status = value;
+  }
+
+  set dragStatus(status) {
+    // usually we want to set the status for all parts
+    // except when we want "indicator status", then line should only be on top of first part
+    let parts = this.parts;
+    if (status === "indicator") parts = this.parts.slice(0, 1);
+
+    for (let part of parts) {
+      if (status === undefined) delete part.dataset.dragStatus;
+      else part.dataset.dragStatus = status;
+    }
+  }
+}
+
 class TravelCalendar extends HTMLElement {
   static observedAttributes = ["start-date"];
 
@@ -113,8 +225,9 @@ class TravelCalendar extends HTMLElement {
 
   // object can only have string keys
   // whereas map can also have complex keys (e.g. HTMLElements)
-  #mappingExternalToInternal = new Map();
-  #mappingInternalToExternal = new Map();
+  #mappingOuterToInner = new Map();
+  #mappingPartToEntry = new Map();
+  #entryGroups = new Map();
 
   constructor() {
     super();
@@ -122,20 +235,24 @@ class TravelCalendar extends HTMLElement {
     this.attachShadow({ mode: "open" });
     this.shadowRoot.innerHTML = style;
 
-    this.shadowRoot.addEventListener("mouseover", (e) => {
-      const closest = e.target.closest(".entry-part");
-      if (!closest) return;
-
-      for (let part of this.#getAllPartsForEntry(closest))
-        part.classList.add("hover");
+    this.addEntryEventListener("mouseover", (e, entry) => {
+      entry.hover = true;
+    });
+    this.addEntryEventListener("mouseout", (e, entry) => {
+      entry.hover = false;
     });
 
-    this.shadowRoot.addEventListener("mouseout", (e) => {
+    enableDragAndDrop(this, (closest) => {});
+  }
+
+  addEntryEventListener(type, callback) {
+    this.shadowRoot.addEventListener(type, (e) => {
       const closest = e.target.closest(".entry-part");
       if (!closest) return;
 
-      for (let part of this.#getAllPartsForEntry(closest))
-        part.classList.remove("hover");
+      const entry = this.#mappingPartToEntry.get(closest);
+      const group = this.#entryGroups.get(entry.group);
+      callback(e, entry, group);
     });
   }
 
@@ -184,7 +301,9 @@ class TravelCalendar extends HTMLElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
+    // start date of calendar changed
     if (name === "start-date" && oldValue !== newValue) {
+      // get labels in top-level row, these need to be updated
       const labels = Array.from(
         this.shadowRoot.querySelectorAll(".date-label"),
       );
@@ -196,6 +315,9 @@ class TravelCalendar extends HTMLElement {
         labels[i].innerHTML = formatDateLabel(newValue, i);
       }
 
+      // also need to update the column in which the parts of the entry lie
+      // for now, simple remove the entry and add it again,
+      // then all parts should end up at the right place
       const options = Array.from(this.children);
       for (let travelOption of options) {
         this.#removeEntry(travelOption);
@@ -204,59 +326,69 @@ class TravelCalendar extends HTMLElement {
     }
   }
 
-  #addEntry(travelOption) {
-    const startDateTime = new Date(travelOption.startTime);
-    const endDateTime = new Date(travelOption.endTime);
+  #addEntry(entry) {
+    const startDateTime = new Date(entry.startTime);
+    const endDateTime = new Date(entry.endTime);
 
-    const from = createStopElement(startDateTime, travelOption.startCity);
+    const from = createStopElement(startDateTime, entry.startCity);
     from.classList.add("from");
 
-    const to = createStopElement(endDateTime, travelOption.endCity);
+    const to = createStopElement(endDateTime, entry.endCity);
     to.classList.add("to");
 
     const startColumn = this.#getColumn(startDateTime);
     const endColumn = this.#getColumn(endDateTime);
 
-    const elements = [];
+    const parts = [];
     for (let column = startColumn; column < endColumn + 1; column++) {
-      const element = document.createElement("div");
-      element.setAttribute("status", travelOption.status);
-      element.classList.add("entry-part");
+      const part = document.createElement("div");
+      part.classList.add("entry-part");
 
       let startRow = 0; // beginning of day
       if (column === startColumn) {
         startRow = this.#getRow(startDateTime);
-        element.appendChild(from);
+        part.appendChild(from);
       }
 
       let endRow = 24 * RESOLUTION; // end of day
       if (column === endColumn) {
         endRow = this.#getRow(endDateTime);
-        element.appendChild(to);
+        part.appendChild(to);
       }
 
       this.#setGridLocation(
-        element,
+        part,
         column + 1, // +1 for hour column
         startRow + 1, // +1 for header row
         endRow + 1, // +1 for header row
       );
-      this.shadowRoot.appendChild(element);
+      this.shadowRoot.appendChild(part);
+      part.draggable = true;
 
-      elements.push(element);
+      parts.push(part);
     }
 
-    this.#mappingExternalToInternal.set(travelOption, elements);
-    for (let el of elements)
-      this.#mappingInternalToExternal.set(el, travelOption);
+    const entry2 = new MultipartCalendarEntry(parts, entry.dataset.group);
+    if (entry.status === "selected") entry2.active = true;
+
+    this.#mappingOuterToInner.set(entry, entry2);
+    for (let el of parts) this.#mappingPartToEntry.set(el, entry2);
+
+    if (!this.#entryGroups.has(entry.dataset.group))
+      this.#entryGroups.set(entry.dataset.group, []);
+    this.#entryGroups.get(entry.dataset.group).push(entry2);
+
+    //this.#mappingEntryToGroup
   }
 
   #removeEntry(travelOption) {
-    for (let element of this.#mappingExternalToInternal.get(travelOption)) {
+    for (let element of this.#mappingOuterToInner.get(travelOption).parts) {
       this.shadowRoot.removeChild(element);
-      this.#mappingInternalToExternal.delete(element);
+      this.#mappingPartToEntry.delete(element);
     }
-    this.#mappingExternalToInternal.delete(travelOption);
+    this.#mappingOuterToInner.delete(travelOption);
+    // todo remove group
+    // todo write tests
   }
 
   #propagateStyle(travelOption) {
@@ -335,11 +467,6 @@ class TravelCalendar extends HTMLElement {
     const midnight = new Date(datetime.toDateString());
     const diffMillis = midnight - new Date(this.startDate);
     return Math.round(diffMillis / (1000 * 60 * 60 * 24));
-  }
-
-  *#getAllPartsForEntry(onePart) {
-    const parent = this.#mappingInternalToExternal.get(onePart);
-    for (let part of this.#mappingExternalToInternal.get(parent)) yield part;
   }
 }
 
