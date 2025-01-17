@@ -188,9 +188,9 @@ function enableDragAndDrop(calendar, onDropCallback) {
 class MultipartCalendarEntry {
   constructor(parts, group) {
     this.parts = parts;
-    this.group = group; // todo make private?
+    this.group = group; // todo make private and use getter?
     this.active = false;
-    this.dragStatus = undefined;
+    //this.dragStatus = null;
   }
 
   set hover(isHover) {
@@ -205,15 +205,20 @@ class MultipartCalendarEntry {
     for (let part of this.parts) part.dataset.status = value;
   }
 
+  // todo move to drag&drop?
   set dragStatus(status) {
-    // usually we want to set the status for all parts
-    // except when we want "indicator status", then line should only be on top of first part
-    let parts = this.parts;
-    if (status === "indicator") parts = this.parts.slice(0, 1);
-
-    for (let part of parts) {
-      if (status === undefined) delete part.dataset.dragStatus;
-      else part.dataset.dragStatus = status;
+    // indicator is a special case, because line should only be on top of first part
+    if (status === "indicator") {
+      this.dragStatus = null; // unset all (recursive call)
+      this.parts[0].dataset.dragStatus = "indicator";
+    }
+    // unset drag status for all parts
+    else if (status === null) {
+      for (let part of this.parts) delete part.dataset.dragStatus;
+    }
+    // all other statuses just set for all parts
+    else {
+      for (let part of this.parts) part.dataset.dragStatus = status;
     }
   }
 }
@@ -449,13 +454,6 @@ class TravelCalendar extends HTMLElement {
     }
   }
 
-  #setGridLocation(element, column, startRow, endRow) {
-    // +1 because grid is one-indexed (not zero-indexed)
-    element.style.gridColumn = column + 1;
-    element.style.gridRowStart = startRow + 1;
-    element.style.gridRowEnd = endRow + 1;
-  }
-
   #getRow(datetime) {
     // todo time zones, dst
     const minute = datetime.getHours() * 60 + datetime.getMinutes();
@@ -467,6 +465,13 @@ class TravelCalendar extends HTMLElement {
     const midnight = new Date(datetime.toDateString());
     const diffMillis = midnight - new Date(this.startDate);
     return Math.round(diffMillis / (1000 * 60 * 60 * 24));
+  }
+
+  #setGridLocation(element, column, startRow, endRow) {
+    // +1 because grid is one-indexed (not zero-indexed)
+    element.style.gridColumn = column + 1;
+    element.style.gridRowStart = startRow + 1;
+    element.style.gridRowEnd = endRow + 1;
   }
 }
 

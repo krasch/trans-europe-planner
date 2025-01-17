@@ -13,8 +13,8 @@ const {
 // to get drag events
 require("@atlaskit/pragmatic-drag-and-drop-unit-testing/drag-event-polyfill");
 
-const ROW_OFFSET = 2; // 1 for header, 1 because indexes start at 1
-const COLUMN_OFFSET = 2; // 1 for hour column, 1 because indexes start at 1
+const ROW_MIDNIGHT = 2; // 1 for header, 1 because indexes start at 1
+const COLUMN_FIRST_DAY = 2; // 1 for hour column, 1 because indexes start at 1
 
 const FIRST_DATE = "2024-10-15";
 const SECOND_DATE = "2024-10-16";
@@ -28,7 +28,7 @@ beforeEach(() => {
   document.body.innerHTML = `<travel-calendar id='calendar' start-date='${FIRST_DATE}'></travel-calendar>`;
 });
 
-function dispatchEvent(element, eventName, timeout_ms = 10) {
+function dispatchEvent(element, eventName, group = null, timeout_ms = 10) {
   const classes = {
     mouseover: MouseEvent,
     mouseout: MouseEvent,
@@ -36,38 +36,65 @@ function dispatchEvent(element, eventName, timeout_ms = 10) {
     dragend: DragEvent,
     dragenter: DragEvent,
     dragleave: DragEvent,
+    drop: DragEvent,
   };
 
   const clazz = classes[eventName];
-  element.dispatchEvent(new clazz(eventName, { bubbles: true }));
+  const event = new clazz(eventName, { bubbles: true });
+  if (group) event.dataTransfer.setData(group, group);
+
+  element.dispatchEvent(event);
 
   // wait for changes after dispatching to hove finished (hopefully waiting long enough)...
   return new Promise((resolve) => setTimeout(resolve, timeout_ms));
 }
 
 function getShadowDOMItems(calendar, querySelector) {
-  const elements = [];
-  for (let el of calendar.shadowRoot.querySelectorAll(querySelector)) {
-    elements.push({
-      element: el,
-      innerHTML: el.innerHTML,
-      dataset: el.dataset,
-      gridColumn: el.style._values["grid-column"],
-      gridRowStart: el.style._values["grid-row-start"],
-      gridRowEnd: el.style._values["grid-row-end"],
-    });
-  }
-  return elements;
+  const elements = Array.from(
+    calendar.shadowRoot.querySelectorAll(querySelector),
+  );
+
+  return {
+    elements: elements,
+    // returning these as getters so that it always takes the newest data directly from the
+    // HTML element instead of having to fetch elements every time
+    all: {
+      get gridColumn() {
+        return elements.map((e) => e.style._values["grid-column"]);
+      },
+      get gridRows() {
+        return elements.map((e) => [
+          e.style._values["grid-row-start"],
+          e.style._values["grid-row-end"],
+        ]);
+      },
+      get dragStatus() {
+        return elements.map((e) => e.dataset.dragStatus);
+      },
+      get isHover() {
+        return elements.map((e) => e.classList.contains("hover"));
+      },
+      get isActive() {
+        return elements.map((e) => e.dataset.status === "active");
+      },
+      get innerHTML() {
+        return elements.map((e) => e.innerHTML);
+      },
+    },
+  };
 }
 
-function createEntry(startDateTime, endDateTime, selected = false) {
+function createEntry(startDateTime, endDateTime, kwargs = {}) {
   const entry = document.createElement("travel-option");
   entry.startTime = startDateTime;
   entry.endTime = endDateTime;
   entry.startCity = "My start city";
   entry.endCity = "My end city";
   entry.dataset.group = "start-end";
-  if (selected) entry.setAttribute("status", "selected");
+
+  if (kwargs.selected) entry.setAttribute("status", "selected");
+  if (kwargs.group) entry.dataset.group = kwargs.group;
+
   return entry;
 }
 
@@ -75,22 +102,16 @@ test("dateLabelsAtInitialization", function () {
   const calendar = document.querySelector("#calendar");
   const got = getShadowDOMItems(calendar, ".date-label");
 
-  expect(got.length).toBe(3);
+  expect(got.all.gridColumn).toStrictEqual([2, 3, 4]);
+  expect(got.all.gridRows).toStrictEqual([
+    [1, 2],
+    [1, 2],
+    [1, 2],
+  ]);
 
-  expect(got[0].innerHTML).toContain("15");
-  expect(got[0].gridColumn).toBe(2);
-  expect(got[0].gridRowStart).toBe(1);
-  expect(got[0].gridRowEnd).toBe(2);
-
-  expect(got[1].innerHTML).toContain("16");
-  expect(got[1].gridColumn).toBe(3);
-  expect(got[1].gridRowStart).toBe(1);
-  expect(got[1].gridRowEnd).toBe(2);
-
-  expect(got[2].innerHTML).toContain("17");
-  expect(got[2].gridColumn).toBe(4);
-  expect(got[2].gridRowStart).toBe(1);
-  expect(got[2].gridRowEnd).toBe(2);
+  expect(got.all.innerHTML[0]).toContain("15");
+  expect(got.all.innerHTML[1]).toContain("16");
+  expect(got.all.innerHTML[2]).toContain("17");
 });
 
 test("dateLabelsAfterDateChanged", async function () {
@@ -99,22 +120,16 @@ test("dateLabelsAfterDateChanged", async function () {
 
   const got = getShadowDOMItems(calendar, ".date-label");
 
-  expect(got.length).toBe(3);
+  expect(got.all.gridColumn).toStrictEqual([2, 3, 4]);
+  expect(got.all.gridRows).toStrictEqual([
+    [1, 2],
+    [1, 2],
+    [1, 2],
+  ]);
 
-  expect(got[0].innerHTML).toContain("20");
-  expect(got[0].gridColumn).toBe(2);
-  expect(got[0].gridRowStart).toBe(1);
-  expect(got[0].gridRowEnd).toBe(2);
-
-  expect(got[1].innerHTML).toContain("21");
-  expect(got[1].gridColumn).toBe(3);
-  expect(got[1].gridRowStart).toBe(1);
-  expect(got[1].gridRowEnd).toBe(2);
-
-  expect(got[2].innerHTML).toContain("22");
-  expect(got[2].gridColumn).toBe(4);
-  expect(got[2].gridRowStart).toBe(1);
-  expect(got[2].gridRowEnd).toBe(2);
+  expect(got.all.innerHTML[0]).toContain("20");
+  expect(got.all.innerHTML[1]).toContain("21");
+  expect(got.all.innerHTML[2]).toContain("22");
 });
 
 test("entryFirstDate", async function () {
@@ -125,14 +140,13 @@ test("entryFirstDate", async function () {
 
   const got = getShadowDOMItems(calendar, ".entry-part");
 
-  expect(got.length).toBe(1);
-  expect(got[0].gridColumn).toBe(COLUMN_OFFSET);
-  expect(got[0].gridRowStart).toBe(14 * 4 + ROW_OFFSET);
-  expect(got[0].gridRowEnd).toBe(15 * 4 + ROW_OFFSET);
-  expect(got[0].innerHTML).toContain("My start city");
-  expect(got[0].innerHTML).toContain("My end city");
-  expect(got[0].dataset.status).toBe("inactive");
-  expect(got[0].dataset.dragStatus).toBe(undefined);
+  expect(got.all.gridColumn).toStrictEqual([COLUMN_FIRST_DAY]);
+  expect(got.all.gridRows).toStrictEqual([
+    [ROW_MIDNIGHT + 14 * 4, ROW_MIDNIGHT + 15 * 4],
+  ]);
+
+  expect(got.all.innerHTML[0]).toContain("My start city");
+  expect(got.all.innerHTML[0]).toContain("My end city");
 });
 
 test("entrySecondDateWithCalendarDateChange", async function () {
@@ -145,12 +159,10 @@ test("entrySecondDateWithCalendarDateChange", async function () {
 
   const got = getShadowDOMItems(calendar, ".entry-part");
 
-  expect(got.length).toBe(1);
-  expect(got[0].gridColumn).toBe(COLUMN_OFFSET);
-  expect(got[0].gridRowStart).toBe(14 * 4 + ROW_OFFSET);
-  expect(got[0].gridRowEnd).toBe(15 * 4 + ROW_OFFSET);
-  expect(got[0].innerHTML).toContain("My start city");
-  expect(got[0].innerHTML).toContain("My end city");
+  expect(got.all.gridColumn).toStrictEqual([COLUMN_FIRST_DAY]);
+  expect(got.all.gridRows).toStrictEqual([
+    [ROW_MIDNIGHT + 14 * 4, ROW_MIDNIGHT + 15 * 4],
+  ]);
 });
 
 test("entryFromMidnight", async function () {
@@ -161,12 +173,8 @@ test("entryFromMidnight", async function () {
 
   const got = getShadowDOMItems(calendar, ".entry-part");
 
-  expect(got.length).toBe(1);
-  expect(got[0].gridColumn).toBe(2);
-  expect(got[0].gridRowStart).toBe(2);
-  expect(got[0].gridRowEnd).toBe(3);
-  expect(got[0].innerHTML).toContain("My start city");
-  expect(got[0].innerHTML).toContain("My end city");
+  expect(got.all.gridColumn).toStrictEqual([COLUMN_FIRST_DAY]);
+  expect(got.all.gridRows).toStrictEqual([[ROW_MIDNIGHT, 1 + ROW_MIDNIGHT]]);
 });
 
 test("entryEndsJustBeforeMidnight", async function () {
@@ -177,14 +185,15 @@ test("entryEndsJustBeforeMidnight", async function () {
 
   const got = getShadowDOMItems(calendar, ".entry-part");
 
-  expect(got.length).toBe(1);
-  expect(got[0].gridColumn).toBe(2 + COLUMN_OFFSET);
-  expect(got[0].gridRowStart).toBe(14 * 4 + 2 + ROW_OFFSET);
-  expect(got[0].gridRowEnd).toBe(24 * 4 + ROW_OFFSET);
-  expect(got[0].innerHTML).toContain("My start city");
-  expect(got[0].innerHTML).toContain("14:30");
-  expect(got[0].innerHTML).toContain("My end city");
-  expect(got[0].innerHTML).toContain("23:59");
+  expect(got.all.gridColumn).toStrictEqual([COLUMN_FIRST_DAY + 2]);
+  expect(got.all.gridRows).toStrictEqual([
+    [ROW_MIDNIGHT + 14.5 * 4, ROW_MIDNIGHT + 24 * 4],
+  ]);
+
+  expect(got.all.innerHTML[0]).toContain("My start city");
+  expect(got.all.innerHTML[0]).toContain("14:30");
+  expect(got.all.innerHTML[0]).toContain("My end city");
+  expect(got.all.innerHTML[0]).toContain("23:59");
 });
 
 test("entryTwoDays", async function () {
@@ -195,23 +204,24 @@ test("entryTwoDays", async function () {
 
   const got = getShadowDOMItems(calendar, ".entry-part");
 
-  expect(got.length).toBe(2);
+  expect(got.all.gridColumn).toStrictEqual([
+    COLUMN_FIRST_DAY,
+    COLUMN_FIRST_DAY + 1,
+  ]);
+  expect(got.all.gridRows).toStrictEqual([
+    [ROW_MIDNIGHT + 16.5 * 4, ROW_MIDNIGHT + 24 * 4],
+    [ROW_MIDNIGHT, ROW_MIDNIGHT + 18 * 4],
+  ]);
 
-  expect(got[0].gridColumn).toBe(COLUMN_OFFSET);
-  expect(got[0].gridRowStart).toBe(16 * 4 + 2 + ROW_OFFSET);
-  expect(got[0].gridRowEnd).toBe(24 * 4 + ROW_OFFSET);
-  expect(got[0].innerHTML).toContain("My start city");
-  expect(got[0].innerHTML).toContain("16:29");
-  expect(got[0].innerHTML).not.toContain("My end city");
-  expect(got[0].innerHTML).not.toContain("18:04");
+  expect(got.all.innerHTML[0]).toContain("My start city");
+  expect(got.all.innerHTML[0]).toContain("16:29");
+  expect(got.all.innerHTML[0]).not.toContain("My end city");
+  expect(got.all.innerHTML[0]).not.toContain("18:04");
 
-  expect(got[1].gridColumn).toBe(1 + COLUMN_OFFSET);
-  expect(got[1].gridRowStart).toBe(ROW_OFFSET);
-  expect(got[1].gridRowEnd).toBe(18 * 4 + ROW_OFFSET);
-  expect(got[1].innerHTML).not.toContain("My start city");
-  expect(got[1].innerHTML).not.toContain("16:29");
-  expect(got[1].innerHTML).toContain("My end city");
-  expect(got[1].innerHTML).toContain("18:04");
+  expect(got.all.innerHTML[1]).not.toContain("My start city");
+  expect(got.all.innerHTML[1]).not.toContain("16:29");
+  expect(got.all.innerHTML[1]).toContain("My end city");
+  expect(got.all.innerHTML[1]).toContain("18:04");
 });
 
 test("entryThreeDays", async function () {
@@ -222,31 +232,31 @@ test("entryThreeDays", async function () {
 
   const got = getShadowDOMItems(calendar, ".entry-part");
 
-  expect(got.length).toBe(3);
+  expect(got.all.gridColumn).toStrictEqual([
+    COLUMN_FIRST_DAY,
+    COLUMN_FIRST_DAY + 1,
+    COLUMN_FIRST_DAY + 2,
+  ]);
+  expect(got.all.gridRows).toStrictEqual([
+    [ROW_MIDNIGHT + 16.5 * 4, ROW_MIDNIGHT + 24 * 4],
+    [ROW_MIDNIGHT, ROW_MIDNIGHT + 24 * 4],
+    [ROW_MIDNIGHT, ROW_MIDNIGHT + 18 * 4],
+  ]);
 
-  expect(got[0].gridColumn).toBe(COLUMN_OFFSET);
-  expect(got[0].gridRowStart).toBe(16 * 4 + 2 + ROW_OFFSET);
-  expect(got[0].gridRowEnd).toBe(24 * 4 + ROW_OFFSET);
-  expect(got[0].innerHTML).toContain("My start city");
-  expect(got[0].innerHTML).toContain("16:29");
-  expect(got[0].innerHTML).not.toContain("My end city");
-  expect(got[0].innerHTML).not.toContain("18:04");
+  expect(got.all.innerHTML[0]).toContain("My start city");
+  expect(got.all.innerHTML[0]).toContain("16:29");
+  expect(got.all.innerHTML[0]).not.toContain("My end city");
+  expect(got.all.innerHTML[0]).not.toContain("18:04");
 
-  expect(got[1].gridColumn).toBe(1 + COLUMN_OFFSET);
-  expect(got[1].gridRowStart).toBe(ROW_OFFSET);
-  expect(got[1].gridRowEnd).toBe(24 * 4 + ROW_OFFSET);
-  expect(got[1].innerHTML).not.toContain("My start city");
-  expect(got[1].innerHTML).not.toContain("16:29");
-  expect(got[1].innerHTML).not.toContain("My end city");
-  expect(got[1].innerHTML).not.toContain("18:04");
+  expect(got.all.innerHTML[1]).not.toContain("My start city");
+  expect(got.all.innerHTML[1]).not.toContain("16:29");
+  expect(got.all.innerHTML[1]).not.toContain("My end city");
+  expect(got.all.innerHTML[1]).not.toContain("18:04");
 
-  expect(got[2].gridColumn).toBe(2 + COLUMN_OFFSET);
-  expect(got[2].gridRowStart).toBe(ROW_OFFSET);
-  expect(got[2].gridRowEnd).toBe(18 * 4 + ROW_OFFSET);
-  expect(got[2].innerHTML).not.toContain("My start city");
-  expect(got[2].innerHTML).not.toContain("16:29");
-  expect(got[2].innerHTML).toContain("My end city");
-  expect(got[2].innerHTML).toContain("18:04");
+  expect(got.all.innerHTML[2]).not.toContain("My start city");
+  expect(got.all.innerHTML[2]).not.toContain("16:29");
+  expect(got.all.innerHTML[2]).toContain("My end city");
+  expect(got.all.innerHTML[2]).toContain("18:04");
 });
 
 test("entryThreeDaysHover", async function () {
@@ -255,39 +265,120 @@ test("entryThreeDaysHover", async function () {
   const calendar = document.querySelector("#calendar");
   await calendar.appendChild(entry);
 
-  const parts = getShadowDOMItems(calendar, ".entry-part");
-
   // by default no part should hover
-  for (let part of parts) expect(part.element.classList).not.toContain("hover");
+  let got = getShadowDOMItems(calendar, ".entry-part");
+  expect(got.all.isHover).toStrictEqual([false, false, false]);
 
-  // simulate mouseover
-  // now all parts should hover
-  await dispatchEvent(parts[1].element, "mouseover");
-  for (let part of parts) expect(part.element.classList).toContain("hover");
+  // after mouseover all parts should hover
+  await dispatchEvent(got.elements[0], "mouseover");
+  expect(got.all.isHover).toStrictEqual([true, true, true]);
 
-  // simulate mouseout over different part
-  // now again no part should hover
-  await dispatchEvent(parts[2].element, "mouseout");
-  for (let part of parts) expect(part.element.classList).not.toContain("hover");
+  // after mouseout no parts should hover
+  await dispatchEvent(got.elements[2], "mouseout");
+  expect(got.all.isHover).toStrictEqual([false, false, false]);
 });
 
 // todo group, todo droping over wrong group
 test("dragNDropMultidayNoDrop", async function () {
-  const entry1 = createEntry(t1("16:29"), t2("18:04"), true);
-  const entry2 = createEntry(t2("16:29"), t3("18:04"), false);
+  const group = "Berlin->München";
+  const other = "München->Verona";
+
+  const entries = [
+    // first two entries are from the same group and can be dragged/dropped
+    createEntry(t1("16:29"), t2("18:04"), { group: group, selected: true }),
+    createEntry(t2("16:29"), t3("18:04"), { group: group, selected: false }),
+    // third entry is from a different group and should not interact with first group
+    createEntry(t1("04:30"), t1("05:11"), { group: other, selected: true }),
+  ];
 
   const calendar = document.querySelector("#calendar");
-  await calendar.appendChild(entry1);
-  await calendar.appendChild(entry2);
+  for (let e of entries) await calendar.appendChild(e);
 
-  const parts = getShadowDOMItems(calendar, ".entry-part");
+  const got = getShadowDOMItems(calendar, ".entry-part");
+  const elements = {
+    e1: { part1: got.elements[0], part2: got.elements[1] },
+    e2: { part1: got.elements[2], part2: got.elements[3] },
+    e3: { part1: got.elements[4] },
+  };
 
-  await dispatchEvent(parts[1].element, "dragstart");
+  const exp = {
+    status: {
+      e1_and_e3_active: [true, true, false, false, true],
+      e2_and_e3_active: [false, false, true, true, true],
+      only_e3_active: [false, false, false, false, true],
+    },
+    drag: {
+      all_undefined: [undefined, undefined, undefined, undefined, undefined],
+      e1_and_e2_indicator: [
+        "indicator",
+        undefined,
+        "indicator",
+        undefined,
+        undefined,
+      ],
+      e1indicator_e2preview: [
+        "indicator",
+        undefined,
+        "preview",
+        "preview",
+        undefined,
+      ],
+      e1preview_e2indicator: [
+        "preview",
+        "preview",
+        "indicator",
+        undefined,
+        undefined,
+      ],
+    },
+  };
 
-  /*const state = parts.map((p) => p.dataset.status);
-  expect(state).toStrictEqual(["inactive", "inactive", "inactive", "inactive"]);
-  const drag = parts.map((p) => p.dataset.dragStatus);
-  expect(drag).toStrictEqual(["indicator", undefined, "indicator", undefined]);
+  // initial values
+  expect(got.all.isActive).toStrictEqual(exp.status.e1_and_e3_active);
+  expect(got.all.dragStatus).toStrictEqual(exp.drag.all_undefined);
 
-  await dispatchEvent(parts[3].element, "dragenter");*/
+  /// when starting dragging e1, it should turn inactive and e1 and e2 should show indicators
+  await dispatchEvent(elements.e1.part1, "dragstart");
+  expect(got.all.isActive).toStrictEqual(exp.status.only_e3_active);
+  expect(got.all.dragStatus).toStrictEqual(exp.drag.e1_and_e2_indicator);
+
+  // when dragentering e2, it should become preview
+  await dispatchEvent(elements.e2.part2, "dragenter", group);
+  expect(got.all.isActive).toStrictEqual(exp.status.only_e3_active);
+  expect(got.all.dragStatus).toStrictEqual(exp.drag.e1indicator_e2preview);
+
+  // after dragleaving e2, it should switch back to indicator
+  await dispatchEvent(elements.e2.part1, "dragleave", group);
+  expect(got.all.isActive).toStrictEqual(exp.status.only_e3_active);
+  expect(got.all.dragStatus).toStrictEqual(exp.drag.e1_and_e2_indicator);
+
+  // when dragentering e3, nothing should happen
+  await dispatchEvent(elements.e3.part1, "dragenter", group);
+  expect(got.all.isActive).toStrictEqual(exp.status.only_e3_active);
+  expect(got.all.dragStatus).toStrictEqual(exp.drag.e1_and_e2_indicator);
+
+  // when dragleaving e3, nothing should happen either
+  await dispatchEvent(elements.e3.part1, "dragleave", group);
+  expect(got.all.isActive).toStrictEqual(exp.status.only_e3_active);
+  expect(got.all.dragStatus).toStrictEqual(exp.drag.e1_and_e2_indicator);
+
+  // when drop is canceled, it should snap back to e1 being active
+  // need to dispatch the dragend over e1, in reality this is not necessary
+  await dispatchEvent(elements.e1.part1, "dragend", group);
+  expect(got.all.isActive).toStrictEqual(exp.status.e1_and_e3_active);
+  expect(got.all.dragStatus).toStrictEqual(exp.drag.all_undefined);
+
+  // dragging e1 to e2 -> e2 should become active
+  await dispatchEvent(elements.e1.part1, "dragstart");
+  await dispatchEvent(elements.e2.part2, "drop", group);
+  expect(got.all.isActive).toStrictEqual(exp.status.e2_and_e3_active);
+  expect(got.all.dragStatus).toStrictEqual(exp.drag.all_undefined);
+
+  // dragging e2 to e2 -> e1 should become active
+  await dispatchEvent(elements.e2.part2, "dragstart");
+  await dispatchEvent(elements.e1.part1, "dragenter", group);
+  expect(got.all.dragStatus).toStrictEqual(exp.drag.e1preview_e2indicator);
+  await dispatchEvent(elements.e1.part2, "drop", group);
+  expect(got.all.isActive).toStrictEqual(exp.status.e1_and_e3_active);
+  expect(got.all.dragStatus).toStrictEqual(exp.drag.all_undefined);
 });
