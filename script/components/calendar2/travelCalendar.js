@@ -279,6 +279,21 @@ class TravelCalendar extends HTMLElement {
     enableDragAndDrop(this, (closest) => {}); // todo callback
   }
 
+  connectedCallback() {
+    this.#drawGrid();
+
+    this.#setupMutationObserver({
+      entryAdded: (e) => this.#addEntry(e),
+      entryRemoved: (e) => this.#removeEntry(e),
+    });
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "start-date" && oldValue !== newValue) {
+      this.#changeStartDate(newValue);
+    }
+  }
+
   addEntryEventListener(type, callback) {
     this.shadowRoot.addEventListener(type, (e) => {
       const closestEntryPart = e.target.closest(".entry-part");
@@ -288,86 +303,6 @@ class TravelCalendar extends HTMLElement {
       const group = this.#lookup.entriesWithGroup(entry.group);
       callback(e, entry, group);
     });
-  }
-
-  get startDate() {
-    return this.getAttribute("start-date");
-  }
-
-  set startDate(date) {
-    this.setAttribute("start-date", date);
-  }
-
-  connectedCallback() {
-    this.#drawGrid();
-
-    const observer = new MutationObserver((mutations) => {
-      for (let mutation of mutations) {
-        // children added/removed
-        // todo this also gives sub-children, can I filter those away?
-        if (mutation.type === "childList") {
-          for (let node of mutation.addedNodes) {
-            if (
-              node.tagName === "DIV" &&
-              node.classList.contains("calendar-entry")
-            )
-              this.#addEntry(node);
-          }
-          for (let node of mutation.removedNodes) {
-            if (
-              node.tagName === "DIV" &&
-              node.classList.contains("calendar-entry")
-            )
-              this.#removeEntry(node);
-          }
-        }
-
-        // child attributes changed
-        if (mutation.type === "attributes") {
-          if (mutation.target.tagName === "DIV") {
-            console.log(mutation);
-            if (mutation.target.attributeName === "style")
-              this.#propagateStyle(mutation.target);
-            else {
-              this.#removeEntry(mutation.target);
-              this.#addEntry(mutation.target);
-            }
-          }
-        }
-      }
-    });
-
-    observer.observe(this.shadowRoot.host, {
-      subtree: true,
-      childList: true,
-      attributes: true,
-    });
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    // start date of calendar changed
-    if (name === "start-date" && oldValue !== newValue) {
-      // get labels in top-level row, these need to be updated
-      const labels = Array.from(
-        this.shadowRoot.querySelectorAll(".date-label"),
-      );
-
-      // this callback might come before the grid has been initialized
-      // in this case labels will be empty, which is not an issue
-      // because they will get initialized during connectedCallback
-      for (let i in labels) {
-        labels[i].innerHTML = formatDateLabel(newValue, i);
-      }
-
-      // also need to update the column in which the parts of the entry lie
-      // for now, simple remove the entry and add it again,
-      // then all parts should end up at the right place
-      const options = Array.from(this.children);
-      for (let travelOption of options) {
-        this.#removeEntry(travelOption);
-        this.#addEntry(travelOption);
-      }
-    }
   }
 
   #addEntry(externalElement) {
@@ -412,6 +347,23 @@ class TravelCalendar extends HTMLElement {
     this.#lookup.unregister(travelOption);*/
   }
 
+  #changeStartDate(newDate) {
+    // update date labels in top-level row
+    const labels = Array.from(this.shadowRoot.querySelectorAll(".date-label"));
+    for (let i in labels) {
+      labels[i].innerHTML = formatDateLabel(newDate, i);
+    }
+
+    // also need to update the column in which the parts of the entry lie
+    // for now, simple remove the entry and add it again,
+    // then all parts should end up at the right place
+    const options = Array.from(this.children);
+    for (let travelOption of options) {
+      this.#removeEntry(travelOption);
+      this.#addEntry(travelOption);
+    }
+  }
+
   #propagateStyle(travelOption) {
     /*const entry = this.#entries.get(travelOption);
     const style = window.getComputedStyle(travelOption);
@@ -429,7 +381,7 @@ class TravelCalendar extends HTMLElement {
   #getColumn(datetime) {
     // todo time zones, dst
     const midnight = new Date(datetime.toDateString());
-    const diffMillis = midnight - new Date(this.startDate);
+    const diffMillis = midnight - new Date(this.getAttribute("start-date"));
     return Math.round(diffMillis / (1000 * 60 * 60 * 24));
   }
 
@@ -487,7 +439,7 @@ class TravelCalendar extends HTMLElement {
     // date labels at top of calendar
     for (let day = 0; day < NUM_DAYS; day++) {
       const element = document.createElement("div");
-      element.innerHTML = formatDateLabel(this.startDate, day);
+      element.innerHTML = formatDateLabel(this.getAttribute("start-date"), day);
       element.classList.add("date-label");
 
       this.#setGridLocation(
@@ -516,6 +468,30 @@ class TravelCalendar extends HTMLElement {
         this.shadowRoot.appendChild(element);
       }
     }
+  }
+
+  #setupMutationObserver(callbacks) {
+    const isEntry = (node) =>
+      node.tagName === "DIV" && node.classList.contains("calendar-entry");
+
+    const observer = new MutationObserver((mutations) => {
+      for (let mutation of mutations) {
+        if (mutation.type === "childList") {
+          for (let node of mutation.addedNodes) {
+            if (isEntry(node)) callbacks.entryAdded(node);
+          }
+          for (let node of mutation.removedNodes) {
+            if (isEntry(node)) callbacks.entryRemoved(node);
+          }
+        }
+      }
+    });
+
+    observer.observe(this.shadowRoot.host, {
+      subtree: false,
+      childList: true,
+      attributes: false,
+    });
   }
 }
 
