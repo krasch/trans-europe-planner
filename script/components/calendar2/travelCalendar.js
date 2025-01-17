@@ -107,6 +107,7 @@ function createStopElement(datetime, city) {
   return element;
 }
 
+// todo test onDropCallback
 function enableDragAndDrop(calendar, onDropCallback) {
   const emptyDragImage = new Image();
   emptyDragImage.src =
@@ -190,7 +191,6 @@ class MultipartCalendarEntry {
     this.parts = parts;
     this.group = group; // todo make private and use getter?
     this.active = false;
-    //this.dragStatus = null;
   }
 
   set hover(isHover) {
@@ -223,16 +223,46 @@ class MultipartCalendarEntry {
   }
 }
 
+class LookupUtil {
+  // using map because can use complex keys (e.g. HTML elements)
+
+  // maps from external HTML element to internal MultipartCalendarEntry
+  #externalToMultipart = new Map();
+  // maps from a part HTML element to its parent MultipartCalendarEntry
+  #partToParent = new Map();
+  // maps from string group name to all MultipartCalendarEntries with this group
+  #groupToMultipart = new Map();
+
+  entry = (externalElement) => this.#externalToMultipart.get(externalElement);
+  parent = (partElement) => this.#partToParent.get(partElement);
+  entriesWithGroup = (group) => this.#groupToMultipart.get(group);
+
+  register(externalHTMLElement, multipartCalendarEntry) {
+    this.#externalToMultipart.set(externalHTMLElement, multipartCalendarEntry);
+
+    for (let partElement of multipartCalendarEntry.parts)
+      this.#partToParent.set(partElement, multipartCalendarEntry);
+
+    const group = multipartCalendarEntry.group;
+    if (!this.#groupToMultipart.has(group))
+      this.#groupToMultipart.set(group, []);
+    this.#groupToMultipart.get(group).push(multipartCalendarEntry);
+  }
+
+  unregister(externalHTMLElement) {
+    /*const parts = this.#externalToMultipart[externalHTMLElement];
+    for (let part of parts) delete this.#partToParent[part];
+    delete this.#externalToMultipart[externalHTMLElement];
+    // todo remove group to multipart*/
+  }
+}
+
 class TravelCalendar extends HTMLElement {
   static observedAttributes = ["start-date"];
 
   //static #observedStyles = ["visibility", "--color", "border", "border-radius"];
 
-  // object can only have string keys
-  // whereas map can also have complex keys (e.g. HTMLElements)
-  #mappingOuterToInner = new Map();
-  #mappingPartToEntry = new Map();
-  #entryGroups = new Map();
+  #lookup = new LookupUtil();
 
   constructor() {
     super();
@@ -252,11 +282,11 @@ class TravelCalendar extends HTMLElement {
 
   addEntryEventListener(type, callback) {
     this.shadowRoot.addEventListener(type, (e) => {
-      const closest = e.target.closest(".entry-part");
-      if (!closest) return;
+      const closestEntryPart = e.target.closest(".entry-part");
+      if (!closestEntryPart) return;
 
-      const entry = this.#mappingPartToEntry.get(closest);
-      const group = this.#entryGroups.get(entry.group);
+      const entry = this.#lookup.parent(closestEntryPart);
+      const group = this.#lookup.entriesWithGroup(entry.group);
       callback(e, entry, group);
     });
   }
@@ -376,24 +406,13 @@ class TravelCalendar extends HTMLElement {
     const entry2 = new MultipartCalendarEntry(parts, entry.dataset.group);
     if (entry.status === "selected") entry2.active = true;
 
-    this.#mappingOuterToInner.set(entry, entry2);
-    for (let el of parts) this.#mappingPartToEntry.set(el, entry2);
-
-    if (!this.#entryGroups.has(entry.dataset.group))
-      this.#entryGroups.set(entry.dataset.group, []);
-    this.#entryGroups.get(entry.dataset.group).push(entry2);
-
-    //this.#mappingEntryToGroup
+    this.#lookup.register(entry, entry2);
   }
 
   #removeEntry(travelOption) {
-    for (let element of this.#mappingOuterToInner.get(travelOption).parts) {
-      this.shadowRoot.removeChild(element);
-      this.#mappingPartToEntry.delete(element);
-    }
-    this.#mappingOuterToInner.delete(travelOption);
-    // todo remove group
-    // todo write tests
+    for (let partElement of this.#lookup.entry(travelOption).parts)
+      this.shadowRoot.removeChild(partElement);
+    this.#lookup.unregister(travelOption);
   }
 
   #propagateStyle(travelOption) {
