@@ -85,189 +85,18 @@ const style = `
 }
 </style>`;
 
-function formatDateLabel(startDateString, offset) {
-  const date = new Date(startDateString);
-  date.setDate(date.getDate() + Number(offset));
-
-  const weekday = date.toLocaleString(LOCALE, { weekday: "short" });
-  const dateString = date.toLocaleString(LOCALE, {
-    month: "short",
-    day: "numeric",
-  });
-  return `${weekday} <br/> ${dateString}`;
-}
-
-// todo test onDropCallback
-function enableDragAndDrop(calendar, onDropCallback) {
-  const emptyDragImage = new Image();
-  emptyDragImage.src =
-    "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
-
-  // use this function to set up an event listener that only gets called back
-  // when the entry is a valid drop target
-  const addFilteredEventListener = (type, callback) => {
-    calendar.addEntryEventListener(type, (e, entry, groupEntries) => {
-      // the "group" attributes of the element being dragged (source)
-      // chrome only allows us to access the getData in drop event -> workaround
-      let groupSource = e.dataTransfer.types[0];
-
-      // and the group attribute where the mouse is currently over (target)
-      const groupTarget = entry.group;
-
-      // both group attributes must be the same
-      // group source might be lower-case due to chrome workaround
-      // -> compare in lower case
-      if (groupSource.toLocaleLowerCase() === groupTarget.toLocaleLowerCase())
-        callback(e, entry, groupEntries);
-    });
-  };
-
-  calendar.addEntryEventListener("dragstart", (e, entry, groupEntries) => {
-    e.dataTransfer.setDragImage(emptyDragImage, 0, 0);
-
-    // chrome workaround, important that this is not inside the timeout
-    e.dataTransfer.setData(entry.group, entry.group);
-
-    // another chrome-workaround, otherwise it directly fires dragend event
-    setTimeout(() => {
-      e.dataTransfer.dropEffect = "move";
-
-      entry.active = false;
-      for (let entry_ of groupEntries) entry_.dragStatus = "indicator";
-    }, 10);
-  });
-
-  // enters a valid drop target
-  addFilteredEventListener("dragenter", (e, entry) => {
-    e.preventDefault();
-    entry.dragStatus = "preview";
-  });
-
-  // this event is fired every few hundred milliseconds
-  addFilteredEventListener("dragover", (e) => {
-    e.preventDefault();
-  });
-
-  // leaves a valid drop target
-  addFilteredEventListener("dragleave", (e, entry) => {
-    e.preventDefault();
-    entry.dragStatus = "indicator";
-  });
-
-  // drop finished
-  addFilteredEventListener("drop", (e, entry, groupEntries) => {
-    e.preventDefault();
-
-    entry.active = true;
-    for (let entry_ of groupEntries) entry_.dragStatus = null;
-
-    onDropCallback(entry);
-  });
-
-  // no drop event fired, drag&drop was aborted -> reset
-  addFilteredEventListener("dragend", (e, entry, groupEntries) => {
-    e.preventDefault();
-
-    // todo what else could it be besides "none"?
-    if (e.dataTransfer.dropEffect === "none") {
-      entry.active = true;
-      for (let entry_ of groupEntries) entry_.dragStatus = null;
-    }
-  });
-}
-
-class MultipartCalendarEntry {
-  #group;
-
-  constructor(parts) {
-    this.parts = parts;
-  }
-
-  set group(group) {
-    this.#group = group;
-    for (let part of this.parts) part.dataset.group = group;
-  }
-
-  get group() {
-    return this.#group;
-  }
-
-  set hover(isHover) {
-    for (let part of this.parts) {
-      if (isHover) part.classList.add("hover");
-      else part.classList.remove("hover");
-    }
-  }
-
-  set active(isActive) {
-    const value = isActive ? "active" : "inactive";
-    for (let part of this.parts) part.dataset.status = value;
-  }
-
-  // todo move to drag&drop?
-  set dragStatus(status) {
-    // indicator is a special case, because line should only be on top of first part
-    if (status === "indicator") {
-      this.dragStatus = null; // unset all (recursive call)
-      this.parts[0].dataset.dragStatus = "indicator";
-    }
-    // unset drag status for all parts
-    else if (status === null) {
-      for (let part of this.parts) delete part.dataset.dragStatus;
-    }
-    // all other statuses just set for all parts
-    else {
-      for (let part of this.parts) part.dataset.dragStatus = status;
-    }
-  }
-}
-
-class LookupUtil {
-  // using map because can use complex keys (e.g. HTML elements)
-
-  // maps from external HTML element to internal MultipartCalendarEntry
-  #externalToMultipart = new Map();
-  // maps from a part HTML element to its parent MultipartCalendarEntry
-  #partToParent = new Map();
-  // maps from string group name to all MultipartCalendarEntries with this group
-  #groupToMultipart = new Map();
-
-  entry = (externalElement) => this.#externalToMultipart.get(externalElement);
-  parent = (partElement) => this.#partToParent.get(partElement);
-  entriesWithGroup = (group) => this.#groupToMultipart.get(group);
-
-  register(externalHTMLElement, multipartCalendarEntry) {
-    this.#externalToMultipart.set(externalHTMLElement, multipartCalendarEntry);
-
-    for (let partElement of multipartCalendarEntry.parts)
-      this.#partToParent.set(partElement, multipartCalendarEntry);
-
-    const group = multipartCalendarEntry.group;
-    if (!this.#groupToMultipart.has(group))
-      this.#groupToMultipart.set(group, []);
-    this.#groupToMultipart.get(group).push(multipartCalendarEntry);
-  }
-
-  unregister(externalHTMLElement) {
-    /*const parts = this.#externalToMultipart[externalHTMLElement];
-    for (let part of parts) delete this.#partToParent[part];
-    delete this.#externalToMultipart[externalHTMLElement];
-    // todo remove group to multipart*/
-  }
-}
-
 class TravelCalendar extends HTMLElement {
+  #lookup;
   static observedAttributes = ["start-date"];
-
-  //static #observedStyles = ["visibility", "--color", "border", "border-radius"];
-
-  #lookup = new LookupUtil();
 
   constructor() {
     super();
 
     this.attachShadow({ mode: "open" });
     this.shadowRoot.innerHTML = style;
+
+    // helps with mapping from entries to parts etc
+    this.#lookup = new LookupUtil();
 
     this.addEntryEventListener("mouseover", (e, entry) => {
       entry.hover = true;
@@ -351,7 +180,7 @@ class TravelCalendar extends HTMLElement {
     // update date labels in top-level row
     const labels = Array.from(this.shadowRoot.querySelectorAll(".date-label"));
     for (let i in labels) {
-      labels[i].innerHTML = formatDateLabel(newDate, i);
+      labels[i].innerHTML = this.#formatDateLabel(newDate, i);
     }
 
     // also need to update the column in which the parts of the entry lie
@@ -437,9 +266,10 @@ class TravelCalendar extends HTMLElement {
     }
 
     // date labels at top of calendar
+    const startDate = this.getAttribute("start-date");
     for (let day = 0; day < NUM_DAYS; day++) {
       const element = document.createElement("div");
-      element.innerHTML = formatDateLabel(this.getAttribute("start-date"), day);
+      element.innerHTML = this.#formatDateLabel(startDate, day);
       element.classList.add("date-label");
 
       this.#setGridLocation(
@@ -493,6 +323,176 @@ class TravelCalendar extends HTMLElement {
       attributes: false,
     });
   }
+
+  #formatDateLabel(startDateString, offset) {
+    const date = new Date(startDateString);
+    date.setDate(date.getDate() + Number(offset));
+
+    const weekday = date.toLocaleString(LOCALE, { weekday: "short" });
+    const dateString = date.toLocaleString(LOCALE, {
+      month: "short",
+      day: "numeric",
+    });
+    return `${weekday} <br/> ${dateString}`;
+  }
+}
+
+class MultipartCalendarEntry {
+  #group;
+
+  constructor(parts) {
+    this.parts = parts;
+  }
+
+  set group(group) {
+    this.#group = group;
+    for (let part of this.parts) part.dataset.group = group;
+  }
+
+  get group() {
+    return this.#group;
+  }
+
+  set hover(isHover) {
+    for (let part of this.parts) {
+      if (isHover) part.classList.add("hover");
+      else part.classList.remove("hover");
+    }
+  }
+
+  set active(isActive) {
+    const value = isActive ? "active" : "inactive";
+    for (let part of this.parts) part.dataset.status = value;
+  }
+
+  // todo move to drag&drop?
+  set dragStatus(status) {
+    // indicator is a special case, because line should only be on top of first part
+    if (status === "indicator") {
+      this.dragStatus = null; // unset all (recursive call)
+      this.parts[0].dataset.dragStatus = "indicator";
+    }
+    // unset drag status for all parts
+    else if (status === null) {
+      for (let part of this.parts) delete part.dataset.dragStatus;
+    }
+    // all other statuses just set for all parts
+    else {
+      for (let part of this.parts) part.dataset.dragStatus = status;
+    }
+  }
+}
+
+class LookupUtil {
+  // using map because can use complex keys (e.g. HTML elements)
+
+  // maps from external HTML element to internal MultipartCalendarEntry
+  #externalToMultipart = new Map();
+  // maps from a part HTML element to its parent MultipartCalendarEntry
+  #partToParent = new Map();
+  // maps from string group name to all MultipartCalendarEntries with this group
+  #groupToMultipart = new Map();
+
+  entry = (externalElement) => this.#externalToMultipart.get(externalElement);
+  parent = (partElement) => this.#partToParent.get(partElement);
+  entriesWithGroup = (group) => this.#groupToMultipart.get(group);
+
+  register(externalHTMLElement, multipartCalendarEntry) {
+    this.#externalToMultipart.set(externalHTMLElement, multipartCalendarEntry);
+
+    for (let partElement of multipartCalendarEntry.parts)
+      this.#partToParent.set(partElement, multipartCalendarEntry);
+
+    const group = multipartCalendarEntry.group;
+    if (!this.#groupToMultipart.has(group))
+      this.#groupToMultipart.set(group, []);
+    this.#groupToMultipart.get(group).push(multipartCalendarEntry);
+  }
+
+  unregister(externalHTMLElement) {
+    /*const parts = this.#externalToMultipart[externalHTMLElement];
+    for (let part of parts) delete this.#partToParent[part];
+    delete this.#externalToMultipart[externalHTMLElement];
+    // todo remove group to multipart*/
+  }
+}
+
+function enableDragAndDrop(calendar, onDropCallback) {
+  const emptyDragImage = new Image();
+  emptyDragImage.src =
+    "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
+
+  // use this function to set up an event listener that only gets called back
+  // when the entry is a valid drop target
+  const addFilteredEventListener = (type, callback) => {
+    calendar.addEntryEventListener(type, (e, entry, groupEntries) => {
+      // the "group" attributes of the element being dragged (source)
+      // chrome only allows us to access the getData in drop event -> workaround
+      let groupSource = e.dataTransfer.types[0];
+
+      // and the group attribute where the mouse is currently over (target)
+      const groupTarget = entry.group;
+
+      // both group attributes must be the same
+      // group source might be lower-case due to chrome workaround
+      // -> compare in lower case
+      if (groupSource.toLocaleLowerCase() === groupTarget.toLocaleLowerCase())
+        callback(e, entry, groupEntries);
+    });
+  };
+
+  calendar.addEntryEventListener("dragstart", (e, entry, groupEntries) => {
+    e.dataTransfer.setDragImage(emptyDragImage, 0, 0);
+
+    // chrome workaround, important that this is not inside the timeout
+    e.dataTransfer.setData(entry.group, entry.group);
+
+    // another chrome-workaround, otherwise it directly fires dragend event
+    setTimeout(() => {
+      e.dataTransfer.dropEffect = "move";
+
+      entry.active = false;
+      for (let entry_ of groupEntries) entry_.dragStatus = "indicator";
+    }, 10);
+  });
+
+  // enters a valid drop target
+  addFilteredEventListener("dragenter", (e, entry) => {
+    e.preventDefault();
+    entry.dragStatus = "preview";
+  });
+
+  // this event is fired every few hundred milliseconds
+  addFilteredEventListener("dragover", (e) => {
+    e.preventDefault();
+  });
+
+  // leaves a valid drop target
+  addFilteredEventListener("dragleave", (e, entry) => {
+    e.preventDefault();
+    entry.dragStatus = "indicator";
+  });
+
+  // drop finished
+  addFilteredEventListener("drop", (e, entry, groupEntries) => {
+    e.preventDefault();
+
+    entry.active = true;
+    for (let entry_ of groupEntries) entry_.dragStatus = null;
+
+    onDropCallback(entry);
+  });
+
+  // no drop event fired, drag&drop was aborted -> reset
+  addFilteredEventListener("dragend", (e, entry, groupEntries) => {
+    e.preventDefault();
+
+    // todo what else could it be besides "none"?
+    if (e.dataTransfer.dropEffect === "none") {
+      entry.active = true;
+      for (let entry_ of groupEntries) entry_.dragStatus = null;
+    }
+  });
 }
 
 customElements.define("travel-calendar", TravelCalendar); // todo move to main?
