@@ -97,16 +97,6 @@ function formatDateLabel(startDateString, offset) {
   return `${weekday} <br/> ${dateString}`;
 }
 
-function createStopElement(datetime, city) {
-  const element = document.createElement("div");
-  element.innerHTML = `
-   <div>
-       <span class="time">${datetime.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}
-       <span class="city">${city}
-   </div>`;
-  return element;
-}
-
 // todo test onDropCallback
 function enableDragAndDrop(calendar, onDropCallback) {
   const emptyDragImage = new Image();
@@ -187,9 +177,19 @@ function enableDragAndDrop(calendar, onDropCallback) {
 }
 
 class MultipartCalendarEntry {
-  constructor(parts, group) {
+  #group;
+
+  constructor(parts) {
     this.parts = parts;
-    this.group = group; // todo make private and use getter?
+  }
+
+  set group(group) {
+    this.#group = group;
+    for (let part of this.parts) part.dataset.group = group;
+  }
+
+  get group() {
+    return this.#group;
   }
 
   set hover(isHover) {
@@ -276,7 +276,7 @@ class TravelCalendar extends HTMLElement {
       entry.hover = false;
     });
 
-    enableDragAndDrop(this, (closest) => {});
+    enableDragAndDrop(this, (closest) => {}); // todo callback
   }
 
   addEntryEventListener(type, callback) {
@@ -371,42 +371,45 @@ class TravelCalendar extends HTMLElement {
   }
 
   #addEntry(externalElement) {
-    console.log("HALLLLO");
-
     const uiElements = {
       header: externalElement.querySelector(".header"),
       startInfo: externalElement.querySelector(".start"),
       destinationInfo: externalElement.querySelector(".destination"),
     };
 
-    const parts = this.#createPartsAndPlaceInGrid(
+    const partsToCreate = this.#splitIntoDays(
       new Date(externalElement.dataset.departureDatetime),
       new Date(externalElement.dataset.arrivalDatetime),
     );
 
-    console.log(parts);
+    const entry = new MultipartCalendarEntry(
+      partsToCreate.map((p) => {
+        const part = document.createElement("div");
+        part.draggable = true;
+        part.classList.add("entry-part");
 
-    parts[0].appendChild(uiElements.header);
-    parts[0].appendChild(uiElements.startInfo);
-    parts.at(-1).appendChild(uiElements.destinationInfo);
+        // +1 for header row/index column
+        this.#setGridLocation(part, p.column + 1, p.startRow + 1, p.endRow + 1);
+        this.shadowRoot.appendChild(part);
 
-    const internalMultipartEntry = new MultipartCalendarEntry(
-      parts,
-      externalElement.dataset.group,
+        return part;
+      }),
     );
 
-    console.log(externalElement.dataset.active);
+    entry.group = externalElement.dataset.group;
+    entry.active = externalElement.dataset.active === "active";
 
-    internalMultipartEntry.status = externalElement.dataset.active === "active";
-    console.log(internalMultipartEntry);
+    entry.parts[0].appendChild(uiElements.header.cloneNode(true));
+    entry.parts[0].appendChild(uiElements.startInfo.cloneNode(true));
+    entry.parts.at(-1).appendChild(uiElements.destinationInfo.cloneNode(true));
 
-    this.#lookup.register(externalElement, internalMultipartEntry);
+    this.#lookup.register(externalElement, entry);
   }
 
   #removeEntry(travelOption) {
-    for (let partElement of this.#lookup.entry(travelOption).parts)
-      this.shadowRoot.removeChild(partElement);
-    this.#lookup.unregister(travelOption);
+    /*for (let part of this.#lookup.entry(travelOption).parts)
+      this.shadowRoot.removeChild(part);
+    this.#lookup.unregister(travelOption);*/
   }
 
   #propagateStyle(travelOption) {
@@ -415,41 +418,6 @@ class TravelCalendar extends HTMLElement {
     for (let key of TravelCalendar.#observedStyles) {
       entry.style.setProperty(key, style.getPropertyValue(key));
     }*/
-  }
-
-  #createPartsAndPlaceInGrid(departureDatetime, arrivalDatetime) {
-    const departureColumn = this.#getColumn(departureDatetime);
-    const arrivalColumn = this.#getColumn(arrivalDatetime);
-
-    const departureRow = this.#getRow(departureDatetime);
-    const arrivalRow = this.#getRow(arrivalDatetime);
-
-    const startOfDayRow = 0;
-    const endOfDayRow = 24;
-
-    const parts = [];
-    for (let column = departureColumn; column < arrivalColumn; column++) {
-      const part = document.createElement("div");
-      part.classList.add("entry-part");
-
-      let startRow = startOfDayRow;
-      if (column === departureColumn) startRow = departureRow;
-
-      let endRow = endOfDayRow;
-      if (column === arrivalColumn) endRow = arrivalRow;
-
-      this.#setGridLocation(
-        part,
-        column + 1, // +1 for hour column
-        startRow + 1, // +1 for header row
-        endRow + 1, // +1 for header row
-      );
-
-      this.shadowRoot.appendChild(part);
-      parts.push(part);
-    }
-
-    return parts;
   }
 
   #getRow(datetime) {
@@ -470,6 +438,34 @@ class TravelCalendar extends HTMLElement {
     element.style.gridColumn = column + 1;
     element.style.gridRowStart = startRow + 1;
     element.style.gridRowEnd = endRow + 1;
+  }
+
+  #splitIntoDays(departureDatetime, arrivalDatetime) {
+    const departureColumn = this.#getColumn(departureDatetime);
+    const arrivalColumn = this.#getColumn(arrivalDatetime);
+
+    const departureRow = this.#getRow(departureDatetime);
+    const arrivalRow = this.#getRow(arrivalDatetime);
+
+    const startOfDayRow = 0;
+    const endOfDayRow = 24 * RESOLUTION;
+
+    const parts = [];
+    for (let column = departureColumn; column < arrivalColumn + 1; column++) {
+      let startRow = startOfDayRow;
+      if (column === departureColumn) startRow = departureRow;
+
+      let endRow = endOfDayRow;
+      if (column === arrivalColumn) endRow = arrivalRow;
+
+      parts.push({
+        column: column,
+        startRow: startRow,
+        endRow: endRow,
+      });
+    }
+
+    return parts;
   }
 
   #drawGrid() {
