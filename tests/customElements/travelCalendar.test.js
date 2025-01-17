@@ -85,17 +85,21 @@ function getShadowDOMItems(calendar, querySelector) {
 }
 
 function createEntry(startDateTime, endDateTime, kwargs = {}) {
-  const entry = document.createElement("travel-option");
-  entry.startTime = startDateTime;
-  entry.endTime = endDateTime;
-  entry.startCity = "My start city";
-  entry.endCity = "My end city";
-  entry.dataset.group = "start-end";
+  const element = document.createElement("dive");
+  element.classList.add("calendar-entry");
 
-  if (kwargs.selected) entry.setAttribute("status", "selected");
-  if (kwargs.group) entry.dataset.group = kwargs.group;
+  element.dataset.departureDatetime = startDateTime;
+  element.dataset.arrivalDatetime = endDateTime;
+  element.dataset.active = kwargs.group ?? "default-group";
+  element.dataset.group = kwargs.selected ? "active" : "inactive";
 
-  return entry;
+  element.innerHTML = `
+        <div class="header">From somewhere</div>
+        <div class="start">Start time and city</div>
+        <div class="destination">End time and city</div>
+  `;
+
+  return element;
 }
 
 test("dateLabelsAtInitialization", function () {

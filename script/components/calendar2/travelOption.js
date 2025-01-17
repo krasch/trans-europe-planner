@@ -8,6 +8,10 @@ class TravelOption extends HTMLElement {
     "status",
   ];
 
+  constructor() {
+    super();
+  }
+
   get startTime() {
     return this.getAttribute("start-time");
   }

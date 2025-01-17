@@ -190,7 +190,6 @@ class MultipartCalendarEntry {
   constructor(parts, group) {
     this.parts = parts;
     this.group = group; // todo make private and use getter?
-    this.active = false;
   }
 
   set hover(isHover) {
@@ -305,18 +304,28 @@ class TravelCalendar extends HTMLElement {
     const observer = new MutationObserver((mutations) => {
       for (let mutation of mutations) {
         // children added/removed
+        // todo this also gives sub-children, can I filter those away?
         if (mutation.type === "childList") {
           for (let node of mutation.addedNodes) {
-            if (node.tagName === "TRAVEL-OPTION") this.#addEntry(node);
+            if (
+              node.tagName === "DIV" &&
+              node.classList.contains("calendar-entry")
+            )
+              this.#addEntry(node);
           }
           for (let node of mutation.removedNodes) {
-            if (node.tagName === "TRAVEL-OPTION") this.#removeEntry(node);
+            if (
+              node.tagName === "DIV" &&
+              node.classList.contains("calendar-entry")
+            )
+              this.#removeEntry(node);
           }
         }
 
         // child attributes changed
         if (mutation.type === "attributes") {
-          if (mutation.target.tagName === "TRAVEL-OPTION") {
+          if (mutation.target.tagName === "DIV") {
+            console.log(mutation);
             if (mutation.target.attributeName === "style")
               this.#propagateStyle(mutation.target);
             else {
@@ -361,52 +370,37 @@ class TravelCalendar extends HTMLElement {
     }
   }
 
-  #addEntry(entry) {
-    const startDateTime = new Date(entry.startTime);
-    const endDateTime = new Date(entry.endTime);
+  #addEntry(externalElement) {
+    console.log("HALLLLO");
 
-    const from = createStopElement(startDateTime, entry.startCity);
-    from.classList.add("from");
+    const uiElements = {
+      header: externalElement.querySelector(".header"),
+      startInfo: externalElement.querySelector(".start"),
+      destinationInfo: externalElement.querySelector(".destination"),
+    };
 
-    const to = createStopElement(endDateTime, entry.endCity);
-    to.classList.add("to");
+    const parts = this.#createPartsAndPlaceInGrid(
+      new Date(externalElement.dataset.departureDatetime),
+      new Date(externalElement.dataset.arrivalDatetime),
+    );
 
-    const startColumn = this.#getColumn(startDateTime);
-    const endColumn = this.#getColumn(endDateTime);
+    console.log(parts);
 
-    const parts = [];
-    for (let column = startColumn; column < endColumn + 1; column++) {
-      const part = document.createElement("div");
-      part.classList.add("entry-part");
+    parts[0].appendChild(uiElements.header);
+    parts[0].appendChild(uiElements.startInfo);
+    parts.at(-1).appendChild(uiElements.destinationInfo);
 
-      let startRow = 0; // beginning of day
-      if (column === startColumn) {
-        startRow = this.#getRow(startDateTime);
-        part.appendChild(from);
-      }
+    const internalMultipartEntry = new MultipartCalendarEntry(
+      parts,
+      externalElement.dataset.group,
+    );
 
-      let endRow = 24 * RESOLUTION; // end of day
-      if (column === endColumn) {
-        endRow = this.#getRow(endDateTime);
-        part.appendChild(to);
-      }
+    console.log(externalElement.dataset.active);
 
-      this.#setGridLocation(
-        part,
-        column + 1, // +1 for hour column
-        startRow + 1, // +1 for header row
-        endRow + 1, // +1 for header row
-      );
-      this.shadowRoot.appendChild(part);
-      part.draggable = true;
+    internalMultipartEntry.status = externalElement.dataset.active === "active";
+    console.log(internalMultipartEntry);
 
-      parts.push(part);
-    }
-
-    const entry2 = new MultipartCalendarEntry(parts, entry.dataset.group);
-    if (entry.status === "selected") entry2.active = true;
-
-    this.#lookup.register(entry, entry2);
+    this.#lookup.register(externalElement, internalMultipartEntry);
   }
 
   #removeEntry(travelOption) {
@@ -421,6 +415,61 @@ class TravelCalendar extends HTMLElement {
     for (let key of TravelCalendar.#observedStyles) {
       entry.style.setProperty(key, style.getPropertyValue(key));
     }*/
+  }
+
+  #createPartsAndPlaceInGrid(departureDatetime, arrivalDatetime) {
+    const departureColumn = this.#getColumn(departureDatetime);
+    const arrivalColumn = this.#getColumn(arrivalDatetime);
+
+    const departureRow = this.#getRow(departureDatetime);
+    const arrivalRow = this.#getRow(arrivalDatetime);
+
+    const startOfDayRow = 0;
+    const endOfDayRow = 24;
+
+    const parts = [];
+    for (let column = departureColumn; column < arrivalColumn; column++) {
+      const part = document.createElement("div");
+      part.classList.add("entry-part");
+
+      let startRow = startOfDayRow;
+      if (column === departureColumn) startRow = departureRow;
+
+      let endRow = endOfDayRow;
+      if (column === arrivalColumn) endRow = arrivalRow;
+
+      this.#setGridLocation(
+        part,
+        column + 1, // +1 for hour column
+        startRow + 1, // +1 for header row
+        endRow + 1, // +1 for header row
+      );
+
+      this.shadowRoot.appendChild(part);
+      parts.push(part);
+    }
+
+    return parts;
+  }
+
+  #getRow(datetime) {
+    // todo time zones, dst
+    const minute = datetime.getHours() * 60 + datetime.getMinutes();
+    return Math.round((minute / 60.0) * RESOLUTION);
+  }
+
+  #getColumn(datetime) {
+    // todo time zones, dst
+    const midnight = new Date(datetime.toDateString());
+    const diffMillis = midnight - new Date(this.startDate);
+    return Math.round(diffMillis / (1000 * 60 * 60 * 24));
+  }
+
+  #setGridLocation(element, column, startRow, endRow) {
+    // +1 because grid is one-indexed (not zero-indexed)
+    element.style.gridColumn = column + 1;
+    element.style.gridRowStart = startRow + 1;
+    element.style.gridRowEnd = endRow + 1;
   }
 
   #drawGrid() {
@@ -471,26 +520,6 @@ class TravelCalendar extends HTMLElement {
         this.shadowRoot.appendChild(element);
       }
     }
-  }
-
-  #getRow(datetime) {
-    // todo time zones, dst
-    const minute = datetime.getHours() * 60 + datetime.getMinutes();
-    return Math.round((minute / 60.0) * RESOLUTION);
-  }
-
-  #getColumn(datetime) {
-    // todo time zones, dst
-    const midnight = new Date(datetime.toDateString());
-    const diffMillis = midnight - new Date(this.startDate);
-    return Math.round(diffMillis / (1000 * 60 * 60 * 24));
-  }
-
-  #setGridLocation(element, column, startRow, endRow) {
-    // +1 because grid is one-indexed (not zero-indexed)
-    element.style.gridColumn = column + 1;
-    element.style.gridRowStart = startRow + 1;
-    element.style.gridRowEnd = endRow + 1;
   }
 }
 
