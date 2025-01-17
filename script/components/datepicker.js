@@ -26,6 +26,7 @@ class Datepicker {
 
     this.#inputElement.min = this.#start.toISODate();
     this.#inputElement.max = this.#end.toISODate();
+    this.#inputElement.value = "2025-02-15";
 
     // previously picked date might still be set after reloading the page
     if (this.#currentDate !== null) {

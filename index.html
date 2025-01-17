@@ -11,8 +11,6 @@
     <script src="external/maplibre-gl@4.6.0/maplibre-gl.js"></script>
     <script src="external/luxon@3.5.0/luxon.min.js"></script>
 
-    <script defer data-domain="trans-europe-planner.eu" src="https://plausible.io/js/script.js"></script>
-
     <!-- styles -->
     <link rel="stylesheet" href="style/layout.css">
     <link rel="stylesheet" href="style/style.css">
@@ -220,7 +218,7 @@
         </button>
     </div>
 
-    <input type="radio" name="tab" id="tab1" checked>
+    <input type="radio" name="tab" id="tab1">
     <label for="tab1">🛈 &nbsp;Reiseübersicht</label>
     <div id="tab1-content">
         <div>
@@ -231,10 +229,12 @@
         <div id="perlschnur"></div>
     </div>
 
-    <input type="radio" name="tab" id="tab2">
+    <input type="radio" name="tab" id="tab2" checked>
     <label for="tab2">🖉 &nbsp;Reise anpassen &nbsp;&nbsp;</label>
-    <div id="tab2-content">
-        <travel-calendar id="calendar" start-date="2025-01-01"></travel-calendar>
+    <div id="tab2-content" style="padding-left: 2rem; padding-right: 2rem;">
+        <!--button id="help-calendar" onclick="alert('coming soon');">❓ Was kann ich hier machen?</button-->
+        <h3 style="color: var(--color-dark); padding-bottom: 0.5rem">Journey Calendar</h3>
+        <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
     </div>
 
     <div id="bottom-buttons">
@@ -257,7 +257,7 @@
     <a href="about-impressum.html#data-protection">Datenschutz</a>
 </div>
 
-<div id="map"></div>
+<div id="map" class="hidden"></div>
 
 <script>
 

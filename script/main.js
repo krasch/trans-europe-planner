@@ -53,6 +53,17 @@ async function main(home, views) {
   );
   const mapLoadedPromise = views.map.load(initialMapData);
 
+  const itineraries = routeDatabase.getItineraries(
+    home,
+    "Napoli",
+    state.date,
+    database,
+  );
+  const journeys = itineraries.map((i) => new Journey(i));
+  state.journeys.reset();
+  for (let j of journeys) state.journeys.addJourney(j);
+  state.journeys.setActive(journeys[1].id);
+
   // init update views
   const updateViews = initUpdateViews(views, database);
 
