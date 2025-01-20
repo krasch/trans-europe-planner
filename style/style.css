@@ -75,6 +75,12 @@ a#show-sidebar:hover {
   Journey details tabbing
 ************************************************/
 
+#journey-details button {
+  font-family: helvetica, arial, sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
 #journey-details {
   background: var(--color-light);
   opacity: 90%;
@@ -82,6 +88,21 @@ a#show-sidebar:hover {
 
 #journey-details input[type="radio"] {
   display: none;
+}
+
+#warning {
+  color: darkgray;
+  font-style: italic;
+}
+
+#warning button {
+  color: darkgray;
+  font-style: italic;
+  text-decoration: underline;
+
+  background: none;
+  border: none;
+  padding: 0;
 }
 
 #tab1 + label,
