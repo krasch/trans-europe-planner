@@ -138,18 +138,19 @@ a#hide-sidebar {
 
   display: grid;
   grid-template-columns: 50% 50%;
-  grid-template-rows: 2rem 2.5rem 1fr;
+  grid-template-rows: 2rem 2.5rem 1fr 2rem;
   grid-template-areas:
     "warning warning"
     "tab1 tab2"
-    "content content";
+    "content content"
+    "buttons buttons";
 }
 
 #warning {
   grid-area: warning;
   align-self: center;
   justify-self: center;
-  padding-bottom: 1rem;
+  padding-bottom: 0.5rem;
 }
 
 #tab1 {
@@ -182,6 +183,11 @@ a#hide-sidebar {
   flex-direction: row;
   align-items: center;
   justify-content: center;
+}
+
+#bottom-buttons {
+  grid-area: buttons;
+  padding-top: 0.5rem;
 }
 
 /***********************************************
