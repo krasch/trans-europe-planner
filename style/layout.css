@@ -27,7 +27,7 @@ body {
     --logo-size: 6rem;
     --logo-padding: 1.5rem;
     --logo-size-with-padding: calc(var(--logo-size) + 2 * var(--logo-padding));
-    --sidebar-width: 28rem; /* excluding logo */
+    --sidebar-width: 27rem; /* excluding logo */
     --footer-height: 2rem;
 
   display: grid;
