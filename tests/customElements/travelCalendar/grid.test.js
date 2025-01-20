@@ -6,36 +6,55 @@ const util = require("./util.js");
 
 beforeEach(() => util.createDocument());
 
-test("dateLabelsAtInitialization", function () {
+test("date labels should be initialized", function () {
   const calendar = document.querySelector("#calendar");
   const got = util.getShadowDOMItems(calendar, ".date-label");
 
-  expect(got.all.gridColumn).toStrictEqual([2, 3, 4]);
-  expect(got.all.gridRows).toStrictEqual([
-    [1, 2],
-    [1, 2],
-    [1, 2],
+  expect(got.data).toMatchObject([
+    {
+      column: util.COLUMN_FIRST_DAY,
+      rowStart: 1,
+      rowEnd: 2,
+      innerHTML: expect.stringMatching("15"),
+    },
+    {
+      column: util.COLUMN_FIRST_DAY + 1,
+      rowStart: 1,
+      rowEnd: 2,
+      innerHTML: expect.stringMatching("16"),
+    },
+    {
+      column: util.COLUMN_FIRST_DAY + 2,
+      rowStart: 1,
+      rowEnd: 2,
+      innerHTML: expect.stringMatching("17"),
+    },
   ]);
-
-  expect(got.all.innerHTML[0]).toContain("15");
-  expect(got.all.innerHTML[1]).toContain("16");
-  expect(got.all.innerHTML[2]).toContain("17");
 });
 
-test("dateLabelsAfterDateChanged", async function () {
+test("date labels should be updated when calendar date changes", async function () {
   const calendar = document.querySelector("#calendar");
   await calendar.setAttribute("start-date", "2023-03-20");
 
   const got = util.getShadowDOMItems(calendar, ".date-label");
-
-  expect(got.all.gridColumn).toStrictEqual([2, 3, 4]);
-  expect(got.all.gridRows).toStrictEqual([
-    [1, 2],
-    [1, 2],
-    [1, 2],
+  expect(got.data).toMatchObject([
+    {
+      column: util.COLUMN_FIRST_DAY,
+      rowStart: 1,
+      rowEnd: 2,
+      innerHTML: expect.stringMatching("20"),
+    },
+    {
+      column: util.COLUMN_FIRST_DAY + 1,
+      rowStart: 1,
+      rowEnd: 2,
+      innerHTML: expect.stringMatching("21"),
+    },
+    {
+      column: util.COLUMN_FIRST_DAY + 2,
+      rowStart: 1,
+      rowEnd: 2,
+      innerHTML: expect.stringMatching("22"),
+    },
   ]);
-
-  expect(got.all.innerHTML[0]).toContain("20");
-  expect(got.all.innerHTML[1]).toContain("21");
-  expect(got.all.innerHTML[2]).toContain("22");
 });

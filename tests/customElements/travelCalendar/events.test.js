@@ -30,7 +30,7 @@ function dispatchEvent(element, eventName, group = null, timeout_ms = 10) {
   return new Promise((resolve) => setTimeout(resolve, timeout_ms));
 }
 
-test("entryThreeDaysHover", async function () {
+test("when hovering over a part of multiparty entry, then all parts should hover", async function () {
   const entry = util.createEntry(util.t1("16:29"), util.t3("18:04"));
 
   const calendar = document.querySelector("#calendar");
@@ -38,18 +38,18 @@ test("entryThreeDaysHover", async function () {
 
   // by default no part should hover
   let got = util.getShadowDOMItems(calendar, ".entry-part");
-  expect(got.all.isHover).toStrictEqual([false, false, false]);
+  expect(got.data.map((e) => e.isHover)).toStrictEqual([false, false, false]);
 
   // after mouseover all parts should hover
   await dispatchEvent(got.elements[0], "mouseover");
-  expect(got.all.isHover).toStrictEqual([true, true, true]);
+  expect(got.data.map((e) => e.isHover)).toStrictEqual([true, true, true]);
 
   // after mouseout no parts should hover
   await dispatchEvent(got.elements[2], "mouseout");
-  expect(got.all.isHover).toStrictEqual([false, false, false]);
+  expect(got.data.map((e) => e.isHover)).toStrictEqual([false, false, false]);
 });
 
-test("dragNDropMultidayNoDrop", async function () {
+test("drag and drop of multi-part entries", async function () {
   const group = "Berlin->München";
   const other = "München->Verona";
 

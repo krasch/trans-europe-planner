@@ -85,7 +85,53 @@ const style = `
 }
 </style>`;
 
+/** This custom element provides a calendar for travel events.
+ *
+ * Example usage:
+ * <travel-calendar start-date="2025-02-01">
+ *     <div class="calendar-entry"
+ *          data-departure-datetime="2025-02-01T20:00"
+ *          data-arrival-datetime="2025-02-02T04:59"
+ *          data-active="active"
+ *          data-group="Berlin->München">
+ *         <div class="header">Some train from Berlin to Munich</div>
+ *         <div class="start">03:14 Berlin</div>
+ *         <div class="destination">04:59 München</div>
+ *     </div>
+ *     <div class="calendar-entry"
+ *          data-departure-datetime="2025-02-02T10:00"
+ *          data-arrival-datetime="2025-02-02T14:00"
+ *          data-active=""
+ *          data-group="Berlin->München">
+ *         <div class="header">Some other train from Berlin to Munich</div>
+ *         <div class="start">10:00 Berlin</div>
+ *         <div class="destination">14:00 München</div>
+ *     </div>
+ * </travel-calendar>
+ *
+ * This will:
+ * * Draw a calendar grid with 24 rows (one for each hour) and 3 columns (one for each day in
+ *   [2025-02-01, 2025-02-02, 2025-02-03]), adding hour labels to the left and date labels at the top.
+ *   All necessary HTML elements for the grid are added to the shadow DOM of this element.
+ * * Add two calendar entries. The first one being a night train, spanning two columns and the second one
+ *   being a day train spanning only one column. The first one will be visible (data-active="active"), the
+ *   second one will be hidden. Users can drag the first entry, which will show an indicator of the location
+ *   of the second entry, where the user can drop the first entry. This switches the "active" setting from
+ *   first entry to the second entry. All entries with the same "data-group" can be swapped out for one another
+ *   using this drag&drop mechanism.
+ * * Internally, for each entry, one or several HTML elements (called parts) will be created, one part for each column
+ *   that this entry spans. The parts will be added to shadow DOM. The ".header" and the ".start" child of the entry
+ *   will be copied to the first part, the ".destination" child will be copied to the last part.
+ *
+ * Known drawbacks:
+ * * Entries with the same data-group must be added to this element in the correct sorting order, with the entries
+ *   with the earliest data-departure-datetime to be added first. Otherwise, during drag&drop, later entries can overlap
+ *   earlier ones, making them unavailable for dropping.
+ * */
 class TravelCalendar extends HTMLElement {
+  /**
+   *
+   */
   #lookup;
   static observedAttributes = ["start-date"];
 
@@ -171,9 +217,9 @@ class TravelCalendar extends HTMLElement {
   }
 
   #removeEntry(travelOption) {
-    /*for (let part of this.#lookup.entry(travelOption).parts)
+    for (let part of this.#lookup.entry(travelOption).parts)
       this.shadowRoot.removeChild(part);
-    this.#lookup.unregister(travelOption);*/
+    this.#lookup.unregister(travelOption);
   }
 
   #changeStartDate(newDate) {
@@ -365,7 +411,6 @@ class MultipartCalendarEntry {
     for (let part of this.parts) part.dataset.status = value;
   }
 
-  // todo move to drag&drop?
   set dragStatus(status) {
     // indicator is a special case, because line should only be on top of first part
     if (status === "indicator") {
@@ -410,10 +455,17 @@ class LookupUtil {
   }
 
   unregister(externalHTMLElement) {
-    /*const parts = this.#externalToMultipart[externalHTMLElement];
-    for (let part of parts) delete this.#partToParent[part];
-    delete this.#externalToMultipart[externalHTMLElement];
-    // todo remove group to multipart*/
+    const internalMulti = this.#externalToMultipart.get(externalHTMLElement);
+    this.#externalToMultipart.delete(externalHTMLElement);
+
+    for (let part of internalMulti.parts)
+      delete this.#partToParent.delete(part);
+
+    const group = internalMulti.group;
+    const filtered = this.#groupToMultipart
+      .get(group)
+      .filter((i) => i !== internalMulti);
+    this.#groupToMultipart.set(group, filtered);
   }
 }
 
@@ -500,4 +552,6 @@ customElements.define("travel-calendar", TravelCalendar); // todo move to main?
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
 if (typeof process === "object" && process.env.NODE_ENV === "test") {
   module.exports.TravelCalendar = TravelCalendar;
+  module.exports.LookupUtil = LookupUtil;
+  module.exports.MultipartCalendarEntry = MultipartCalendarEntry;
 }
