@@ -1,25 +1,27 @@
 body {
-    font-family: helvetica, arial, sans-serif;
+  font-family: helvetica, arial, sans-serif;
 
-    /* colors for connections */
-    --color1: 27, 158, 119;
-    --color2: 217, 95, 2;
-    --color3: 117, 112, 179;
-    --color4: 231, 41, 138;
-    --color5: 102, 166, 30;
+  /* colors for connections */
+  --color1: 27, 158, 119;
+  --color2: 217, 95, 2;
+  --color3: 117, 112, 179;
+  --color4: 231, 41, 138;
+  --color5: 102, 166, 30;
 
-    --color-light: white;
-    --color-dark: #286099;
+  --color-light: white;
+  --color-dark: #286099;
 
-    /* https://codepen.io/sosuke/pen/Pjoqqp */
-    --filter-white: invert(100%);
-    /* #f9f3ea */
-    --filter-beige: invert(95%) sepia(9%) saturate(656%) hue-rotate(315deg) brightness(105%) contrast(95%);
-    --filter-darkgrey: invert(73%) sepia(0%) saturate(0%) hue-rotate(158deg) brightness(94%) contrast(89%);
-    /* #286099 */
-    --filter-dark: invert(32%) sepia(12%) saturate(3883%) hue-rotate(173deg) brightness(95%) contrast(86%);
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  --filter-white: invert(100%);
+  /* #f9f3ea */
+  --filter-beige: invert(95%) sepia(9%) saturate(656%) hue-rotate(315deg)
+    brightness(105%) contrast(95%);
+  --filter-darkgrey: invert(73%) sepia(0%) saturate(0%) hue-rotate(158deg)
+    brightness(94%) contrast(89%);
+  /* #286099 */
+  --filter-dark: invert(32%) sepia(12%) saturate(3883%) hue-rotate(173deg)
+    brightness(95%) contrast(86%);
 }
-
 
 /***********************************************
   Logo & data picker
@@ -27,92 +29,112 @@ body {
 
 #logo,
 #date-picker {
-    --border-radius: 1rem;
-    border-bottom-right-radius: var(--border-radius);
+  --border-radius: 1rem;
+  border-bottom-right-radius: var(--border-radius);
 
-    color: var(--color-light);
-    background-color: var(--color-dark);
+  color: var(--color-light);
+  background-color: var(--color-dark);
 }
 
 #logo img {
-    filter: var(--filter-white)
+  filter: var(--filter-white);
 }
 
 a#show-sidebar,
 a#hide-sidebar {
-    cursor: pointer;
+  cursor: pointer;
 
-    color: var(--color-light);
-    font-size: 1.5rem;
+  color: var(--color-light);
+  font-size: 1.5rem;
 }
 
 a#hide-sidebar:hover,
 a#show-sidebar:hover {
-    text-shadow: 2px 2px 3px lightgrey;
+  text-shadow: 2px 2px 3px lightgrey;
 }
 
 #date-picker a {
-    font-size: 1.2rem;
-    cursor: pointer;
+  font-size: 1.2rem;
+  cursor: pointer;
 }
 
 #date-picker a:hover {
-    text-shadow: 2px 2px 3px lightgrey;
+  text-shadow: 2px 2px 3px lightgrey;
 }
 
 #date-picker input {
-    border: 1px solid var(--color-dark);
-    border-radius: 5px;
+  border: 1px solid var(--color-dark);
+  border-radius: 5px;
 
-    color: var(--color-dark);
-    font-size: 1rem;
-    font-family: helvetica, arial, sans-serif;
+  color: var(--color-dark);
+  font-size: 1rem;
+  font-family: helvetica, arial, sans-serif;
 }
 
 /***********************************************
   Journey details tabbing
 ************************************************/
 
+#journey-details button {
+  font-family: helvetica, arial, sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
 #journey-details {
-    background: var(--color-light);
-    opacity: 90%;
+  background: var(--color-light);
+  opacity: 90%;
 }
 
 #journey-details input[type="radio"] {
-    display: none;
+  display: none;
+}
+
+#warning {
+  color: darkgray;
+  font-style: italic;
+}
+
+#warning button {
+  color: darkgray;
+  font-style: italic;
+  text-decoration: underline;
+
+  background: none;
+  border: none;
+  padding: 0;
 }
 
 #tab1 + label,
 #tab2 + label {
-    border: 1px solid var(--color-dark);
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+  border: 1px solid var(--color-dark);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 
-    color: var(--color-dark);
+  color: var(--color-dark);
 }
 
 #tab1 + label {
-    border-right: 0; /* no double borders */
+  border-right: 0; /* no double borders */
 }
 
 #tab1:checked + label,
 #tab2:checked + label {
-    border-bottom: 0; /* no border between tab and content when checked */
+  border-bottom: 0; /* no border between tab and content when checked */
 }
 
 #tab1:not(:checked) + label:hover,
 #tab2:not(:checked) + label:hover {
-    cursor: pointer;
-    text-shadow: 2px 2px 3px lightgrey;
+  cursor: pointer;
+  text-shadow: 2px 2px 3px lightgrey;
 }
-
 
 #tab1-content,
 #tab2-content {
-    border: 1px solid var(--color-dark);
-    border-top: 0; /* no double borders */
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+  border: 1px solid var(--color-dark);
+  border-top: 0; /* no double borders */
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 /***********************************************
@@ -120,71 +142,75 @@ a#show-sidebar:hover {
 ************************************************/
 
 #tab1-content {
-    background-color: var(--color-light);
+  background-color: var(--color-light);
 }
 
 #tab1-content button {
-    color: var(--color-dark);
-    background-color: var(--color-light);
-    border: 1px solid var(--color-dark);
-    border-radius: 5px;
-    padding: 0.2rem;
+  color: var(--color-dark);
+  background-color: var(--color-light);
+  border: 1px solid var(--color-dark);
+  border-radius: 5px;
+  padding: 0.2rem;
 }
 
 #tab1-content button:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 #perlschnur {
-    border: 1px solid lightgrey;
-    border-radius: 5px;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
 }
 
 .perlschnur-connection {
-    --color: 0, 0, 0; /* will be set by Javascript */
-    background-color: rgba(var(--color), 0.4);
-    color: #2e210d;
+  --color: 0, 0, 0; /* will be set by Javascript */
+  background-color: rgba(var(--color), 0.4);
+  color: #2e210d;
 
-    animation: fadein 1s;
+  animation: fadein 1s;
 }
 
 @keyframes fadein {
-  from { opacity: 0}
-  to   { opacity: 1}
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .perlschnur-connection h3 {
-    color: white;
-    background-color: rgba(var(--color), 0.8);
+  color: white;
+  background-color: rgba(var(--color), 0.8);
 }
 
 .perlschnur-connection h3 img {
-    filter: var(--filter-white);
+  filter: var(--filter-white);
 }
 
 .perlschnur-connection .circle {
-    border-color: rgb(var(--color));
+  border-color: rgb(var(--color));
 }
 
 .perlschnur-stop:hover .circle {
-    box-shadow: 0 0 0 2px rgb(var(--color));
+  box-shadow: 0 0 0 2px rgb(var(--color));
 }
 
 .perlschnur-stop .date {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .perlschnur-connection li.perlschnur-collapse {
-    font-style: italic;
+  font-style: italic;
 }
 
 .perlschnur-transfer {
-    color: darkgray;
+  color: darkgray;
 }
 
 .perlschnur-connection a:hover {
-    cursor: pointer;
-    text-shadow: 1px 1px 2px lightgrey;
+  cursor: pointer;
+  text-shadow: 1px 1px 2px lightgrey;
 }
 
 /***********************************************
@@ -192,10 +218,15 @@ a#show-sidebar:hover {
 ************************************************/
 
 #footer {
-    background-color: var(--color-dark);
-    color: var(--color-light);
+  background-color: var(--color-dark);
+  color: var(--color-light);
 }
 
 #footer a {
-    color: var(--color-light);
+  color: var(--color-light);
+}
+
+#footer img {
+  max-height: 1.3rem;
+  filter: var(--filter-white);
 }
