@@ -47,6 +47,12 @@ npm test
 npm make-pretty
 ```
 
+## Is this a react/vue.js/etc app?
+
+No, only vanilla Javascript, not even using a bundler or anything like that. Serving
+up HTML+JS+CSS just like we did in the 90s. But, of course, keeping up-to-date with the features
+of each of those three. 
+
 ## Contribution guidelines
 
 1. Create an issue describing what you are planning to do and wait for a :thumbsup:
