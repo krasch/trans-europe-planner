@@ -1,35 +1,74 @@
 # Trans-Europe-Planner
 
+[trans-europe-planner.eu](https://trans-europe-planner.eu)
+
 Making it simpler to plan complex cross-country rail trips in Europe
 
-## Vocabulary used in source code
+[INSERT VIDEO HERE]
 
-In the code we need to make the distinction between the abstract way of getting somewhere and 
-the specific way of actually getting there.
+## How to start this locally
 
-| Abstract                                                              | Specific                                                                                              |
-|-----------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
-| __city__ <br/> _Verona_                                               | __stopover__ <br/>_overnight stay in Verona on 2024-10-14_                                            |
-| -                                                                     | __station__ <br/> Verona Puerta Nuova                                                                 |
-| __leg__ <br/>_from Verona to Munich_                                  | __connection__ <br/> _the EC87 running from Munich Hbf to Verona Puerta Nuova on 2024-10-14 at 13:34_ |
-| __route__ <br/> _[Berlin, Munich, Verona, Florence, Livorno, Bastia]_ | __journey__ <br/> _[ICE505 on 2024-10-14, EC87 on 2024-10-14, ...]_                                   |
+### When you don't have npm / are not usually a Javascript developer
 
-* __origin__ The __city__ the user starts from, e.g. __Berlin__
-* __destination__ The __city__ the user wants to get to, e.g. __Bastia__
-* A __route__ describes one possibility to get from __origin__ to __destination__.
-  It lists, in order, the __cities__ (e.g. _[Berlin, Munich, Verona, Florence, Livorno, Bastia]_)
-  in which the user has to switch transportations. There usually exist multiple
-  possible routes to get from origin to destination.
-  A route can also be expressed in natural language, e.g. _from Berlin to Korsika via Verona and Livorno_.
-* A __leg__ is formed by taking two subsequent __cities__ in a route. 
-  A leg has a __start city__ and an __end city__, e.g. _the leg from Munich to Verona_.
-  A leg is only valid if there exists at least one __direct connection__ from __start city__ to __end city__.
-* A __connection__ is a specific train/ferry/something that __directly__ fulfills a __leg__.
-  A __connection__ runs from a __start station__ to an __end station__. 
-  The __start/end stations__ must be located in the __start/end cities__ of the corresponding __leg__.
-  A connection is always tied to a __specific date and time__, e.g. _the EC87 running from Munich Hbf to Verona Puerta Nuova on 2024-10-14 at 13:34_.
-  There are usually many possible alternative connections that can fulfill a leg.
-* A __journey__ is the specific version of a __route__. It lists, in order, all the necessary __connections__ to fulfill the route. 
-  There are usually many possible journeys that can fulfill a route.
-* A __stopover__ corresponds to the abstract __city__ in which the user has to switch transportation. It is tied
-  to a __date/time__ and can be of different types _(e.g. simple switching of trains, overnight stay)_.
+Node/npm are not necessary to run this project. If you are on linux, you can simply
+run the following commands from the root folder of the project to start a local server:
+
+```
+python3 -m http.server
+```
+
+Then head to http://localhost:8000/.
+
+If you are on windows and/or don't have python, please install python or use a different
+server (e.g. npm, see below).
+
+### When you do have npm 
+
+From the root folder of the project, run the following commands to install the 
+development dependencies and start the webserver
+
+```
+npm install
+npm start
+```
+
+Then head to http://localhost:8000/.
+
+## How to start developing
+
+```
+# install development dependencies
+npm install
+
+# run tests
+npm test
+
+# apply code formatting
+npm make-pretty
+```
+
+## Is this a react/vue.js/etc app?
+
+No, only vanilla Javascript, not even using a bundler or anything like that. Serving
+up HTML+JS+CSS just like we did in the 90s. But, of course, keeping up-to-date with the features
+of each of those three. 
+
+## Contribution guidelines
+
+1. Create an issue describing what you are planning to do and wait for a :thumbsup:
+2. Implement your changes and create a pull request. Adding tests for the new code you submitted
+   is much appreciated :-).
+3. If you struggle at any point, just reach out (e.g. in the issue you created or in your draft PR), we will get it resolved together!
+
+## Get in contact
+
+You can reach me here: kat@krasch.dev
+
+## Supported by
+
+<a href="https://prototypefund.de/">
+  <img class="logo-other" src="images/logos/PrototypeFund-P-Logo.png" alt="Logo des prototpyefunds" height="150"/>
+</a>
+<a href="https://www.bmbf.en/">
+  <img src="images/logos/bmbf_en.jpg" alt="Logo of the federal ministry of education and research" height="150"/>
+</a>
