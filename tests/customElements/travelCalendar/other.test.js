@@ -35,6 +35,10 @@ test("register and unregister from lookup util", async function () {
   expect(lookup.entry(outer2)).toBe(inner2);
   expect(lookup.entry(outer3)).toBe(inner3);
 
+  expect(lookup.external(inner1)).toBe(outer1);
+  expect(lookup.external(inner2)).toBe(outer2);
+  expect(lookup.external(inner3)).toBe(outer3);
+
   expect(lookup.parent(inner1.parts[1])).toBe(inner1);
   expect(lookup.parent(inner2.parts[1])).toBe(inner2);
   expect(lookup.parent(inner3.parts[1])).toBe(inner3);
@@ -44,12 +48,14 @@ test("register and unregister from lookup util", async function () {
 
   lookup.unregister(outer1);
   expect(lookup.entry(outer1)).toBe(undefined);
+  expect(lookup.external(inner1)).toBe(undefined);
   expect(lookup.parent(inner1.parts[1])).toBe(undefined);
   expect(lookup.entriesWithGroup("group1")).toStrictEqual([inner3]);
   expect(lookup.entriesWithGroup("group2")).toStrictEqual([inner2]);
 
   lookup.register(outer1, inner1);
   expect(lookup.entry(outer1)).toBe(inner1);
+  expect(lookup.external(inner1)).toBe(outer1);
   expect(lookup.parent(inner1.parts[1])).toBe(inner1);
   expect(lookup.entriesWithGroup("group1")).toStrictEqual([inner3, inner1]);
   expect(lookup.entriesWithGroup("group2")).toStrictEqual([inner2]);

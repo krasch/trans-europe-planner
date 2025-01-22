@@ -48,6 +48,28 @@ test("when hovering over a part of multiparty entry, then all parts should hover
   expect(got.data.map((e) => e.isHover)).toStrictEqual([false, false, false]);
 });
 
+test("hover on/off callback should be called when hovering over entry", async function () {
+  const entry = util.createEntry(util.t1("16:29"), util.t3("18:04"));
+
+  const calendar = document.querySelector("#calendar");
+  await calendar.appendChild(entry);
+
+  const hoverOnCallback = jest.fn();
+  const hoverOffCallback = jest.fn();
+  calendar.on("hoverOn", hoverOnCallback);
+  calendar.on("hoverOff", hoverOffCallback);
+
+  let parts = util.getShadowDOMItems(calendar, ".entry-part");
+
+  // send mouseover on first part of entry
+  await dispatchEvent(parts.elements[0], "mouseover");
+  expect(hoverOnCallback).toBeCalledWith(entry);
+
+  // send mouseout on third part of entry
+  await dispatchEvent(parts.elements[2], "mouseout");
+  expect(hoverOffCallback).toBeCalledWith(entry);
+});
+
 test("drag and drop of multi-part entries", async function () {
   const group = "Berlin->München";
   const other = "München->Verona";
@@ -182,4 +204,21 @@ test("drag and drop after changing entry group", async function () {
   const got = util.getShadowDOMItems(calendar, ".entry-part");
   await dispatchEvent(got.elements[0], "dragstart");
   expect(got.all.dragStatus).toStrictEqual(["preview", "indicator"]);
+});
+
+test("drop callback should be called after drop occurs", async function () {
+  const entry = util.createEntry(util.t1("16:29"), util.t3("18:04"));
+
+  const calendar = document.querySelector("#calendar");
+  await calendar.appendChild(entry);
+
+  const dropCallback = jest.fn();
+  calendar.on("drop", dropCallback);
+
+  let parts = util.getShadowDOMItems(calendar, ".entry-part");
+
+  await dispatchEvent(parts.elements[0], "dragstart");
+  await dispatchEvent(parts.elements[1], "dragenter");
+  await dispatchEvent(parts.elements[2], "drop");
+  expect(dropCallback).toBeCalledWith(entry);
 });

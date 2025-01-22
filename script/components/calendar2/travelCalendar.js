@@ -98,11 +98,14 @@ const gridStyle = `<style>
  *   earlier ones, making them unavailable for dropping.
  * */
 class TravelCalendar extends HTMLElement {
-  /**
-   *
-   */
   #lookup;
   static observedAttributes = ["start-date"];
+
+  #callbacks = {
+    hoverOn: () => {},
+    hoverOff: () => {},
+    drop: () => {},
+  };
 
   constructor() {
     super();
@@ -115,13 +118,17 @@ class TravelCalendar extends HTMLElement {
 
     this.addEntryEventListener("mouseover", (e, entry) => {
       entry.hover = true;
+      this.#callbacks.hoverOn(this.#lookup.external(entry));
     });
     this.addEntryEventListener("mouseout", (e, entry) => {
       entry.hover = false;
+      this.#callbacks.hoverOff(this.#lookup.external(entry));
     });
 
-    enableDragAndDrop(this, (closest) => {}); // todo callback
-    firefoxMobileDragAndDropPolyfill(this, (closest) => {});
+    firefoxMobileDragAndDropPolyfill(this);
+    enableDragAndDrop(this, (entry) => {
+      this.#callbacks.drop(this.#lookup.external(entry));
+    });
   }
 
   connectedCallback() {
@@ -160,6 +167,10 @@ class TravelCalendar extends HTMLElement {
 
       callback(e, entry, groupEntries);
     });
+  }
+
+  on(eventName, eventCallback) {
+    this.#callbacks[eventName] = eventCallback;
   }
 
   #addEntry(externalElement) {
@@ -223,14 +234,6 @@ class TravelCalendar extends HTMLElement {
       this.#removeEntry(travelOption);
       this.#addEntry(travelOption);
     }
-  }
-
-  #propagateStyle(travelOption) {
-    /*const entry = this.#entries.get(travelOption);
-    const style = window.getComputedStyle(travelOption);
-    for (let key of TravelCalendar.#observedStyles) {
-      entry.style.setProperty(key, style.getPropertyValue(key));
-    }*/
   }
 
   #getRow(datetime) {
@@ -429,8 +432,9 @@ class MultipartCalendarEntry {
 class LookupUtil {
   // using map because can use complex keys (e.g. HTML elements)
 
-  // maps from external HTML element to internal MultipartCalendarEntry
+  // maps from external HTML element to internal MultipartCalendarEntry and vice versa
   #externalToMultipart = new Map();
+  #multipartToExternal = new Map();
   // maps from a part HTML element to its parent MultipartCalendarEntry
   #partToParent = new Map();
   // maps from string group name to all MultipartCalendarEntries with this group
@@ -441,11 +445,13 @@ class LookupUtil {
   #knownGroups = new Set();
 
   entry = (externalElement) => this.#externalToMultipart.get(externalElement);
+  external = (multipart) => this.#multipartToExternal.get(multipart);
   parent = (partElement) => this.#partToParent.get(partElement);
   entriesWithGroup = (groupName) => this.#groupToMultipart[groupName];
 
   register(externalHTMLElement, multipartEntry) {
     this.#externalToMultipart.set(externalHTMLElement, multipartEntry);
+    this.#multipartToExternal.set(multipartEntry, externalHTMLElement);
 
     for (let partElement of multipartEntry.parts)
       this.#partToParent.set(partElement, multipartEntry);
@@ -457,6 +463,7 @@ class LookupUtil {
   unregister(externalHTMLElement) {
     const multipartEntry = this.#externalToMultipart.get(externalHTMLElement);
     this.#externalToMultipart.delete(externalHTMLElement);
+    this.#multipartToExternal.delete(multipartEntry);
 
     for (let part of multipartEntry.parts)
       delete this.#partToParent.delete(part);
