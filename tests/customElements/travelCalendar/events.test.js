@@ -9,7 +9,7 @@ const util = require("./util.js");
 
 beforeEach(() => util.createDocument());
 
-function dispatchEvent(element, eventName, timeout_ms = 10) {
+async function dispatchEvent(element, eventName, timeout_ms = 10) {
   const classes = {
     mouseover: MouseEvent,
     mouseout: MouseEvent,
@@ -26,7 +26,7 @@ function dispatchEvent(element, eventName, timeout_ms = 10) {
   element.dispatchEvent(event);
 
   // wait for changes after dispatching to hove finished (hopefully waiting long enough)...
-  return new Promise((resolve) => setTimeout(resolve, timeout_ms));
+  await util.timeout(10);
 }
 
 test("when hovering over a part of multiparty entry, then all parts should hover", async function () {
@@ -159,4 +159,27 @@ test("drag and drop of multi-part entries", async function () {
   await dispatchEvent(elements.e1.part2, "drop");
   expect(got.all.isActive).toStrictEqual(exp.status.e1_and_e3_active);
   expect(got.all.dragStatus).toStrictEqual(exp.drag.all_undefined);
+});
+
+test("drag and drop after changing entry group", async function () {
+  const entries = [
+    util.createEntry(util.t1("16:29"), util.t1("18:04"), {
+      group: "group1",
+      active: true,
+    }),
+    util.createEntry(util.t2("16:29"), util.t2("18:04"), {
+      group: "group2",
+      active: true,
+    }),
+  ];
+
+  const calendar = document.querySelector("#calendar");
+  for (let e of entries) await calendar.appendChild(e);
+
+  entries[1].dataset.group = "group1"; // now have the same group and should be drag&droppable
+  await util.timeout(10); // give calendar time to update
+
+  const got = util.getShadowDOMItems(calendar, ".entry-part");
+  await dispatchEvent(got.elements[0], "dragstart");
+  expect(got.all.dragStatus).toStrictEqual(["preview", "indicator"]);
 });

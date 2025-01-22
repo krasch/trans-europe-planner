@@ -171,8 +171,16 @@ class TravelCalendar extends HTMLElement {
     this.#drawGrid();
 
     this.#setupMutationObserver({
-      entryAdded: (e) => this.#addEntry(e),
-      entryRemoved: (e) => this.#removeEntry(e),
+      entryAdded: (externalEntry) => this.#addEntry(externalEntry),
+      entryRemoved: (externalEntry) => this.#removeEntry(externalEntry),
+      entryUpdated: (externalEntry) => {
+        this.#removeEntry(externalEntry);
+        this.#addEntry(externalEntry);
+      },
+      entryActiveStatusUpdated: (externalEntry) => {
+        this.#lookup.entry(externalEntry).active =
+          externalEntry.dataset.active === "active";
+      },
     });
   }
 
@@ -367,6 +375,13 @@ class TravelCalendar extends HTMLElement {
     const isEntry = (node) =>
       node.tagName === "DIV" && node.classList.contains("calendar-entry");
 
+    const attributeNameToCallback = {
+      "data-departure-datetime": callbacks.entryUpdated,
+      "data-arrival-datetime": callbacks.entryUpdated,
+      "data-group": callbacks.entryUpdated,
+      "data-active": callbacks.entryActiveStatusUpdated,
+    };
+
     const observer = new MutationObserver((mutations) => {
       for (let mutation of mutations) {
         if (mutation.type === "childList") {
@@ -377,13 +392,18 @@ class TravelCalendar extends HTMLElement {
             if (isEntry(node)) callbacks.entryRemoved(node);
           }
         }
+        if (mutation.type === "attributes") {
+          if (isEntry(mutation.target)) {
+            attributeNameToCallback[mutation.attributeName](mutation.target);
+          }
+        }
       }
     });
 
     observer.observe(this.shadowRoot.host, {
-      subtree: false,
+      subtree: true,
       childList: true,
-      attributes: false,
+      attributes: true,
     });
   }
 
@@ -447,36 +467,43 @@ class LookupUtil {
   // maps from a part HTML element to its parent MultipartCalendarEntry
   #partToParent = new Map();
   // maps from string group name to all MultipartCalendarEntries with this group
-  #groupToMultipart = new Map();
+  // these could also be gotten by just filtering the entries for group name
+  // but because this would be called hundreds of times per second during drag&drop
+  // it's better to keep this already filtered
+  #groupToMultipart = {};
+  #knownGroups = new Set();
 
   entry = (externalElement) => this.#externalToMultipart.get(externalElement);
   parent = (partElement) => this.#partToParent.get(partElement);
-  entriesWithGroup = (group) => this.#groupToMultipart.get(group);
+  entriesWithGroup = (groupName) => this.#groupToMultipart[groupName];
 
-  register(externalHTMLElement, multipartCalendarEntry) {
-    this.#externalToMultipart.set(externalHTMLElement, multipartCalendarEntry);
+  register(externalHTMLElement, multipartEntry) {
+    this.#externalToMultipart.set(externalHTMLElement, multipartEntry);
 
-    for (let partElement of multipartCalendarEntry.parts)
-      this.#partToParent.set(partElement, multipartCalendarEntry);
+    for (let partElement of multipartEntry.parts)
+      this.#partToParent.set(partElement, multipartEntry);
 
-    const group = multipartCalendarEntry.group;
-    if (!this.#groupToMultipart.has(group))
-      this.#groupToMultipart.set(group, []);
-    this.#groupToMultipart.get(group).push(multipartCalendarEntry);
+    this.#knownGroups.add(multipartEntry.group);
+    this.#updateGroups();
   }
 
   unregister(externalHTMLElement) {
-    const internalMulti = this.#externalToMultipart.get(externalHTMLElement);
+    const multipartEntry = this.#externalToMultipart.get(externalHTMLElement);
     this.#externalToMultipart.delete(externalHTMLElement);
 
-    for (let part of internalMulti.parts)
+    for (let part of multipartEntry.parts)
       delete this.#partToParent.delete(part);
 
-    const group = internalMulti.group;
-    const filtered = this.#groupToMultipart
-      .get(group)
-      .filter((i) => i !== internalMulti);
-    this.#groupToMultipart.set(group, filtered);
+    this.#knownGroups.add(multipartEntry.group);
+    this.#updateGroups();
+  }
+
+  #updateGroups() {
+    for (let group of this.#knownGroups) {
+      this.#groupToMultipart[group] = Array.from(
+        this.#externalToMultipart.values(),
+      ).filter((e) => e.group === group);
+    }
   }
 }
 

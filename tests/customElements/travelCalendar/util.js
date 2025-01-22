@@ -77,3 +77,7 @@ module.exports.getShadowDOMItems = (calendar, querySelector) => {
     },
   };
 };
+
+module.exports.timeout = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};

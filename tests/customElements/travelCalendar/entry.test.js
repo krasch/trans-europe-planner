@@ -167,3 +167,65 @@ test("entry locations should be updated when calendar start date changes", async
     util.COLUMN_FIRST_DAY + 2,
   ]);
 });
+
+test("entry parts should be moved when entry start/end change", async function () {
+  const entry = util.createEntry(util.t2("14:00"), util.t3("15:00"));
+
+  const calendar = document.querySelector("#calendar");
+  await calendar.appendChild(entry);
+
+  entry.dataset.departureDatetime = util.t1("10:00");
+  entry.dataset.arrivalDatetime = util.t2("14:00");
+  await util.timeout(10); // give calendar time to update
+
+  const got = util.getShadowDOMItems(calendar, ".entry-part");
+  expect(got.data).toMatchObject([
+    {
+      column: util.COLUMN_FIRST_DAY,
+      rowStart: util.ROW_MIDNIGHT + 10 * 4,
+      rowEnd: util.ROW_MIDNIGHT + 24 * 4,
+    },
+    {
+      column: util.COLUMN_FIRST_DAY + 1,
+      rowStart: util.ROW_MIDNIGHT,
+      rowEnd: util.ROW_MIDNIGHT + 14 * 4,
+    },
+  ]);
+});
+
+test("entry parts group should be updated when entry group changes", async function () {
+  const entry = util.createEntry(util.t2("14:00"), util.t3("15:00"));
+
+  const calendar = document.querySelector("#calendar");
+  await calendar.appendChild(entry);
+
+  entry.dataset.group = "OTHER-GROUP-VERY-RANDOM";
+  await util.timeout(10); // give calendar time to update
+
+  const got = util.getShadowDOMItems(calendar, ".entry-part");
+  expect(got.data).toMatchObject([
+    { group: "OTHER-GROUP-VERY-RANDOM" },
+    { group: "OTHER-GROUP-VERY-RANDOM" },
+  ]);
+});
+
+test("entry parts active should be updated when active status changes", async function () {
+  const entry = util.createEntry(util.t2("14:00"), util.t3("15:00"));
+
+  const calendar = document.querySelector("#calendar");
+  await calendar.appendChild(entry);
+
+  // set active
+  entry.dataset.active = "active";
+  await util.timeout(10); // give calendar time to update
+
+  let got = util.getShadowDOMItems(calendar, ".entry-part");
+  expect(got.data).toMatchObject([{ isActive: true }, { isActive: true }]);
+
+  // set inactive
+  entry.dataset.active = "active";
+  await util.timeout(10); // give calendar time to update
+
+  got = util.getShadowDOMItems(calendar, ".entry-part");
+  expect(got.data).toMatchObject([{ isActive: true }, { isActive: true }]);
+});
