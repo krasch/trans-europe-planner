@@ -21,6 +21,7 @@ module.exports.createEntry = (startDateTime, endDateTime, kwargs = {}) => {
   const element = document.createElement("div");
   element.classList.add("calendar-entry");
 
+  element.dataset.color = "test-color"; // not actually a valid color
   element.dataset.departureDatetime = startDateTime;
   element.dataset.arrivalDatetime = endDateTime;
   element.dataset.active = kwargs.active ? "active" : "";
@@ -60,6 +61,7 @@ module.exports.getShadowDOMItems = (calendar, querySelector) => {
         isFirstPart: e.classList.contains("entry-first-part"),
         isLastPart: e.classList.contains("entry-last-part"),
         group: e.dataset.group,
+        color: e.style.getPropertyValue("--color"),
         contains: childClasses(e),
       }));
     },

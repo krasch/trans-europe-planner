@@ -19,6 +19,7 @@ test("one day entry", async function () {
       rowStart: util.ROW_MIDNIGHT + 14 * 4,
       rowEnd: util.ROW_MIDNIGHT + 15 * 4,
       group: "default-group",
+      color: "test-color",
       contains: ["header", "start", "destination"],
       isFirstPart: true,
       isLastPart: true,
@@ -209,7 +210,7 @@ test("entry parts group should be updated when entry group changes", async funct
   ]);
 });
 
-test("entry parts active should be updated when active status changes", async function () {
+test("entry parts active should be updated when external active status changes", async function () {
   const entry = util.createEntry(util.t2("14:00"), util.t3("15:00"));
 
   const calendar = document.querySelector("#calendar");
@@ -228,4 +229,21 @@ test("entry parts active should be updated when active status changes", async fu
 
   got = util.getShadowDOMItems(calendar, ".entry-part");
   expect(got.data).toMatchObject([{ isActive: true }, { isActive: true }]);
+});
+
+test("entry parts color should be updated when external color changes", async function () {
+  const entry = util.createEntry(util.t2("14:00"), util.t3("15:00"));
+
+  const calendar = document.querySelector("#calendar");
+  await calendar.appendChild(entry);
+
+  // change color
+  entry.dataset.color = "new color";
+  await util.timeout(10); // give calendar time to update
+
+  let got = util.getShadowDOMItems(calendar, ".entry-part");
+  expect(got.data).toMatchObject([
+    { color: "new color" },
+    { color: "new color" },
+  ]);
 });

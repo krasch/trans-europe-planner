@@ -127,16 +127,19 @@ class TravelCalendar extends HTMLElement {
   connectedCallback() {
     this.#drawGrid();
 
+    // mutations of the external calendar entries
     this.#setupMutationObserver({
-      entryAdded: (externalEntry) => this.#addEntry(externalEntry),
-      entryRemoved: (externalEntry) => this.#removeEntry(externalEntry),
-      entryUpdated: (externalEntry) => {
-        this.#removeEntry(externalEntry);
-        this.#addEntry(externalEntry);
+      entryAdded: (e) => this.#addEntry(e),
+      entryRemoved: (e) => this.#removeEntry(e),
+      entryUpdated: (e) => {
+        this.#removeEntry(e);
+        this.#addEntry(e);
       },
-      entryActiveStatusUpdated: (externalEntry) => {
-        this.#lookup.entry(externalEntry).active =
-          externalEntry.dataset.active === "active";
+      entryActiveStatusUpdated: (e) => {
+        this.#lookup.entry(e).active = e.dataset.active === "active";
+      },
+      entryColorUpdated: (e) => {
+        this.#lookup.entry(e).color = e.dataset.color;
       },
     });
   }
@@ -187,6 +190,7 @@ class TravelCalendar extends HTMLElement {
 
     entry.group = externalElement.dataset.group;
     entry.active = externalElement.dataset.active === "active";
+    entry.color = externalElement.dataset.color;
 
     entry.parts[0].appendChild(uiElements.header.cloneNode(true));
     entry.parts[0].appendChild(uiElements.startInfo.cloneNode(true));
@@ -337,6 +341,7 @@ class TravelCalendar extends HTMLElement {
       "data-arrival-datetime": callbacks.entryUpdated,
       "data-group": callbacks.entryUpdated,
       "data-active": callbacks.entryActiveStatusUpdated,
+      "data-color": callbacks.entryColorUpdated,
     };
 
     const observer = new MutationObserver((mutations) => {
@@ -391,6 +396,11 @@ class MultipartCalendarEntry {
 
   get group() {
     return this.#group;
+  }
+
+  set color(color) {
+    if (!color) return;
+    for (let part of this.parts) part.style.setProperty("--color", color);
   }
 
   set hover(isHover) {
