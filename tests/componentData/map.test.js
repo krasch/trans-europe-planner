@@ -3,10 +3,13 @@ const {
   prepareDataForMap,
   prepareInitialDataForMap,
 } = require("../../script/components/componentData.js");
-const { Journey, JourneyCollection } = require("../../script/types/journey.js");
-const { Database } = require("../../script/database.js");
-const { RouteDatabase } = require("../../script/routing.js");
-const { createConnection, testCities } = require("../../tests/data.js");
+const {
+  Journey,
+  JourneyCollection,
+} = require("../../script/data/types/journey.js");
+const { Database } = require("../../script/data/database.js");
+const { RouteDatabase } = require("../../script/data/routing.js");
+const { createConnection, testCities } = require("../dataForTests.js");
 
 test("prepareInitialDataForMap", function () {
   const home = "City1";

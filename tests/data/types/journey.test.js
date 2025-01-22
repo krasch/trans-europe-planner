@@ -1,10 +1,10 @@
-const { createConnection } = require("../../tests/data.js");
+const { createConnection } = require("../../dataForTests.js");
 const {
   Journey,
   JourneyError,
   JourneyCollection,
-} = require("../../script/types/journey.js");
-const { Database } = require("../../script/database.js");
+} = require("../../../script/data/types/journey.js");
+const { Database } = require("../../../script/data/database.js");
 const { DateTime } = require("luxon");
 
 test("testDerivedAttributes", function () {

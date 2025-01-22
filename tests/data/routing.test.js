@@ -6,9 +6,9 @@ const {
   createStupidItineraryForRoute,
   RoutingError,
   RouteDatabase,
-} = require("../script/routing.js");
-const { Database } = require("../script/database.js");
-const { createConnection } = require("../tests/data.js");
+} = require("../../script/data/routing.js");
+const { Database } = require("../../script/data/database.js");
+const { createConnection } = require("../dataForTests.js");
 const { DateTime } = require("luxon");
 
 test("sortByDepartureTime", function () {

@@ -2,8 +2,8 @@ const {
   Database,
   DatabaseError,
   isSlicingError,
-} = require("../script/database.js");
-const { createConnection } = require("../tests/data.js");
+} = require("../../script/data/database.js");
+const { createConnection } = require("../dataForTests.js");
 const { DateTime } = require("luxon");
 
 test("getConnectionEmptyDatabase", function () {

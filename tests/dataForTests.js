@@ -1,5 +1,5 @@
 const { initCityNameToId } = require("../script/components/componentData.js");
-const { Stop, Connection } = require("../script/types/connection.js");
+const { Stop, Connection } = require("../script/data/types/connection.js");
 const { DateTime } = require("luxon");
 
 const testCities = {

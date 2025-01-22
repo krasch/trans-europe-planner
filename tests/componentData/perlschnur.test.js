@@ -3,9 +3,12 @@ const {
   getColor,
   humanReadableTimedelta,
 } = require("../../script/components/componentData.js");
-const { Journey, JourneyCollection } = require("../../script/types/journey.js");
-const { Database } = require("../../script/database.js");
-const { createConnection } = require("../../tests/data.js");
+const {
+  Journey,
+  JourneyCollection,
+} = require("../../script/data/types/journey.js");
+const { Database } = require("../../script/data/database.js");
+const { createConnection } = require("../dataForTests.js");
 
 test("prepareDataForPerlschnurEmpty", function () {
   const database = new Database([]);
