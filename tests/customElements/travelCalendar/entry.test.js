@@ -20,6 +20,8 @@ test("one day entry", async function () {
       rowEnd: util.ROW_MIDNIGHT + 15 * 4,
       group: "default-group",
       contains: ["header", "start", "destination"],
+      isFirstPart: true,
+      isLastPart: true,
     },
   ]);
 });
@@ -55,6 +57,8 @@ test("entry that spans two columns/days", async function () {
       rowEnd: util.ROW_MIDNIGHT + 24 * 4,
       contains: ["header", "start"],
       group: "default-group",
+      isFirstPart: true,
+      isLastPart: false,
     },
     // part2
     {
@@ -63,6 +67,8 @@ test("entry that spans two columns/days", async function () {
       rowEnd: util.ROW_MIDNIGHT + 18 * 4,
       contains: ["destination"],
       group: "default-group",
+      isFirstPart: false,
+      isLastPart: true,
     },
   ]);
 });
@@ -82,6 +88,8 @@ test("entry that spans three columns/days", async function () {
       rowEnd: util.ROW_MIDNIGHT + 24 * 4,
       contains: ["header", "start"],
       group: "default-group",
+      isFirstPart: true,
+      isLastPart: false,
     },
     // part2
     {
@@ -90,6 +98,8 @@ test("entry that spans three columns/days", async function () {
       rowEnd: util.ROW_MIDNIGHT + 24 * 4,
       contains: [],
       group: "default-group",
+      isFirstPart: false,
+      isLastPart: false,
     },
     // part3
     {
@@ -98,6 +108,8 @@ test("entry that spans three columns/days", async function () {
       rowEnd: util.ROW_MIDNIGHT + 18 * 4,
       contains: ["destination"],
       group: "default-group",
+      isFirstPart: false,
+      isLastPart: true,
     },
   ]);
 });

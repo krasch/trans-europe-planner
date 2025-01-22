@@ -9,7 +9,7 @@ const util = require("./util.js");
 
 beforeEach(() => util.createDocument());
 
-function dispatchEvent(element, eventName, group = null, timeout_ms = 10) {
+function dispatchEvent(element, eventName, timeout_ms = 10) {
   const classes = {
     mouseover: MouseEvent,
     mouseout: MouseEvent,
@@ -22,7 +22,6 @@ function dispatchEvent(element, eventName, group = null, timeout_ms = 10) {
 
   const clazz = classes[eventName];
   const event = new clazz(eventName, { bubbles: true });
-  if (group) event.dataTransfer.setData(group, group);
 
   element.dispatchEvent(event);
 
@@ -119,45 +118,45 @@ test("drag and drop of multi-part entries", async function () {
   /// when starting dragging e1, it should turn inactive and e1 and e2 should show indicators
   await dispatchEvent(elements.e1.part1, "dragstart");
   expect(got.all.isActive).toStrictEqual(exp.status.only_e3_active);
-  expect(got.all.dragStatus).toStrictEqual(exp.drag.e1_and_e2_indicator);
+  expect(got.all.dragStatus).toStrictEqual(exp.drag.e1preview_e2indicator);
 
   // when dragentering e2, it should become preview
-  await dispatchEvent(elements.e2.part2, "dragenter", group);
+  await dispatchEvent(elements.e2.part2, "dragenter");
   expect(got.all.isActive).toStrictEqual(exp.status.only_e3_active);
   expect(got.all.dragStatus).toStrictEqual(exp.drag.e1indicator_e2preview);
 
-  // after dragleaving e2, it should switch back to indicator
-  await dispatchEvent(elements.e2.part1, "dragleave", group);
+  // after dragleaving e2, both e1 and e2 should be indicator
+  await dispatchEvent(elements.e2.part1, "dragleave");
   expect(got.all.isActive).toStrictEqual(exp.status.only_e3_active);
   expect(got.all.dragStatus).toStrictEqual(exp.drag.e1_and_e2_indicator);
 
   // when dragentering e3, nothing should happen
-  await dispatchEvent(elements.e3.part1, "dragenter", group);
+  await dispatchEvent(elements.e3.part1, "dragenter");
   expect(got.all.isActive).toStrictEqual(exp.status.only_e3_active);
   expect(got.all.dragStatus).toStrictEqual(exp.drag.e1_and_e2_indicator);
 
   // when dragleaving e3, nothing should happen either
-  await dispatchEvent(elements.e3.part1, "dragleave", group);
+  await dispatchEvent(elements.e3.part1, "dragleave");
   expect(got.all.isActive).toStrictEqual(exp.status.only_e3_active);
   expect(got.all.dragStatus).toStrictEqual(exp.drag.e1_and_e2_indicator);
 
   // when drop is canceled, it should snap back to e1 being active
   // need to dispatch the dragend over e1, in reality this is not necessary
-  await dispatchEvent(elements.e1.part1, "dragend", group);
+  await dispatchEvent(elements.e1.part1, "dragend");
   expect(got.all.isActive).toStrictEqual(exp.status.e1_and_e3_active);
   expect(got.all.dragStatus).toStrictEqual(exp.drag.all_undefined);
 
   // dragging e1 to e2 -> e2 should become active
   await dispatchEvent(elements.e1.part1, "dragstart");
-  await dispatchEvent(elements.e2.part2, "drop", group);
+  await dispatchEvent(elements.e2.part2, "drop");
   expect(got.all.isActive).toStrictEqual(exp.status.e2_and_e3_active);
   expect(got.all.dragStatus).toStrictEqual(exp.drag.all_undefined);
 
   // dragging e2 to e2 -> e1 should become active
   await dispatchEvent(elements.e2.part2, "dragstart");
-  await dispatchEvent(elements.e1.part1, "dragenter", group);
+  await dispatchEvent(elements.e1.part1, "dragenter");
   expect(got.all.dragStatus).toStrictEqual(exp.drag.e1preview_e2indicator);
-  await dispatchEvent(elements.e1.part2, "drop", group);
+  await dispatchEvent(elements.e1.part2, "drop");
   expect(got.all.isActive).toStrictEqual(exp.status.e1_and_e3_active);
   expect(got.all.dragStatus).toStrictEqual(exp.drag.all_undefined);
 });

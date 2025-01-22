@@ -152,6 +152,7 @@ class TravelCalendar extends HTMLElement {
     });
 
     enableDragAndDrop(this, (closest) => {}); // todo callback
+    firefoxMobileDragAndDropPolyfill(this, (closest) => {});
   }
 
   connectedCallback() {
@@ -165,18 +166,19 @@ class TravelCalendar extends HTMLElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === "start-date" && oldValue !== newValue) {
-      this.#changeStartDate(newValue);
+      this.#changeCalendarStartDate(newValue);
     }
   }
 
-  addEntryEventListener(type, callback) {
-    this.shadowRoot.addEventListener(type, (e) => {
+  addEntryEventListener(name, callback) {
+    this.shadowRoot.addEventListener(name, (e) => {
       const closestEntryPart = e.target.closest(".entry-part");
       if (!closestEntryPart) return;
 
       const entry = this.#lookup.parent(closestEntryPart);
-      const group = this.#lookup.entriesWithGroup(entry.group);
-      callback(e, entry, group);
+      const groupEntries = this.#lookup.entriesWithGroup(entry.group);
+
+      callback(e, entry, groupEntries);
     });
   }
 
@@ -213,6 +215,9 @@ class TravelCalendar extends HTMLElement {
     entry.parts[0].appendChild(uiElements.startInfo.cloneNode(true));
     entry.parts.at(-1).appendChild(uiElements.destinationInfo.cloneNode(true));
 
+    entry.parts[0].classList.add("entry-first-part");
+    entry.parts.at(-1).classList.add("entry-last-part");
+
     this.#lookup.register(externalElement, entry);
   }
 
@@ -222,7 +227,7 @@ class TravelCalendar extends HTMLElement {
     this.#lookup.unregister(travelOption);
   }
 
-  #changeStartDate(newDate) {
+  #changeCalendarStartDate(newDate) {
     // update date labels in top-level row
     const labels = Array.from(this.shadowRoot.querySelectorAll(".date-label"));
     for (let i in labels) {
@@ -474,77 +479,154 @@ function enableDragAndDrop(calendar, onDropCallback) {
   emptyDragImage.src =
     "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
 
-  // use this function to set up an event listener that only gets called back
-  // when the entry is a valid drop target
-  const addFilteredEventListener = (type, callback) => {
-    calendar.addEntryEventListener(type, (e, entry, groupEntries) => {
-      // the "group" attributes of the element being dragged (source)
-      // chrome only allows us to access the getData in drop event -> workaround
-      let groupSource = e.dataTransfer.types[0];
+  let entryCurrentlyBeingDragged = null;
 
-      // and the group attribute where the mouse is currently over (target)
-      const groupTarget = entry.group;
+  const isValidDropTarget = (entry) =>
+    entryCurrentlyBeingDragged &&
+    entry.group === entryCurrentlyBeingDragged.group;
 
-      // both group attributes must be the same
-      // group source might be lower-case due to chrome workaround
-      // -> compare in lower case
-      if (groupSource.toLocaleLowerCase() === groupTarget.toLocaleLowerCase())
-        callback(e, entry, groupEntries);
-    });
-  };
-
-  calendar.addEntryEventListener("dragstart", (e, entry, groupEntries) => {
-    e.dataTransfer.setDragImage(emptyDragImage, 0, 0);
-
-    // chrome workaround, important that this is not inside the timeout
-    e.dataTransfer.setData(entry.group, entry.group);
-
-    // another chrome-workaround, otherwise it directly fires dragend event
-    setTimeout(() => {
+  // in chrome mobile we see two dragstart events for the same entry
+  // this is because in the firefox mobile polyfill, we create our own dragstart event out of a touchstart event
+  // and then also the system dragstart event arrives in chrome mobile
+  // this can't be avoided because we don't know if we are on chrome mobile or firefox mobile,
+  // but only the system one has a proper data transfer, which we need to remove the drag image!
+  calendar.addEntryEventListener("dragstart", (e, entry, entriesForGroup) => {
+    // even if we have seen this dragstart for the second time, let's use the chance to configure data transfer
+    // this won't ever happen in firefox mobile, but does not matter because there is no dragimage there anyway
+    if (e.dataTransfer) {
+      e.dataTransfer.setDragImage(emptyDragImage, 0, 0);
       e.dataTransfer.dropEffect = "move";
+    }
 
-      entry.active = false;
-      for (let entry_ of groupEntries) entry_.dragStatus = "indicator";
-    }, 10);
+    // this is the second time we have seen a dragstart for this entry so nothing more todo
+    if (entryCurrentlyBeingDragged === entry) return;
+
+    for (let entry_ of entriesForGroup) entry_.dragStatus = "indicator";
+
+    entryCurrentlyBeingDragged = entry;
+    entryCurrentlyBeingDragged.active = false;
+    entryCurrentlyBeingDragged.dragStatus = "preview";
   });
 
-  // enters a valid drop target
-  addFilteredEventListener("dragenter", (e, entry) => {
+  // enters a drop target
+  calendar.addEntryEventListener("dragenter", (e, entry, groupEntries) => {
+    if (!isValidDropTarget(entry)) return;
     e.preventDefault();
+
+    for (let entry_ of groupEntries) entry_.dragStatus = "indicator"; // remove previous preview
     entry.dragStatus = "preview";
   });
 
   // this event is fired every few hundred milliseconds
-  addFilteredEventListener("dragover", (e) => {
+  calendar.addEntryEventListener("dragover", (e) => {
     e.preventDefault();
   });
 
-  // leaves a valid drop target
-  addFilteredEventListener("dragleave", (e, entry) => {
+  // leaves a drop target
+  calendar.addEntryEventListener("dragleave", (e, entry) => {
+    if (!isValidDropTarget(entry)) return;
     e.preventDefault();
+
     entry.dragStatus = "indicator";
   });
 
   // drop finished
-  addFilteredEventListener("drop", (e, entry, groupEntries) => {
+  calendar.addEntryEventListener("drop", (e, entry, entriesForGroup) => {
+    if (!isValidDropTarget(entry)) return;
     e.preventDefault();
 
+    entryCurrentlyBeingDragged.active = entryCurrentlyBeingDragged = null;
+
     entry.active = true;
-    for (let entry_ of groupEntries) entry_.dragStatus = null;
+    for (let entry_ of entriesForGroup) entry_.dragStatus = null;
 
     onDropCallback(entry);
   });
 
   // no drop event fired, drag&drop was aborted -> reset
-  addFilteredEventListener("dragend", (e, entry, groupEntries) => {
+  calendar.addEntryEventListener("dragend", (e, entry, entriesForGroup) => {
     e.preventDefault();
 
-    // todo what else could it be besides "none"?
-    if (e.dataTransfer.dropEffect === "none") {
-      entry.active = true;
-      for (let entry_ of groupEntries) entry_.dragStatus = null;
+    if (entryCurrentlyBeingDragged) entryCurrentlyBeingDragged.active = true;
+    for (let entry_ of entriesForGroup) entry_.dragStatus = null;
+  });
+}
+
+function firefoxMobileDragAndDropPolyfill(calendar) {
+  let currentDropTarget = null;
+
+  function getEntryPartAtLocation(e) {
+    // todo what if there is more than one touch and entry not in first of those??
+    const touch = e.changedTouches[0];
+
+    const parts = calendar.shadowRoot
+      .elementsFromPoint(touch.clientX, touch.clientY)
+      .filter((e) => e.classList.contains("entry-first-part"));
+
+    if (parts.length === 0) return null;
+
+    // todo what if there are multiple parts we are hovering over? should take earliest
+    // since currently assuming that earliest events come first, we can ignore this for now
+    return parts[0];
+  }
+
+  function initEvent(type) {
+    return new DragEvent(type, { bubbles: true });
+  }
+
+  // this event is also sent by chrome mobile android
+  // can not do preventDefault here because then chrome complains
+  calendar.addEntryEventListener("touchstart", (e, entry) => {
+    currentDropTarget = entry.parts[0];
+    currentDropTarget.dispatchEvent(initEvent("dragstart"));
+  });
+
+  // this event is not sent by chrome mobile android when a drag action is already in process
+  calendar.addEntryEventListener("touchmove", (e) => {
+    e.preventDefault();
+
+    const target = getEntryPartAtLocation(e);
+
+    // we are no longer over a valid drop target
+    if (target === null) {
+      currentDropTarget.dispatchEvent(initEvent("dragleave"));
+      currentDropTarget = null;
+      return;
+    }
+
+    // we were not over a valid drop target but now we are
+    if (currentDropTarget === null) {
+      currentDropTarget = target;
+      currentDropTarget.dispatchEvent(initEvent("dragenter"));
+      return;
+    }
+
+    // nothing changed
+    if (target === currentDropTarget) return;
+
+    // we moved from one valid drop target to another
+    currentDropTarget.dispatchEvent(initEvent("dragleave"));
+    currentDropTarget = target;
+    currentDropTarget.dispatchEvent(initEvent("dragenter"));
+  });
+
+  // this event is also sent by chrome mobile android
+  // can not do preventDefault here because then chrome complains
+  calendar.addEntryEventListener("touchend", (e, entry) => {
+    // touchend while over valid target -> drop
+    if (currentDropTarget) {
+      currentDropTarget.dispatchEvent(initEvent("drop"));
+      currentDropTarget = null;
+    }
+    // touchend while not over valid target -> cancel drag&drop
+    else {
+      entry.parts[0].dispatchEvent(initEvent("dragend"));
     }
   });
+
+  // never actually received a touchcancel from firefox mobile, it just seems to send touchend
+  // but chrome mobile android sends it
+  //calendar.addEntryEventListener("touchcancel", (e, data) => {});
 }
 
 customElements.define("travel-calendar", TravelCalendar); // todo move to main?

@@ -10,6 +10,7 @@
     <style>
         travel-calendar {
             width: 400px;
+            height: 100%;
 
             border: 1px solid black;
             border-radius: 5px;
@@ -28,6 +29,15 @@
         <div class="start">xx:xx Berlin</div>
         <div class="destination">yy:yy München</div>
     </div>
+        <div class="calendar-entry"
+         data-departure-datetime="2024-10-17T15:14"
+         data-arrival-datetime="2024-10-18T10:00"
+         data-active=""
+         data-group="Berlin->München">
+        <div class="header">A -> B</div>
+        <div class="start">aa:aa Berlin</div>
+        <div class="destination">bb:bb München</div>
+    </div>
     <div class="calendar-entry"
          data-departure-datetime="2024-10-18T03:14"
          data-arrival-datetime="2024-10-19T04:59"
@@ -37,12 +47,66 @@
         <div class="start">aa:aa Berlin</div>
         <div class="destination">bb:bb München</div>
     </div>
+    <!--div class="calendar-entry"
+         data-departure-datetime="2024-10-17T10:00"
+         data-arrival-datetime="2024-10-17T11:30"
+         data-active="active"
+         data-group="Berlin->München">
+        <div class="header">A->B</div>
+        <div class="start">xx:xx Berlin</div>
+        <div class="destination">yy:yy München</div>
+    </div>
+    <div class="calendar-entry"
+         data-departure-datetime="2024-10-17T11:00"
+         data-arrival-datetime="2024-10-17T12:30"
+         data-active=""
+         data-group="Berlin->München">
+        <div class="header">A->B</div>
+        <div class="start">xx:xx Berlin</div>
+        <div class="destination">yy:yy München</div>
+    </div>
+    <div class="calendar-entry"
+         data-departure-datetime="2024-10-17T12:00"
+         data-arrival-datetime="2024-10-17T13:30"
+         data-active=""
+         data-group="Berlin->München">
+        <div class="header">A->B</div>
+        <div class="start">xx:xx Berlin</div>
+        <div class="destination">yy:yy München</div>
+    </div>
+    <div class="calendar-entry"
+         data-departure-datetime="2024-10-17T13:00"
+         data-arrival-datetime="2024-10-17T14:30"
+         data-active=""
+         data-group="Berlin->München">
+        <div class="header">A->B</div>
+        <div class="start">xx:xx Berlin</div>
+        <div class="destination">yy:yy München</div>
+    </div>
+    <div class="calendar-entry"
+         data-departure-datetime="2024-10-17T14:00"
+         data-arrival-datetime="2024-10-17T15:30"
+         data-active=""
+         data-group="Berlin->München">
+        <div class="header">A->B</div>
+        <div class="start">xx:xx Berlin</div>
+        <div class="destination">yy:yy München</div>
+    </div>
+    <div class="calendar-entry"
+         data-departure-datetime="2024-10-17T15:00"
+         data-arrival-datetime="2024-10-17T16:30"
+         data-active=""
+         data-group="Berlin->München">
+        <div class="header">A->B</div>
+        <div class="start">xx:xx Berlin</div>
+        <div class="destination">yy:yy München</div>
+    </div-->
 </travel-calendar>
 
 
 <script>
     const calendar = document.getElementById("calendar");
-    setTimeout(() => {calendar.children[0].dataset.active = false})
+    //setTimeout(() => {calendar.children[0].dataset.active = false})
     //setTimeout(() => {calendar.dataset.startDate = false})
     //const el = document.querySelector(".calendar-entry")[0];
     //el.style.setProperty("--color", "117,112,179");

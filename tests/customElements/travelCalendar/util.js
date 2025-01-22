@@ -57,6 +57,8 @@ module.exports.getShadowDOMItems = (calendar, querySelector) => {
         dragStatus: e.dataset.dragStatus,
         isHover: e.classList.contains("hover"),
         isActive: e.dataset.status === "active",
+        isFirstPart: e.classList.contains("entry-first-part"),
+        isLastPart: e.classList.contains("entry-last-part"),
         group: e.dataset.group,
         contains: childClasses(e),
       }));
