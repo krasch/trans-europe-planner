@@ -507,7 +507,7 @@ function enableDragAndDrop(calendar, onDropCallback) {
       e.dataTransfer.dropEffect = "move";
     }
 
-    // this is the second time we have seen a dragstart for this entry so nothing more todo
+    // this is the second time we have seen a dragstart for this entry so nothing more to be done
     if (entryCurrentlyBeingDragged === entry) return;
 
     for (let entry_ of entriesForGroup) entry_.dragStatus = "indicator";
@@ -563,6 +563,7 @@ function enableDragAndDrop(calendar, onDropCallback) {
 
 function firefoxMobileDragAndDropPolyfill(calendar) {
   let currentDropTarget = null;
+  let currentlyDragging = false;
 
   function getEntryPartAtLocation(e) {
     // todo what if there is more than one touch and entry not in first of those??
@@ -587,37 +588,44 @@ function firefoxMobileDragAndDropPolyfill(calendar) {
   // can not do preventDefault here because then chrome complains
   calendar.addEntryEventListener("touchstart", (e, entry) => {
     currentDropTarget = entry.parts[0];
+    currentlyDragging = true;
     currentDropTarget.dispatchEvent(initEvent("dragstart"));
   });
 
-  // this event is not sent by chrome mobile android when a drag action is already in process
-  calendar.addEntryEventListener("touchmove", (e) => {
-    e.preventDefault();
+  // observe, this is not addEntryEventListener but addEventListener
+  // reason is that we want to avoid chrome from scrolling etc while dragging
+  // for this we must also set the passive option, see https://stackoverflow.com/a/49590237
+  calendar.addEventListener(
+    "touchmove",
+    (e) => {
+      if (currentlyDragging) e.preventDefault();
 
-    const target = getEntryPartAtLocation(e);
+      const target = getEntryPartAtLocation(e);
 
-    // we are no longer over a valid drop target
-    if (target === null) {
+      // we are no longer over a valid drop target
+      if (currentDropTarget !== null && target === null) {
+        currentDropTarget.dispatchEvent(initEvent("dragleave"));
+        currentDropTarget = null;
+        return;
+      }
+
+      // we were not over a valid drop target, but now we are
+      if (currentDropTarget === null && target !== null) {
+        currentDropTarget = target;
+        currentDropTarget.dispatchEvent(initEvent("dragenter"));
+        return;
+      }
+
+      // nothing changed
+      if (target === currentDropTarget) return;
+
+      // we moved from one valid drop target to another
       currentDropTarget.dispatchEvent(initEvent("dragleave"));
-      currentDropTarget = null;
-      return;
-    }
-
-    // we were not over a valid drop target but now we are
-    if (currentDropTarget === null) {
       currentDropTarget = target;
       currentDropTarget.dispatchEvent(initEvent("dragenter"));
-      return;
-    }
-
-    // nothing changed
-    if (target === currentDropTarget) return;
-
-    // we moved from one valid drop target to another
-    currentDropTarget.dispatchEvent(initEvent("dragleave"));
-    currentDropTarget = target;
-    currentDropTarget.dispatchEvent(initEvent("dragenter"));
-  });
+    },
+    { passive: false },
+  );
 
   // this event is also sent by chrome mobile android
   // can not do preventDefault here because then chrome complains
@@ -631,6 +639,8 @@ function firefoxMobileDragAndDropPolyfill(calendar) {
     else {
       entry.parts[0].dispatchEvent(initEvent("dragend"));
     }
+
+    currentlyDragging = false;
   });
 
   // never actually received a touchcancel from firefox mobile, it just seems to send touchend
