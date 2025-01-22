@@ -1,13 +1,7 @@
-const {
-  prepareDataForCalendar,
-  getColor,
-} = require("../../script/components/componentData.js");
-const {
-  Journey,
-  JourneyCollection,
-} = require("../../script/data/types/journey.js");
-const { Database } = require("../../script/data/database.js");
-const { createConnection } = require("../dataForTests.js");
+const { prepareDataForCalendar, getColor } = require("./componentData");
+const { Journey, JourneyCollection } = require("./journey");
+const { Database } = require("./database");
+const { createConnection } = require("./tests/data");
 const { DateTime } = require("luxon");
 
 function expected(connection, selected, color) {

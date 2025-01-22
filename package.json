@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "serve -p 8000",
-    "test": "node node_modules/.bin/jest",
+    "test": "node node_modules/.bin/jest tests",
     "check-pretty": "node node_modules/.bin/prettier data/ script/ style/map/layers.js --check",
     "make-pretty": "node node_modules/.bin/prettier data/ script/ style/map/layers.js --write"
   },
@@ -17,5 +17,16 @@
     "luxon": "^3.5.0",
     "prettier": "3.3.3",
     "serve": "^14.2.4"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "./database": "<rootDir>/script/data/database.js",
+      "./connection": "<rootDir>/script/data/types/connection.js",
+      "./travelCalendar":  "<rootDir>/script/components/calendar2/travelCalendar.js",
+      "./componentData": "<rootDir>/script/components/componentData.js",
+      "./routing": "<rootDir>/script/data/routing.js",
+      "./journey": "<rootDir>/script/data/types/journey.js",
+      "./tests/data": "<rootDir>/tests/data.js"
+    }
   }
 }

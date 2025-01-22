@@ -1,7 +1,5 @@
 // just needs to get loaded to be available as a custom element
-const {
-  TravelCalendar,
-} = require("../../../script/components/calendar2/travelCalendar.js");
+const { TravelCalendar } = require("./travelCalendar");
 
 module.exports.ROW_MIDNIGHT = 2; // 1 for header, 1 because indexes start at 1
 module.exports.COLUMN_FIRST_DAY = 2; // 1 for hour column, 1 because indexes start at 1

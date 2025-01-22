@@ -8,7 +8,7 @@ const {
   RouteDatabase,
 } = require("../../script/data/routing.js");
 const { Database } = require("../../script/data/database.js");
-const { createConnection } = require("../dataForTests.js");
+const { createConnection } = require("../data.js");
 const { DateTime } = require("luxon");
 
 test("sortByDepartureTime", function () {
