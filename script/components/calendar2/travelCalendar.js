@@ -55,9 +55,19 @@ const style = `
 .entry-part {
   --color: 128,128,128;
   overflow: hidden;
-  border-radius: 10px;
+  /* by default entry is not visible */
   visibility: hidden;
 }
+.entry-first-part {
+  border-top-left-radius: 10px; 
+  border-top-right-radius: 10px; 
+}
+.entry-last-part {
+  border-bottom-left-radius: 10px; 
+  border-bottom-right-radius: 10px; 
+}
+
+/* active entry is visible */
 .entry-part[data-status=active] {
   visibility: visible;
   border: 1px solid darkgrey;
@@ -66,22 +76,24 @@ const style = `
 .entry-part[data-status=active].hover {
   background-color: rgba(var(--color), 0.8);
 }
-/* faint highlight to show that dropping is possible here */
-.entry-part[data-drag-status=indicator] {
+
+/* during drag&drop, entry children are never visible */
+.entry-part[data-drag-status=indicator] > *,
+.entry-part[data-drag-status=preview] > *{
+  visibility: hidden;
+}
+
+/* drag&drop "indicator" = faint highlight over FIRST PART to show that dropping is possible here */
+.entry-first-part[data-drag-status=indicator] {
   visibility: visible;
   border-top: 1px dashed rgba(var(--color));
   border-radius: 0;
 }
-.entry-part[data-drag-status=indicator] > * {
-  visibility: hidden; 
-}
-/* drag&drop mode and user is hovering over this drop zone */
+
+/* drag&drop "preview" = faint background color to show that this is the current drop target */
 .entry-part[data-drag-status=preview] {
   visibility: visible;
   background-color: rgba(var(--color), 0.8);
-}
-.entry-part[data-drag-status=preview] > * {
-  visibility: hidden;
 }
 </style>`;
 
@@ -417,13 +429,7 @@ class MultipartCalendarEntry {
   }
 
   set dragStatus(status) {
-    // indicator is a special case, because line should only be on top of first part
-    if (status === "indicator") {
-      this.dragStatus = null; // unset all (recursive call)
-      this.parts[0].dataset.dragStatus = "indicator";
-    }
-    // unset drag status for all parts
-    else if (status === null) {
+    if (status === null) {
       for (let part of this.parts) delete part.dataset.dragStatus;
     }
     // all other statuses just set for all parts
