@@ -9,7 +9,7 @@
 
     <style>
         travel-calendar {
-            width: 400px;
+            width: 600px;
             height: 100%;
 
             border: 1px solid black;
@@ -22,14 +22,67 @@
 <travel-calendar id="calendar" start-date="2024-10-17">
     <div class="calendar-entry"
          data-departure-datetime="2024-10-17T03:14"
-         data-arrival-datetime="2024-10-18T04:59"
+         data-arrival-datetime="2024-10-17T05:00"
          data-active="active"
          data-group="Berlin->München">
-        <div class="header">A->B</div>
-        <div class="start">xx:xx Berlin</div>
-        <div class="destination">yy:yy München</div>
+
+        <div class="header">
+            <img src="images/icons/train.svg">
+            <span>ICE 430</span>
+            <img src="images/icons/move.svg" alt="icon to move calendar event">
+        </div>
+        <div class="start">
+            <span>11:00</span>
+            <span>München</span>
+        </div>
+        <div class="destination">
+            <span>14:03</span>
+            <span>Berlin ist die endhaltestelle dieses zuges</span>
+        </div>
     </div>
+
+    <div class="calendar-entry"
+         data-departure-datetime="2024-10-18T03:14"
+         data-arrival-datetime="2024-10-18T05:00"
+         data-active=""
+         data-group="Berlin->München">
+
+        <div class="header">
+            <img src="images/icons/train.svg">
+            <span>ICE 430</span>
+            <img src="images/icons/move.svg" alt="icon to move calendar event">
+        </div>
+        <div class="start">
+            <span>11:00</span>
+            <span>München</span>
+        </div>
+        <div class="destination">
+            <span>14:03</span>
+            <span>Berlin ist die endhaltestelle dieses zuges</span>
+        </div>
+    </div>
+
         <div class="calendar-entry"
+         data-departure-datetime="2024-10-19T03:14"
+         data-arrival-datetime="2024-10-19T05:00"
+         data-active=""
+         data-group="Berlin->München">
+
+        <div class="header">
+            <img src="images/icons/train.svg">
+            <span>ICE 430</span>
+            <img src="images/icons/move.svg" alt="icon to move calendar event">
+        </div>
+        <div class="start">
+            <span>11:00</span>
+            <span>München</span>
+        </div>
+        <div class="destination">
+            <span>14:03</span>
+            <span>Berlin ist die endhaltestelle dieses zuges</span>
+        </div>
+    </div>
+    <!--div class="calendar-entry"
          data-departure-datetime="2024-10-17T15:14"
          data-arrival-datetime="2024-10-18T10:00"
          data-active=""
@@ -46,7 +99,7 @@
         <div class="header">A -> B</div>
         <div class="start">aa:aa Berlin</div>
         <div class="destination">bb:bb München</div>
-    </div>
+    </div-->
     <!--div class="calendar-entry"
          data-departure-datetime="2024-10-17T10:00"
          data-arrival-datetime="2024-10-17T11:30"

@@ -3,8 +3,9 @@ const LOCALE = new Intl.NumberFormat().resolvedOptions().locale;
 const NUM_DAYS = 3;
 const RESOLUTION = 4; // "slices" per hour
 
-const style = `
-<style>
+const entryStyle = `<style>@import url('/style/calendar2.css')</style>`;
+
+const gridStyle = `<style>
 
 :host {
   /* the following can be set in external css to style this custom element */
@@ -50,50 +51,6 @@ const style = `
 }
 .cell.full-hour {
   border-top: var(--calendar-lines);
-}
-
-.entry-part {
-  --color: 128,128,128;
-  overflow: hidden;
-  /* by default entry is not visible */
-  visibility: hidden;
-}
-.entry-first-part {
-  border-top-left-radius: 10px; 
-  border-top-right-radius: 10px; 
-}
-.entry-last-part {
-  border-bottom-left-radius: 10px; 
-  border-bottom-right-radius: 10px; 
-}
-
-/* active entry is visible */
-.entry-part[data-status=active] {
-  visibility: visible;
-  border: 1px solid darkgrey;
-  background-color: rgba(var(--color), 0.6);
-}
-.entry-part[data-status=active].hover {
-  background-color: rgba(var(--color), 0.8);
-}
-
-/* during drag&drop, entry children are never visible */
-.entry-part[data-drag-status=indicator] > *,
-.entry-part[data-drag-status=preview] > *{
-  visibility: hidden;
-}
-
-/* drag&drop "indicator" = faint highlight over FIRST PART to show that dropping is possible here */
-.entry-first-part[data-drag-status=indicator] {
-  visibility: visible;
-  border-top: 1px dashed rgba(var(--color));
-  border-radius: 0;
-}
-
-/* drag&drop "preview" = faint background color to show that this is the current drop target */
-.entry-part[data-drag-status=preview] {
-  visibility: visible;
-  background-color: rgba(var(--color), 0.8);
 }
 </style>`;
 
@@ -151,7 +108,7 @@ class TravelCalendar extends HTMLElement {
     super();
 
     this.attachShadow({ mode: "open" });
-    this.shadowRoot.innerHTML = style;
+    this.shadowRoot.innerHTML = gridStyle + entryStyle;
 
     // helps with mapping from entries to parts etc
     this.#lookup = new LookupUtil();
