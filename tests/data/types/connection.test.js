@@ -1,8 +1,5 @@
-const {
-  Connection,
-  SlicingError,
-} = require("../../script/types/connection.js");
-const { createConnection } = require("../../tests/data.js");
+const { Connection, SlicingError } = require("./connection");
+const { createConnection } = require("./testData");
 const { DateTime } = require("luxon");
 
 test("derivedAttributes", function () {

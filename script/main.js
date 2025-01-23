@@ -29,7 +29,10 @@ async function main(home, views) {
   };
 
   // redraw calendar header
-  views.calendar.setAttribute("start", state.date.toISODate());
+  views.calendar.travelCalendar.setAttribute(
+    "start-date",
+    state.date.toISODate(),
+  );
 
   // prepare database
   // todo having troubles with trains starting before 01:00 because than diffDays does not work correctly
@@ -84,11 +87,11 @@ async function main(home, views) {
     state.journeys.activeJourney.split(cityName); // todo option to split only for active journey? or pass journey id back here
   });
 
-  views.calendar.on("entryHoverStart", (leg) =>
-    views.map.setLegHoverState(leg, true),
-  );
+  views.calendar.on("legHoverStart", (leg) => {
+    views.map.setLegHoverState(leg, true);
+  });
 
-  views.calendar.on("entryHoverStop", (leg) =>
+  views.calendar.on("legHoverStop", (leg) =>
     views.map.setLegHoverState(leg, false),
   );
 
@@ -100,7 +103,11 @@ async function main(home, views) {
 
     state.journeys.shiftDate(diff, database);
     state.date = date;
-    views.calendar.setAttribute("start", state.date.toISODate());
+
+    views.calendar.travelCalendar.setAttribute(
+      "start-date",
+      state.date.toISODate(),
+    );
 
     updateViews(state);
   });

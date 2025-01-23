@@ -1,0 +1,154 @@
+.entry-part {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: helvetica, arial, sans-serif;
+}
+
+/***********************************************
+ Layout
+************************************************/
+
+.entry-part {
+  overflow: hidden; /* this is necessary to really get the round corners */
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+
+  /* lie horizontally centered in grid column */
+  width: 90%;
+  justify-self: center;
+
+  /* todo would be nicer to do this in external css */
+  animation: fadein 1s;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.entry-part > * {
+  padding-left: 0.2rem;
+}
+
+.entry-part .header {
+  height: 1.5rem;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.2rem;
+
+  cursor: pointer;
+}
+
+.entry-part .header img {
+  height: 1rem;
+}
+
+/* move icon should be at right of header */
+.entry-part .header img:last-child {
+  margin-left: auto;
+  padding-right: 0.5rem;
+}
+
+/* destination should be at end of entry */
+.entry-part .destination {
+  margin-top: auto;
+  padding-bottom: 0.2rem;
+}
+
+/***********************************************
+ Colors
+************************************************/
+
+.entry-part {
+  --color: 0, 0, 0; /* will be set in script */
+  color: #2e210d;
+}
+
+.entry-part[data-status="active"] {
+  background-color: rgba(var(--color), 0.4);
+}
+
+.entry-part[data-status="active"].hover {
+  background-color: rgba(var(--color), 0.6);
+}
+
+.entry-part .header {
+  color: white;
+  background-color: rgba(var(--color), 0.8);
+}
+
+.entry-part .header img {
+  filter: invert(100%); /* can not use var(--filter-white) here */
+}
+
+/***********************************************
+ Borders, border radius
+************************************************/
+
+.entry-part[data-status="active"] {
+  border-left: 1px solid rgb(var(--color));
+  border-right: 1px solid rgb(var(--color));
+}
+
+/* first part of a multi-column calendar entry */
+.entry-first-part {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+.entry-first-part[data-status="active"] {
+  border-top: 1px solid rgb(var(--color));
+}
+
+/* last part of a multi-column calendar entry */
+.entry-last-part {
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.entry-last-part[data-status="active"] {
+  border-bottom: 1px solid rgb(var(--color));
+}
+
+/***********************************************
+ Visibility, drag&drop status etc
+************************************************/
+
+/* by default entry is not visible */
+.entry-part {
+  visibility: hidden;
+}
+
+/* active entry is visible */
+.entry-part[data-status="active"] {
+  visibility: visible;
+}
+
+/* during drag&drop, entry children are never visible */
+.entry-part[data-drag-status="indicator"] > *,
+.entry-part[data-drag-status="preview"] > * {
+  visibility: hidden;
+}
+
+/* but the entry "shell" itself is visible */
+.entry-first-part[data-drag-status="indicator"],
+.entry-part[data-drag-status="preview"] {
+  visibility: visible;
+}
+
+/* drag&drop "indicator" = border over FIRST PART to show that dropping is possible here */
+.entry-first-part[data-drag-status="indicator"] {
+  border-top: 2px dashed rgba(var(--color));
+  border-radius: 0;
+}
+
+/* drag&drop "preview" = faint background color to show that this is the current drop target */
+.entry-part[data-drag-status="preview"] {
+  background-color: rgba(var(--color), 0.3);
+}

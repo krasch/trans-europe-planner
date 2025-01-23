@@ -1,4 +1,4 @@
-const { Stop } = require("../../script/types/connection.js");
+const { Stop } = require("./connection");
 const { DateTime } = require("luxon");
 
 function createStop(arrival, departure) {

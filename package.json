@@ -6,15 +6,28 @@
   "type": "module",
   "scripts": {
     "start": "serve -p 8000",
-    "test": "node node_modules/.bin/jest",
+    "test": "node node_modules/.bin/jest tests",
     "check-pretty": "node node_modules/.bin/prettier data/ script/ style/map/layers.js --check",
     "make-pretty": "node node_modules/.bin/prettier data/ script/ style/map/layers.js --write"
   },
   "devDependencies": {
+    "@atlaskit/pragmatic-drag-and-drop-unit-testing": "^1.1.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "luxon": "^3.5.0",
     "prettier": "3.3.3",
     "serve": "^14.2.4"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "./travelCalendar":  "<rootDir>/script/customElements/travelCalendar/travelCalendar.js",
+      "./componentData": "<rootDir>/script/data/componentData.js",
+      "./database": "<rootDir>/script/data/database.js",
+      "./routing": "<rootDir>/script/data/routing.js",
+      "./connection": "<rootDir>/script/data/types/connection.js",
+      "./journey": "<rootDir>/script/data/types/journey.js",
+      "./testData": "<rootDir>/tests/testData.js",
+      "./calendarTestUtils": "<rootDir>/tests/calendarTestUtils.js"
+    }
   }
 }

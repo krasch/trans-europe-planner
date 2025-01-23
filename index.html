@@ -11,48 +11,49 @@
     <script src="external/maplibre-gl@4.6.0/maplibre-gl.js"></script>
     <script src="external/luxon@3.5.0/luxon.min.js"></script>
 
-    <script defer data-domain="trans-europe-planner.eu" src="https://plausible.io/js/script.js"></script>
+    <!--script defer data-domain="trans-europe-planner.eu" src="https://plausible.io/js/script.js"></script-->
 
     <!-- styles -->
     <link rel="stylesheet" href="style/layout.css">
     <link rel="stylesheet" href="style/style.css">
-    <link rel="stylesheet" href="style/calendar.css">
     <link rel="stylesheet" href="style/map/map.css">
     <link rel="stylesheet" href="style/modal.css">
 
     <!-- style scripts -->
     <script src="style/map/layers.js"></script> <!-- only contains css styles for map in js -->
 
-    <!-- types -->
-    <script src="script/types/connection.js"></script>
-    <script src="script/types/journey.js"></script>
-
-    <!-- data -->
+    <!-- input data -->
     <script src="data/cities.js"></script>
     <script src="data/stations.js"></script>
     <script src="data/connections.js"></script>
     <script src="data/routes.js"></script>
     <script src="data/text.js"></script>
 
-    <!-- scripts -->
-    <script src="script/util.js"></script>
-    <script src="script/main.js"></script>
-    <script src="script/routing.js"></script>
-    <script src="script/database.js"></script>
+    <!-- custom elements -->
+    <script src="script/customElements/travelCalendar/travelCalendar.js"></script>
+
+    <!-- types -->
+    <script src="script/data/types/connection.js"></script>
+    <script src="script/data/types/journey.js"></script>
+
+    <!-- data-handling -->
+    <script src="script/data/routing.js"></script>
+    <script src="script/data/database.js"></script>
+    <script src="script/data/componentData.js"></script>
 
     <!-- components -->
-    <script src="script/components/componentData.js"></script>
     <script src="script/components/layout.js"></script>
-    <script src="script/components/calendar/grid.js"></script>
-    <script src="script/components/calendar/entry.js"></script>
-    <script src="script/components/calendar/calendar.js"></script>
-    <script src="script/components/calendar/draganddrop.js"></script>
+    <script src="script/components/datepicker.js"></script>
+    <script src="script/components/perlschnur.js"></script>
+    <script src="script/components/calendar.js"></script>
     <script src="script/components/map/map.js"></script>
     <script src="script/components/map/cities.js"></script>
     <script src="script/components/map/edges.js"></script>
     <script src="script/components/map/util.js"></script>
-    <script src="script/components/datepicker.js"></script>
-    <script src="script/components/perlschnur.js"></script>
+
+    <!-- other -->
+    <script src="script/util.js"></script>
+    <script src="script/main.js"></script>
 
     <title>Trans-Europe-Planner</title>
     <link rel="stylesheet" href="style/map/map.css">
@@ -61,40 +62,27 @@
 
 <body>
 
-<!-- date label at the top of calendar -->
-<template id="template-calendar-grid-date">
-    <div class="calendar-grid-date">
-        <span class="weekday"></span><br/>
-        <span class="day"></span>
-        <span class="month"></span><br/>
-    </div>
-</template>
-
-<!-- hour label at the left side of calendar -->
-<template id="template-calendar-grid-hour">
-    <div class="calendar-grid-hour"></div>
-</template>
-
-<!-- the cells of the calendar -->
-<template id="template-calendar-grid-cell">
-    <div class="calendar-grid-cell"></div>
-</template>
-
 <!-- the connections to be displayed in the calendar -->
 <template id="template-calendar-connection">
-    <div class="calendar-connection">
-        <div class="calendar-connection-header">
-            <img class="connection-icon">
+    <div class="calendar-entry"
+         data-departure-datetime=""
+         data-arrival-datetime=""
+         data-active=""
+         data-group=""
+         data-color="">
+
+        <div class="header">
+            <img class="connection-icon" alt="icon for train/ferry/etc" src=""/>
             <span class="connection-number"></span>
-            <img src="images/icons/move.svg" alt="icon to move calendar event">
+            <img src="images/icons/move.svg" alt="icon to move calendar event"/>
         </div>
-        <div>
-            <span class="connection-start-time"></span>
-            <span class="connection-start-station"></span>
+        <div class="start">
+            <span class="time"></span>
+            <span class="station"></span>
         </div>
-        <div>
-            <span class="connection-end-time"></span>
-            <span class="connection-end-station"></span>
+        <div class="destination">
+            <span class="time"></span>
+            <span class="station"></span>
         </div>
     </div>
 </template>
@@ -228,7 +216,8 @@
          'Datenabdeckung: Deutschland Fernverkehr vollständig plus ausgewählte Verbindungen im Ausland. ' +
          'Letzter Datenimport im November 2024 plus hoffen dass die Verbindungen sich nicht' +
          'allzusehr geändert haben. Grund für diese Schluderei: Entwicklung des User interface hatte ' +
-         'erstmal höhere Priorität')">Details</button>
+         'erstmal höhere Priorität')">Details
+        </button>
     </div>
 
     <input type="radio" name="tab" id="tab1" checked>
@@ -245,12 +234,12 @@
     <input type="radio" name="tab" id="tab2">
     <label for="tab2">🖉 &nbsp;Reise anpassen &nbsp;&nbsp;</label>
     <div id="tab2-content">
-        <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
+        <travel-calendar id="calendar" start-date="2025-01-01"></travel-calendar>
     </div>
 
     <div id="bottom-buttons">
-       <button onclick="alert('coming soon');">🔗 Teilen</button>
-       <button onclick="alert('coming soon');">🎫 Buchen</button>
+        <button onclick="alert('coming soon');">🔗 Teilen</button>
+        <button onclick="alert('coming soon');">🎫 Buchen</button>
     </div>
 </div>
 
@@ -290,7 +279,7 @@
 
         const views = {
             map: new MapWrapper('map', [10.0821932, 49.786322], 4.3), // starts async loading map
-            calendar: document.getElementById("calendar"),
+            calendar: new CalendarWrapper(document.getElementById("calendar")),
             perlschnur: new Perlschnur(document.getElementById("tab1-content")),
             datepicker: new Datepicker(document.getElementById("date-picker")),
             layout: new Layout(document.body)
