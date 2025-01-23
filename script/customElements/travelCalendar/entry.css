@@ -18,6 +18,18 @@
   /* lie horizontally centered in grid column */
   width: 90%;
   justify-self: center;
+
+  /* todo would be nicer to do this in external css */
+  animation: fadein 1s;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .entry-part > * {

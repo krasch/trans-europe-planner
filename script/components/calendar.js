@@ -10,21 +10,21 @@ class CalendarWrapper {
     entryHoverStop: () => {},
   };
 
-  #travelCalendar;
+  travelCalendar;
 
   #idToEntry = new Map();
   #entryToId = new Map();
 
   constructor(travelCalendar) {
-    this.#travelCalendar = travelCalendar;
+    this.travelCalendar = travelCalendar;
 
-    this.#travelCalendar.on("hoverOn", (entry) => {
+    this.travelCalendar.on("hoverOn", (entry) => {
       this.#callbacks.entryHoverStart(this.#entryToId.get(entry));
     });
-    this.#travelCalendar.on("hoverOff", (entry) => {
+    this.travelCalendar.on("hoverOff", (entry) => {
       this.#callbacks.entryHoverStop(this.#entryToId.get(entry));
     });
-    this.#travelCalendar.on("drop", (entry) => {
+    this.travelCalendar.on("drop", (entry) => {
       this.#callbacks.legChanged(this.#entryToId.get(entry));
     });
   }
@@ -34,11 +34,11 @@ class CalendarWrapper {
   }
 
   setHoverLeg(leg) {
-    this.#travelCalendar.setHoverGroup(leg);
+    this.travelCalendar.setHoverGroup(leg);
   }
 
   setNoHoverLeg(leg) {
-    this.#travelCalendar.setNoHoverGroup(leg);
+    this.travelCalendar.setNoHoverGroup(leg);
   }
 
   updateView(connections) {
@@ -53,7 +53,7 @@ class CalendarWrapper {
       if (ids.includes(id_)) continue; // still necessary
 
       const entry = this.#idToEntry.get(id_);
-      this.#travelCalendar.removeChild(entry);
+      this.travelCalendar.removeChild(entry);
 
       this.#idToEntry.delete(id_);
       this.#entryToId.delete(entry);
@@ -64,7 +64,7 @@ class CalendarWrapper {
       if (this.#idToEntry.has(c.uniqueId)) continue; // already added
 
       const entry = this.#createEntryFromConnection(c);
-      this.#travelCalendar.appendChild(entry);
+      this.travelCalendar.appendChild(entry);
 
       this.#idToEntry.set(c.uniqueId, entry);
       this.#entryToId.set(entry, c.uniqueId);

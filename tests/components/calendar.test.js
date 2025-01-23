@@ -3,7 +3,7 @@
  */
 
 const util = require("./calendarTestUtils");
-const { CalendarWrapper } = require("../../script/components/calendar2.js");
+const { CalendarWrapper } = require("../../script/components/calendar.js");
 const { timeout } = require("../calendarTestUtils.js");
 const { DateTime } = require("luxon");
 

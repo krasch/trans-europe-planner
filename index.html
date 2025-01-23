@@ -16,43 +16,44 @@
     <!-- styles -->
     <link rel="stylesheet" href="style/layout.css">
     <link rel="stylesheet" href="style/style.css">
-    <link rel="stylesheet" href="style/calendar.css">
     <link rel="stylesheet" href="style/map/map.css">
     <link rel="stylesheet" href="style/modal.css">
 
     <!-- style scripts -->
     <script src="style/map/layers.js"></script> <!-- only contains css styles for map in js -->
 
-    <!-- types -->
-    <script src="script/types/connection.js"></script>
-    <script src="script/types/journey.js"></script>
-
-    <!-- data -->
+    <!-- input data -->
     <script src="data/cities.js"></script>
     <script src="data/stations.js"></script>
     <script src="data/connections.js"></script>
     <script src="data/routes.js"></script>
     <script src="data/text.js"></script>
 
-    <!-- scripts -->
-    <script src="script/util.js"></script>
-    <script src="script/main.js"></script>
-    <script src="script/routing.js"></script>
-    <script src="script/database.js"></script>
+    <!-- custom elements -->
+    <script src="script/customElements/travelCalendar/travelCalendar.js"></script>
+
+    <!-- types -->
+    <script src="script/data/types/connection.js"></script>
+    <script src="script/data/types/journey.js"></script>
+
+    <!-- data-handling -->
+    <script src="script/data/routing.js"></script>
+    <script src="script/data/database.js"></script>
+    <script src="script/data/componentData.js"></script>
 
     <!-- components -->
-    <script src="script/components/componentData.js"></script>
     <script src="script/components/layout.js"></script>
-    <script src="script/components/calendar/grid.js"></script>
-    <script src="script/components/calendar/entry.js"></script>
-    <script src="script/components/calendar/calendar.js"></script>
-    <script src="script/components/calendar/draganddrop.js"></script>
+    <script src="script/components/datepicker.js"></script>
+    <script src="script/components/perlschnur.js"></script>
+    <script src="script/components/calendar.js"></script>
     <script src="script/components/map/map.js"></script>
     <script src="script/components/map/cities.js"></script>
     <script src="script/components/map/edges.js"></script>
     <script src="script/components/map/util.js"></script>
-    <script src="script/components/datepicker.js"></script>
-    <script src="script/components/perlschnur.js"></script>
+
+    <!-- other -->
+    <script src="script/util.js"></script>
+    <script src="script/main.js"></script>
 
     <title>Trans-Europe-Planner</title>
     <link rel="stylesheet" href="style/map/map.css">
@@ -233,7 +234,7 @@
     <input type="radio" name="tab" id="tab2">
     <label for="tab2">🖉 &nbsp;Reise anpassen &nbsp;&nbsp;</label>
     <div id="tab2-content">
-        <calendar-grid id="calendar" start="2024-12-01" num-days="3" resolution="4"></calendar-grid>
+        <travel-calendar id="calendar" start-date="2025-01-01"></travel-calendar>
     </div>
 
     <div id="bottom-buttons">
@@ -278,7 +279,7 @@
 
         const views = {
             map: new MapWrapper('map', [10.0821932, 49.786322], 4.3), // starts async loading map
-            calendar: document.getElementById("calendar"),
+            calendar: new CalendarWrapper(document.getElementById("calendar")),
             perlschnur: new Perlschnur(document.getElementById("tab1-content")),
             datepicker: new Datepicker(document.getElementById("date-picker")),
             layout: new Layout(document.body)

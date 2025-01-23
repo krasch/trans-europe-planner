@@ -29,7 +29,10 @@ async function main(home, views) {
   };
 
   // redraw calendar header
-  views.calendar.setAttribute("start", state.date.toISODate());
+  views.calendar.travelCalendar.setAttribute(
+    "start-date",
+    state.date.toISODate(),
+  );
 
   // prepare database
   // todo having troubles with trains starting before 01:00 because than diffDays does not work correctly
@@ -100,7 +103,11 @@ async function main(home, views) {
 
     state.journeys.shiftDate(diff, database);
     state.date = date;
-    views.calendar.setAttribute("start", state.date.toISODate());
+
+    views.calendar.travelCalendar.setAttribute(
+      "start-date",
+      state.date.toISODate(),
+    );
 
     updateViews(state);
   });
