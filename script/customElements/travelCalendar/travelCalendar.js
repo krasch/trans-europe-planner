@@ -16,12 +16,10 @@ const gridStyle = `<style>
   display: grid;
   font-size: 0.8rem;
   
-  --header-rows: 8;
   --num-rows: calc(24 * ${RESOLUTION});
-  --row-height: 0.3rem; /* instead set max height externally? */
   
-  grid-auto-flow: column; /* do I even need the below ?*/
-  grid-template-rows: 3rem repeat(var(--num-rows), var(--row-height));
+  grid-auto-flow: column; 
+  grid-template-rows: 8fr repeat(var(--num-rows), 1fr);
   grid-template-columns: 3rem repeat(${NUM_DAYS}, 1fr);
   
 }

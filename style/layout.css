@@ -286,6 +286,10 @@ a#hide-sidebar {
   gap: 0.5rem;
 }
 
+travel-calendar {
+  height: 700px; /* important to set a fixed height for this element */
+}
+
 /***********************************************
  Layout for footer
 ************************************************/
