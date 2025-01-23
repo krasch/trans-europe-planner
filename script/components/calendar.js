@@ -61,25 +61,19 @@ class CalendarWrapper {
 
     // add new entries
     for (let c of connections) {
-      if (this.#idToEntry.has(c.uniqueId)) continue; // already added
+      // already added before, just need to update
+      if (this.#idToEntry.has(c.uniqueId)) {
+        const entry = this.#idToEntry.get(c.uniqueId);
+        this.#updateEntry(entry, c);
+      }
+      // new connection -> new entry
+      else {
+        const entry = this.#createEntryFromConnection(c);
+        this.travelCalendar.appendChild(entry);
 
-      const entry = this.#createEntryFromConnection(c);
-      this.travelCalendar.appendChild(entry);
-
-      this.#idToEntry.set(c.uniqueId, entry);
-      this.#entryToId.set(entry, c.uniqueId);
-    }
-
-    // update entry settings
-    for (let c of connections) {
-      const entry = this.#idToEntry.get(c.uniqueId);
-
-      const shouldBeSelected = c.selected ?? false;
-      const isCurrentlyActive = entry.dataset.active === "active";
-
-      if (shouldBeSelected === isCurrentlyActive) continue;
-
-      entry.dataset.active = shouldBeSelected ? "active" : "";
+        this.#idToEntry.set(c.uniqueId, entry);
+        this.#entryToId.set(entry, c.uniqueId);
+      }
     }
   }
 
@@ -89,9 +83,9 @@ class CalendarWrapper {
 
     e.dataset.departureDatetime = c.startDateTime.toISO();
     e.dataset.arrivalDatetime = c.endDateTime.toISO();
-    e.dataset.color = c.color;
+    e.dataset.color = c.color ?? "";
     e.dataset.active = c.selected ? "active" : "";
-    e.dataset.group = c.leg;
+    e.dataset.group = c.leg ?? "";
 
     e.querySelector(".connection-icon").src = ICONS[c.type];
     e.querySelector(".connection-number").innerHTML = c.name;
@@ -103,6 +97,19 @@ class CalendarWrapper {
     e.querySelector(".destination .station").innerHTML = c.endStation;
 
     return e;
+  }
+
+  #updateEntry(entry, c) {
+    const active = c.selected ? "active" : "";
+    if (active !== entry.dataset.active) entry.dataset.active = active;
+
+    if (c.color && c.color !== entry.dataset.color)
+      entry.dataset.color = c.color;
+    if (c.leg && c.leg !== entry.dataset.group) entry.dataset.group = c.leg;
+
+    // travelcalendar supports also changes in startDatetime and endDatetime
+    // but right now those don't change and implementing anything here anyway might
+    // lead to a lot of date formatting overhead so let's just not do it
   }
 }
 

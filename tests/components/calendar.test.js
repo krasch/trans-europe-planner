@@ -192,49 +192,71 @@ test("update view should add/delete connections as necessary", async function ()
 
   // now first is back but second is gone
   // todo yes indeed that results in a bad time order of connections
+  // todo if it happens to be in good time order, i.e. this test fails,
+  //  then "station3" entry was identified as changed and removed and re-added
+  // which means that this will happen to all the entries which means bad performance
   calendar.updateView([connections[0], connections[2]]);
   await timeout(10);
   expect(startStations()).toEqual(["station3", "station1"]);
 });
 
-test("update view should propagate selected/active status", async function () {
+test("update view should propagate dataset changes to calendar entries", async function () {
   const container = document.querySelector("#calendar");
   const calendar = new CalendarWrapper(container);
 
   const connections = [
     {
       uniqueId: { id: 1, somekey: "someval" },
-      startStation: "station1",
+      color: "purple",
+      leg: "leg1",
       startDateTime: DateTime.fromISO(util.t1("19:00")),
       endDateTime: DateTime.fromISO(util.t1("20:00")),
     },
     {
       uniqueId: { id: 2, somekey: "someval" },
-      startStation: "station2",
+      color: "orange",
+      leg: "leg2",
       startDateTime: DateTime.fromISO(util.t2("09:00")),
       endDateTime: DateTime.fromISO(util.t2("10:00")),
     },
   ];
 
-  function isActive() {
-    const entries = util.getShadowDOMItems(container, ".entry-part");
-    return entries.data.map((e) => e.isActive);
-  }
-
   calendar.updateView(connections);
   await timeout(10);
-  expect(isActive()).toStrictEqual([false, false]);
 
+  let got = util.getShadowDOMItems(container, ".entry-part");
+  expect(got.data).toMatchObject([
+    {
+      color: "purple",
+      group: "leg1",
+      isActive: false,
+    },
+    {
+      color: "orange",
+      group: "leg2",
+      isActive: false,
+    },
+  ]);
+
+  connections[0].color = "black";
+  connections[1].leg = "legZ";
   connections[1].selected = true;
   calendar.updateView(connections);
   await timeout(10);
-  expect(isActive()).toStrictEqual([false, true]);
 
-  connections[0].selected = true;
-  connections[1].selected = true;
-  calendar.updateView(connections);
-  await timeout(10);
-  expect(isActive()).toStrictEqual([true, true]);
+  got = util.getShadowDOMItems(container, ".entry-part");
+  expect(got.data).toMatchObject([
+    {
+      color: "black",
+      group: "leg1",
+      isActive: false,
+    },
+    {
+      color: "orange",
+      group: "legZ",
+      isActive: true,
+    },
+  ]);
 });
 
 test("calendar wrapper should propagate callbacks from calendar", async function () {
