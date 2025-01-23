@@ -12,27 +12,75 @@ class CalendarWrapper {
 
   #travelCalendar;
 
-  // maps from id to entry
-  #entries = {};
-
-  // maps from string id to original composite connection id
-  #connectionIds = {};
+  #idToEntry = new Map();
+  #entryToId = new Map();
 
   constructor(travelCalendar) {
     this.#travelCalendar = travelCalendar;
 
-    this.#travelCalendar.on("hoverOn", this.#callbacks.entryHoverStart);
-    this.#travelCalendar.on("hoverOff", this.#callbacks.entryHoverStart);
-    this.#travelCalendar.on("drop", this.#callbacks.legChanged);
+    this.#travelCalendar.on("hoverOn", (entry) => {
+      this.#callbacks.entryHoverStart(this.#entryToId.get(entry));
+    });
+    this.#travelCalendar.on("hoverOff", (entry) => {
+      this.#callbacks.entryHoverStop(this.#entryToId.get(entry));
+    });
+    this.#travelCalendar.on("drop", (entry) => {
+      this.#callbacks.legChanged(this.#entryToId.get(entry));
+    });
   }
 
-  setHoverEntry(leg) {}
+  on(eventName, eventCallback) {
+    this.#callbacks[eventName] = eventCallback;
+  }
 
-  setNoHoverEntry(leg) {}
+  setHoverLeg(leg) {
+    this.#travelCalendar.setHoverGroup(leg);
+  }
+
+  setNoHoverLeg(leg) {
+    this.#travelCalendar.setNoHoverGroup(leg);
+  }
 
   updateView(connections) {
-    const entry = this.#createEntryFromConnection(connections[0]);
-    this.#travelCalendar.appendChild(entry);
+    // sort such that earliest will be first child etc
+    // otherwise they might overlay each other and drag&drop won't work
+    // warning: this only works because we are never adding new connections to existing legs
+    connections.sort((c1, c2) => c1.startDateTime - c2.startDateTime);
+
+    // remove entries that are currently in calendar but no longer necessary
+    const ids = connections.map((c) => c.uniqueId);
+    for (let id_ of this.#idToEntry.keys()) {
+      if (ids.includes(id_)) continue; // still necessary
+
+      const entry = this.#idToEntry.get(id_);
+      this.#travelCalendar.removeChild(entry);
+
+      this.#idToEntry.delete(id_);
+      this.#entryToId.delete(entry);
+    }
+
+    // add new entries
+    for (let c of connections) {
+      if (this.#idToEntry.has(c.uniqueId)) continue; // already added
+
+      const entry = this.#createEntryFromConnection(c);
+      this.#travelCalendar.appendChild(entry);
+
+      this.#idToEntry.set(c.uniqueId, entry);
+      this.#entryToId.set(entry, c.uniqueId);
+    }
+
+    // update entry settings
+    for (let c of connections) {
+      const entry = this.#idToEntry.get(c.uniqueId);
+
+      const shouldBeSelected = c.selected ?? false;
+      const isCurrentlyActive = entry.dataset.active === "active";
+
+      if (shouldBeSelected === isCurrentlyActive) continue;
+
+      entry.dataset.active = shouldBeSelected ? "active" : "";
+    }
   }
 
   #createEntryFromConnection(c) {
@@ -55,14 +103,6 @@ class CalendarWrapper {
     e.querySelector(".destination .station").innerHTML = c.endStation;
 
     return e;
-  }
-
-  #datetimeString(datetime) {
-    return datetime.toISO();
-  }
-
-  #timeString(datetime) {
-    return datetime.toFormat("HH:mm");
   }
 }
 

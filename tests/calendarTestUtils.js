@@ -1,3 +1,6 @@
+// to get drag events
+require("@atlaskit/pragmatic-drag-and-drop-unit-testing/drag-event-polyfill");
+
 // just needs to get loaded to be available as a custom element
 const { TravelCalendar } = require("./travelCalendar");
 
@@ -76,6 +79,26 @@ module.exports.getShadowDOMItems = (calendar, querySelector) => {
       },
     },
   };
+};
+
+module.exports.dispatchEvent = async (element, eventName, timeout_ms = 10) => {
+  const classes = {
+    mouseover: MouseEvent,
+    mouseout: MouseEvent,
+    dragstart: DragEvent,
+    dragend: DragEvent,
+    dragenter: DragEvent,
+    dragleave: DragEvent,
+    drop: DragEvent,
+  };
+
+  const clazz = classes[eventName];
+  const event = new clazz(eventName, { bubbles: true });
+
+  element.dispatchEvent(event);
+
+  // wait for changes after dispatching to hove finished (hopefully waiting long enough)...
+  await module.exports.timeout(timeout_ms);
 };
 
 module.exports.timeout = (ms) => {
