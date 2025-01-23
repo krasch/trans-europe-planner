@@ -1,3 +1,8 @@
+const ICONS = {
+  train: "images/icons/train.svg",
+  ferry: "images/icons/ferry.svg",
+};
+
 class CalendarWrapper {
   #callbacks = {
     legChanged: () => {},
@@ -25,7 +30,40 @@ class CalendarWrapper {
 
   setNoHoverEntry(leg) {}
 
-  updateView(connections) {}
+  updateView(connections) {
+    const entry = this.#createEntryFromConnection(connections[0]);
+    this.#travelCalendar.appendChild(entry);
+  }
+
+  #createEntryFromConnection(c) {
+    const template = document.getElementById("template-calendar-connection");
+    const e = template.content.firstElementChild.cloneNode(true);
+
+    e.dataset.departureDatetime = c.startDateTime.toISO();
+    e.dataset.arrivalDatetime = c.endDateTime.toISO();
+    e.dataset.color = c.color;
+    e.dataset.active = c.selected ? "active" : "";
+    e.dataset.group = c.leg;
+
+    e.querySelector(".connection-icon").src = ICONS[c.type];
+    e.querySelector(".connection-number").innerHTML = c.name;
+    e.querySelector(".start .time").innerHTML =
+      c.startDateTime.toFormat("HH:mm");
+    e.querySelector(".start .station").innerHTML = c.startStation;
+    e.querySelector(".destination .time").innerHTML =
+      c.endDateTime.toFormat("HH:mm");
+    e.querySelector(".destination .station").innerHTML = c.endStation;
+
+    return e;
+  }
+
+  #datetimeString(datetime) {
+    return datetime.toISO();
+  }
+
+  #timeString(datetime) {
+    return datetime.toFormat("HH:mm");
+  }
 }
 
 // exports for testing only (NODE_ENV='test' is automatically set by jest)
