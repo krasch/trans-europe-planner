@@ -6,7 +6,7 @@ const {
 const { Journey, JourneyCollection } = require("./journey");
 const { Database } = require("./database");
 const { RouteDatabase } = require("./routing");
-const { createConnection, testCities } = require("./tests/data");
+const { createConnection, testCities } = require("./testData");
 
 test("prepareInitialDataForMap", function () {
   const home = "City1";

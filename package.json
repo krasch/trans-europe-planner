@@ -20,13 +20,13 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "./database": "<rootDir>/script/data/database.js",
-      "./connection": "<rootDir>/script/data/types/connection.js",
       "./travelCalendar":  "<rootDir>/script/customElements/travelCalendar/travelCalendar.js",
-      "./componentData": "<rootDir>/script/components/componentData.js",
+      "./componentData": "<rootDir>/script/data/componentData.js",
+      "./database": "<rootDir>/script/data/database.js",
       "./routing": "<rootDir>/script/data/routing.js",
+      "./connection": "<rootDir>/script/data/types/connection.js",
       "./journey": "<rootDir>/script/data/types/journey.js",
-      "./tests/data": "<rootDir>/tests/data.js"
+      "./testData": "<rootDir>/tests/testData.js"
     }
   }
 }

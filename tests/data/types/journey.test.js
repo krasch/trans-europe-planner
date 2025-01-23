@@ -1,4 +1,4 @@
-const { createConnection } = require("./tests/data");
+const { createConnection } = require("./testData");
 const { Journey, JourneyError, JourneyCollection } = require("./journey");
 const { Database } = require("./database");
 const { DateTime } = require("luxon");

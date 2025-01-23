@@ -5,7 +5,7 @@ const {
 } = require("./componentData");
 const { Journey, JourneyCollection } = require("./journey");
 const { Database } = require("./database");
-const { createConnection } = require("./tests/data");
+const { createConnection } = require("./testData");
 
 test("prepareDataForPerlschnurEmpty", function () {
   const database = new Database([]);

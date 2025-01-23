@@ -1,7 +1,7 @@
 const { prepareDataForCalendar, getColor } = require("./componentData");
 const { Journey, JourneyCollection } = require("./journey");
 const { Database } = require("./database");
-const { createConnection } = require("./tests/data");
+const { createConnection } = require("./testData");
 const { DateTime } = require("luxon");
 
 function expected(connection, selected, color) {
