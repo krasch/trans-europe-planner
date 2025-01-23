@@ -3,7 +3,7 @@ const LOCALE = new Intl.NumberFormat().resolvedOptions().locale;
 const NUM_DAYS = 3;
 const RESOLUTION = 4; // "slices" per hour
 
-const entryStyle = `<style>@import url('/style/calendar2.css')</style>`;
+const entryStyle = `<style>@import url('/script/customElements/travelCalendar/entry.css')</style>`;
 
 const gridStyle = `<style>
 

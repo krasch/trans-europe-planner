@@ -22,7 +22,7 @@
     "moduleNameMapper": {
       "./database": "<rootDir>/script/data/database.js",
       "./connection": "<rootDir>/script/data/types/connection.js",
-      "./travelCalendar":  "<rootDir>/script/components/calendar2/travelCalendar.js",
+      "./travelCalendar":  "<rootDir>/script/customElements/travelCalendar/travelCalendar.js",
       "./componentData": "<rootDir>/script/components/componentData.js",
       "./routing": "<rootDir>/script/data/routing.js",
       "./journey": "<rootDir>/script/data/types/journey.js",
