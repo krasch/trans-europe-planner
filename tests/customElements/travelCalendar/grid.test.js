@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-const util = require("./util.js");
+const util = require("./calendarTestUtils");
 
 beforeEach(() => util.createDocument());
 

@@ -5,7 +5,7 @@
 // to get drag events
 require("@atlaskit/pragmatic-drag-and-drop-unit-testing/drag-event-polyfill");
 
-const util = require("./util.js");
+const util = require("./calendarTestUtils");
 
 beforeEach(() => util.createDocument());
 

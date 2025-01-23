@@ -26,7 +26,8 @@
       "./routing": "<rootDir>/script/data/routing.js",
       "./connection": "<rootDir>/script/data/types/connection.js",
       "./journey": "<rootDir>/script/data/types/journey.js",
-      "./testData": "<rootDir>/tests/testData.js"
+      "./testData": "<rootDir>/tests/testData.js",
+      "./calendarTestUtils": "<rootDir>/tests/calendarTestUtils.js"
     }
   }
 }
