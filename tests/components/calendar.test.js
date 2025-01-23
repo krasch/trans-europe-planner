@@ -245,12 +245,14 @@ test("calendar wrapper should propagate callbacks from calendar", async function
     {
       uniqueId: { id: 1, somekey: "someval" },
       startStation: "station1",
+      leg: "leg1",
       startDateTime: DateTime.fromISO(util.t1("19:00")),
       endDateTime: DateTime.fromISO(util.t1("20:00")),
     },
     {
       uniqueId: { id: 2, somekey: "someval" },
       startStation: "station2",
+      leg: "leg2",
       startDateTime: DateTime.fromISO(util.t2("09:00")),
       endDateTime: DateTime.fromISO(util.t2("10:00")),
     },
@@ -264,14 +266,14 @@ test("calendar wrapper should propagate callbacks from calendar", async function
   const hoverOnCallback = jest.fn();
   const hoverOffCallback = jest.fn();
   calendar.on("legChanged", dropCallback);
-  calendar.on("entryHoverStart", hoverOnCallback);
-  calendar.on("entryHoverStop", hoverOffCallback);
+  calendar.on("legHoverStart", hoverOnCallback);
+  calendar.on("legHoverStop", hoverOffCallback);
 
   await util.dispatchEvent(entries.elements[0], "mouseover");
-  expect(hoverOnCallback).toBeCalledWith(connections[0].uniqueId);
+  expect(hoverOnCallback).toBeCalledWith("leg1");
 
   await util.dispatchEvent(entries.elements[1], "mouseout");
-  expect(hoverOffCallback).toBeCalledWith(connections[1].uniqueId);
+  expect(hoverOffCallback).toBeCalledWith("leg2");
 
   await util.dispatchEvent(entries.elements[0], "dragstart");
   await util.dispatchEvent(entries.elements[0], "dragenter");

@@ -6,8 +6,8 @@ const ICONS = {
 class CalendarWrapper {
   #callbacks = {
     legChanged: () => {},
-    entryHoverStart: () => {},
-    entryHoverStop: () => {},
+    legHoverStart: () => {},
+    legHoverStop: () => {},
   };
 
   travelCalendar;
@@ -19,10 +19,10 @@ class CalendarWrapper {
     this.travelCalendar = travelCalendar;
 
     this.travelCalendar.on("hoverOn", (entry) => {
-      this.#callbacks.entryHoverStart(this.#entryToId.get(entry));
+      this.#callbacks.legHoverStart(entry.dataset.group);
     });
     this.travelCalendar.on("hoverOff", (entry) => {
-      this.#callbacks.entryHoverStop(this.#entryToId.get(entry));
+      this.#callbacks.legHoverStop(entry.dataset.group);
     });
     this.travelCalendar.on("drop", (entry) => {
       this.#callbacks.legChanged(this.#entryToId.get(entry));

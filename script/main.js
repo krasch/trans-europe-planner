@@ -87,11 +87,11 @@ async function main(home, views) {
     state.journeys.activeJourney.split(cityName); // todo option to split only for active journey? or pass journey id back here
   });
 
-  views.calendar.on("entryHoverStart", (leg) =>
-    views.map.setLegHoverState(leg, true),
-  );
+  views.calendar.on("legHoverStart", (leg) => {
+    views.map.setLegHoverState(leg, true);
+  });
 
-  views.calendar.on("entryHoverStop", (leg) =>
+  views.calendar.on("legHoverStop", (leg) =>
     views.map.setLegHoverState(leg, false),
   );
 
