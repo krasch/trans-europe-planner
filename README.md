@@ -4,7 +4,9 @@
 
 Making it simpler to plan complex cross-country rail trips in Europe
 
-[INSERT VIDEO HERE]
+Video showing the Trans-Europe-Planner in action:
+
+https://github.com/user-attachments/assets/59d093a4-dae5-48e1-b2f6-72b7de396251
 
 ## How to start this locally
 
