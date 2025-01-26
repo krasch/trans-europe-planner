@@ -2,7 +2,10 @@
  * @jest-environment jsdom
  */
 
-const { LookupUtil, MultipartCalendarEntry } = require("./travelCalendar");
+import {
+  LookupUtil,
+  MultipartCalendarEntry,
+} from "/script/customElements/travelCalendar/travelCalendar.js";
 
 test("register and unregister from lookup util", async function () {
   const outer1 = document.createElement("div");

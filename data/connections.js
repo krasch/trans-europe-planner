@@ -1,4 +1,4 @@
-const CONNECTIONS = [
+export const CONNECTIONS = [
   {
     id: "R1067",
     name: "R1067",

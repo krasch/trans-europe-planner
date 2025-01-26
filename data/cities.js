@@ -1,4 +1,4 @@
-const CITIES = {
+export const CITIES = {
   6698: {
     name: "Aachen",
     latitude: 50.77607,

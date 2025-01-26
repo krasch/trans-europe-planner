@@ -1,4 +1,4 @@
-const STATIONS = {
+export const STATIONS = {
   8000001: {
     name: "Aachen Hbf",
     latitude: 50.767802,

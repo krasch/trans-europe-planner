@@ -1,12 +1,12 @@
-const {
-  getColor,
+import { createConnection, testCities } from "tests/data.js";
+import { Journey, JourneyCollection } from "/script/data/types/journey.js";
+import { Database } from "/script/data/database.js";
+import { RouteDatabase } from "/script/data/routing.js";
+import {
   prepareDataForMap,
   prepareInitialDataForMap,
-} = require("./componentData");
-const { Journey, JourneyCollection } = require("./journey");
-const { Database } = require("./database");
-const { RouteDatabase } = require("./routing");
-const { createConnection, testCities } = require("./testData");
+} from "/script/data/componentData.js";
+import { getColor } from "/script/util.js";
 
 test("prepareInitialDataForMap", function () {
   const home = "City1";

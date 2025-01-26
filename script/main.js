@@ -1,7 +1,26 @@
+import { DateTime } from "/external/luxon@3.5.0/luxon.min.js";
+
+import { Database } from "./data/database.js";
+import { diffDays, RouteDatabase } from "./data/routing.js";
+import { Journey, JourneyCollection } from "./data/types/journey.js";
+
+import { enrichConnection } from "./data/database.js";
+import {
+  prepareInitialDataForMap,
+  prepareDataForMap,
+  prepareDataForCalendar,
+  prepareDataForPerlschnur,
+} from "./data/componentData.js";
+
+import { CONNECTIONS } from "../data/connections.js";
+import { CITIES } from "../data/cities.js";
+import { STATIONS } from "../data/stations.js";
+import { ROUTES } from "../data/routes.js";
+
 // dummy date for initialising
 // today so that it is in range for date picker
 // double "new Date" so that can get rid of time component
-const TODAY = luxon.DateTime.now().startOf("day");
+const TODAY = DateTime.now().startOf("day");
 
 function initUpdateViews(views, database) {
   function updateViews(state) {
@@ -21,7 +40,7 @@ function initUpdateViews(views, database) {
   return updateViews;
 }
 
-async function main(home, views) {
+export async function main(home, views) {
   // init state
   const state = {
     date: views.datepicker.currentDate || TODAY,

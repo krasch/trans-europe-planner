@@ -97,7 +97,7 @@ const gridStyle = `<style>
  *   with the earliest data-departure-datetime to be added first. Otherwise, during drag&drop, later entries can overlap
  *   earlier ones, making them unavailable for dropping.
  * */
-class TravelCalendar extends HTMLElement {
+export class TravelCalendar extends HTMLElement {
   #lookup;
   static observedAttributes = ["start-date"];
 
@@ -394,7 +394,7 @@ class TravelCalendar extends HTMLElement {
   }
 }
 
-class MultipartCalendarEntry {
+export class MultipartCalendarEntry {
   #group;
 
   constructor(parts) {
@@ -438,7 +438,7 @@ class MultipartCalendarEntry {
   }
 }
 
-class LookupUtil {
+export class LookupUtil {
   // using map because can use complex keys (e.g. HTML elements)
 
   // maps from external HTML element to internal MultipartCalendarEntry and vice versa
@@ -653,13 +653,4 @@ function firefoxMobileDragAndDropPolyfill(calendar) {
   // never actually received a touchcancel from firefox mobile, it just seems to send touchend
   // but chrome mobile android sends it
   //calendar.addEntryEventListener("touchcancel", (e, data) => {});
-}
-
-customElements.define("travel-calendar", TravelCalendar); // todo move to main?
-
-// exports for testing only (NODE_ENV='test' is automatically set by jest)
-if (typeof process === "object" && process.env.NODE_ENV === "test") {
-  module.exports.TravelCalendar = TravelCalendar;
-  module.exports.LookupUtil = LookupUtil;
-  module.exports.MultipartCalendarEntry = MultipartCalendarEntry;
 }

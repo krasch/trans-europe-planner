@@ -1,4 +1,4 @@
-const ROUTES = {
+export const ROUTES = {
   "Berlin->Amsterdam": [
     "//Berlin (05:54) -> Amsterdam (12:03, IC240-0)",
     "//Berlin (07:53) -> Amsterdam (14:03, IC148-0)",

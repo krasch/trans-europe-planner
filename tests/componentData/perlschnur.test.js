@@ -1,11 +1,11 @@
-const {
+import { createConnection } from "tests/data.js";
+import { Journey, JourneyCollection } from "/script/data/types/journey.js";
+import { Database } from "/script/data/database.js";
+import {
   prepareDataForPerlschnur,
-  getColor,
   humanReadableTimedelta,
-} = require("./componentData");
-const { Journey, JourneyCollection } = require("./journey");
-const { Database } = require("./database");
-const { createConnection } = require("./testData");
+} from "/script/data/componentData.js";
+import { getColor } from "/script/util.js";
 
 test("prepareDataForPerlschnurEmpty", function () {
   const database = new Database([]);

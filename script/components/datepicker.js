@@ -1,4 +1,6 @@
-class Datepicker {
+import { DateTime } from "/external/luxon@3.5.0/luxon.min.js";
+
+export class Datepicker {
   #container;
 
   #inputElement;
@@ -20,7 +22,7 @@ class Datepicker {
     this.#decreaseDateElement = this.#container.querySelector("#decrease-date");
     this.#increaseDateElement = this.#container.querySelector("#increase-date");
 
-    const today = luxon.DateTime.now().startOf("day");
+    const today = DateTime.now().startOf("day");
     this.#start = today.plus({ days: 1 });
     this.#end = today.plus({ days: 3 * 30 });
 
@@ -69,7 +71,7 @@ class Datepicker {
 
   get #currentDate() {
     if (this.#inputElement.value.length === 0) return null;
-    return luxon.DateTime.fromISO(this.#inputElement.value);
+    return DateTime.fromISO(this.#inputElement.value);
   }
 
   set #currentDate(value) {

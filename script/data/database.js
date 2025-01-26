@@ -1,4 +1,7 @@
-class DatabaseError extends Error {
+import { DateTime } from "/external/luxon@3.5.0/luxon.min.js";
+import { Stop, Connection, SlicingError } from "./types/connection.js";
+
+export class DatabaseError extends Error {
   constructor(message) {
     super(message);
     this.name = "BadDatabaseQuery";
@@ -10,14 +13,14 @@ function isSlicingError(error) {
   return error.constructor.name === "SlicingError";
 }
 
-function enrichConnection(template, stations, cities, dummyDate) {
+export function enrichConnection(template, stations, cities, dummyDate) {
   const stops = [];
   for (let stop of template.stops) {
     stops.push(
       new Stop(
         // temporalize
-        luxon.DateTime.fromISO(dummyDate + "T" + stop.arrival),
-        luxon.DateTime.fromISO(dummyDate + "T" + stop.departure),
+        DateTime.fromISO(dummyDate + "T" + stop.arrival),
+        DateTime.fromISO(dummyDate + "T" + stop.departure),
         // enrich with additional station and city info
         stop.station,
         stations[stop.station].name,
@@ -31,7 +34,7 @@ function enrichConnection(template, stations, cities, dummyDate) {
   return new Connection(template.id, template.name, template.type, stops);
 }
 
-class Database {
+export class Database {
   // these templates use a dummy date and have the full run of all stops
   // {id: Connection}
   #templates;
@@ -70,7 +73,7 @@ class Database {
           result.push(this.connection(id, startCityName, endCityName, date));
         } catch (error) {
           // this connection does not have this leg, no need to try the other dates
-          if (isSlicingError(error)) break;
+          if (error instanceof SlicingError) break;
           // all other errors should bubble up
           throw error;
         }
@@ -99,11 +102,4 @@ class Database {
 
     return this.#sliced[compositeId];
   }
-}
-
-// exports for testing only (NODE_ENV='test' is automatically set by jest)
-if (typeof process === "object" && process.env.NODE_ENV === "test") {
-  module.exports.Database = Database;
-  module.exports.DatabaseError = DatabaseError;
-  module.exports.isSlicingError = isSlicingError;
 }

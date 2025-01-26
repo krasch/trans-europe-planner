@@ -1,24 +1,24 @@
 // to get drag events
-require("@atlaskit/pragmatic-drag-and-drop-unit-testing/drag-event-polyfill");
+import("@atlaskit/pragmatic-drag-and-drop-unit-testing/drag-event-polyfill");
 
-// just needs to get loaded to be available as a custom element
-const { TravelCalendar } = require("./travelCalendar");
+import { TravelCalendar } from "/script/customElements/travelCalendar/travelCalendar.js";
+customElements.define("travel-calendar", TravelCalendar);
 
-module.exports.ROW_MIDNIGHT = 2; // 1 for header, 1 because indexes start at 1
-module.exports.COLUMN_FIRST_DAY = 2; // 1 for hour column, 1 because indexes start at 1
-module.exports.DATES = ["2024-10-15", "2024-10-16", "2024-10-17"];
+export const ROW_MIDNIGHT = 2; // 1 for header, 1 because indexes start at 1
+export const COLUMN_FIRST_DAY = 2; // 1 for hour column, 1 because indexes start at 1
+export const DATES = ["2024-10-15", "2024-10-16", "2024-10-17"];
 
 // quickly create datetime strings for dates 1, 2, 3
-module.exports.t1 = (timeStr) => `${module.exports.DATES[0]}T${timeStr}`;
-module.exports.t2 = (timeStr) => `${module.exports.DATES[1]}T${timeStr}`;
-module.exports.t3 = (timeStr) => `${module.exports.DATES[2]}T${timeStr}`;
+export const t1 = (timeStr) => `${DATES[0]}T${timeStr}`;
+export const t2 = (timeStr) => `${DATES[1]}T${timeStr}`;
+export const t3 = (timeStr) => `${DATES[2]}T${timeStr}`;
 
-module.exports.createDocument = () => {
+export const createDocument = () => {
   document.body.innerHTML = `
-    <travel-calendar id='calendar' start-date='${module.exports.DATES[0]}'></travel-calendar>`;
+    <travel-calendar id='calendar' start-date='${DATES[0]}'></travel-calendar>`;
 };
 
-module.exports.createEntry = (startDateTime, endDateTime, kwargs = {}) => {
+export const createEntry = (startDateTime, endDateTime, kwargs = {}) => {
   const element = document.createElement("div");
   element.classList.add("calendar-entry");
 
@@ -38,7 +38,7 @@ module.exports.createEntry = (startDateTime, endDateTime, kwargs = {}) => {
 };
 
 // to grab items from grid to compare with expectations
-module.exports.getShadowDOMItems = (calendar, querySelector) => {
+export const getShadowDOMItems = (calendar, querySelector) => {
   const elements = Array.from(
     calendar.shadowRoot.querySelectorAll(querySelector),
   );
@@ -81,7 +81,7 @@ module.exports.getShadowDOMItems = (calendar, querySelector) => {
   };
 };
 
-module.exports.dispatchEvent = async (element, eventName, timeout_ms = 10) => {
+export const dispatchEvent = async (element, eventName, timeout_ms = 10) => {
   const classes = {
     mouseover: MouseEvent,
     mouseout: MouseEvent,
@@ -98,9 +98,9 @@ module.exports.dispatchEvent = async (element, eventName, timeout_ms = 10) => {
   element.dispatchEvent(event);
 
   // wait for changes after dispatching to hove finished (hopefully waiting long enough)...
-  await module.exports.timeout(timeout_ms);
+  await timeout(timeout_ms);
 };
 
-module.exports.timeout = (ms) => {
+export const timeout = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };

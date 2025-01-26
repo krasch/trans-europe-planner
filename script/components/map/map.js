@@ -1,3 +1,6 @@
+import { Cities } from "./cities.js";
+import { Edges } from "./edges.js";
+
 function cityToGeojson(data) {
   const [id, city] = data;
 
@@ -36,7 +39,7 @@ function asGeojsonFeatureCollection(features) {
   };
 }
 
-class MapWrapper {
+export class MapWrapper {
   #callbacks = {
     selectJourney: () => {},
     showCityRoutes: () => {},

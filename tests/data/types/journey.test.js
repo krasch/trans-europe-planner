@@ -1,7 +1,11 @@
-const { createConnection } = require("./testData");
-const { Journey, JourneyError, JourneyCollection } = require("./journey");
-const { Database } = require("./database");
-const { DateTime } = require("luxon");
+import { createConnection } from "tests/data.js";
+import { Database } from "/script/data/database.js";
+import {
+  Journey,
+  JourneyError,
+  JourneyCollection,
+} from "/script/data/types/journey.js";
+import { DateTime } from "luxon";
 
 test("testDerivedAttributes", function () {
   const c1 = createConnection([
