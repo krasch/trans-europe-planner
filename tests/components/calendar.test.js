@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
-const util = require("./calendarTestUtils");
-const { CalendarWrapper } = require("../../script/components/calendar.js");
-const { timeout } = require("../calendarTestUtils.js");
-const { DateTime } = require("luxon");
+import { DateTime } from "luxon";
+import { CalendarWrapper } from "/script/components/calendar.js";
+import * as util from "tests/calendarTestUtils.js";
+import { jest } from "@jest/globals";
 
 const template = `
     <div class="calendar-entry"
@@ -59,7 +59,7 @@ test("update should fill in template correctly", async function () {
   ];
 
   calendar.updateView(connections);
-  await timeout(10);
+  await util.timeout(10);
 
   const got = util.getShadowDOMItems(container, ".entry-part");
   expect(got.data).toMatchObject([
@@ -134,7 +134,7 @@ test("update view should sort connections by start datetime", async function () 
   ];
 
   calendar.updateView(connections);
-  await timeout(10);
+  await util.timeout(10);
 
   const got = util.getShadowDOMItems(container, ".entry-part");
   expect(got.elements.length).toBe(3);
@@ -177,17 +177,17 @@ test("update view should add/delete connections as necessary", async function ()
 
   // all 3 connections currently relevant
   calendar.updateView(connections);
-  await timeout(10);
+  await util.timeout(10);
   expect(startStations()).toEqual(["station1", "station2", "station3"]);
 
   // they are still relevant
   calendar.updateView(connections);
-  await timeout(10);
+  await util.timeout(10);
   expect(startStations()).toEqual(["station1", "station2", "station3"]);
 
   // now first one is no longer relevant
   calendar.updateView(connections.slice(1, 3));
-  await timeout(10);
+  await util.timeout(10);
   expect(startStations()).toEqual(["station2", "station3"]);
 
   // now first is back but second is gone
@@ -196,7 +196,7 @@ test("update view should add/delete connections as necessary", async function ()
   //  then "station3" entry was identified as changed and removed and re-added
   // which means that this will happen to all the entries which means bad performance
   calendar.updateView([connections[0], connections[2]]);
-  await timeout(10);
+  await util.timeout(10);
   expect(startStations()).toEqual(["station3", "station1"]);
 });
 
@@ -222,7 +222,7 @@ test("update view should propagate dataset changes to calendar entries", async f
   ];
 
   calendar.updateView(connections);
-  await timeout(10);
+  await util.timeout(10);
 
   let got = util.getShadowDOMItems(container, ".entry-part");
   expect(got.data).toMatchObject([
@@ -242,7 +242,7 @@ test("update view should propagate dataset changes to calendar entries", async f
   connections[1].leg = "legZ";
   connections[1].selected = true;
   calendar.updateView(connections);
-  await timeout(10);
+  await util.timeout(10);
 
   got = util.getShadowDOMItems(container, ".entry-part");
   expect(got.data).toMatchObject([
@@ -281,7 +281,7 @@ test("calendar wrapper should propagate callbacks from calendar", async function
   ];
 
   calendar.updateView(connections);
-  await timeout(10);
+  await util.timeout(10);
   const entries = util.getShadowDOMItems(container, ".entry-part");
 
   const dropCallback = jest.fn();
@@ -325,7 +325,7 @@ test("calendar wrapper should propagate commands into calendar", async function 
   ];
 
   calendar.updateView(connections);
-  await timeout(10);
+  await util.timeout(10);
   const entries = util.getShadowDOMItems(container, ".entry-part");
 
   calendar.setHoverLeg("leg1");

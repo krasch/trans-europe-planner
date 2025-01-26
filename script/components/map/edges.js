@@ -1,3 +1,10 @@
+import {
+  StateDict,
+  MouseEventHelper,
+  filterChanges,
+  groupChangesById,
+} from "./util.js";
+
 function initJourneyMenu(id, journey, lngLat) {
   const element = createElementFromTemplate("template-edge-menu", {
     $root$: { "data-journey-id": id },
@@ -18,7 +25,7 @@ function initJourneyMenu(id, journey, lngLat) {
   return popup;
 }
 
-class Edges {
+export class Edges {
   #callbacks = {
     mouseOver: () => {},
     mouseLeave: () => {},

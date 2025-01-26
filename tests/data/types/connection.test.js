@@ -1,6 +1,6 @@
-const { Connection, SlicingError } = require("./connection");
-const { createConnection } = require("./testData");
-const { DateTime } = require("luxon");
+import { DateTime } from "luxon";
+import { createConnection } from "tests/data.js";
+import { Connection, SlicingError } from "/script/data/types/connection.js";
 
 test("derivedAttributes", function () {
   const connection = createConnection([

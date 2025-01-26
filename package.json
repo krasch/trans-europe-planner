@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "serve -p 8000",
-    "test": "node node_modules/.bin/jest tests",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest tests",
     "check-pretty": "node node_modules/.bin/prettier data/ script/ style/map/layers.js --check",
     "make-pretty": "node node_modules/.bin/prettier data/ script/ style/map/layers.js --write"
   },
@@ -20,14 +20,11 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "./travelCalendar":  "<rootDir>/script/customElements/travelCalendar/travelCalendar.js",
-      "./componentData": "<rootDir>/script/data/componentData.js",
-      "./database": "<rootDir>/script/data/database.js",
-      "./routing": "<rootDir>/script/data/routing.js",
-      "./connection": "<rootDir>/script/data/types/connection.js",
-      "./journey": "<rootDir>/script/data/types/journey.js",
-      "./testData": "<rootDir>/tests/testData.js",
-      "./calendarTestUtils": "<rootDir>/tests/calendarTestUtils.js"
+      "/external/(.*)": "<rootDir>/external/$1",
+      "luxon": "<rootDir>/external/luxon@3.5.0/luxon.min.js",
+
+      "/script/(.*)": "<rootDir>/script/$1",
+      "tests/(.*)": "<rootDir>/tests/$1"
     }
   }
 }

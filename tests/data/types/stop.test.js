@@ -1,5 +1,5 @@
-const { Stop } = require("./connection");
-const { DateTime } = require("luxon");
+import { DateTime } from "luxon";
+import { Stop } from "/script/data/types/connection.js";
 
 function createStop(arrival, departure) {
   return new Stop(arrival, departure, 10, "Station10", false, 1, "City1");

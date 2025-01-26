@@ -1,9 +1,9 @@
-function updateVisibility(element, isVisible) {
+export function updateVisibility(element, isVisible) {
   if (isVisible) element.classList.remove("hidden");
   else element.classList.add("hidden");
 }
 
-function updateSourceData(map, sourceName, groupedChanges) {
+export function updateSourceData(map, sourceName, groupedChanges) {
   const updates = [];
 
   for (let id in groupedChanges) {
@@ -20,11 +20,11 @@ function updateSourceData(map, sourceName, groupedChanges) {
     map.getSource(sourceName).updateData({ update: updates });
 }
 
-function filterChanges(changes, keys) {
+export function filterChanges(changes, keys) {
   return changes.filter((c) => keys.includes(c.key));
 }
 
-function groupChangesById(changes) {
+export function groupChangesById(changes) {
   const grouped = {};
   for (let change of changes) {
     if (!grouped[change.id]) grouped[change.id] = [];
@@ -41,7 +41,7 @@ function isSet(stateDict, id, key) {
   );
 }
 
-class StateDict {
+export class StateDict {
   #state = {};
   #resetKeys;
 
@@ -97,7 +97,7 @@ class StateDict {
   }
 }
 
-function animateDropWithBounce(
+export function animateDropWithBounce(
   map,
   markers,
   initialHeightPixels,
@@ -140,7 +140,7 @@ function animateDropWithBounce(
 // 1. We want to react on multiple layers (e.g. all city layers) with the same event handlers
 // 2. The maplibre mouseLeave event does not contain the feature that was left -> need to keep state
 // 3. We want to prefer city events to edge events
-class MouseEventHelper {
+export class MouseEventHelper {
   #callbacks = {
     mouseOver: () => {},
     mouseLeave: () => {},

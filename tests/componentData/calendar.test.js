@@ -1,8 +1,10 @@
-const { prepareDataForCalendar, getColor } = require("./componentData");
-const { Journey, JourneyCollection } = require("./journey");
-const { Database } = require("./database");
-const { createConnection } = require("./testData");
-const { DateTime } = require("luxon");
+import { DateTime } from "luxon";
+import { createConnection } from "tests/data.js";
+
+import { Journey, JourneyCollection } from "/script/data/types/journey.js";
+import { Database } from "/script/data/database.js";
+import { prepareDataForCalendar } from "/script/data/componentData.js";
+import { getColor } from "/script/util.js";
 
 function expected(connection, selected, color) {
   return {

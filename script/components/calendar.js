@@ -3,7 +3,7 @@ const ICONS = {
   ferry: "images/icons/ferry.svg",
 };
 
-class CalendarWrapper {
+export class CalendarWrapper {
   #callbacks = {
     legChanged: () => {},
     legHoverStart: () => {},
@@ -111,9 +111,4 @@ class CalendarWrapper {
     // but right now those don't change and implementing anything here anyway might
     // lead to a lot of date formatting overhead so let's just not do it
   }
-}
-
-// exports for testing only (NODE_ENV='test' is automatically set by jest)
-if (typeof process === "object" && process.env.NODE_ENV === "test") {
-  module.exports.CalendarWrapper = CalendarWrapper;
 }

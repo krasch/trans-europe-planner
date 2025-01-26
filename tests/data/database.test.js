@@ -1,6 +1,7 @@
-const { Database, DatabaseError, isSlicingError } = require("./database");
-const { createConnection } = require("../testData.js");
-const { DateTime } = require("luxon");
+import { DateTime } from "luxon";
+import { createConnection } from "tests/data.js";
+import { Database, DatabaseError } from "/script/data/database.js";
+import { SlicingError } from "../../script/data/types/connection.js";
 
 test("getConnectionEmptyDatabase", function () {
   const database = new Database([]);
@@ -25,13 +26,7 @@ test("getConnectionBadLeg", function () {
       DateTime.fromISO("2024-10-03"),
     );
 
-  expect(call).toThrow(Error);
-  // workaround because we can't import SlicingError due to testing setup
-  try {
-    call();
-  } catch (error) {
-    expect(isSlicingError(error)).toBe(true);
-  }
+  expect(call).toThrow(SlicingError);
 });
 
 test("getConnectionSameSliceSameDate", function () {

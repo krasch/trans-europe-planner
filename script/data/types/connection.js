@@ -1,4 +1,4 @@
-class SlicingError extends Error {
+export class SlicingError extends Error {
   constructor(connectionId, startCity, endCity) {
     super(
       `Slice ${startCity} -> ${endCity} not available for connection ${connectionId}`,
@@ -7,7 +7,7 @@ class SlicingError extends Error {
   }
 }
 
-class Stop {
+export class Stop {
   constructor(
     arrival,
     departure,
@@ -39,7 +39,7 @@ class Stop {
   }
 }
 
-class Connection {
+export class Connection {
   constructor(id, name, type, stops) {
     this.id = id; // this is the original ID of the connection template, it is not unique!
     this.name = name;
@@ -156,11 +156,4 @@ class Connection {
 
     return stops.slice(startIndex, endIndex + 1);
   }
-}
-
-// exports for testing only (NODE_ENV='test' is automatically set by jest)
-if (typeof process === "object" && process.env.NODE_ENV === "test") {
-  module.exports.Stop = Stop;
-  module.exports.Connection = Connection;
-  module.exports.SlicingError = SlicingError;
 }

@@ -1,4 +1,4 @@
-class Layout {
+export class Layout {
   #initialUpdate = true;
 
   #borderRadius;

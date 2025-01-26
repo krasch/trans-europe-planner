@@ -1,11 +1,11 @@
-class JourneyError extends Error {
+export class JourneyError extends Error {
   constructor(message) {
     super(message);
     this.name = "JourneyError";
   }
 }
 
-class Journey {
+export class Journey {
   #connectionIds;
 
   constructor(connectionIds) {
@@ -178,7 +178,7 @@ class Journey {
   }
 }
 
-class JourneyCollection {
+export class JourneyCollection {
   #journeys = {};
   #activeId = null;
 
@@ -212,11 +212,4 @@ class JourneyCollection {
     this.#journeys = {};
     this.#activeId = null;
   }
-}
-
-// exports for testing only (NODE_ENV='test' is automatically set by jest)
-if (typeof process === "object" && process.env.NODE_ENV === "test") {
-  module.exports.Journey = Journey;
-  module.exports.JourneyCollection = JourneyCollection;
-  module.exports.JourneyError = JourneyError;
 }

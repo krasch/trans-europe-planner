@@ -2,7 +2,8 @@
  * @jest-environment jsdom
  */
 
-const util = require("./calendarTestUtils");
+import * as util from "tests/calendarTestUtils.js";
+import { jest } from "@jest/globals";
 
 beforeEach(() => util.createDocument());
 

@@ -1,42 +1,6 @@
+import { CITY_NAME_TO_ID, getColor } from "../util.js";
+
 let NUM_DAYS_CALENDAR = 3;
-
-let COLORS = [
-  // backup colors (mostly for tests)
-  "0, 255, 0",
-  "255, 0, 0",
-  "0, 0, 255",
-  "255, 255, 0",
-  "255, 0, 255",
-];
-
-function initColors() {
-  const body = document.getElementsByTagName("body")[0];
-  const style = getComputedStyle(body);
-
-  COLORS = [
-    style.getPropertyValue("--color1"),
-    style.getPropertyValue("--color2"),
-    style.getPropertyValue("--color3"),
-    style.getPropertyValue("--color4"),
-    style.getPropertyValue("--color5"),
-  ];
-}
-
-let CITY_NAME_TO_ID = {};
-
-function initCityNameToId(cities) {
-  for (let id in cities) CITY_NAME_TO_ID[cities[id].name] = String(id);
-}
-
-function getColor(i) {
-  return COLORS[i % COLORS.length];
-}
-
-function sortByDepartureTime(connections) {
-  connections.sort(
-    (c1, c2) => c1.departure.toMillis() - c2.departure.toMillis(),
-  );
-}
 
 function toAlphabeticEdgeString(startCityName, endCityName) {
   const cities = [startCityName, endCityName];
@@ -48,7 +12,7 @@ function toEdgeString(startCityName, endCityName) {
   return `${startCityName}->${endCityName}`;
 }
 
-function humanReadableTimedelta(minutes) {
+export function humanReadableTimedelta(minutes) {
   const days = Math.floor(minutes / (60 * 24));
   minutes = minutes - days * (60 * 24);
 
@@ -68,7 +32,7 @@ function humanReadableTimedelta(minutes) {
   return result.filter((e) => e.length > 0).join(" ");
 }
 
-function prepareDataForCalendar(calendarStartDate, journeys, database) {
+export function prepareDataForCalendar(calendarStartDate, journeys, database) {
   const data = [];
 
   if (!journeys.hasActiveJourney) return data;
@@ -112,7 +76,7 @@ function prepareDataForCalendar(calendarStartDate, journeys, database) {
   return data;
 }
 
-function prepareDataForPerlschnur(journeys, database) {
+export function prepareDataForPerlschnur(journeys, database) {
   const data = {
     summary: {},
     transfers: [],
@@ -179,7 +143,12 @@ function prepareDataForPerlschnur(journeys, database) {
   return data;
 }
 
-function prepareInitialDataForMap(home, cityInfo, connections, routeDatabase) {
+export function prepareInitialDataForMap(
+  home,
+  cityInfo,
+  connections,
+  routeDatabase,
+) {
   const cities = { geo: {}, defaults: {} };
   const edges = { geo: {}, defaults: {} };
 
@@ -223,7 +192,7 @@ function prepareInitialDataForMap(home, cityInfo, connections, routeDatabase) {
   return [cities, edges];
 }
 
-function prepareDataForMap(journeys, database) {
+export function prepareDataForMap(journeys, database) {
   const cities = {};
   const edges = { state: {}, mapping: {} };
   const journeyInfo = {};
@@ -288,16 +257,4 @@ function prepareDataForMap(journeys, database) {
   }
 
   return [cities, edges, journeyInfo];
-}
-
-// exports for testing only (NODE_ENV='test' is automatically set by jest)
-if (typeof process === "object" && process.env.NODE_ENV === "test") {
-  module.exports.getColor = getColor;
-  module.exports.initCityNameToId = initCityNameToId;
-  module.exports.sortByDepartureTime = sortByDepartureTime;
-  module.exports.humanReadableTimedelta = humanReadableTimedelta;
-  module.exports.prepareDataForCalendar = prepareDataForCalendar;
-  module.exports.prepareDataForPerlschnur = prepareDataForPerlschnur;
-  module.exports.prepareDataForMap = prepareDataForMap;
-  module.exports.prepareInitialDataForMap = prepareInitialDataForMap;
 }

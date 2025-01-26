@@ -1,8 +1,8 @@
-const { initCityNameToId } = require("../script/components/componentData.js");
-const { Stop, Connection } = require("../script/data/types/connection.js");
-const { DateTime } = require("luxon");
+import { DateTime } from "/external/luxon@3.5.0/luxon.min.js";
+import { Stop, Connection } from "/script/data/types/connection.js";
+import { initCityNameToId } from "/script/util.js";
 
-const testCities = {
+export const testCities = {
   cityId1: { name: "City1", latitude: 10, longitude: 10, rank: 1 },
   cityId2: { name: "City2", latitude: 20, longitude: 20, rank: 2 },
   cityId3: {
@@ -67,7 +67,7 @@ function initIncrementalId() {
 
 const incrementalId = initIncrementalId();
 
-function createConnection(stops, id = null) {
+export function createConnection(stops, id = null) {
   const train = id ?? incrementalId();
 
   const stopsEnriched = [];
@@ -89,7 +89,3 @@ function createConnection(stops, id = null) {
 }
 
 initCityNameToId(testCities);
-
-module.exports.testStations = testStations;
-module.exports.testCities = testCities;
-module.exports.createConnection = createConnection;

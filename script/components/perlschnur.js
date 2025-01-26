@@ -1,4 +1,6 @@
-class Perlschnur {
+import { createElementFromTemplate, updateElement } from "../util.js";
+
+export class Perlschnur {
   #container;
 
   constructor(container) {

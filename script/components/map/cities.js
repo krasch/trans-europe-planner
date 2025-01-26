@@ -1,3 +1,21 @@
+import {
+  StateDict,
+  MouseEventHelper,
+  animateDropWithBounce,
+  filterChanges,
+  groupChangesById,
+  updateSourceData,
+  updateVisibility,
+} from "./util.js";
+import { createElementFromTemplate } from "../../util.js";
+
+// todo should be in template
+function getNumTransfersText(numTransfers) {
+  if (numTransfers === 0) return "Direkt erreichbar";
+  if (numTransfers === 1) return "Mit 1 Umstieg erreichbar";
+  else return `Mit ${numTransfers} Umstiegen erreichbar`;
+}
+
 function initHomeMarker(id, lngLat) {
   const element = createElementFromTemplate("template-city-marker-home", {
     $root$: { "data-city-id": id },
@@ -82,9 +100,9 @@ function showStartAnimation(map, geo, initialState, animationDoneCallback) {
   );
 }
 
-ANIMATION = true;
+const ANIMATION = true;
 
-class Cities {
+export class Cities {
   #callbacks = {
     mouseOver: () => {},
     mouseLeave: () => {},

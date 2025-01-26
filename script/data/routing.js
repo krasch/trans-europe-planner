@@ -1,13 +1,15 @@
+import { sortConnectionsByDepartureTime } from "../util.js";
+
 const TRANSFER_TIME = 30; // minutes
 
-class RoutingError extends Error {
+export class RoutingError extends Error {
   constructor(message) {
     super(message);
     this.name = "RoutingError";
   }
 }
 
-function diffDays(earlierDateTime, laterDateTime) {
+export function diffDays(earlierDateTime, laterDateTime) {
   const earlierDate = earlierDateTime.startOf("day");
   const laterDate = laterDateTime.startOf("day");
   return laterDate.diff(earlierDate, "days").as("days");
@@ -18,13 +20,7 @@ function minutesSinceMidnight(datetime) {
   return datetime.diff(midnight).as("minutes");
 }
 
-function sortByDepartureTime(connections) {
-  connections.sort(
-    (c1, c2) => c1.departure.toMillis() - c2.departure.toMillis(),
-  );
-}
-
-function isValidItinerary(itinerary) {
+export function isValidItinerary(itinerary) {
   for (let i in itinerary) {
     if (i === "0") continue;
 
@@ -35,7 +31,7 @@ function isValidItinerary(itinerary) {
   return true;
 }
 
-function itinerarySummary(itinerary) {
+export function itinerarySummary(itinerary) {
   // assumes you are passing in a valid itinerary
 
   const itineraryDeparture = itinerary[0].departure;
@@ -99,7 +95,7 @@ function itinerarySummary(itinerary) {
   return summary;
 }
 
-function judgeItinerary(summary) {
+export function judgeItinerary(summary) {
   const minutesBefore8 = Math.min(0, summary.earliestDeparture - 8 * 60);
   const minutesAfter22 = Math.min(0, 22 * 60 - summary.latestArrival);
 
@@ -113,7 +109,7 @@ function judgeItinerary(summary) {
   );
 }
 
-function createEarliestItinerary(
+export function createEarliestItinerary(
   connectionForFirstLeg,
   connectionsByLegForOtherLegs,
 ) {
@@ -138,14 +134,8 @@ function createEarliestItinerary(
   return itinerary;
 }
 
-// todo max length?
-//const routeCache = new Map();
-
-function createStupidItineraryForRoute(legs, date, database) {
+export function createStupidItineraryForRoute(legs, date, database) {
   if (legs.length === 0) return [];
-
-  //const cacheKey = legs.map((l) => l.toString()).join(";");
-  //if (routeCache.has(cacheKey)) return routeCache.get(cacheKey);
 
   // want connections on travel day + 2 extra days
   const dates = [];
@@ -158,7 +148,7 @@ function createStupidItineraryForRoute(legs, date, database) {
       l.endCityName,
       dates,
     );
-    sortByDepartureTime(connections);
+    sortConnectionsByDepartureTime(connections);
     return connections;
   });
 
@@ -201,7 +191,7 @@ function createStupidItineraryForRoute(legs, date, database) {
   return connectionIds;
 }
 
-class RouteDatabase {
+export class RouteDatabase {
   #routes = {};
 
   #cachedItineraries = {};
@@ -273,15 +263,4 @@ class RouteDatabase {
     const [start, end] = leg.split("->");
     return { startCityName: start, endCityName: end };
   }
-}
-
-// exports for testing only (NODE_ENV='test' is automatically set by jest)
-if (typeof process === "object" && process.env.NODE_ENV === "test") {
-  module.exports.sortByDepartureTime = sortByDepartureTime;
-  module.exports.isValidItinerary = isValidItinerary;
-  module.exports.itinerarySummary = itinerarySummary;
-  module.exports.createEarliestItinerary = createEarliestItinerary;
-  module.exports.createStupidItineraryForRoute = createStupidItineraryForRoute;
-  module.exports.RoutingError = RoutingError;
-  module.exports.RouteDatabase = RouteDatabase;
 }
