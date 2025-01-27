@@ -38,6 +38,10 @@ button {
     font-family: helvetica, arial, sans-serif;
 }
 
+input[type=radio]{
+  display: none;
+}
+
 /*******************************************************
  the card/menu with title, used in map, perlschnur
 *******************************************************/

@@ -16,21 +16,35 @@ body {
   --logo-size: 6rem;
   --logo-padding: 1.5rem;
   --logo-size-with-padding: calc(var(--logo-size) + 2 * var(--logo-padding));
+
   --sidebar-width: 20rem; /* excluding logo */
+  --nav-height: 2.5rem;
   --footer-height: 2rem;
 
   display: grid;
-  grid-template-columns: var(--logo-size-with-padding) var(--sidebar-width) 1fr;
-  grid-template-rows: var(--logo-size-with-padding) 1fr var(--footer-height);
+  grid-template-columns:
+          var(--logo-size-with-padding)
+          var(--sidebar-width)
+          1fr;
+  grid-template-rows:
+          var(--logo-size-with-padding)
+          var(--nav-height)
+          var(--nav-height)
+          1fr
+          var(--nav-height)
+          var(--footer-height);
 
   grid-template-areas:
     "logo             date-picker      map"
-    "sidebar          sidebar          map"
+    "warning          warning          map"
+    "nav              nav              map"
+    "content          content          map"
+    "share-book       share-book       map"
     "footer           footer           footer";
 }
 
 #map {
-  grid-row: 1/3;
+  grid-row: 1/6;
   grid-column: 1/4;
 }
 
@@ -44,9 +58,26 @@ body {
   grid-area: date-picker;
 }
 
-#sidebar {
+#warning {
   z-index: 2;
-  grid-area: sidebar;
+  grid-area: warning;
+}
+
+nav {
+  z-index: 2;
+  grid-area: nav;
+}
+
+#journey-overview,
+#calendar-container {
+  z-index: 2;
+  grid-area: content;
+  overflow-y: auto;
+}
+
+#share-book {
+  z-index: 2;
+  grid-area: share-book;
 }
 
 #footer {
@@ -80,10 +111,57 @@ body {
 
 
 /***********************************************
- Layout for sidebar setup
+ Navigation tab layout
 ************************************************/
 
-#sidebar {
+nav {
+  display: grid;
+  grid-auto-flow: column;
+}
+
+nav > * {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/***********************************************
+ Navigation tabs choosing content
+************************************************/
+
+/* journey overview is only visible when targeted */
+#journey-overview:not(:target) {
+  display: none;
+}
+
+/* travel calendar is always visible except when journey overview targeted */
+#journey-overview:target ~ #calendar-container {
+  display: none;
+}
+
+/***********************************************
+ All those small little elements
+************************************************/
+
+#warning,
+#share-book {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+#warning,
+nav,
+#calendar-container,
+#journey-overview,
+#share-book {
+  background-color: var(--color-light);
+  opacity: 90%;
+}
+/*#sidebar {
   overflow-y: auto;
   padding: 1rem;
 
@@ -92,7 +170,7 @@ body {
   grid-template-rows: 2rem 2.5rem 1fr 2rem;
   grid-template-areas:
     "warning      warning"
-    "tab-calendar tab-overview"
+    "nav          nav"
     "content      content"
     "buttons      buttons";
 }
@@ -101,12 +179,9 @@ body {
   grid-area: warning;
 }
 
-#tab-overview + label {
-  grid-area: tab-overview;
-}
 
-#tab-calendar + label {
-  grid-area: tab-calendar;
+nav {
+  grid-area: nav;
 }
 
 #journey-overview,
@@ -114,11 +189,16 @@ body {
   grid-area: content;
 }
 
+nav {
+  display: flex;
+  flex-direction: row;
+}*/
+
 /***********************************************
  Layout for items in sidebar
 ************************************************/
 
-#warning {
+/*#warning {
   align-self: center;
   justify-self: center;
   padding-bottom: 0.5rem;
@@ -159,4 +239,4 @@ body {
   flex-direction: row;
   justify-content: center;
   gap: 2rem;
-}
+}*/
