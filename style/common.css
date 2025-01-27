@@ -1,0 +1,100 @@
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: normal;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+body {
+  font-family: helvetica, arial, sans-serif;
+
+  /* colors for connections */
+  --color1: 27, 158, 119;
+  --color2: 217, 95, 2;
+  --color3: 117, 112, 179;
+  --color4: 231, 41, 138;
+  --color5: 102, 166, 30;
+
+  --color-light: white;
+  --color-dark: #286099;
+
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  --filter-white: invert(100%);
+  /* #f9f3ea */
+  --filter-beige: invert(95%) sepia(9%) saturate(656%) hue-rotate(315deg)
+    brightness(105%) contrast(95%);
+  --filter-darkgrey: invert(73%) sepia(0%) saturate(0%) hue-rotate(158deg)
+    brightness(94%) contrast(89%);
+  /* #286099 */
+  --filter-dark: invert(32%) sepia(12%) saturate(3883%) hue-rotate(173deg)
+    brightness(95%) contrast(86%);
+}
+
+button {
+    font-family: helvetica, arial, sans-serif;
+}
+
+/*******************************************************
+ the card/menu with title, used in map, perlschnur
+*******************************************************/
+
+.card {
+  --padding: 5px;
+
+  list-style-type: none;
+
+  border-radius: var(--padding);
+  overflow: hidden; /* this is necessary to really get the round corners */
+}
+
+.card h3,
+.card li {
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card menu,
+.card ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.card h3,
+.card li > *:first-child {
+  padding-left: var(--padding);
+}
+
+.card li.hidden {
+  display: none;
+}
+
+.card button {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  gap: 0.5rem;
+
+  text-align: left;
+  cursor: pointer;
+
+  border: 0;
+}
+
+.card img {
+  height: 1rem;
+  padding: 0;
+  margin: 0;
+}

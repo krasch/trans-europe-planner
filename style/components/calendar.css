@@ -1,0 +1,13 @@
+#calendar-container {
+  padding-top: 1rem;
+  gap: 0.5rem;
+}
+
+travel-calendar {
+  height: 700px; /* important to set a fixed height for this element */
+}
+
+travel-calendar {
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+}

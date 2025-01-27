@@ -3,6 +3,20 @@
 ************************************************/
 
 #modal {
+  z-index: 4;
+
+  /* center horizontally and vertically */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  min-height: 50%;
+  min-width: 50%;
+}
+
+
+#modal {
   --logo-height: 6rem;
   --padding: 0.5rem;
 

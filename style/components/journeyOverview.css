@@ -1,0 +1,155 @@
+/***********************************************
+ Layout for journey overview with Perlschnur
+************************************************/
+
+#journey-overview {
+  align-items: start;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+#perlschnur {
+  padding: 0.5rem;
+  align-self: center;
+
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.perlschnur-connection h3 {
+  height: 2rem;
+  font-size: 1rem;
+  justify-content: flex-start;
+}
+
+.perlschnur-connection h3 .connection-travel-time {
+  padding-left: 1rem;
+  flex-grow: 1;
+  font-size: 0.8rem;
+}
+
+.perlschnur-connection h3 .connection-plus,
+.perlschnur-connection h3 .connection-minus {
+  padding-right: 1.5rem;
+  font-size: 1.5rem;
+  transform: rotate(90deg) translate(0.75rem, 0);
+}
+
+.perlschnur-connection h3 .connection-minus.hidden,
+.perlschnur-connection h3 .connection-minus.hidden {
+  display: none;
+}
+
+.perlschnur-connection li {
+  height: 1.5rem;
+}
+
+.perlschnur-connection li:first-child {
+  padding-top: 0.5rem;
+}
+
+.perlschnur-connection li:last-child {
+  padding-bottom: 0.5rem;
+}
+
+.perlschnur-connection li.perlschnur-collapse {
+  padding-left: 2rem;
+}
+
+.perlschnur-connection .circle {
+  height: 8px;
+  width: 8px;
+  display: inline-block;
+
+  border-radius: 50%;
+  border: 1px solid black;
+}
+
+.perlschnur-stop .date:empty {
+  display: none;
+}
+
+.perlschnur-transfer {
+  padding-left: 2rem;
+}
+
+
+/***********************************************
+ Style
+************************************************/
+
+#journey-overview {
+  background-color: var(--color-light);
+}
+
+#journey-overview button {
+  color: var(--color-dark);
+  background-color: var(--color-light);
+  border: 1px solid var(--color-dark);
+  border-radius: 5px;
+  padding: 0.2rem;
+}
+
+#journey-overview button:hover {
+  cursor: pointer;
+}
+
+#perlschnur {
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+}
+
+.perlschnur-connection {
+  --color: 0, 0, 0; /* will be set by Javascript */
+  background-color: rgba(var(--color), 0.4);
+  color: #2e210d;
+
+  animation: fadein 1s;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.perlschnur-connection h3 {
+  color: white;
+  background-color: rgba(var(--color), 0.8);
+}
+
+.perlschnur-connection h3 img {
+  filter: var(--filter-white);
+}
+
+.perlschnur-connection .circle {
+  border-color: rgb(var(--color));
+}
+
+.perlschnur-stop:hover .circle {
+  box-shadow: 0 0 0 2px rgb(var(--color));
+}
+
+.perlschnur-stop .date {
+  font-weight: bold;
+}
+
+.perlschnur-connection li.perlschnur-collapse {
+  font-style: italic;
+}
+
+.perlschnur-transfer {
+  color: darkgray;
+}
+
+.perlschnur-connection a:hover {
+  cursor: pointer;
+  text-shadow: 1px 1px 2px lightgrey;
+}
