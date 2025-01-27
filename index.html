@@ -175,7 +175,7 @@
     <h3><label for="date-picker-input">Abreisedatum: </label></h3>
     <div>
         <a id="decrease-date" title="One day earlier">◀</a>
-        <input type="date" id="date-picker-input"/>
+        <input type="date" id="date-picker-input" value="2025-02-01"/>
         <a id="increase-date" title="One day later">▶</a>
     </div>
 </div>
@@ -190,9 +190,9 @@
         </button>
     </div>
 
-    <input type="radio" name="tab" id="tab1" checked>
-    <label for="tab1">🛈 &nbsp;Reiseübersicht</label>
-    <div id="tab1-content">
+    <input type="radio" name="tab" id="tab-overview" checked>
+    <label for="tab-overview">🛈 &nbsp;Reiseübersicht</label>
+    <div id="journey-overview">
         <div>
             <h3>Von <span class="from"></span> nach <span class="to"></span></h3> <span class="via"></span>
             <div>Gesamte Reisezeit: <span class="total-time"></span></div>
@@ -201,9 +201,9 @@
         <div id="perlschnur"></div>
     </div>
 
-    <input type="radio" name="tab" id="tab2">
-    <label for="tab2">🖉 &nbsp;Reise anpassen &nbsp;&nbsp;</label>
-    <div id="tab2-content">
+    <input type="radio" name="tab" id="tab-calendar">
+    <label for="tab-calendar">🖉 &nbsp;Reise anpassen &nbsp;&nbsp;</label>
+    <div id="calendar-container">
         <travel-calendar id="calendar" start-date="2025-01-01"></travel-calendar>
     </div>
 
@@ -258,7 +258,7 @@
         const views = {
             map: new MapWrapper('map', [10.0821932, 49.786322], 4.3), // starts async loading map
             calendar: new CalendarWrapper(document.getElementById("calendar")),
-            perlschnur: new Perlschnur(document.getElementById("tab1-content")),
+            perlschnur: new Perlschnur(document.getElementById("journey-overview")),
             datepicker: new Datepicker(document.getElementById("date-picker")),
             layout: new Layout(document.body)
         }

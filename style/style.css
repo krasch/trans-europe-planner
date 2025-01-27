@@ -92,8 +92,8 @@ body {
   padding: 0;
 }
 
-#tab1 + label,
-#tab2 + label {
+#tab-overview + label,
+#tab-calendar + label {
   border: 1px solid var(--color-dark);
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
@@ -101,23 +101,23 @@ body {
   color: var(--color-dark);
 }
 
-#tab1 + label {
+#tab-calendar + label {
   border-right: 0; /* no double borders */
 }
 
-#tab1:checked + label,
-#tab2:checked + label {
+#tab-overview:checked + label,
+#tab-calendar:checked + label {
   border-bottom: 0; /* no border between tab and content when checked */
 }
 
-#tab1:not(:checked) + label:hover,
-#tab2:not(:checked) + label:hover {
+#tab-overview:not(:checked) + label:hover,
+#tab-calendar:not(:checked) + label:hover {
   cursor: pointer;
   text-shadow: 2px 2px 3px lightgrey;
 }
 
-#tab1-content,
-#tab2-content {
+#journey-overview,
+#calendar-container {
   border: 1px solid var(--color-dark);
   border-top: 0; /* no double borders */
   border-bottom-left-radius: 5px;
@@ -128,11 +128,11 @@ body {
  Perlschnur
 ************************************************/
 
-#tab1-content {
+#journey-overview {
   background-color: var(--color-light);
 }
 
-#tab1-content button {
+#journey-overview button {
   color: var(--color-dark);
   background-color: var(--color-light);
   border: 1px solid var(--color-dark);
@@ -140,7 +140,7 @@ body {
   padding: 0.2rem;
 }
 
-#tab1-content button:hover {
+#journey-overview button:hover {
   cursor: pointer;
 }
 

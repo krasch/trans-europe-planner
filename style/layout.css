@@ -131,10 +131,10 @@ a#hide-sidebar {
   grid-template-columns: 50% 50%;
   grid-template-rows: 2rem 2.5rem 1fr 2rem;
   grid-template-areas:
-    "warning warning"
-    "tab1 tab2"
-    "content content"
-    "buttons buttons";
+    "warning      warning"
+    "tab-calendar tab-overview"
+    "content      content"
+    "buttons      buttons";
 }
 
 #warning {
@@ -144,16 +144,16 @@ a#hide-sidebar {
   padding-bottom: 0.5rem;
 }
 
-#tab1 {
-  grid-area: tab1;
+#tab-overview + label {
+  grid-area: tab-overview;
 }
 
-#tab2 {
-  grid-area: tab2;
+#tab-calendar + label {
+  grid-area: tab-calendar;
 }
 
-#tab1-content,
-#tab2-content {
+#journey-overview,
+#calendar-container {
   grid-area: content;
   display: none;
 
@@ -163,13 +163,13 @@ a#hide-sidebar {
   padding: 0.5rem;
 }
 
-#tab1:checked + label + #tab1-content,
-#tab2:checked + label + #tab2-content {
+#tab-overview:checked + label + #journey-overview,
+#tab-calendar:checked + label + #calendar-container {
   display: flex;
 }
 
-#tab1 + label,
-#tab2 + label {
+#tab-overview + label,
+#tab-calendar + label {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -185,7 +185,7 @@ a#hide-sidebar {
  Layout for perlschnur
 ************************************************/
 
-#tab1-content {
+#journey-overview {
   align-items: start;
   padding: 1rem;
   gap: 1rem;

@@ -134,5 +134,19 @@ export async function main(home, views) {
   // now have done all we can do without having the map ready
   await mapLoadedPromise;
 
+  const itineraries = routeDatabase.getItineraries(
+    home,
+    "London",
+    state.date,
+    database,
+  );
+  const journeys = itineraries.map((i) => new Journey(i));
+
+  state.journeys.reset();
+  for (let j of journeys) state.journeys.addJourney(j);
+  state.journeys.setActive(journeys[0].id); // first journey is the one with the fewest transfers
+
+  updateViews(state);
+
   updateViews(state);
 }
