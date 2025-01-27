@@ -25,7 +25,7 @@ body {
 
   grid-template-areas:
     "logo             date-picker      map"
-    "journey-details  journey-details  map"
+    "sidebar          sidebar          map"
     "footer           footer           footer";
 }
 
@@ -44,9 +44,9 @@ body {
   grid-area: date-picker;
 }
 
-#journey-details {
+#sidebar {
   z-index: 2;
-  grid-area: journey-details;
+  grid-area: sidebar;
 }
 
 #footer {
@@ -80,10 +80,10 @@ body {
 
 
 /***********************************************
- Layout for journey details tabbing setup
+ Layout for sidebar setup
 ************************************************/
 
-#journey-details {
+#sidebar {
   overflow-y: auto;
   padding: 1rem;
 

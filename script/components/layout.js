@@ -6,19 +6,19 @@ export class Layout {
   // relevant HTML elements
   #logo;
   #datePicker;
-  #journeyDetails;
+  sidebar;
   #map;
   #modal;
 
   // state
   #datePickerShouldBeVisible = false;
-  #journeyDetailsShouldBeVisible = false;
+  #sidebarShouldBeVisible = false;
   #collapsed = false;
 
   constructor(container) {
     this.#logo = container.querySelector("#logo");
     this.#datePicker = container.querySelector("#date-picker");
-    this.#journeyDetails = container.querySelector("#journey-details");
+    this.sidebar = container.querySelector("#sidebar");
     this.#map = container.querySelector("#map");
     this.#modal = container.querySelector("#modal");
 
@@ -32,7 +32,7 @@ export class Layout {
     }
 
     this.#datePickerShouldBeVisible = hasActiveJourney;
-    this.#journeyDetailsShouldBeVisible = hasActiveJourney && hasDate;
+    this.#sidebarShouldBeVisible = hasActiveJourney && hasDate;
     this.#updateView();
   }
 
@@ -45,15 +45,15 @@ export class Layout {
   #updateView() {
     if (this.#collapsed) {
       this.#hideDatePicker();
-      this.#hideJourneyDetails();
+      this.#hideSidebar();
       return;
     }
 
     if (this.#datePickerShouldBeVisible) this.#showDatePicker();
     else this.#hideDatePicker();
 
-    if (this.#journeyDetailsShouldBeVisible) this.#showJourneyDetails();
-    else this.#hideJourneyDetails();
+    if (this.#sidebarShouldBeVisible) this.#showSidebar();
+    else this.#hideSidebar();
   }
 
   #showDatePicker() {
@@ -73,20 +73,20 @@ export class Layout {
     });
   }
 
-  #showJourneyDetails() {
-    if (this.#isVisible(this.#journeyDetails)) return; // nothing to do
+  #showSidebar() {
+    if (this.#isVisible(this.sidebar)) return; // nothing to do
 
     this.#removeBorderRadius(this.#datePicker);
-    this.#slideIn(this.#journeyDetails);
-    this.#setVisible(this.#journeyDetails);
+    this.#slideIn(this.sidebar);
+    this.#setVisible(this.sidebar);
   }
 
-  #hideJourneyDetails() {
-    if (!this.#isVisible(this.#journeyDetails)) return; // nothing to do
+  #hideSidebar() {
+    if (!this.#isVisible(this.sidebar)) return; // nothing to do
 
-    this.#slideOut(this.#journeyDetails, () => {
+    this.#slideOut(this.sidebar, () => {
       this.#addBorderRadius(this.#datePicker);
-      this.#setInvisible(this.#journeyDetails);
+      this.#setInvisible(this.sidebar);
     });
   }
 

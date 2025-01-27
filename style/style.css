@@ -2,18 +2,18 @@
   Journey details tabbing
 ************************************************/
 
-#journey-details button {
+#sidebar button {
   font-family: helvetica, arial, sans-serif;
   font-size: 1rem;
   cursor: pointer;
 }
 
-#journey-details {
+#sidebar {
   background: var(--color-light);
   opacity: 90%;
 }
 
-#journey-details input[type="radio"] {
+#sidebar input[type="radio"] {
   display: none;
 }
 
