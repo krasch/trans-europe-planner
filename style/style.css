@@ -40,19 +40,6 @@ body {
   filter: var(--filter-white);
 }
 
-a#show-sidebar,
-a#hide-sidebar {
-  cursor: pointer;
-
-  color: var(--color-light);
-  font-size: 1.5rem;
-}
-
-a#hide-sidebar:hover,
-a#show-sidebar:hover {
-  text-shadow: 2px 2px 3px lightgrey;
-}
-
 #date-picker a {
   font-size: 1.2rem;
   cursor: pointer;

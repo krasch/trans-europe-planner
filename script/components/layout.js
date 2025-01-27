@@ -7,8 +7,6 @@ export class Layout {
   #logo;
   #datePicker;
   #journeyDetails;
-  #showSidebarButton;
-  #hideSidebarButton;
   #map;
   #modal;
 
@@ -21,26 +19,10 @@ export class Layout {
     this.#logo = container.querySelector("#logo");
     this.#datePicker = container.querySelector("#date-picker");
     this.#journeyDetails = container.querySelector("#journey-details");
-    this.#showSidebarButton = container.querySelector("#show-sidebar");
-    this.#hideSidebarButton = container.querySelector("#hide-sidebar");
     this.#map = container.querySelector("#map");
     this.#modal = container.querySelector("#modal");
 
-    this.#borderRadius = window
-      .getComputedStyle(this.#logo)
-      .getPropertyValue("--border-radius");
-
-    container.addEventListener("click", (e) => {
-      if (e.target.id === this.#hideSidebarButton.id) {
-        this.#collapsed = true;
-
-        this.#updateView();
-      }
-      if (e.target.id === this.#showSidebarButton.id) {
-        this.#collapsed = false;
-        this.#updateView();
-      }
-    });
+    this.#borderRadius = "5px";
   }
 
   updateView(hasDate, hasActiveJourney) {
@@ -79,22 +61,15 @@ export class Layout {
 
     this.#removeBorderRadius(this.#logo);
     this.#setVisible(this.#datePicker);
-    this.#setInvisible(this.#showSidebarButton);
-
-    this.#slideIn(this.#datePicker, () => {
-      this.#setVisible(this.#hideSidebarButton);
-    });
+    this.#slideIn(this.#datePicker);
   }
 
   #hideDatePicker() {
     if (!this.#isVisible(this.#datePicker)) return; // nothing to do
 
-    this.#setInvisible(this.#hideSidebarButton);
-
     this.#slideOut(this.#datePicker, () => {
       this.#addBorderRadius(this.#logo);
       this.#setInvisible(this.#datePicker);
-      this.#setVisible(this.#showSidebarButton);
     });
   }
 

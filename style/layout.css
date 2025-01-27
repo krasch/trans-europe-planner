@@ -120,15 +120,6 @@ a#hide-sidebar {
   margin-right: 1rem;
 }
 
-a#show-sidebar,
-a#hide-sidebar {
-  height: 2rem;
-
-  justify-self: end;
-  margin-top: 0.3rem;
-  margin-right: 0.5rem;
-}
-
 /***********************************************
  Layout for journey details tabbing setup
 ************************************************/
