@@ -89,7 +89,7 @@ nav > *.active {
 @media only screen and (min-width: 1000px) {
     nav, #warning, #calendar, #overview, #share-book {
         background-color: white;
-        opacity: 90%;
+        opacity: 95%;
     }
 
 }
@@ -106,6 +106,25 @@ Style for warning and booking buttons
 #warning a {
     text-decoration: underline;
     cursor: pointer;
+}
+
+/***********************************************
+Style for calendar
+************************************************/
+
+travel-calendar {
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+}
+
+/* additional border on desktop to help with tabbing-folder look */
+@media only screen and (min-width: 1000px) {
+    #calendar {
+        border: 1px solid var(--color-dark);
+        border-top: 0; /* tabs */
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
 }
 
 

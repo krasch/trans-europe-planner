@@ -193,7 +193,9 @@
 
 <div id="map"></div>
 <div id="summary" style="background-color: purple"></div>
-<div id="calendar" style="background-color: red"></div>
+<div id="calendar">
+    <travel-calendar start-date="2025-01-01"></travel-calendar>
+</div>
 <div id="config" style="background-color: green"></div>
 
 <aside id="warning"><span>Prototyp, Datenfehler sind wahrscheinlich.
@@ -320,7 +322,7 @@
 
         const views = {
             map: new MapWrapper('map', [10.0821932, 49.786322], 4.3), // starts async loading map
-            calendar: new CalendarWrapper(document.querySelector("#calendar")),
+            calendar: new CalendarWrapper(document.querySelector("travel-calendar")),
             perlschnur: new Perlschnur(document.getElementById("journey-overview")),
             datepicker: new Datepicker(document.getElementById("date-picker")),
             layout: new Layout(document.body)

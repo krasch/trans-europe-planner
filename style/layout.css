@@ -238,6 +238,37 @@ Layout for warning and booking buttons
     gap: 1rem;
 }
 
+/***********************************************
+Layout for calendar
+************************************************/
+
+#calendar {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* less padding on mobile */
+@media only screen and (max-width: 1000px) {
+    #calendar {
+        padding-top: 0;
+        padding-bottom: 0.5rem;
+    }
+}
+
+/* on mobile, calendar should take up the full height, without scrollbar */
+travel-calendar {
+    height: 100%;
+    max-width: 500px;
+}
+
+/* on desktop it should not be too tall and with scrollbar if necessary */
+@media only screen and (min-width: 1000px) {
+    height: 700px;
+    overflow: auto; /* scrollbar */
+}
+
 
 /***********************************************
 Layout for footer
