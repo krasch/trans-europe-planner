@@ -28,6 +28,13 @@ body {
     }
 }
 
+/* and some only on desktop layout */
+@media only screen and (max-width: 1000px) {
+    .only-desktop {
+        display: none;
+    }
+}
+
 /***********************************************
  Mobile layout is default (and much simpler)
 ************************************************/
@@ -229,4 +236,24 @@ Layout for warning and booking buttons
 
 #share-book {
     gap: 1rem;
+}
+
+
+/***********************************************
+Layout for footer
+************************************************/
+
+footer {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+
+  align-items: center;
+  justify-content: flex-end;
+
+  padding-right: 2rem;
+}
+
+footer img {
+    max-height: 1.3rem;
 }
