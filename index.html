@@ -13,7 +13,9 @@
     <script defer data-domain="trans-europe-planner.eu" src="https://plausible.io/js/script.js"></script>
 
     <!-- styles -->
-    <link rel="stylesheet" href="style/common.css">
+    <link rel="stylesheet" href="style/layout.css">
+    <link rel="stylesheet" href="style/style.css">
+    <!--link rel="stylesheet" href="style/common.css">
     <link rel="stylesheet" href="style/layout.css">
     <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="style/mobile.css">
@@ -22,7 +24,7 @@
     <link rel="stylesheet" href="style/components/journeyOverview.css">
     <link rel="stylesheet" href="style/components/calendar.css">
     <link rel="stylesheet" href="style/components/datepicker.css">
-    <link rel="stylesheet" href="style/components/footer.css">
+    <link rel="stylesheet" href="style/components/footer.css"-->
 
     <!-- style scripts -->
     <script src="style/components/map/layers.js"></script> <!-- only contains css styles for map in js -->
@@ -150,35 +152,11 @@
 </template-->
 
 
-<!--div id="modal" class="hidden">
-    <a class="logo" href="/">
-        <img src="images/logo.svg" alt="logo for the trans-europe-planner">
-    </a>
-    <div class="header">
-        <h1>Willkommen beim Trans Europa Planer</h1>
-        <h3><em>Einfacher mit dem Zug quer durch Europa</em></h3>
-    </div>
-    <div class="content">
-        <img src="images/markers/marker_home.svg" alt="map marker depicting a house">
-        <div id="choose-home">
-            <h1>Wo soll die Reise starten?</h1>
-            <div>
-                <a href="?start=Berlin">Berlin</a>
-                <a href="?start=Hamburg">Hamburg</a>
-                <a href="?start=Köln">Köln</a>
-                <a href="?start=München">München</a>
-            </div>
-            <em>(Weitere Startpunkte bald verfügbar)</em>
-        </div>
-    </div>
-    <div class="bottom"></div>
-</div-->
-
 <nav>
-    <a href="#journey-overview">Übersicht</a>
+    <a href="#summary">Übersicht</a>
     <a href="#calendar">Kalendar</a>
-    <a href="#map">Karte</a>
-    <a href="#date-picker">Config</a>
+    <a href="#map" class="active only-mobile">Karte</a>
+    <a href="#config" class="only-mobile">Config</a>
     <!--input type="radio" name="tab" id="tab-overview" checked>
     <label for="tab-overview">🛈 &nbsp;Reiseübersicht</label>
 
@@ -186,11 +164,12 @@
     <label for="tab-calendar">🖉 &nbsp;Reise anpassen &nbsp;&nbsp;</label-->
 </nav>
 
+
 <div id="logo">
     <a href="/"><img src="images/logo.svg" alt="logo for the trans-europe-planner"></a>
 </div>
 
-<div id="map"></div>
+<!--div id="map"></div>
 
 <travel-calendar id="calendar" start-date="2025-01-01"></travel-calendar>
 
@@ -210,22 +189,31 @@
         <input type="date" id="date-picker-input" value="2025-02-01"/>
         <a id="increase-date" title="One day later">▶</a>
     </div>
-</div>
+</div-->
 
-<!--div id="warning" class="hidden">Achtung, Prototyp, Datenfehler sind wahrscheinlich.
-    <button onclick="alert(
+<div id="map" style="background-color: pink"></div>
+<div id="summary" style="background-color: purple"></div>
+<div id="calendar" style="background-color: red"></div>
+<div id="config" style="background-color: green"></div>
+
+<aside id="warning"><span>Prototyp, Datenfehler sind wahrscheinlich.
+    <a onclick="alert(
          'Datenabdeckung: Deutschland Fernverkehr vollständig plus ausgewählte Verbindungen im Ausland. ' +
          'Letzter Datenimport im November 2024 plus hoffen dass die Verbindungen sich nicht' +
          'allzusehr geändert haben. Grund für diese Schluderei: Entwicklung des User interface hatte ' +
          'erstmal höhere Priorität')">Details
-    </button>
-</div-->
+    </a></span>
+</aside>
 
 
-<!--div id="share-book" class="hidden">
+<div id="share-book">
     <button onclick="alert('coming soon');">🔗 Teilen</button>
     <button onclick="alert('coming soon');">🎫 Buchen</button>
-</div-->
+</div>
+
+<footer style="background-color: black"></footer>
+
+
 
 <!--div id="sidebar" class="hidden">
 
@@ -269,6 +257,30 @@
 
 <div id="map" class="hidden"></div-->
 
+<!--dialog id="modal">
+    <a class="logo" href="/">
+        <img src="images/logo.svg" alt="logo for the trans-europe-planner">
+    </a>
+    <div class="header">
+        <h1>Willkommen beim Trans Europa Planer</h1>
+        <h3><em>Einfacher mit dem Zug quer durch Europa</em></h3>
+    </div>
+    <div class="content">
+        <img src="images/markers/marker_home.svg" alt="map marker depicting a house">
+        <div id="choose-home">
+            <h1>Wo soll die Reise starten?</h1>
+            <div>
+                <a href="?start=Berlin">Berlin</a>
+                <a href="?start=Hamburg">Hamburg</a>
+                <a href="?start=Köln">Köln</a>
+                <a href="?start=München">München</a>
+            </div>
+            <em>(Weitere Startpunkte bald verfügbar)</em>
+        </div>
+    </div>
+    <div class="bottom"></div>
+</dialog-->
+
 <script type="module">
     import {Layout} from "./script/components/layout.js";
     import {Perlschnur} from "./script/components/perlschnur.js";
@@ -295,7 +307,7 @@
         initColors();
         initCityNameToId(CITIES);
 
-        const views = {
+        /*const views = {
             map: new MapWrapper('map', [10.0821932, 49.786322], 4.3), // starts async loading map
             calendar: new CalendarWrapper(document.querySelector("#calendar")),
             perlschnur: new Perlschnur(document.getElementById("journey-overview")),
@@ -312,8 +324,14 @@
             }
         } else {
             views.layout.showModal();
-        }
+        }*/
     };
+
+    const tabs = document.querySelectorAll("nav > a");
+    document.querySelector("nav").addEventListener("click", e => {
+        for (let tab of tabs) tab.classList.remove("active");
+        e.target.classList.add("active");
+    })
 </script>
 
 </body>

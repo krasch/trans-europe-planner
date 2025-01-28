@@ -1,66 +1,109 @@
+body {
+    font-family: helvetica, arial, sans-serif;
+
+    /* colors for connections */
+    --color1: 27, 158, 119;
+    --color2: 217, 95, 2;
+    --color3: 117, 112, 179;
+    --color4: 231, 41, 138;
+    --color5: 102, 166, 30;
+
+    --color-light: white;
+    --color-dark: #286099;
+
+    /* https://codepen.io/sosuke/pen/Pjoqqp */
+    --filter-white: invert(100%);
+    /* #286099 */
+    --filter-dark: invert(32%) sepia(12%) saturate(3883%) hue-rotate(173deg) brightness(95%) contrast(86%);
+}
+
+button {
+    font-family: helvetica, arial, sans-serif;
+}
+
+
 /***********************************************
-  Journey details tabbing
+ Style logo
 ************************************************/
 
-#sidebar button {
-  font-family: helvetica, arial, sans-serif;
-  font-size: 1rem;
-  cursor: pointer;
+#logo {
+    background-color: var(--color-dark);
 }
 
-#sidebar {
-  background: var(--color-light);
-  opacity: 90%;
+#logo img {
+    filter: var(--filter-white);
 }
 
-#sidebar input[type="radio"] {
-  display: none;
+@media only screen and (min-width: 1000px) {
+    /* on desktop, logo should have a bottom right radius */
+    #logo {
+        border-bottom-right-radius: 1rem;
+    }
 }
+
+
+/***********************************************
+ Style navigation tabs
+************************************************/
+
+nav > * {
+    color: var(--color-light);
+    background-color: var(--color-dark);
+
+    text-decoration: none;
+}
+
+/* active tab element is inverted */
+nav > *.active {
+    color: var(--color-dark);
+    background-color: var(--color-light);
+}
+
+/* on desktop, tabs look like folders */
+@media only screen and (min-width: 1000px) {
+    nav > * {
+        color: var(--color-dark);
+        background-color: var(--color-light);
+
+        border-color: var(--color-dark);
+        border-style: solid;
+        border-width: 1px 1px 1px 0; /* border at top/right/bottom */
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    nav > *:first-child {
+        border-left-width: 1px;
+    }
+
+    nav > *.active {
+        border-bottom-width: 0;
+    }
+}
+
+/***********************************************
+ Style backgrounds
+************************************************/
+
+/* on desktop, need to put a background for all sidebar elements because are above map */
+@media only screen and (min-width: 1000px) {
+    nav, #warning, #calendar, #overview, #share-book {
+        background-color: white;
+        opacity: 90%;
+    }
+
+}
+
+/***********************************************
+Style for warning and booking buttons
+************************************************/
 
 #warning {
-  color: darkgray;
-  font-style: italic;
+    color: darkgray;
+    font-style: italic;
 }
 
-#warning button {
-  color: darkgray;
-  font-style: italic;
-  text-decoration: underline;
-
-  background: none;
-  border: none;
-  padding: 0;
+#warning a {
+    text-decoration: underline;
+    cursor: pointer;
 }
-
-#tab-overview + label,
-#tab-calendar + label {
-  border: 1px solid var(--color-dark);
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-
-  color: var(--color-dark);
-}
-
-#tab-calendar + label {
-  border-right: 0; /* no double borders */
-}
-
-#tab-overview:checked + label,
-#tab-calendar:checked + label {
-  border-bottom: 0; /* no border between tab and content when checked */
-}
-
-#tab-overview:not(:checked) + label:hover,
-#tab-calendar:not(:checked) + label:hover {
-  cursor: pointer;
-  text-shadow: 2px 2px 3px lightgrey;
-}
-
-#journey-overview,
-#calendar-container {
-  border: 1px solid var(--color-dark);
-  border-top: 0; /* no double borders */
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-

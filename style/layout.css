@@ -1,6 +1,13 @@
-/***********************************************
- Placing things in main page layout
-************************************************/
+h1,
+h2,
+h3 {
+    margin: 0;
+    font-weight: normal;
+}
+
+.hidden {
+    visibility: hidden;
+}
 
 html {
     height: 100%;
@@ -12,71 +19,168 @@ body {
 
     margin: 0;
     padding: 0;
+}
 
-    --logo-size: 6rem;
-    --logo-size-with-padding: 9rem;
+/* some elements should only be visible on mobile layout */
+@media only screen and (min-width: 1000px) {
+    .only-mobile {
+        display: none;
+    }
+}
+
+/***********************************************
+ Mobile layout is default (and much simpler)
+************************************************/
+
+body {
+    --logo-size: 3rem;
+    --logo-size-with-padding: 4rem;
 
     display: grid;
     grid-template-columns:
+                var(--logo-size-with-padding)
+                1fr; /* nav */
+    grid-template-rows:
+                var(--logo-size-with-padding)
+                2rem    /* warning */
+                1fr     /* main content */
+                2rem    /* share-book */
+                2rem;   /* footer */
+
+    grid-template-areas:
+        "logo        nav"
+        "warning     warning"
+        "content     content"
+        "share-book  share-book"
+        "footer      footer"
+}
+
+#logo {
+    grid-area: logo;
+}
+
+nav {
+    grid-area: nav
+}
+
+#warning {
+    grid-area: warning;
+}
+
+#share-book {
+    grid-area: share-book;
+}
+
+#calendar, #summary {
+    grid-area: content;
+}
+
+#map, #config {
+    grid-column: 1/3;
+    grid-row: 2/5; /* includes content */
+}
+
+footer {
+    grid-area: footer;
+}
+
+
+/*****************************************************************************
+ Desktop layout: map and config get their proper space, are no longer in tabs
+*****************************************************************************/
+
+@media only screen and (min-width: 1000px) {
+    body {
+
+        --logo-size: 6rem;
+        --logo-size-with-padding: 9rem;
+
+        display: grid;
+        grid-template-columns:
           var(--logo-size-with-padding)
           20rem                /* date picker*/
           1fr; /* main content (map) */
-    grid-template-rows:
+        grid-template-rows:
           var(--logo-size-with-padding)
           2.5rem               /* warning */
           2.5rem               /* nav */
           1fr                  /* main content (sidebar) */
           2.5rem               /* share-book */
-          2rem; /* footer */
+          2rem;                /* footer */
 
-    grid-template-areas:
-    "logo             date-picker      map"
+        grid-template-areas:
+    "logo             config           map"
     "warning          warning          map"
     "nav              nav              map"
     "content          content          map"
     "share-book       share-book       map"
     "footer           footer           footer";
+    }
+
+    #map {
+        grid-row: 1/6;
+        grid-column: 1/4;
+    }
+
+    #config {
+        grid-area: config;
+    }
+
+    #warning {
+        grid-area: warning;
+    }
+
+    nav {
+        grid-area: nav;
+    }
+
+    #summary,
+    #calendar {
+        grid-area: content;
+    }
+
+    #share-book {
+        grid-area: share-book;
+    }
+
+    /*#footer {
+        grid-area: footer;
+    }*/
+    /* are placed on top of map */
+    #logo, #summary, #calendar, nav, #share-book {
+        z-index: 2;
+    }
 }
 
-#map {
-    grid-row: 1/6;
-    grid-column: 1/4;
+/***********************************************
+ Choosing content that should be shown
+************************************************/
+
+/* on mobile, only the content for the respective tab is visible */
+@media only screen and (max-width: 1000px) {
+    #map:not(:target),
+    #config:not(:target),
+    #summary:not(:target),
+    #calendar:not(:target){
+        display: none;
+    }
+
+    /* warning and booking buttons only visible in summary and calendar */
+    #map:target ~ #warning,
+    #map:target ~ #share-book,
+    #config:target ~ #warning,
+    #config:target ~ #share-book {
+        display: none;
+    }
 }
 
-#logo {
-    z-index: 2;
-    grid-area: logo;
-}
 
-#date-picker {
-    z-index: 2;
-    grid-area: date-picker;
-}
-
-#warning {
-    z-index: 2;
-    grid-area: warning;
-}
-
-nav {
-    z-index: 2;
-    grid-area: nav;
-}
-
-#journey-overview,
-#calendar-container {
-    z-index: 2;
-    grid-area: content;
-    overflow-y: auto;
-}
-
-#share-book {
-    z-index: 2;
-    grid-area: share-book;
-}
-
-#footer {
-    grid-area: footer;
+/* on desktop, map and config are always visible */
+@media only screen and (min-width: 1000px) {
+    #summary:not(:target),
+    #calendar:not(:target){
+        display: none;
+    }
 }
 
 /***********************************************
@@ -97,59 +201,6 @@ nav > * {
 }
 
 /***********************************************
- Navigation tabs choosing content
-************************************************/
-
-/* each content is only visible when respective tab has been clicked  */
-#journey-overview:not(:target),
-#calendar:not(:target),
-#map:not(:target),
-#date-picker:not(:target){
-    display: none;
-}
-
-/* travel calendar is always visible except when journey overview targeted */
-/*#journey-overview:target ~ #calendar-container {
-    display: none;
-}*/
-
-/***********************************************
- Mobile layout
-************************************************/
-
-@media only screen and (max-width: 800px) {
-
-    body {
-        --logo-size: 3rem;
-        --logo-size-with-padding: 4rem;
-
-        display: grid;
-        grid-template-columns:
-                var(--logo-size-with-padding)
-                1fr; /* nav */
-        grid-template-rows:
-                var(--logo-size-with-padding)
-                1fr; /* main content */
-
-        grid-template-areas:
-        "logo             nav"
-        "content      content"
-    }
-
-    #map {
-        grid-area: content;
-    }
-
-    #calendar {
-        grid-area: content;
-    }
-
-    #date-picker {
-        grid-area: content;
-    }
-}
-
-/***********************************************
  Layout logo
 ************************************************/
 
@@ -165,7 +216,7 @@ nav > * {
 }
 
 /***********************************************
- All those small little elements
+Layout for warning and booking buttons
 ************************************************/
 
 #warning,
@@ -174,34 +225,8 @@ nav > * {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
 }
 
-#warning,
-nav,
-#calendar,
-#journey-overview,
 #share-book {
-    background-color: var(--color-light);
-    opacity: 90%;
-}
-
-/***********************************************
- Style logo
-************************************************/
-
-#logo {
-    border-bottom-right-radius: 1rem;
-    color: var(--color-light);
-    background-color: var(--color-dark);
-}
-
-#logo img {
-    filter: var(--filter-white);
-}
-
-@media only screen and (max-width: 800px) {
-    #logo {
-        border-bottom-right-radius: 0;
-    }
+    gap: 1rem;
 }
