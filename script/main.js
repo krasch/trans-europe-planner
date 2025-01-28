@@ -32,10 +32,10 @@ function initUpdateViews(views, database) {
       prepareDataForPerlschnur(state.journeys, database),
     );
 
-    views.layout.updateView(
+    /*views.layout.updateView(
       views.datepicker.currentDate !== null,
       state.journeys.hasActiveJourney,
-    );
+    );*/
   }
   return updateViews;
 }

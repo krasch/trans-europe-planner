@@ -3,38 +3,33 @@
 ************************************************/
 
 html {
-  height: 100%;
+    height: 100%;
 }
 
 body {
-  height: 100%;
-  width: 100%;
+    height: 100%;
+    width: 100%;
 
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 
-  --logo-size: 6rem;
-  --logo-padding: 1.5rem;
-  --logo-size-with-padding: calc(var(--logo-size) + 2 * var(--logo-padding));
+    --logo-size: 6rem;
+    --logo-size-with-padding: 9rem;
 
-  --sidebar-width: 20rem; /* excluding logo */
-  --nav-height: 2.5rem;
-  --footer-height: 2rem;
-
-  display: grid;
-  grid-template-columns:
+    display: grid;
+    grid-template-columns:
           var(--logo-size-with-padding)
-          var(--sidebar-width)
-          1fr;
-  grid-template-rows:
+          20rem                /* date picker*/
+          1fr; /* main content (map) */
+    grid-template-rows:
           var(--logo-size-with-padding)
-          var(--nav-height)
-          var(--nav-height)
-          1fr
-          var(--nav-height)
-          var(--footer-height);
+          2.5rem               /* warning */
+          2.5rem               /* nav */
+          1fr                  /* main content (sidebar) */
+          2.5rem               /* share-book */
+          2rem; /* footer */
 
-  grid-template-areas:
+    grid-template-areas:
     "logo             date-picker      map"
     "warning          warning          map"
     "nav              nav              map"
@@ -44,100 +39,129 @@ body {
 }
 
 #map {
-  grid-row: 1/6;
-  grid-column: 1/4;
+    grid-row: 1/6;
+    grid-column: 1/4;
 }
 
 #logo {
-  z-index: 2;
-  grid-area: logo;
+    z-index: 2;
+    grid-area: logo;
 }
 
 #date-picker {
-  z-index: 2;
-  grid-area: date-picker;
+    z-index: 2;
+    grid-area: date-picker;
 }
 
 #warning {
-  z-index: 2;
-  grid-area: warning;
+    z-index: 2;
+    grid-area: warning;
 }
 
 nav {
-  z-index: 2;
-  grid-area: nav;
+    z-index: 2;
+    grid-area: nav;
 }
 
 #journey-overview,
 #calendar-container {
-  z-index: 2;
-  grid-area: content;
-  overflow-y: auto;
+    z-index: 2;
+    grid-area: content;
+    overflow-y: auto;
 }
 
 #share-book {
-  z-index: 2;
-  grid-area: share-book;
+    z-index: 2;
+    grid-area: share-book;
 }
 
 #footer {
-  grid-area: footer;
+    grid-area: footer;
 }
-
-/***********************************************
- Layout and style logo
-************************************************/
-
-#logo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-#logo img {
-  height: var(--logo-size);
-}
-
-#logo {
-  border-bottom-right-radius: 1rem;
-  color: var(--color-light);
-  background-color: var(--color-dark);
-}
-
-#logo img {
-  filter: var(--filter-white);
-}
-
 
 /***********************************************
  Navigation tab layout
 ************************************************/
 
 nav {
-  display: grid;
-  grid-auto-flow: column;
+    display: grid;
+    grid-auto-flow: column; /* all columns will have same width */
 }
 
+/* horizontally and vertically center text/images in tab */
 nav > * {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 /***********************************************
  Navigation tabs choosing content
 ************************************************/
 
-/* journey overview is only visible when targeted */
-#journey-overview:not(:target) {
-  display: none;
+/* each content is only visible when respective tab has been clicked  */
+#journey-overview:not(:target),
+#calendar:not(:target),
+#map:not(:target),
+#date-picker:not(:target){
+    display: none;
 }
 
 /* travel calendar is always visible except when journey overview targeted */
-#journey-overview:target ~ #calendar-container {
-  display: none;
+/*#journey-overview:target ~ #calendar-container {
+    display: none;
+}*/
+
+/***********************************************
+ Mobile layout
+************************************************/
+
+@media only screen and (max-width: 800px) {
+
+    body {
+        --logo-size: 3rem;
+        --logo-size-with-padding: 4rem;
+
+        display: grid;
+        grid-template-columns:
+                var(--logo-size-with-padding)
+                1fr; /* nav */
+        grid-template-rows:
+                var(--logo-size-with-padding)
+                1fr; /* main content */
+
+        grid-template-areas:
+        "logo             nav"
+        "content      content"
+    }
+
+    #map {
+        grid-area: content;
+    }
+
+    #calendar {
+        grid-area: content;
+    }
+
+    #date-picker {
+        grid-area: content;
+    }
+}
+
+/***********************************************
+ Layout logo
+************************************************/
+
+#logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#logo img {
+    height: var(--logo-size);
 }
 
 /***********************************************
@@ -146,97 +170,38 @@ nav > * {
 
 #warning,
 #share-book {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
 }
 
 #warning,
 nav,
-#calendar-container,
+#calendar,
 #journey-overview,
 #share-book {
-  background-color: var(--color-light);
-  opacity: 90%;
+    background-color: var(--color-light);
+    opacity: 90%;
 }
-/*#sidebar {
-  overflow-y: auto;
-  padding: 1rem;
-
-  display: grid;
-  grid-template-columns: 50% 50%;
-  grid-template-rows: 2rem 2.5rem 1fr 2rem;
-  grid-template-areas:
-    "warning      warning"
-    "nav          nav"
-    "content      content"
-    "buttons      buttons";
-}
-
-#warning {
-  grid-area: warning;
-}
-
-
-nav {
-  grid-area: nav;
-}
-
-#journey-overview,
-#calendar-container {
-  grid-area: content;
-}
-
-nav {
-  display: flex;
-  flex-direction: row;
-}*/
 
 /***********************************************
- Layout for items in sidebar
+ Style logo
 ************************************************/
 
-/*#warning {
-  align-self: center;
-  justify-self: center;
-  padding-bottom: 0.5rem;
+#logo {
+    border-bottom-right-radius: 1rem;
+    color: var(--color-light);
+    background-color: var(--color-dark);
 }
 
-
-#journey-overview,
-#calendar-container {
-  display: none;
-
-  flex-direction: column;
-  align-items: center;
-
-  padding: 0.5rem;
+#logo img {
+    filter: var(--filter-white);
 }
 
-#tab-overview:checked + label + #journey-overview,
-#tab-calendar:checked + label + #calendar-container {
-  display: flex;
+@media only screen and (max-width: 800px) {
+    #logo {
+        border-bottom-right-radius: 0;
+    }
 }
-
-#tab-overview + label,
-#tab-calendar + label {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-
-#bottom-buttons {
-  grid-area: buttons;
-  padding-top: 0.5rem;
-}
-
-
-#bottom-buttons {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 2rem;
-}*/

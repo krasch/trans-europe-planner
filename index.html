@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="style/common.css">
     <link rel="stylesheet" href="style/layout.css">
     <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/mobile.css">
     <link rel="stylesheet" href="style/components/map/map.css">
     <link rel="stylesheet" href="style/components/modal.css">
     <link rel="stylesheet" href="style/components/journeyOverview.css">
@@ -149,7 +150,7 @@
 </template-->
 
 
-<div id="modal" class="hidden">
+<!--div id="modal" class="hidden">
     <a class="logo" href="/">
         <img src="images/logo.svg" alt="logo for the trans-europe-planner">
     </a>
@@ -171,11 +172,13 @@
         </div>
     </div>
     <div class="bottom"></div>
-</div>
+</div-->
 
 <nav>
-    <a href="#journey-overview">🛈 &nbsp;Reiseübersicht</a>
-    <a href="#calendar">🖉 &nbsp;Reise anpassen &nbsp;&nbsp;</a>
+    <a href="#journey-overview">Übersicht</a>
+    <a href="#calendar">Kalendar</a>
+    <a href="#map">Karte</a>
+    <a href="#date-picker">Config</a>
     <!--input type="radio" name="tab" id="tab-overview" checked>
     <label for="tab-overview">🛈 &nbsp;Reiseübersicht</label>
 
@@ -183,27 +186,13 @@
     <label for="tab-calendar">🖉 &nbsp;Reise anpassen &nbsp;&nbsp;</label-->
 </nav>
 
-<div id="logo" class="hidden">
+<div id="logo">
     <a href="/"><img src="images/logo.svg" alt="logo for the trans-europe-planner"></a>
 </div>
 
-<div id="date-picker" class="hidden">
-    <h3><label for="date-picker-input">Abreisedatum: </label></h3>
-    <div>
-        <a id="decrease-date" title="One day earlier">◀</a>
-        <input type="date" id="date-picker-input" value="2025-02-01"/>
-        <a id="increase-date" title="One day later">▶</a>
-    </div>
-</div>
+<div id="map"></div>
 
-<div id="warning">Achtung, Prototyp, Datenfehler sind wahrscheinlich.
-    <button onclick="alert(
-         'Datenabdeckung: Deutschland Fernverkehr vollständig plus ausgewählte Verbindungen im Ausland. ' +
-         'Letzter Datenimport im November 2024 plus hoffen dass die Verbindungen sich nicht' +
-         'allzusehr geändert haben. Grund für diese Schluderei: Entwicklung des User interface hatte ' +
-         'erstmal höhere Priorität')">Details
-    </button>
-</div>
+<travel-calendar id="calendar" start-date="2025-01-01"></travel-calendar>
 
 <div id="journey-overview">
     <div>
@@ -214,14 +203,29 @@
     <div id="perlschnur"></div>
 </div>
 
-<div id="calendar-container">
-    <travel-calendar id="calendar" start-date="2025-01-01"></travel-calendar>
+<div id="date-picker">
+    <h3><label for="date-picker-input">Abreisedatum: </label></h3>
+    <div>
+        <a id="decrease-date" title="One day earlier">◀</a>
+        <input type="date" id="date-picker-input" value="2025-02-01"/>
+        <a id="increase-date" title="One day later">▶</a>
+    </div>
 </div>
 
-<div id="share-book">
+<!--div id="warning" class="hidden">Achtung, Prototyp, Datenfehler sind wahrscheinlich.
+    <button onclick="alert(
+         'Datenabdeckung: Deutschland Fernverkehr vollständig plus ausgewählte Verbindungen im Ausland. ' +
+         'Letzter Datenimport im November 2024 plus hoffen dass die Verbindungen sich nicht' +
+         'allzusehr geändert haben. Grund für diese Schluderei: Entwicklung des User interface hatte ' +
+         'erstmal höhere Priorität')">Details
+    </button>
+</div-->
+
+
+<!--div id="share-book" class="hidden">
     <button onclick="alert('coming soon');">🔗 Teilen</button>
     <button onclick="alert('coming soon');">🎫 Buchen</button>
-</div>
+</div-->
 
 <!--div id="sidebar" class="hidden">
 
@@ -250,9 +254,8 @@
     </div>
 </div-->
 
-<div id="footer">
+<!--div id="footer" class="hidden">
     <span>Trans Europe Planner - <em>Einfacher mit dem Zug quer durch Europa</em></span>
-    <!--span>Blog</span-->
     <a href="https://github.com/krasch/trans-europe-planner">
         <img src="images/logos/github.svg" alt="logo for github">
     </a>
@@ -264,7 +267,7 @@
     <a href="about-impressum.html#data-protection">Datenschutz</a>
 </div>
 
-<div id="map"></div>
+<div id="map" class="hidden"></div-->
 
 <script type="module">
     import {Layout} from "./script/components/layout.js";
@@ -294,7 +297,7 @@
 
         const views = {
             map: new MapWrapper('map', [10.0821932, 49.786322], 4.3), // starts async loading map
-            calendar: new CalendarWrapper(document.getElementById("calendar")),
+            calendar: new CalendarWrapper(document.querySelector("#calendar")),
             perlschnur: new Perlschnur(document.getElementById("journey-overview")),
             datepicker: new Datepicker(document.getElementById("date-picker")),
             layout: new Layout(document.body)
