@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="style/layout.css">
     <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="style/components/summary.css">
+    <link rel="stylesheet" href="style/components/config.css">
     <!--link rel="stylesheet" href="style/common.css">
     <link rel="stylesheet" href="style/layout.css">
     <link rel="stylesheet" href="style/style.css">
@@ -24,7 +25,7 @@
     <link rel="stylesheet" href="style/components/modal.css">
     <link rel="stylesheet" href="style/components/summary.css">
     <link rel="stylesheet" href="style/components/calendar.css">
-    <link rel="stylesheet" href="style/components/datepicker.css">
+    <link rel="stylesheet" href="style/components/config.css">
     <link rel="stylesheet" href="style/components/footer.css"-->
 
     <!-- style scripts -->
@@ -157,7 +158,9 @@
     <a href="#summary">Übersicht</a>
     <a href="#calendar">Kalendar</a>
     <a href="#map" class="active only-mobile">Karte</a>
-    <a href="#config" class="only-mobile">Config</a>
+    <a href="#config" class="only-mobile">
+        <img src="images/icons/settings.svg" alt="icon for a config menu">
+    </a>
     <!--input type="radio" name="tab" id="tab-overview" checked>
     <label for="tab-overview">🛈 &nbsp;Reiseübersicht</label>
 
@@ -185,7 +188,7 @@
     <div id="perlschnur"></div>
 </div>
 
-<div id="config" class="hidden">
+<div id="config">
     <h3><label for="date-picker-input">Abreisedatum: </label></h3>
     <div>
         <a id="decrease-date" title="One day earlier">◀</a>
@@ -263,8 +266,6 @@
         const params = new URLSearchParams(window.location.search);
         const home = params.get("start");
 
-        console.log(home);
-
         if (home && ["Berlin", "Hamburg", "Köln", "München", "Stockholm"].includes(home))
             return home;
 
@@ -298,7 +299,7 @@
     const tabs = document.querySelectorAll("nav > a");
     document.querySelector("nav").addEventListener("click", e => {
         for (let tab of tabs) tab.classList.remove("active");
-        e.target.classList.add("active");
+        e.target.closest("a").classList.add("active");
     })
 </script>
 

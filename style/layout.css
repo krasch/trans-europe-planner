@@ -55,7 +55,7 @@ body {
                 2rem    /* warning */
                 1fr     /* main content */
                 2rem    /* share-book */
-                2rem;   /* footer */
+                2rem; /* footer */
 
     grid-template-areas:
         "logo        nav"
@@ -116,7 +116,7 @@ footer {
           2.5rem               /* nav */
           1fr                  /* main content (sidebar) */
           2.5rem               /* share-book */
-          2rem;                /* footer */
+          2rem; /* footer */
 
         grid-template-areas:
     "logo             config           map"
@@ -157,7 +157,7 @@ footer {
         grid-area: footer;
     }*/
     /* are placed on top of map */
-    #logo, #summary, #calendar, nav, #share-book {
+    #logo, #config, #summary, #calendar, nav, #share-book {
         z-index: 2;
     }
 }
@@ -171,7 +171,7 @@ footer {
     #map:not(:target),
     #config:not(:target),
     #summary:not(:target),
-    #calendar:not(:target){
+    #calendar:not(:target) {
         display: none;
     }
 
@@ -188,7 +188,7 @@ footer {
 /* on desktop, map and config are always visible */
 @media only screen and (min-width: 1000px) {
     #summary:not(:target),
-    #calendar:not(:target){
+    #calendar:not(:target) {
         display: none;
     }
 }
@@ -208,6 +208,10 @@ nav > * {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+nav img {
+    height: 2rem;
 }
 
 /***********************************************
@@ -268,9 +272,12 @@ travel-calendar {
 
 /* on desktop it should not be too tall and with scrollbar if necessary */
 @media only screen and (min-width: 1000px) {
-    travel-calendar{
-        height: 700px;
+    #calendar {
         overflow-y: scroll;
+    }
+
+    travel-calendar {
+        height: 700px;
     }
 }
 
@@ -296,20 +303,39 @@ Layout for journey summary
     width: min(500px, 100%);
 }
 
+/***********************************************
+Layout for config
+************************************************/
+
+#config {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    align-items: center;
+    justify-content: flex-start;
+}
+
+@media only screen and (min-width: 1000px) {
+    #config {
+         justify-content: center;
+    }
+}
+
 
 /***********************************************
 Layout for footer
 ************************************************/
 
 footer {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
 
-  align-items: center;
-  justify-content: flex-end;
+    align-items: center;
+    justify-content: flex-end;
 
-  padding-right: 2rem;
+    padding-right: 2rem;
 }
 
 footer img {
@@ -322,58 +348,58 @@ footer img {
 *******************************************************/
 
 .card {
-  --padding: 5px;
+    --padding: 5px;
 
-  list-style-type: none;
+    list-style-type: none;
 
-  border-radius: var(--padding);
-  overflow: hidden; /* this is necessary to really get the round corners */
+    border-radius: var(--padding);
+    overflow: hidden; /* this is necessary to really get the round corners */
 }
 
 .card h3,
 .card li {
-  width: 100%;
+    width: 100%;
 
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .card menu,
 .card ul {
-  padding: 0;
-  margin: 0;
-  list-style-type: none;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
 }
 
 .card h3,
 .card li > *:first-child {
-  padding-left: var(--padding);
+    padding-left: var(--padding);
 }
 
 .card li.hidden {
-  display: none;
+    display: none;
 }
 
 .card button {
-  height: 100%;
-  width: 100%;
+    height: 100%;
+    width: 100%;
 
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
-  gap: 0.5rem;
+    gap: 0.5rem;
 
-  text-align: left;
-  cursor: pointer;
+    text-align: left;
+    cursor: pointer;
 
-  border: 0;
+    border: 0;
 }
 
 .card img {
-  height: 1rem;
-  padding: 0;
-  margin: 0;
+    height: 1rem;
+    padding: 0;
+    margin: 0;
 }

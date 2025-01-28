@@ -21,26 +21,23 @@ button {
     font-family: helvetica, arial, sans-serif;
 }
 
+input {
+    font-size: 1rem;
+    font-family: helvetica, arial, sans-serif;
+}
 
 /***********************************************
- Style logo
+ Style backgrounds
 ************************************************/
 
-#logo {
-    background-color: var(--color-dark);
-}
-
-#logo img {
-    filter: var(--filter-white);
-}
-
+/* on desktop, need to put a background for all sidebar elements because are above map */
 @media only screen and (min-width: 1000px) {
-    /* on desktop, logo should have a bottom right radius */
-    #logo {
-        border-bottom-right-radius: 1rem;
+    nav, #warning, #calendar, #summary, #share-book {
+        background-color: white;
+        opacity: 95%;
     }
-}
 
+}
 
 /***********************************************
  Style navigation tabs
@@ -49,14 +46,23 @@ button {
 nav > * {
     color: var(--color-light);
     background-color: var(--color-dark);
-
     text-decoration: none;
 }
 
-/* active tab element is inverted */
-nav > *.active {
-    color: var(--color-dark);
-    background-color: var(--color-light);
+nav > * > img {
+    filter: var(--filter-white);
+}
+
+/* on mobile, active tab element is inverted */
+@media only screen and (max-width: 1000px) {
+    nav > *.active {
+        color: var(--color-dark);
+        background-color: var(--color-light);
+    }
+
+    nav > *.active > img {
+        filter: var(--filter-dark);
+    }
 }
 
 /* on desktop, tabs look like folders */
@@ -82,20 +88,37 @@ nav > *.active {
 }
 
 /***********************************************
- Style backgrounds
+ Style logo
 ************************************************/
 
-/* on desktop, need to put a background for all sidebar elements because are above map */
-@media only screen and (min-width: 1000px) {
-    nav, #warning, #calendar, #summary, #share-book {
-        background-color: white;
-        opacity: 95%;
-    }
+#logo {
+    background-color: var(--color-dark);
+}
 
+#logo img {
+    filter: var(--filter-white);
+}
+
+@media only screen and (min-width: 1000px) {
+    /* on desktop, logo should have a bottom right radius */
+    #logo {
+        border-bottom-right-radius: 1rem;
+    }
 }
 
 /***********************************************
-Style for warning and booking buttons
+ Style config
+************************************************/
+
+@media only screen and (min-width: 1000px) {
+    /* on desktop, logo should have a bottom right radius */
+    #config {
+        border-bottom-right-radius: 1rem;
+    }
+}
+
+/***********************************************
+Style warning and booking buttons
 ************************************************/
 
 #warning {
@@ -109,7 +132,7 @@ Style for warning and booking buttons
 }
 
 /***********************************************
-Style for calendar
+Style calendar
 ************************************************/
 
 travel-calendar {
@@ -128,7 +151,7 @@ travel-calendar {
 }
 
 /***********************************************
-Style for journey summary
+Style journey summary
 ************************************************/
 
 @media only screen and (min-width: 1000px) {
@@ -140,9 +163,8 @@ Style for journey summary
     }
 }
 
-
 /***********************************************
-  Style for footer
+  Style footer
 ************************************************/
 
 footer {
