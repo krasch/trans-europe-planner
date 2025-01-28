@@ -191,7 +191,7 @@
     </div>
 </div-->
 
-<div id="map" style="background-color: pink"></div>
+<div id="map"></div>
 <div id="summary" style="background-color: purple"></div>
 <div id="calendar" style="background-color: red"></div>
 <div id="config" style="background-color: green"></div>
@@ -318,7 +318,7 @@
         initColors();
         initCityNameToId(CITIES);
 
-        /*const views = {
+        const views = {
             map: new MapWrapper('map', [10.0821932, 49.786322], 4.3), // starts async loading map
             calendar: new CalendarWrapper(document.querySelector("#calendar")),
             perlschnur: new Perlschnur(document.getElementById("journey-overview")),
@@ -335,7 +335,7 @@
             }
         } else {
             views.layout.showModal();
-        }*/
+        }
     };
 
     const tabs = document.querySelectorAll("nav > a");
