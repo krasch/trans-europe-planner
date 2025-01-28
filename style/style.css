@@ -87,7 +87,7 @@ nav > *.active {
 
 /* on desktop, need to put a background for all sidebar elements because are above map */
 @media only screen and (min-width: 1000px) {
-    nav, #warning, #calendar, #overview, #share-book {
+    nav, #warning, #calendar, #summary, #share-book {
         background-color: white;
         opacity: 95%;
     }
@@ -113,13 +113,26 @@ Style for calendar
 ************************************************/
 
 travel-calendar {
-  border: 1px solid lightgrey;
-  border-radius: 5px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
 }
 
 /* additional border on desktop to help with tabbing-folder look */
 @media only screen and (min-width: 1000px) {
     #calendar {
+        border: 1px solid var(--color-dark);
+        border-top: 0; /* tabs */
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+}
+
+/***********************************************
+Style for journey summary
+************************************************/
+
+@media only screen and (min-width: 1000px) {
+    #summary {
         border: 1px solid var(--color-dark);
         border-top: 0; /* tabs */
         border-bottom-left-radius: 5px;
@@ -133,14 +146,14 @@ travel-calendar {
 ************************************************/
 
 footer {
-  background-color: var(--color-dark);
-  color: var(--color-light);
+    background-color: var(--color-dark);
+    color: var(--color-light);
 }
 
 footer a {
-  color: var(--color-light);
+    color: var(--color-light);
 }
 
 footer img {
-  filter: var(--filter-white);
+    filter: var(--filter-white);
 }

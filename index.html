@@ -15,13 +15,14 @@
     <!-- styles -->
     <link rel="stylesheet" href="style/layout.css">
     <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/components/summary.css">
     <!--link rel="stylesheet" href="style/common.css">
     <link rel="stylesheet" href="style/layout.css">
     <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="style/mobile.css">
     <link rel="stylesheet" href="style/components/map/map.css">
     <link rel="stylesheet" href="style/components/modal.css">
-    <link rel="stylesheet" href="style/components/journeyOverview.css">
+    <link rel="stylesheet" href="style/components/summary.css">
     <link rel="stylesheet" href="style/components/calendar.css">
     <link rel="stylesheet" href="style/components/datepicker.css">
     <link rel="stylesheet" href="style/components/footer.css"-->
@@ -169,11 +170,13 @@
     <a href="/"><img src="images/logo.svg" alt="logo for the trans-europe-planner"></a>
 </div>
 
-<!--div id="map"></div>
+<div id="map"></div>
 
-<travel-calendar id="calendar" start-date="2025-01-01"></travel-calendar>
+<div id="calendar">
+    <travel-calendar start-date="2025-01-01"></travel-calendar>
+</div>
 
-<div id="journey-overview">
+<div id="summary">
     <div>
         <h3>Von <span class="from"></span> nach <span class="to"></span></h3> <span class="via"></span>
         <div>Gesamte Reisezeit: <span class="total-time"></span></div>
@@ -182,21 +185,14 @@
     <div id="perlschnur"></div>
 </div>
 
-<div id="date-picker">
+<div id="config" class="hidden">
     <h3><label for="date-picker-input">Abreisedatum: </label></h3>
     <div>
         <a id="decrease-date" title="One day earlier">◀</a>
         <input type="date" id="date-picker-input" value="2025-02-01"/>
         <a id="increase-date" title="One day later">▶</a>
     </div>
-</div-->
-
-<div id="map"></div>
-<div id="summary" style="background-color: purple"></div>
-<div id="calendar">
-    <travel-calendar start-date="2025-01-01"></travel-calendar>
 </div>
-<div id="config" style="background-color: green"></div>
 
 <aside id="warning"><span>Prototyp, Datenfehler sind wahrscheinlich.
     <a onclick="alert(
@@ -226,49 +222,6 @@
     <a href="about-impressum.html#data-protection">Datenschutz</a>
 </footer>
 
-
-
-<!--div id="sidebar" class="hidden">
-
-    <nav>
-       <input type="radio" name="tab" id="tab-overview" checked>
-       <label for="tab-overview">🛈 &nbsp;Reiseübersicht</label>
-       <input type="radio" name="tab" id="tab-calendar">
-       <label for="tab-calendar">🖉 &nbsp;Reise anpassen &nbsp;&nbsp;</label>
-    </nav>
-
-    <div id="journey-overview">
-        <div>
-            <h3>Von <span class="from"></span> nach <span class="to"></span></h3> <span class="via"></span>
-            <div>Gesamte Reisezeit: <span class="total-time"></span></div>
-        </div>
-        <h3>Reiseverlauf:</h3>
-        <div id="perlschnur"></div>
-    </div>
-    <div id="calendar-container">
-        <travel-calendar id="calendar" start-date="2025-01-01"></travel-calendar>
-    </div>
-
-    <div id="bottom-buttons">
-        <button onclick="alert('coming soon');">🔗 Teilen</button>
-        <button onclick="alert('coming soon');">🎫 Buchen</button>
-    </div>
-</div-->
-
-<!--div id="footer" class="hidden">
-    <span>Trans Europe Planner - <em>Einfacher mit dem Zug quer durch Europa</em></span>
-    <a href="https://github.com/krasch/trans-europe-planner">
-        <img src="images/logos/github.svg" alt="logo for github">
-    </a>
-    <a href="https://fosstodon.org/@trans_europe_planner">
-        <img src="images/logos/mastodon.svg" alt="logo for mastodon">
-    </a>
-    <a href="about-impressum.html#about">About</a>
-    <a href="about-impressum.html#impressum">Impressum</a>
-    <a href="about-impressum.html#data-protection">Datenschutz</a>
-</div>
-
-<div id="map" class="hidden"></div-->
 
 <!--dialog id="modal">
     <a class="logo" href="/">
@@ -310,6 +263,8 @@
         const params = new URLSearchParams(window.location.search);
         const home = params.get("start");
 
+        console.log(home);
+
         if (home && ["Berlin", "Hamburg", "Köln", "München", "Stockholm"].includes(home))
             return home;
 
@@ -323,8 +278,8 @@
         const views = {
             map: new MapWrapper('map', [10.0821932, 49.786322], 4.3), // starts async loading map
             calendar: new CalendarWrapper(document.querySelector("travel-calendar")),
-            perlschnur: new Perlschnur(document.getElementById("journey-overview")),
-            datepicker: new Datepicker(document.getElementById("date-picker")),
+            perlschnur: new Perlschnur(document.querySelector("#summary")),
+            datepicker: new Datepicker(document.querySelector("#config")),
             layout: new Layout(document.body)
         }
 
