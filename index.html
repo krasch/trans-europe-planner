@@ -146,7 +146,7 @@
 </template-->
 
 
-<nav>
+<nav class="hidden">
     <a id="tab-map" data-content="#map" class="only-mobile active">Karte</a>
     <a id="tab-calendar" data-content="#calendar" class="tab-hidden">
         <span class="only-mobile">Kalendar</span>
@@ -167,6 +167,8 @@
 </div>
 
 <div id="map"></div>
+
+<div id="pad" class="hidden"></div> <!-- utility class for desktop view -->
 
 <div id="journey" class="hidden">
     <aside id="warning">Prototyp, Datenfehler sind wahrscheinlich.

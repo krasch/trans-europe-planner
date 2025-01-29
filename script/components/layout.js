@@ -10,6 +10,7 @@ export class Layout {
   constructor(container, isMobile) {
     this.#elements = {
       logo: container.querySelector("#logo"),
+      pad: container.querySelector("#pad"),
       nav: container.querySelector("nav"),
       journey: container.querySelector("#journey"),
       map: container.querySelector("#map"),
@@ -55,10 +56,10 @@ export class Layout {
     this.#setVisible(this.#elements.config);
     this.#setVisible(this.#elements.nav);
     this.#setVisible(this.#elements.journey);
+    this.#setVisible(this.#elements.pad);
   }
 
   #showAllTabs() {
-    console.log("hallo");
     for (let tab of this.#elements.nav.querySelectorAll("a"))
       tab.classList.remove("tab-hidden");
   }

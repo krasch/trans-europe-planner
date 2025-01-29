@@ -86,6 +86,10 @@ footer {
     grid-area: footer;
 }
 
+#pad {
+    display: none;
+}
+
 
 /*****************************************************************************
  Desktop layout: map and config get their proper space, are no longer in tabs
@@ -126,6 +130,11 @@ footer {
         grid-area: config;
     }
 
+    #pad {
+        grid-area: pad;
+        display: block;
+    }
+
     nav {
         grid-area: nav;
     }
@@ -135,7 +144,7 @@ footer {
     }
 
     /* are placed on top of map */
-    #logo, #config, nav, #journey {
+    #logo, #config, nav, nav::before, #journey {
         z-index: 2;
     }
 }

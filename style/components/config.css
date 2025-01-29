@@ -15,9 +15,6 @@ Style
 ************************************************/
 
 #config {
-  --border-radius: 1rem;
-  border-bottom-right-radius: var(--border-radius);
-
   color: var(--color-light);
   background-color: var(--color-dark);
 }
