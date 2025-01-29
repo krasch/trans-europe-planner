@@ -155,12 +155,13 @@
 
 
 <nav>
-    <a href="#summary">Übersicht</a>
-    <a href="#calendar">Kalendar</a>
-    <a href="#map" class="active only-mobile">Karte</a>
-    <a href="#config" class="only-mobile">
+    <a id="tab-summary" data-content="#summary">Übersicht</a>
+    <a id="tab-calendar" data-content="#calendar">Kalendar</a>
+    <a id="tab-map" data-content="#map" class="active only-mobile">Karte</a>
+    <a id="tab-config" data-content="#config" class="only-mobile">
         <img src="images/icons/settings.svg" alt="icon for a config menu">
     </a>
+
     <!--input type="radio" name="tab" id="tab-overview" checked>
     <label for="tab-overview">🛈 &nbsp;Reiseübersicht</label>
 
@@ -272,7 +273,42 @@
         return null;
     }
 
+    function initNavigation() {
+        const tabs = Array.from(document.querySelectorAll("nav > a"));
+        const contents = tabs.map(t => document.querySelector(t.dataset.content));
+
+        const defaultMobile = document.querySelector("#tab-map"); // is one of nav > a
+        const defaultDesktop = document.querySelector("#tab-calendar"); // same
+
+        function setActive(tab){
+            for (let i in tabs) {
+                if (tabs[i] === tab) {
+                    tabs[i].classList.add("active");
+                    contents[i].classList.add("active");
+                } else {
+                    tabs[i].classList.remove("active");
+                    contents[i].classList.remove("active");
+                }
+            }
+        }
+
+        document.querySelector("nav").addEventListener("click", e => {
+            setActive(e.target.closest("a"));
+        });
+
+        const isMobile = window.matchMedia("(max-width: 1000px)");
+        isMobile.matches ? setActive(defaultMobile): setActive(defaultDesktop);
+
+        isMobile.addEventListener("change", e => {
+            const current = document.querySelector("nav > a.active");
+            if (!isMobile.matches && current.classList.contains("only-mobile"))
+                setActive(defaultDesktop);
+        });
+    }
+
     onload = async (event) => {
+        initNavigation();
+
         initColors();
         initCityNameToId(CITIES);
 
@@ -296,11 +332,7 @@
         }
     };
 
-    const tabs = document.querySelectorAll("nav > a");
-    document.querySelector("nav").addEventListener("click", e => {
-        for (let tab of tabs) tab.classList.remove("active");
-        e.target.closest("a").classList.add("active");
-    })
+
 </script>
 
 </body>

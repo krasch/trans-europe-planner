@@ -168,18 +168,18 @@ footer {
 
 /* on mobile, only the content for the respective tab is visible */
 @media only screen and (max-width: 1000px) {
-    #map:not(:target),
-    #config:not(:target),
-    #summary:not(:target),
-    #calendar:not(:target) {
+    #map:not(.active),
+    #config:not(.active),
+    #summary:not(.active),
+    #calendar:not(.active) {
         display: none;
     }
 
     /* warning and booking buttons only visible in summary and calendar */
-    #map:target ~ #warning,
-    #map:target ~ #share-book,
-    #config:target ~ #warning,
-    #config:target ~ #share-book {
+    #map.active ~ #warning,
+    #map.active ~ #share-book,
+    #config.active ~ #warning,
+    #config.active ~ #share-book {
         display: none;
     }
 }
@@ -187,8 +187,8 @@ footer {
 
 /* on desktop, map and config are always visible */
 @media only screen and (min-width: 1000px) {
-    #summary:not(:target),
-    #calendar:not(:target) {
+    #summary:not(.active),
+    #calendar:not(.active) {
         display: none;
     }
 }
