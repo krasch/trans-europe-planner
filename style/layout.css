@@ -199,7 +199,15 @@ footer {
 
 nav {
     display: grid;
-    grid-auto-flow: column; /* all columns will have same width */
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+}
+
+/* on mobile last column (config icon) can be smaller */
+@media only screen and (max-width: 1000px) {
+    nav {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) 3rem;
+    }
 }
 
 /* horizontally and vertically center text/images in tab */

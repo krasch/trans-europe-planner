@@ -46,7 +46,9 @@ input {
 nav > * {
     color: var(--color-light);
     background-color: var(--color-dark);
+
     text-decoration: none;
+    text-align: center;
 }
 
 nav > * > img {
@@ -78,7 +80,7 @@ nav > * > img {
         border-top-right-radius: 5px;
     }
 
-    nav > *:first-child {
+    nav > #tab-calendar { /* todo assumes calendar is left-most tab */
         border-left-width: 1px;
     }
 

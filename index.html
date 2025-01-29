@@ -155,18 +155,17 @@
 
 
 <nav>
-    <a id="tab-summary" data-content="#summary">Übersicht</a>
-    <a id="tab-calendar" data-content="#calendar">Kalendar</a>
-    <a id="tab-map" data-content="#map" class="active only-mobile">Karte</a>
+    <a id="tab-map" data-content="#map" class="only-mobile">Karte</a>
+    <a id="tab-calendar" data-content="#calendar">
+        <span class="only-mobile">Kalendar</span>
+        <span class="only-desktop">🖉 Reise anpassen</span>
+    <a id="tab-summary" data-content="#summary">
+        <span class="only-mobile">Übersicht</span>
+        <span class="only-desktop">🛈 &nbsp;Reiseübersicht</span>
+    </a>
     <a id="tab-config" data-content="#config" class="only-mobile">
         <img src="images/icons/settings.svg" alt="icon for a config menu">
     </a>
-
-    <!--input type="radio" name="tab" id="tab-overview" checked>
-    <label for="tab-overview">🛈 &nbsp;Reiseübersicht</label>
-
-    <input type="radio" name="tab" id="tab-calendar">
-    <label for="tab-calendar">🖉 &nbsp;Reise anpassen &nbsp;&nbsp;</label-->
 </nav>
 
 
