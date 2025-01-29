@@ -1,5 +1,5 @@
 /***********************************************
- Layout for journey overview with Perlschnur
+ Layout
 ************************************************/
 
 #perlschnur {
@@ -73,10 +73,6 @@
 /***********************************************
  Style
 ************************************************/
-
-#summary {
-  color: var(--color-dark);
-}
 
 #perlschnur {
   border: 1px solid lightgrey;
