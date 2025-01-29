@@ -52,7 +52,7 @@ export class MapWrapper {
   constructor(containerId, center, zoom) {
     this.map = new maplibregl.Map({
       container: containerId,
-      style: "style/map/outdoors-modified.json",
+      style: "style/components/map/outdoors-modified.json",
       center: center,
       zoom: zoom,
     });
@@ -63,7 +63,7 @@ export class MapWrapper {
       this.map.on("load", async () => {
         try {
           const image = await this.map.loadImage(
-            "images/markers/circle.sdf.png",
+            "/images/markers/circle.sdf.png",
           );
           this.map.addImage("circle", image.data, { sdf: true });
 

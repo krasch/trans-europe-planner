@@ -37,6 +37,7 @@
 }
 
 .entry-part .header {
+  min-height: 1.5rem; /* otherwise short connections have tiny header */
   height: 1.5rem;
 
   display: flex;
@@ -44,7 +45,7 @@
   align-items: center;
   gap: 0.2rem;
 
-  cursor: pointer;
+  cursor: move;
 }
 
 .entry-part .header img {

@@ -1,122 +1,67 @@
 export class Layout {
   #initialUpdate = true;
+  #beforeFirstJourney = true;
 
-  #borderRadius;
+  #isMobile;
 
   // relevant HTML elements
-  #logo;
-  #datePicker;
-  #journeyDetails;
-  #showSidebarButton;
-  #hideSidebarButton;
-  #map;
-  #modal;
+  #elements = {};
 
-  // state
-  #datePickerShouldBeVisible = false;
-  #journeyDetailsShouldBeVisible = false;
-  #collapsed = false;
+  constructor(container, isMobile) {
+    this.#elements = {
+      logo: container.querySelector("#logo"),
+      pad: container.querySelector("#pad"),
+      nav: container.querySelector("nav"),
+      journey: container.querySelector("#journey"),
+      map: container.querySelector("#map"),
+      config: container.querySelector("#config"),
+      modal: container.querySelector("#modal"),
+    };
 
-  constructor(container) {
-    this.#logo = container.querySelector("#logo");
-    this.#datePicker = container.querySelector("#date-picker");
-    this.#journeyDetails = container.querySelector("#journey-details");
-    this.#showSidebarButton = container.querySelector("#show-sidebar");
-    this.#hideSidebarButton = container.querySelector("#hide-sidebar");
-    this.#map = container.querySelector("#map");
-    this.#modal = container.querySelector("#modal");
-
-    this.#borderRadius = window
-      .getComputedStyle(this.#logo)
-      .getPropertyValue("--border-radius");
-
-    container.addEventListener("click", (e) => {
-      if (e.target.id === this.#hideSidebarButton.id) {
-        this.#collapsed = true;
-
-        this.#updateView();
-      }
-      if (e.target.id === this.#showSidebarButton.id) {
-        this.#collapsed = false;
-        this.#updateView();
-      }
-    });
+    this.#isMobile = isMobile;
   }
 
   updateView(hasDate, hasActiveJourney) {
     if (this.#initialUpdate) {
-      this.#setVisible(this.#logo);
+      this.#setVisible(this.#elements.logo);
+
+      // on mobile we want to see all elements but some tabs will be empty
+      if (this.#isMobile.matches) this.#showAllElements(false);
+
       this.#initialUpdate = false;
     }
 
-    this.#datePickerShouldBeVisible = hasActiveJourney;
-    this.#journeyDetailsShouldBeVisible = hasActiveJourney && hasDate;
-    this.#updateView();
+    if (hasDate && hasActiveJourney && this.#beforeFirstJourney) {
+      if (this.#isMobile.matches) this.#showAllTabs();
+      else this.#showAllElements();
+
+      this.#beforeFirstJourney = false;
+    }
   }
 
   showModal() {
-    this.#map.style.opacity = "30%";
-    this.#setInvisible(this.#logo);
-    this.#setVisible(this.#modal);
+    this.#elements.map.style.opacity = "30%";
+    this.#setVisible(this.#elements.modal);
   }
 
-  #updateView() {
-    if (this.#collapsed) {
-      this.#hideDatePicker();
-      this.#hideJourneyDetails();
-      return;
+  #showAllElements(animation = false) {
+    this.#removeBorderRadius(this.#elements.logo);
+
+    if (animation) {
+      this.#slideIn(this.#elements.config);
+      this.#slideIn(this.#elements.nav);
+      this.#slideIn(this.#elements.journey);
     }
 
-    if (this.#datePickerShouldBeVisible) this.#showDatePicker();
-    else this.#hideDatePicker();
-
-    if (this.#journeyDetailsShouldBeVisible) this.#showJourneyDetails();
-    else this.#hideJourneyDetails();
+    this.#setVisible(this.#elements.config);
+    this.#setVisible(this.#elements.nav);
+    this.#setVisible(this.#elements.journey);
+    this.#setVisible(this.#elements.pad);
   }
 
-  #showDatePicker() {
-    if (this.#isVisible(this.#datePicker)) return; // nothing to do
-
-    this.#removeBorderRadius(this.#logo);
-    this.#setVisible(this.#datePicker);
-    this.#setInvisible(this.#showSidebarButton);
-
-    this.#slideIn(this.#datePicker, () => {
-      this.#setVisible(this.#hideSidebarButton);
-    });
-  }
-
-  #hideDatePicker() {
-    if (!this.#isVisible(this.#datePicker)) return; // nothing to do
-
-    this.#setInvisible(this.#hideSidebarButton);
-
-    this.#slideOut(this.#datePicker, () => {
-      this.#addBorderRadius(this.#logo);
-      this.#setInvisible(this.#datePicker);
-      this.#setVisible(this.#showSidebarButton);
-    });
-  }
-
-  #showJourneyDetails() {
-    if (this.#isVisible(this.#journeyDetails)) return; // nothing to do
-
-    this.#removeBorderRadius(this.#datePicker);
-    this.#slideIn(this.#journeyDetails);
-    this.#setVisible(this.#journeyDetails);
-  }
-
-  #hideJourneyDetails() {
-    if (!this.#isVisible(this.#journeyDetails)) return; // nothing to do
-
-    this.#slideOut(this.#journeyDetails, () => {
-      this.#addBorderRadius(this.#datePicker);
-      this.#setInvisible(this.#journeyDetails);
-    });
-  }
-
-  #isVisible(element) {
-    return !element.classList.contains("hidden");
+  #showAllTabs() {
+    for (let tab of this.#elements.nav.querySelectorAll("a"))
+      tab.classList.remove("tab-hidden");
   }
 
   #setVisible(element) {
@@ -142,26 +87,7 @@ export class Layout {
     };
   }
 
-  #slideOut(element, onFinish = () => {}) {
-    const width = window.getComputedStyle(element).getPropertyValue("width");
-
-    for (let e of element.children) this.#setInvisible(e);
-
-    const animation = element.animate([{ width: width }, { width: 0 }], {
-      duration: 300,
-      iterations: 1,
-    });
-    animation.onfinish = () => {
-      for (let e of element.children) this.#setVisible(e);
-      onFinish();
-    };
-  }
-
   #removeBorderRadius(element) {
     element.style.borderBottomRightRadius = 0;
-  }
-
-  #addBorderRadius(element) {
-    element.style.borderBottomRightRadius = this.#borderRadius;
   }
 }

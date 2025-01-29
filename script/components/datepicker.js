@@ -25,20 +25,20 @@ export class Datepicker {
     const today = DateTime.now().startOf("day");
     this.#start = today.plus({ days: 1 });
     this.#end = today.plus({ days: 3 * 30 });
+    const defaultDate = today.plus({ days: 30 });
 
     this.#inputElement.min = this.#start.toISODate();
     this.#inputElement.max = this.#end.toISODate();
 
     // previously picked date might still be set after reloading the page
-    if (this.#currentDate !== null) {
-      // it is no longer within the valid range, reset it
-      if (this.#currentDate < this.#start || this.#currentDate > this.#end)
-        this.#currentDate = null;
-      // it is still within the valid range, keep it
-      else {
-        this.#showHideArrows();
-      }
-    }
+    // if is still within the valid range, keep it
+    const stillValid =
+      this.#currentDate &&
+      this.#currentDate >= this.#start &&
+      this.#currentDate <= this.#end;
+
+    if (!stillValid) this.#currentDate = defaultDate;
+    this.#showHideArrows();
 
     this.#container.addEventListener("input", (e) => {
       this.#showHideArrows();

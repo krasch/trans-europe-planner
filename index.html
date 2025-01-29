@@ -9,45 +9,27 @@
     <!-- external -->
     <link rel="stylesheet" href="external/maplibre-gl@4.6.0/maplibre-gl.css"/>
     <script src="external/maplibre-gl@4.6.0/maplibre-gl.js"></script>
-    <!--script src="external/luxon@3.5.0/luxon.min.js"></script-->
 
     <script defer data-domain="trans-europe-planner.eu" src="https://plausible.io/js/script.js"></script>
 
     <!-- styles -->
     <link rel="stylesheet" href="style/layout.css">
     <link rel="stylesheet" href="style/style.css">
-    <link rel="stylesheet" href="style/map/map.css">
-    <link rel="stylesheet" href="style/modal.css">
+    <link rel="stylesheet" href="style/components/perlschnur.css">
+    <link rel="stylesheet" href="style/components/config.css">
+    <link rel="stylesheet" href="style/components/modal.css">
+    <link rel="stylesheet" href="style/components/map/map.css">
 
     <!-- style scripts -->
-    <script src="style/map/layers.js"></script> <!-- only contains css styles for map in js -->
-
-    <!-- input data -->
-    <!--script src="data/cities.js"></script>
-    <script src="data/stations.js"></script>
-    <script src="data/connections.js"></script>
-    <script src="data/routes.js"></script>
-    <script src="data/text.js"></script-->
-
-    <!-- types -->
-    <!--script src="script/data/types/connection.js"></script>
-    <script src="script/data/types/journey.js"></script-->
-
-    <!-- data-handling -->
-    <!--script src="script/data/routing.js"></script>
-    <script src="script/data/database.js"></script>
-    <script src="script/data/componentData.js"></script-->
-
-    <!-- other -->
-    <!--script src="script/util.js"></script-->
-    <!--script src="script/main.js"></script-->
+    <script src="style/components/map/layers.js"></script> <!-- only contains css styles for map in js -->
 
     <title>Trans-Europe-Planner</title>
-    <link rel="stylesheet" href="style/map/map.css">
+    <link rel="stylesheet" href="style/components/map/map.css">
 
     <script type="module">
         // this needs to get done before the HTML, otherwise TravelCalendar element is unknown
         import {TravelCalendar} from "./script/customElements/travelCalendar/travelCalendar.js"
+
         customElements.define("travel-calendar", TravelCalendar);
     </script>
 
@@ -164,58 +146,46 @@
 </template-->
 
 
-<div id="modal" class="hidden">
-    <a class="logo" href="/">
-        <img src="images/logo.svg" alt="logo for the trans-europe-planner">
+<nav class="hidden">
+    <a id="tab-map" data-content="#map" class="only-mobile active">Karte</a>
+    <a id="tab-calendar" data-content="#calendar" class="tab-hidden">
+        <span class="only-mobile">Kalendar</span>
+        <span class="only-desktop">🖉 Reise anpassen</span>
     </a>
-    <div class="header">
-        <h1>Willkommen beim Trans Europa Planer</h1>
-        <h3><em>Einfacher mit dem Zug quer durch Europa</em></h3>
-    </div>
-    <div class="content">
-        <img src="images/markers/marker_home.svg" alt="map marker depicting a house">
-        <div id="choose-home">
-            <h1>Wo soll die Reise starten?</h1>
-            <div>
-                <a href="?start=Berlin">Berlin</a>
-                <a href="?start=Hamburg">Hamburg</a>
-                <a href="?start=Köln">Köln</a>
-                <a href="?start=München">München</a>
-            </div>
-            <em>(Weitere Startpunkte bald verfügbar)</em>
-        </div>
-    </div>
-    <div class="bottom"></div>
-</div>
+    <a id="tab-summary" data-content="#summary" class="tab-hidden">
+        <span class="only-mobile">Übersicht</span>
+        <span class="only-desktop">🛈 &nbsp;Reiseübersicht</span>
+    </a>
+    <a id="tab-config" data-content="#config" class="only-mobile tab-hidden">
+        <img src="images/icons/settings.svg" alt="icon for a config menu">
+    </a>
+</nav>
+
 
 <div id="logo" class="hidden">
     <a href="/"><img src="images/logo.svg" alt="logo for the trans-europe-planner"></a>
 </div>
-<a id="show-sidebar" class="hidden" title="Show sidebar">››</a>
-<a id="hide-sidebar" class="hidden" title="Hide sidebar">‹‹</a>
 
-<div id="date-picker" class="hidden">
-    <h3><label for="date-picker-input">Abreisedatum: </label></h3>
-    <div>
-        <a id="decrease-date" title="One day earlier">◀</a>
-        <input type="date" id="date-picker-input"/>
-        <a id="increase-date" title="One day later">▶</a>
-    </div>
-</div>
+<div id="map"></div>
 
-<div id="journey-details" class="hidden">
-    <div id="warning">Achtung, Prototyp, Datenfehler sind wahrscheinlich.
-        <button onclick="alert(
+<div id="pad" class="hidden"></div> <!-- utility class for desktop view -->
+
+<div id="journey" class="hidden">
+    <aside id="warning">Prototyp, Datenfehler sind wahrscheinlich.
+        <a onclick="alert(
          'Datenabdeckung: Deutschland Fernverkehr vollständig plus ausgewählte Verbindungen im Ausland. ' +
          'Letzter Datenimport im November 2024 plus hoffen dass die Verbindungen sich nicht' +
          'allzusehr geändert haben. Grund für diese Schluderei: Entwicklung des User interface hatte ' +
          'erstmal höhere Priorität')">Details
-        </button>
+        </a>
+    </aside>
+
+
+    <div id="calendar">
+        <travel-calendar start-date="2025-01-01"></travel-calendar>
     </div>
 
-    <input type="radio" name="tab" id="tab1" checked>
-    <label for="tab1">🛈 &nbsp;Reiseübersicht</label>
-    <div id="tab1-content">
+    <div id="summary">
         <div>
             <h3>Von <span class="from"></span> nach <span class="to"></span></h3> <span class="via"></span>
             <div>Gesamte Reisezeit: <span class="total-time"></span></div>
@@ -224,21 +194,25 @@
         <div id="perlschnur"></div>
     </div>
 
-    <input type="radio" name="tab" id="tab2">
-    <label for="tab2">🖉 &nbsp;Reise anpassen &nbsp;&nbsp;</label>
-    <div id="tab2-content">
-        <travel-calendar id="calendar" start-date="2025-01-01"></travel-calendar>
-    </div>
-
-    <div id="bottom-buttons">
+    <div id="share-book">
         <button onclick="alert('coming soon');">🔗 Teilen</button>
         <button onclick="alert('coming soon');">🎫 Buchen</button>
     </div>
 </div>
 
-<div id="footer">
-    <span>Trans Europe Planner - <em>Einfacher mit dem Zug quer durch Europa</em></span>
-    <!--span>Blog</span-->
+
+<div id="config" class="hidden">
+    <h3><label for="date-picker-input">Abreisedatum: </label></h3>
+    <div>
+        <a id="decrease-date" title="One day earlier">◀</a>
+        <input type="date" id="date-picker-input" value="2025-02-01"/>
+        <a id="increase-date" title="One day later">▶</a>
+    </div>
+</div>
+
+
+<footer>
+    <span class="only-desktop">Trans Europe Planner - <em>Einfacher mit dem Zug quer durch Europa</em></span>
     <a href="https://github.com/krasch/trans-europe-planner">
         <img src="images/logos/github.svg" alt="logo for github">
     </a>
@@ -248,9 +222,30 @@
     <a href="about-impressum.html#about">About</a>
     <a href="about-impressum.html#impressum">Impressum</a>
     <a href="about-impressum.html#data-protection">Datenschutz</a>
-</div>
+</footer>
 
-<div id="map"></div>
+
+<div id="modal" class="hidden">
+    <a class="logo" href="/">
+        <img src="images/logo.svg" alt="logo for the trans-europe-planner">
+    </a>
+    <div>
+       <h1>Willkommen beim Trans Europa Planer</h1>
+        <h3><em>Einfacher mit dem Zug quer durch Europa</em></h3>
+    </div>
+
+    <img class="marker" src="images/markers/marker_home.svg" alt="map marker depicting a house">
+    <div id="choose-home">
+        <h1>Wo soll die Reise starten?</h1>
+        <div>
+            <a href="?start=Berlin">Berlin</a>
+            <a href="?start=Hamburg">Hamburg</a>
+            <a href="?start=Köln">Köln</a>
+            <a href="?start=München">München</a>
+        </div>
+        <em>(Weitere Startpunkte bald verfügbar)</em>
+    </div>
+</div>
 
 <script type="module">
     import {Layout} from "./script/components/layout.js";
@@ -264,6 +259,8 @@
     import {initCityNameToId} from "./script/util.js";
     import {CITIES} from "./data/cities.js";
 
+    const isMobile = window.matchMedia("(max-width: 1000px)");
+
     function getHome() {
         const params = new URLSearchParams(window.location.search);
         const home = params.get("start");
@@ -274,16 +271,65 @@
         return null;
     }
 
+    function initNavigation() {
+        const tabs = Array.from(document.querySelectorAll("nav > a"));
+        const contents = tabs.map(t => document.querySelector(t.dataset.content));
+
+        const warning = document.querySelector("#warning");
+        const shareBook = document.querySelector("#share-book");
+
+        const defaultMobile = document.querySelector("#tab-map"); // is one of nav > a
+        const defaultDesktop = document.querySelector("#tab-calendar"); // same
+
+        function setActive(tab) {
+            for (let i in tabs) {
+                if (tabs[i] === tab) {
+                    tabs[i].classList.add("active");
+                    contents[i].classList.add("active");
+                } else {
+                    tabs[i].classList.remove("active");
+                    contents[i].classList.remove("active");
+                }
+
+                // todo did not manage to do this via CSS selectors
+                if (tab.id === "tab-calendar" || tab.id === "tab-summary") {
+                    warning.classList.add("active");
+                    shareBook.classList.add("active");
+                } else {
+                    warning.classList.remove("active");
+                    shareBook.classList.remove("active");
+                }
+            }
+        }
+
+        document.querySelector("nav").addEventListener("click", e => {
+            setActive(e.target.closest("a"));
+        });
+
+        isMobile.matches ? setActive(defaultMobile) : setActive(defaultDesktop);
+
+        isMobile.addEventListener("change", e => {
+            const current = document.querySelector("nav > a.active");
+            if (!isMobile.matches && current.classList.contains("only-mobile"))
+                setActive(defaultDesktop);
+        });
+    }
+
     onload = async (event) => {
+        initNavigation();
+
         initColors();
         initCityNameToId(CITIES);
 
+        let defaultZoom = 4.3
+        if (isMobile.matches) defaultZoom = 3.3;
+
         const views = {
-            map: new MapWrapper('map', [10.0821932, 49.786322], 4.3), // starts async loading map
-            calendar: new CalendarWrapper(document.getElementById("calendar")),
-            perlschnur: new Perlschnur(document.getElementById("tab1-content")),
-            datepicker: new Datepicker(document.getElementById("date-picker")),
-            layout: new Layout(document.body)
+            map: new MapWrapper('map', [10.0821932, 49.786322], defaultZoom), // starts async loading map
+            calendar: new CalendarWrapper(document.querySelector("travel-calendar")),
+            perlschnur: new Perlschnur(document.querySelector("#summary")),
+            datepicker: new Datepicker(document.querySelector("#config")),
+            layout: new Layout(document.body, isMobile)
         }
 
         const home = getHome()
@@ -297,6 +343,8 @@
             views.layout.showModal();
         }
     };
+
+
 </script>
 
 </body>

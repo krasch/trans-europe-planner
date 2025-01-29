@@ -1,367 +1,394 @@
 h1,
 h2,
 h3 {
-  margin: 0;
-  font-weight: normal;
+    margin: 0;
+    font-weight: normal;
 }
 
 .hidden {
-  visibility: hidden;
+    visibility: hidden;
 }
 
-/***********************************************
- Placing things in main page layout
-************************************************/
-
 html {
-  height: 100%;
+    height: 100%;
 }
 
 body {
-  height: 100%;
-  width: 100%;
+    height: 100%;
+    width: 100%;
 
-  margin: 0;
-  padding: 0;
-
-  --logo-size: 6rem;
-  --logo-padding: 1.5rem;
-  --logo-size-with-padding: calc(var(--logo-size) + 2 * var(--logo-padding));
-  --sidebar-width: 20rem; /* excluding logo */
-  --footer-height: 2rem;
-
-  display: grid;
-  grid-template-columns: var(--logo-size-with-padding) var(--sidebar-width) 1fr;
-  grid-template-rows: var(--logo-size-with-padding) 1fr var(--footer-height);
-
-  grid-template-areas:
-    "logo             date-picker      map"
-    "journey-details  journey-details  map"
-    "footer           footer           footer";
+    margin: 0;
+    padding: 0;
 }
 
-#map {
-  grid-row: 1/3;
-  grid-column: 1/4;
+/* some elements should only be visible on mobile layout */
+@media only screen and (min-width: 1000px) {
+    .only-mobile {
+        display: none;
+    }
 }
 
-#logo {
-  z-index: 2;
-  grid-area: logo;
-}
-
-#date-picker {
-  z-index: 2;
-  grid-area: date-picker;
-}
-
-#journey-details {
-  z-index: 2;
-  grid-area: journey-details;
-  overflow-y: auto;
-}
-
-#footer {
-  grid-area: footer;
-}
-
-a#show-sidebar {
-  z-index: 3;
-  grid-area: logo;
-}
-
-a#hide-sidebar {
-  z-index: 3;
-  grid-area: date-picker;
-}
-
-#modal {
-  z-index: 4;
-
-  /* center horizontally and vertically */
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-
-  min-height: 50%;
-  min-width: 50%;
+/* and some only on desktop layout */
+@media only screen and (max-width: 1000px) {
+    .only-desktop {
+        display: none;
+    }
 }
 
 /***********************************************
- Layout for logo and date picker
+ Mobile layout is default (and much simpler)
 ************************************************/
+
+body {
+    --logo-size: 3rem;
+    --logo-size-with-padding: 4rem;
+
+    /* calendar needs absolute height todo */
+    --calendar-height: calc(100vh - var(--logo-size-with-padding) - 10rem);
+
+    display: grid;
+    grid-template-columns:
+                var(--logo-size-with-padding)
+                1fr; /* nav */
+    grid-template-rows:
+                var(--logo-size-with-padding)
+                1fr     /* main content */
+                2rem; /* footer */
+
+    grid-template-areas:
+        "logo        nav"
+        "content     content"
+        "footer      footer"
+}
 
 #logo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    grid-area: logo;
 }
 
-#logo img {
-  height: var(--logo-size);
-}
-
-#date-picker {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  align-items: center;
-  justify-content: center;
-}
-
-#date-picker input {
-  width: 9rem;
-  padding: 0.5rem;
-
-  margin-left: 1rem;
-  margin-right: 1rem;
-}
-
-a#show-sidebar,
-a#hide-sidebar {
-  height: 2rem;
-
-  justify-self: end;
-  margin-top: 0.3rem;
-  margin-right: 0.5rem;
-}
-
-/***********************************************
- Layout for journey details tabbing setup
-************************************************/
-
-#journey-details {
-  padding: 1rem;
-
-  display: grid;
-  grid-template-columns: 50% 50%;
-  grid-template-rows: 2rem 2.5rem 1fr 2rem;
-  grid-template-areas:
-    "warning warning"
-    "tab1 tab2"
-    "content content"
-    "buttons buttons";
+nav {
+    grid-area: nav
 }
 
 #warning {
-  grid-area: warning;
-  align-self: center;
-  justify-self: center;
-  padding-bottom: 0.5rem;
+    grid-area: warning;
 }
 
-#tab1 {
-  grid-area: tab1;
+#share-book {
+    grid-area: share-book;
 }
 
-#tab2 {
-  grid-area: tab2;
+/* they all share this space and will be selected by tabs */
+#journey, #map, #config {
+    grid-area: content;
 }
 
-#tab1-content,
-#tab2-content {
-  grid-area: content;
-  display: none;
-
-  flex-direction: column;
-  align-items: center;
-
-  padding: 0.5rem;
+footer {
+    grid-area: footer;
 }
 
-#tab1:checked + label + #tab1-content,
-#tab2:checked + label + #tab2-content {
-  display: flex;
+#pad {
+    display: none;
 }
 
-#tab1 + label,
-#tab2 + label {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
 
-#bottom-buttons {
-  grid-area: buttons;
-  padding-top: 0.5rem;
+/*****************************************************************************
+ Desktop layout: map and config get their proper space, are no longer in tabs
+*****************************************************************************/
+
+@media only screen and (min-width: 1000px) {
+    body {
+
+        --logo-size: 6rem;
+        --logo-size-with-padding: 9rem;
+
+        display: grid;
+        grid-template-columns:
+          var(--logo-size-with-padding)
+          20rem                /* date picker*/
+          1fr; /* map */
+        grid-template-rows:
+          var(--logo-size-with-padding)
+          2rem                 /* padding before nav */
+          2.5rem               /* nav */
+          1fr                  /* journey calendar / summary */
+          2rem; /* footer */
+
+        grid-template-areas:
+    "logo             config           map"
+    "pad              pad              map"
+    "nav              nav              map"
+    "journey          journey          map"
+    "footer           footer           footer";
+    }
+
+    #map {
+        grid-row: 1/5;
+        grid-column: 1/4;
+    }
+
+    #config {
+        grid-area: config;
+    }
+
+    #pad {
+        grid-area: pad;
+        display: block;
+    }
+
+    nav {
+        grid-area: nav;
+    }
+
+    #journey {
+        grid-area: journey;
+    }
+
+    /* are placed on top of map */
+    #logo, #config, nav, nav::before, #journey {
+        z-index: 2;
+    }
 }
 
 /***********************************************
- Layout for perlschnur
+ Choosing content that should be shown
 ************************************************/
 
-#tab1-content {
-  align-items: start;
-  padding: 1rem;
-  gap: 1rem;
+/* on mobile, only the content for the respective tab is visible */
+@media only screen and (max-width: 1000px) {
+    #map:not(.active),
+    #config:not(.active),
+    #summary:not(.active),
+    #calendar:not(.active),
+    #warning:not(.active),
+    #share-book:not(.active) {
+        display: none;
+    }
 }
 
-#perlschnur {
-  padding: 0.5rem;
-  align-self: center;
 
-  height: 100%;
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+/* on desktop, map and config are always visible */
+@media only screen and (min-width: 1000px) {
+    #summary:not(.active),
+    #calendar:not(.active),
+    #warning:not(.active),
+    #share-book:not(.active) {
+        display: none;
+    }
 }
-
-.perlschnur-connection h3 {
-  height: 2rem;
-  font-size: 1rem;
-  justify-content: flex-start;
-}
-
-.perlschnur-connection h3 .connection-travel-time {
-  padding-left: 1rem;
-  flex-grow: 1;
-  font-size: 0.8rem;
-}
-
-.perlschnur-connection h3 .connection-plus,
-.perlschnur-connection h3 .connection-minus {
-  padding-right: 1.5rem;
-  font-size: 1.5rem;
-  transform: rotate(90deg) translate(0.75rem, 0);
-}
-
-.perlschnur-connection h3 .connection-minus.hidden,
-.perlschnur-connection h3 .connection-minus.hidden {
-  display: none;
-}
-
-.perlschnur-connection li {
-  height: 1.5rem;
-}
-
-.perlschnur-connection li:first-child {
-  padding-top: 0.5rem;
-}
-
-.perlschnur-connection li:last-child {
-  padding-bottom: 0.5rem;
-}
-
-.perlschnur-connection li.perlschnur-collapse {
-  padding-left: 2rem;
-}
-
-.perlschnur-connection .circle {
-  height: 8px;
-  width: 8px;
-  display: inline-block;
-
-  border-radius: 50%;
-  border: 1px solid black;
-}
-
-.perlschnur-stop .date:empty {
-  display: none;
-}
-
-.perlschnur-transfer {
-  padding-left: 2rem;
-}
-
-#bottom-buttons {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 2rem;
-}
-
 
 /***********************************************
- Layout for calendar
+ Navigation tab layout
 ************************************************/
 
-#tab2-content {
-  padding-top: 1rem;
-  gap: 0.5rem;
+nav {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+
+    cursor: pointer;
 }
 
+/* on mobile last column (config icon) can be smaller */
+@media only screen and (max-width: 1000px) {
+    nav {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) 3rem;
+    }
+}
+
+/* on mobile tabs can be hidden */
+@media only screen and (max-width: 1000px) {
+    nav > *.tab-hidden > * {
+        display: none;
+    }
+}
+
+/* horizontally and vertically center text/images in tab */
+nav > * {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+nav img {
+    height: 2rem;
+}
+
+/***********************************************
+ Layout logo
+************************************************/
+
+#logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#logo img {
+    height: var(--logo-size);
+}
+
+/*********************************************************
+Layout journey container (containing calendar and summary)
+*********************************************************/
+
+#journey {
+    width: calc(100% - 1);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    gap: 1rem;
+}
+
+/* on desktop there should be a scrollbar if necessary */
+@media only screen and (min-width: 1000px) {
+    #journey {
+        overflow-y: scroll;
+    }
+}
+
+/***********************************************
+Layout for calendar
+************************************************/
+
+#calendar {
+    max-width: min(95%, 450px);
+}
+
+/* on mobile, calendar should take up the full height, without scrollbar */
 travel-calendar {
-  height: 700px; /* important to set a fixed height for this element */
+    height: var(--calendar-height);
+}
+
+/* on desktop it should not be too tall and we already have a scrollbar on the container */
+@media only screen and (min-width: 1000px) {
+    travel-calendar {
+        height: 700px;
+    }
 }
 
 /***********************************************
- Layout for footer
+Layout for journey summary
 ************************************************/
 
-#footer {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
+#summary {
+    min-width: min(350px, 90%);
+    max-width: 650px;
 
-  align-items: center;
-  justify-content: flex-end;
-
-  padding-right: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
 }
+
+#summary #perlschnur {
+    padding: 0.5rem;
+    width: 100%;
+}
+
+/***********************************************
+Layout for config
+************************************************/
+
+#config {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    align-items: center;
+    justify-content: flex-start;
+}
+
+@media only screen and (min-width: 1000px) {
+    #config {
+        justify-content: center;
+    }
+}
+
+
+/***********************************************
+Layout for footer
+************************************************/
+
+footer {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    padding-right: 2rem;
+}
+
+footer img {
+    max-height: 1.3rem;
+}
+
 
 /*******************************************************
- the card/menu with title, used in map, calendar, perlschnur
+ the card/menu with title, used in map, perlschnur
 *******************************************************/
 
 .card {
-  --padding: 5px;
+    --padding: 5px;
 
-  list-style-type: none;
+    list-style-type: none;
 
-  border-radius: var(--padding);
-  overflow: hidden; /* this is necessary to really get the round corners */
+    border-radius: var(--padding);
+    overflow: hidden; /* this is necessary to really get the round corners */
 }
 
 .card h3,
 .card li {
-  width: 100%;
+    width: 100%;
 
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .card menu,
 .card ul {
-  padding: 0;
-  margin: 0;
-  list-style-type: none;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
 }
 
 .card h3,
 .card li > *:first-child {
-  padding-left: var(--padding);
+    padding-left: var(--padding);
 }
 
 .card li.hidden {
-  display: none;
+    display: none;
 }
 
 .card button {
-  height: 100%;
-  width: 100%;
+    height: 100%;
+    width: 100%;
 
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
-  gap: 0.5rem;
+    gap: 0.5rem;
 
-  text-align: left;
-  cursor: pointer;
+    text-align: left;
+    cursor: pointer;
 
-  border: 0;
+    border: 0;
 }
 
 .card img {
-  height: 1rem;
-  padding: 0;
-  margin: 0;
+    height: 1rem;
+    padding: 0;
+    margin: 0;
 }

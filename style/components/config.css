@@ -1,0 +1,36 @@
+/***********************************************
+Layout
+************************************************/
+
+#config input {
+  width: 9rem;
+  padding: 0.5rem;
+
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+/***********************************************
+Style
+************************************************/
+
+#config {
+  color: var(--color-light);
+  background-color: var(--color-dark);
+}
+
+#config a {
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+#config a:hover {
+  text-shadow: 2px 2px 3px lightgrey;
+}
+
+#config input {
+  border: 1px solid var(--color-dark);
+  border-radius: 5px;
+
+  color: var(--color-dark);
+}

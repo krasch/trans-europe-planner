@@ -24,7 +24,7 @@
 .city-marker-home {
   cursor: pointer;
 
-  background-image: url("../../images/markers/marker_home.svg");
+  background-image: url("/images/markers/marker_home.svg");
   background-size: contain;
   filter: var(--filter-dark);
 

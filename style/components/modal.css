@@ -1,0 +1,123 @@
+/***********************************************
+ layout
+************************************************/
+
+#modal {
+  z-index: 4;
+
+  /* center horizontally and vertically */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  min-height: 50%;
+  min-width: 50%;
+
+    overflow: hidden;
+
+  --logo-size: 6rem;
+}
+
+@media only screen and (max-width: 1000px) {
+    #modal {
+      min-width: 80%;
+      min-height: 80%;
+    }
+
+  #modal h1 {
+    font-size: 1.5rem;
+  }
+
+  #modal h3 {
+    font-size: 1rem;
+  }
+}
+
+#modal {
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-columns: calc(var(--logo-size) * 2) 1fr;
+  grid-template-rows: min(min-content, calc(var(--logo-size) * 2)) 1fr;
+}
+
+#modal > * {
+  height: 100%;
+  width: 100%;
+
+  padding-right: 1rem;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-content: center;
+}
+
+
+#modal .logo img,
+#modal .marker {
+  align-self: center;
+  height: var(--logo-size);
+}
+
+#modal #choose-home {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#modal #choose-home div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+
+/***********************************************
+ style
+************************************************/
+
+
+#modal {
+  color: var(--color-dark);
+  background-color: var(--color-light);
+
+  border: 1px solid var(--color-dark);
+  border-radius: 1rem;
+}
+
+#modal > *:first-child,
+#modal > *:nth-child(2) {
+  background-color: var(--color-dark);
+  color: var(--color-light);
+}
+
+#modal .logo img {
+  filter: var(--filter-white)
+}
+
+#modal .marker {
+  filter: var(--filter-dark);
+}
+
+#modal #choose-home a {
+  border: 1px solid var(--color-dark);
+  border-radius: 0.25rem;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+
+  padding: 0.5rem;
+
+  cursor: pointer;
+  text-decoration: none;
+
+  background: white;
+  color: var(--color-dark);
+}
+
+#modal #choose-home a:hover {
+  background: var(--color-dark);
+  color: white;
+}
+
