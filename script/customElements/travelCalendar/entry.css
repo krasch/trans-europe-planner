@@ -45,7 +45,7 @@
   align-items: center;
   gap: 0.2rem;
 
-  cursor: pointer;
+  cursor: move;
 }
 
 .entry-part .header img {

@@ -1,97 +1,66 @@
 export class Layout {
   #initialUpdate = true;
+  #beforeFirstJourney = true;
 
-  #borderRadius;
+  #isMobile;
 
   // relevant HTML elements
-  #logo;
-  #datePicker;
-  sidebar;
-  #map;
-  #modal;
+  #elements = {};
 
-  // state
-  #datePickerShouldBeVisible = false;
-  #sidebarShouldBeVisible = false;
-  #collapsed = false;
+  constructor(container, isMobile) {
+    this.#elements = {
+      logo: container.querySelector("#logo"),
+      nav: container.querySelector("nav"),
+      journey: container.querySelector("#journey"),
+      map: container.querySelector("#map"),
+      config: container.querySelector("#config"),
+      modal: container.querySelector("#modal"),
+    };
 
-  constructor(container) {
-    this.#logo = container.querySelector("#logo");
-    this.#datePicker = container.querySelector("#date-picker");
-    this.sidebar = container.querySelector("#sidebar");
-    this.#map = container.querySelector("#map");
-    this.#modal = container.querySelector("#modal");
-
-    this.#borderRadius = "5px";
+    this.#isMobile = isMobile;
   }
 
   updateView(hasDate, hasActiveJourney) {
     if (this.#initialUpdate) {
-      this.#setVisible(this.#logo);
+      this.#setVisible(this.#elements.logo);
+
+      // on mobile we want to see all elements but some tabs will be empty
+      if (this.#isMobile.matches) this.#showAllElements(false);
+
       this.#initialUpdate = false;
     }
 
-    this.#datePickerShouldBeVisible = hasActiveJourney;
-    this.#sidebarShouldBeVisible = hasActiveJourney && hasDate;
-    this.#updateView();
+    if (hasDate && hasActiveJourney && this.#beforeFirstJourney) {
+      if (this.#isMobile.matches) this.#showAllTabs();
+      else this.#showAllElements();
+
+      this.#beforeFirstJourney = false;
+    }
   }
 
   showModal() {
-    this.#map.style.opacity = "30%";
-    this.#setInvisible(this.#logo);
-    this.#setVisible(this.#modal);
+    this.#elements.map.style.opacity = "30%";
+    this.#setVisible(this.#elements.modal);
   }
 
-  #updateView() {
-    if (this.#collapsed) {
-      this.#hideDatePicker();
-      this.#hideSidebar();
-      return;
+  #showAllElements(animation = false) {
+    this.#removeBorderRadius(this.#elements.logo);
+
+    if (animation) {
+      this.#slideIn(this.#elements.config);
+      this.#slideIn(this.#elements.nav);
+      this.#slideIn(this.#elements.journey);
     }
 
-    if (this.#datePickerShouldBeVisible) this.#showDatePicker();
-    else this.#hideDatePicker();
-
-    if (this.#sidebarShouldBeVisible) this.#showSidebar();
-    else this.#hideSidebar();
+    this.#setVisible(this.#elements.config);
+    this.#setVisible(this.#elements.nav);
+    this.#setVisible(this.#elements.journey);
   }
 
-  #showDatePicker() {
-    if (this.#isVisible(this.#datePicker)) return; // nothing to do
-
-    this.#removeBorderRadius(this.#logo);
-    this.#setVisible(this.#datePicker);
-    this.#slideIn(this.#datePicker);
-  }
-
-  #hideDatePicker() {
-    if (!this.#isVisible(this.#datePicker)) return; // nothing to do
-
-    this.#slideOut(this.#datePicker, () => {
-      this.#addBorderRadius(this.#logo);
-      this.#setInvisible(this.#datePicker);
-    });
-  }
-
-  #showSidebar() {
-    if (this.#isVisible(this.sidebar)) return; // nothing to do
-
-    this.#removeBorderRadius(this.#datePicker);
-    this.#slideIn(this.sidebar);
-    this.#setVisible(this.sidebar);
-  }
-
-  #hideSidebar() {
-    if (!this.#isVisible(this.sidebar)) return; // nothing to do
-
-    this.#slideOut(this.sidebar, () => {
-      this.#addBorderRadius(this.#datePicker);
-      this.#setInvisible(this.sidebar);
-    });
-  }
-
-  #isVisible(element) {
-    return !element.classList.contains("hidden");
+  #showAllTabs() {
+    console.log("hallo");
+    for (let tab of this.#elements.nav.querySelectorAll("a"))
+      tab.classList.remove("tab-hidden");
   }
 
   #setVisible(element) {
@@ -117,26 +86,7 @@ export class Layout {
     };
   }
 
-  #slideOut(element, onFinish = () => {}) {
-    const width = window.getComputedStyle(element).getPropertyValue("width");
-
-    for (let e of element.children) this.#setInvisible(e);
-
-    const animation = element.animate([{ width: width }, { width: 0 }], {
-      duration: 300,
-      iterations: 1,
-    });
-    animation.onfinish = () => {
-      for (let e of element.children) this.#setVisible(e);
-      onFinish();
-    };
-  }
-
   #removeBorderRadius(element) {
     element.style.borderBottomRightRadius = 0;
-  }
-
-  #addBorderRadius(element) {
-    element.style.borderBottomRightRadius = this.#borderRadius;
   }
 }

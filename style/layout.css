@@ -118,9 +118,8 @@ footer {
     }
 
     #map {
-        /*grid-row: 1/5;
-        grid-column: 1/4;*/
-        grid-area: map;
+        grid-row: 1/5;
+        grid-column: 1/4;
     }
 
     #config {
@@ -176,12 +175,21 @@ nav {
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: minmax(0, 1fr);
+
+    cursor: pointer;
 }
 
 /* on mobile last column (config icon) can be smaller */
 @media only screen and (max-width: 1000px) {
     nav {
         grid-template-columns: repeat(3, minmax(0, 1fr)) 3rem;
+    }
+}
+
+/* on mobile tabs can be hidden */
+@media only screen and (max-width: 1000px) {
+    nav > *.tab-hidden > * {
+        display: none;
     }
 }
 
@@ -262,7 +270,7 @@ Layout for journey summary
 
 #summary {
     min-width: min(350px, 90%);
-    max-width: 450px;
+    max-width: 650px;
 
     display: flex;
     flex-direction: column;

@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="style/components/perlschnur.css">
     <link rel="stylesheet" href="style/components/config.css">
+    <link rel="stylesheet" href="style/components/modal.css">
     <link rel="stylesheet" href="style/components/map/map.css">
 
     <!-- style scripts -->
@@ -147,27 +148,27 @@
 
 <nav>
     <a id="tab-map" data-content="#map" class="only-mobile active">Karte</a>
-    <a id="tab-calendar" data-content="#calendar">
+    <a id="tab-calendar" data-content="#calendar" class="tab-hidden">
         <span class="only-mobile">Kalendar</span>
         <span class="only-desktop">🖉 Reise anpassen</span>
     </a>
-    <a id="tab-summary" data-content="#summary">
+    <a id="tab-summary" data-content="#summary" class="tab-hidden">
         <span class="only-mobile">Übersicht</span>
         <span class="only-desktop">🛈 &nbsp;Reiseübersicht</span>
     </a>
-    <a id="tab-config" data-content="#config" class="only-mobile">
+    <a id="tab-config" data-content="#config" class="only-mobile tab-hidden">
         <img src="images/icons/settings.svg" alt="icon for a config menu">
     </a>
 </nav>
 
 
-<div id="logo">
+<div id="logo" class="hidden">
     <a href="/"><img src="images/logo.svg" alt="logo for the trans-europe-planner"></a>
 </div>
 
 <div id="map"></div>
 
-<div id="journey">
+<div id="journey" class="hidden">
     <aside id="warning">Prototyp, Datenfehler sind wahrscheinlich.
         <a onclick="alert(
          'Datenabdeckung: Deutschland Fernverkehr vollständig plus ausgewählte Verbindungen im Ausland. ' +
@@ -198,7 +199,7 @@
 </div>
 
 
-<div id="config">
+<div id="config" class="hidden">
     <h3><label for="date-picker-input">Abreisedatum: </label></h3>
     <div>
         <a id="decrease-date" title="One day earlier">◀</a>
@@ -222,7 +223,7 @@
 </footer>
 
 
-<!--dialog id="modal">
+<div id="modal" class="hidden">
     <a class="logo" href="/">
         <img src="images/logo.svg" alt="logo for the trans-europe-planner">
     </a>
@@ -244,7 +245,7 @@
         </div>
     </div>
     <div class="bottom"></div>
-</dialog-->
+</div>
 
 <script type="module">
     import {Layout} from "./script/components/layout.js";
@@ -329,7 +330,7 @@
             calendar: new CalendarWrapper(document.querySelector("travel-calendar")),
             perlschnur: new Perlschnur(document.querySelector("#summary")),
             datepicker: new Datepicker(document.querySelector("#config")),
-            layout: new Layout(document.body)
+            layout: new Layout(document.body, isMobile)
         }
 
         const home = getHome()
