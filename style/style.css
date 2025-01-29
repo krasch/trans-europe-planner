@@ -32,7 +32,7 @@ input {
 
 /* on desktop, need to put a background for all sidebar elements because are above map */
 @media only screen and (min-width: 1000px) {
-    nav, #warning, #calendar, #summary, #share-book {
+    nav, #journey {
         background-color: white;
         opacity: 95%;
     }
@@ -119,6 +119,30 @@ nav > * > img {
     }
 }
 
+/*********************************************************
+Style journey container (containing calendar and summary)
+*********************************************************/
+
+/* additional border on desktop to help with tabbing-folder look */
+@media only screen and (min-width: 1000px) {
+    #journey {
+        border: 1px solid var(--color-dark);
+        border-top: 0; /* tabs */
+    }
+}
+
+
+
+/***********************************************
+Style calendar
+************************************************/
+
+travel-calendar {
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+}
+
+
 /***********************************************
 Style warning and booking buttons
 ************************************************/
@@ -131,38 +155,6 @@ Style warning and booking buttons
 #warning a {
     text-decoration: underline;
     cursor: pointer;
-}
-
-/***********************************************
-Style calendar
-************************************************/
-
-travel-calendar {
-    border: 1px solid lightgrey;
-    border-radius: 5px;
-}
-
-/* additional border on desktop to help with tabbing-folder look */
-@media only screen and (min-width: 1000px) {
-    #calendar {
-        border: 1px solid var(--color-dark);
-        border-top: 0; /* tabs */
-        border-bottom-left-radius: 5px;
-        border-bottom-right-radius: 5px;
-    }
-}
-
-/***********************************************
-Style journey summary
-************************************************/
-
-@media only screen and (min-width: 1000px) {
-    #summary {
-        border: 1px solid var(--color-dark);
-        border-top: 0; /* tabs */
-        border-bottom-left-radius: 5px;
-        border-bottom-right-radius: 5px;
-    }
 }
 
 /***********************************************

@@ -43,8 +43,8 @@ body {
     --logo-size: 3rem;
     --logo-size-with-padding: 4rem;
 
-    /* calendar needs absolute height */
-    --calendar-height: calc(100vh - var(--logo-size-with-padding) - 8rem);
+    /* calendar needs absolute height todo */
+    --calendar-height: calc(100vh - var(--logo-size-with-padding) - 10rem);
 
     display: grid;
     grid-template-columns:
@@ -52,16 +52,12 @@ body {
                 1fr; /* nav */
     grid-template-rows:
                 var(--logo-size-with-padding)
-                2rem    /* warning */
                 1fr     /* main content */
-                2rem    /* share-book */
                 2rem; /* footer */
 
     grid-template-areas:
         "logo        nav"
-        "warning     warning"
         "content     content"
-        "share-book  share-book"
         "footer      footer"
 }
 
@@ -81,13 +77,9 @@ nav {
     grid-area: share-book;
 }
 
-#calendar, #summary {
+/* they all share this space and will be selected by tabs */
+#journey, #map, #config {
     grid-area: content;
-}
-
-#map, #config {
-    grid-column: 1/3;
-    grid-row: 2/5; /* includes content */
 }
 
 footer {
@@ -109,55 +101,42 @@ footer {
         grid-template-columns:
           var(--logo-size-with-padding)
           20rem                /* date picker*/
-          1fr; /* main content (map) */
+          1fr;                 /* map */
         grid-template-rows:
           var(--logo-size-with-padding)
-          2.5rem               /* warning */
+          2rem                 /* padding before nav */
           2.5rem               /* nav */
-          1fr                  /* main content (sidebar) */
-          2.5rem               /* share-book */
-          2rem; /* footer */
+          1fr                  /* journey calendar / summary */
+          2rem;                /* footer */
 
         grid-template-areas:
     "logo             config           map"
-    "warning          warning          map"
+    "pad              pad              map"
     "nav              nav              map"
-    "content          content          map"
-    "share-book       share-book       map"
+    "journey          journey          map"
     "footer           footer           footer";
     }
 
     #map {
-        grid-row: 1/6;
-        grid-column: 1/4;
+        /*grid-row: 1/5;
+        grid-column: 1/4;*/
+        grid-area: map;
     }
 
     #config {
         grid-area: config;
     }
 
-    #warning {
-        grid-area: warning;
-    }
-
     nav {
         grid-area: nav;
     }
 
-    #summary,
-    #calendar {
-        grid-area: content;
+    #journey {
+        grid-area: journey;
     }
 
-    #share-book {
-        grid-area: share-book;
-    }
-
-    /*#footer {
-        grid-area: footer;
-    }*/
     /* are placed on top of map */
-    #logo, #config, #summary, #calendar, nav, #share-book {
+    #logo, #config, nav, #journey {
         z-index: 2;
     }
 }
@@ -237,20 +216,26 @@ nav img {
     height: var(--logo-size);
 }
 
-/***********************************************
-Layout for warning and booking buttons
-************************************************/
+/*********************************************************
+Layout journey container (containing calendar and summary)
+*********************************************************/
 
-#warning,
-#share-book {
+#journey {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    align-content: center;
+
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    gap: 1rem;
 }
 
-#share-book {
-    gap: 1rem;
+/* on desktop there should be a scrollbar if necessary */
+@media only screen and (min-width: 1000px) {
+    #journey {
+        overflow-y: scroll;
+    }
 }
 
 /***********************************************
@@ -258,19 +243,7 @@ Layout for calendar
 ************************************************/
 
 #calendar {
-    box-sizing: border-box; /* padding should count in 100% */
-    width: 100%;
-
-    padding: 1rem;
-    justify-self: center;
-}
-
-/* less padding on mobile */
-@media only screen and (max-width: 1000px) {
-    #calendar {
-        padding-top: 0;
-        padding-bottom: 0.5rem;
-    }
+    max-width: min(95%, 450px);
 }
 
 /* on mobile, calendar should take up the full height, without scrollbar */
@@ -278,12 +251,8 @@ travel-calendar {
     height: var(--calendar-height);
 }
 
-/* on desktop it should not be too tall and with scrollbar if necessary */
+/* on desktop it should not be too tall and we already have a scrollbar on the container */
 @media only screen and (min-width: 1000px) {
-    #calendar {
-        overflow-y: scroll;
-    }
-
     travel-calendar {
         height: 700px;
     }
@@ -294,21 +263,17 @@ Layout for journey summary
 ************************************************/
 
 #summary {
-    padding: 1rem;
+    width: min(95%, 350px);
 
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
-
-    overflow-y: scroll;
 }
 
 #summary #perlschnur {
     padding: 0.5rem;
-
-    box-sizing: border-box; /* padding should count in 100% */
-    width: min(500px, 100%);
+    width: 100%;
 }
 
 /***********************************************

@@ -155,17 +155,17 @@
 
 
 <nav>
-    <a id="tab-map" data-content="#map" class="only-mobile">Karte</a>
+    <a id="tab-map" data-content="#map" class="only-mobile active">Karte</a>
     <a id="tab-calendar" data-content="#calendar">
         <span class="only-mobile">Kalendar</span>
         <span class="only-desktop">🖉 Reise anpassen</span>
-    <a id="tab-summary" data-content="#summary">
-        <span class="only-mobile">Übersicht</span>
-        <span class="only-desktop">🛈 &nbsp;Reiseübersicht</span>
-    </a>
-    <a id="tab-config" data-content="#config" class="only-mobile">
-        <img src="images/icons/settings.svg" alt="icon for a config menu">
-    </a>
+        <a id="tab-summary" data-content="#summary">
+            <span class="only-mobile">Übersicht</span>
+            <span class="only-desktop">🛈 &nbsp;Reiseübersicht</span>
+        </a>
+        <a id="tab-config" data-content="#config" class="only-mobile">
+            <img src="images/icons/settings.svg" alt="icon for a config menu">
+        </a>
 </nav>
 
 
@@ -175,18 +175,36 @@
 
 <div id="map"></div>
 
-<div id="calendar">
-    <travel-calendar start-date="2025-01-01"></travel-calendar>
+<div id="journey">
+    <aside id="warning"><span>Prototyp, Datenfehler sind wahrscheinlich.
+    <a onclick="alert(
+         'Datenabdeckung: Deutschland Fernverkehr vollständig plus ausgewählte Verbindungen im Ausland. ' +
+         'Letzter Datenimport im November 2024 plus hoffen dass die Verbindungen sich nicht' +
+         'allzusehr geändert haben. Grund für diese Schluderei: Entwicklung des User interface hatte ' +
+         'erstmal höhere Priorität')">Details
+    </a></span>
+    </aside>
+
+
+    <div id="calendar">
+        <travel-calendar start-date="2025-01-01"></travel-calendar>
+    </div>
+
+    <div id="summary">
+        <div>
+            <h3>Von <span class="from"></span> nach <span class="to"></span></h3> <span class="via"></span>
+            <div>Gesamte Reisezeit: <span class="total-time"></span></div>
+        </div>
+        <h3>Reiseverlauf:</h3>
+        <div id="perlschnur"></div>
+    </div>
+
+    <div id="share-book">
+        <button onclick="alert('coming soon');">🔗 Teilen</button>
+        <button onclick="alert('coming soon');">🎫 Buchen</button>
+    </div>
 </div>
 
-<div id="summary">
-    <div>
-        <h3>Von <span class="from"></span> nach <span class="to"></span></h3> <span class="via"></span>
-        <div>Gesamte Reisezeit: <span class="total-time"></span></div>
-    </div>
-    <h3>Reiseverlauf:</h3>
-    <div id="perlschnur"></div>
-</div>
 
 <div id="config">
     <h3><label for="date-picker-input">Abreisedatum: </label></h3>
@@ -197,20 +215,6 @@
     </div>
 </div>
 
-<aside id="warning"><span>Prototyp, Datenfehler sind wahrscheinlich.
-    <a onclick="alert(
-         'Datenabdeckung: Deutschland Fernverkehr vollständig plus ausgewählte Verbindungen im Ausland. ' +
-         'Letzter Datenimport im November 2024 plus hoffen dass die Verbindungen sich nicht' +
-         'allzusehr geändert haben. Grund für diese Schluderei: Entwicklung des User interface hatte ' +
-         'erstmal höhere Priorität')">Details
-    </a></span>
-</aside>
-
-
-<div id="share-book">
-    <button onclick="alert('coming soon');">🔗 Teilen</button>
-    <button onclick="alert('coming soon');">🎫 Buchen</button>
-</div>
 
 <footer>
     <span class="only-desktop">Trans Europe Planner - <em>Einfacher mit dem Zug quer durch Europa</em></span>
@@ -279,7 +283,7 @@
         const defaultMobile = document.querySelector("#tab-map"); // is one of nav > a
         const defaultDesktop = document.querySelector("#tab-calendar"); // same
 
-        function setActive(tab){
+        function setActive(tab) {
             for (let i in tabs) {
                 if (tabs[i] === tab) {
                     tabs[i].classList.add("active");
@@ -296,7 +300,7 @@
         });
 
         const isMobile = window.matchMedia("(max-width: 1000px)");
-        isMobile.matches ? setActive(defaultMobile): setActive(defaultDesktop);
+        isMobile.matches ? setActive(defaultMobile) : setActive(defaultDesktop);
 
         isMobile.addEventListener("change", e => {
             const current = document.querySelector("nav > a.active");
