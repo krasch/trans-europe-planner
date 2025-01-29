@@ -234,7 +234,7 @@ Layout journey container (containing calendar and summary)
 *********************************************************/
 
 #journey {
-    width: 100%;
+    width: calc(100% - 1);
 
     display: flex;
     flex-direction: column;
