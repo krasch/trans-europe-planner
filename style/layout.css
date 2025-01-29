@@ -101,13 +101,13 @@ footer {
         grid-template-columns:
           var(--logo-size-with-padding)
           20rem                /* date picker*/
-          1fr;                 /* map */
+          1fr; /* map */
         grid-template-rows:
           var(--logo-size-with-padding)
           2rem                 /* padding before nav */
           2.5rem               /* nav */
           1fr                  /* journey calendar / summary */
-          2rem;                /* footer */
+          2rem; /* footer */
 
         grid-template-areas:
     "logo             config           map"
@@ -150,15 +150,9 @@ footer {
     #map:not(.active),
     #config:not(.active),
     #summary:not(.active),
-    #calendar:not(.active) {
-        display: none;
-    }
-
-    /* warning and booking buttons only visible in summary and calendar */
-    #map.active ~ #warning,
-    #map.active ~ #share-book,
-    #config.active ~ #warning,
-    #config.active ~ #share-book {
+    #calendar:not(.active),
+    #warning:not(.active),
+    #share-book:not(.active) {
         display: none;
     }
 }
@@ -167,7 +161,9 @@ footer {
 /* on desktop, map and config are always visible */
 @media only screen and (min-width: 1000px) {
     #summary:not(.active),
-    #calendar:not(.active) {
+    #calendar:not(.active),
+    #warning:not(.active),
+    #share-book:not(.active) {
         display: none;
     }
 }
@@ -294,7 +290,7 @@ Layout for config
 
 @media only screen and (min-width: 1000px) {
     #config {
-         justify-content: center;
+        justify-content: center;
     }
 }
 
