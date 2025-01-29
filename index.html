@@ -229,24 +229,22 @@
     <a class="logo" href="/">
         <img src="images/logo.svg" alt="logo for the trans-europe-planner">
     </a>
-    <div class="header">
-        <h1>Willkommen beim Trans Europa Planer</h1>
+    <div>
+       <h1>Willkommen beim Trans Europa Planer</h1>
         <h3><em>Einfacher mit dem Zug quer durch Europa</em></h3>
     </div>
-    <div class="content">
-        <img src="images/markers/marker_home.svg" alt="map marker depicting a house">
-        <div id="choose-home">
-            <h1>Wo soll die Reise starten?</h1>
-            <div>
-                <a href="?start=Berlin">Berlin</a>
-                <a href="?start=Hamburg">Hamburg</a>
-                <a href="?start=Köln">Köln</a>
-                <a href="?start=München">München</a>
-            </div>
-            <em>(Weitere Startpunkte bald verfügbar)</em>
+
+    <img class="marker" src="images/markers/marker_home.svg" alt="map marker depicting a house">
+    <div id="choose-home">
+        <h1>Wo soll die Reise starten?</h1>
+        <div>
+            <a href="?start=Berlin">Berlin</a>
+            <a href="?start=Hamburg">Hamburg</a>
+            <a href="?start=Köln">Köln</a>
+            <a href="?start=München">München</a>
         </div>
+        <em>(Weitere Startpunkte bald verfügbar)</em>
     </div>
-    <div class="bottom"></div>
 </div>
 
 <script type="module">
@@ -294,11 +292,10 @@
                 }
 
                 // todo did not manage to do this via CSS selectors
-                if (tab.id === "tab-calendar" || tab.id === "tab-summary"){
+                if (tab.id === "tab-calendar" || tab.id === "tab-summary") {
                     warning.classList.add("active");
                     shareBook.classList.add("active");
-                }
-                else {
+                } else {
                     warning.classList.remove("active");
                     shareBook.classList.remove("active");
                 }
