@@ -37,6 +37,7 @@
 }
 
 .entry-part .header {
+  min-height: 1.5rem; /* otherwise short connections have tiny header */
   height: 1.5rem;
 
   display: flex;
