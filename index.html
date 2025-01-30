@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 
 <head>
     <meta name="description" content="Ohne Flugzeug quer durch Europa"/>
@@ -13,6 +13,7 @@
     <script defer data-domain="trans-europe-planner.eu" src="https://plausible.io/js/script.js"></script>
 
     <!-- styles -->
+    <link rel="stylesheet" href="style/locales.css">
     <link rel="stylesheet" href="style/layout.css">
     <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="style/components/perlschnur.css">
@@ -35,7 +36,7 @@
 
 </head>
 
-<body>
+<body class="en">
 
 <!-- the connections to be displayed in the calendar -->
 <template id="template-calendar-connection">
@@ -87,14 +88,17 @@
 
 <template id="template-perlschnur-collapse">
     <li class="perlschnur-collapse">
-        <span>... <span class="count"></span> weitere Halte</span>
+        <span lang="de">... <span class="count"></span> weitere Halte</span>
+        <span lang="en">... <span class="count"></span> additional stops</span>
     </li>
 </template>
 
 
 <template id="template-perlschnur-transfer">
     <div class="perlschnur-transfer">
-        Umstiegszeit <span class="transfer-time"></span>
+        <span lang="de">Umstiegszeit </span>
+        <span lang="en">Transfer time </span>
+        <span class="transfer-time"></span>
     </div>
 </template>
 
@@ -113,17 +117,28 @@
     <div class="card city-menu" data-city-id="to-be-filled">
         <h3></h3> <!-- title -->
         <menu>
-            <li class="hidden"><em class="num-transfers"></em></li>
+            <li class="hidden">
+                <em class="num-transfers">
+                    <span lang="de" class="transfers0">Direkt erreichbar</span>
+                    <span lang="de" class="transfers1">Mit 1 Umstieg erreichbar</span>
+                    <span lang="de" class="transfersX">Mit <span class="count"></span> Umstiegen erreichbar</span>
+                    <span lang="en" class="transfers0">Directly reachable</span>
+                    <span lang="en" class="transfers1">Reachable with 1 transfer</span>
+                    <span lang="en" class="transfersX">Reachable with <span class="count"></span> transfers</span>
+                </em>
+            </li>
             <li class="hidden">
                 <button value="showRoutes">
                     <img src="images/icons/eye.svg" alt="icon of eye"/>
-                    Reiserouten anzeigen
+                    <span lang="de">Reiserouten anzeigen</span>
+                    <span lang="en">Show routes</span>
                 </button>
             </li>
             <li class="hidden">
                 <button value="makeCut">
                     <img src="images/icons/scissors.svg" alt="icon of a pair of scissors"/>
-                    Aufenthalt einfügen
+                    <span lang="de">Aufenthalt einfügen</span>
+                    <span lang="en">Stay here for longer</span>
                 </button>
             </li>
         </menu>
@@ -147,14 +162,30 @@
 
 
 <nav class="hidden">
-    <a id="tab-map" data-content="#map" class="only-mobile active">Karte</a>
+    <a id="tab-map" data-content="#map" class="only-mobile active">
+        <span lang="de">Karte</span>
+        <span lang="en">Map</span>
+    </a>
+
     <a id="tab-calendar" data-content="#calendar" class="tab-hidden">
-        <span class="only-mobile">Kalendar</span>
-        <span class="only-desktop">🖉 Reise anpassen</span>
+        <span class="only-mobile">
+            <span lang="de">Kalendar</span>
+            <span lang="en">Calendar</span>
+        </span>
+        <span class="only-desktop">
+            <span lang="de">🖉 Reise anpassen</span>
+            <span lang="en">🖉 Edit trip</span>
+        </span>
     </a>
     <a id="tab-summary" data-content="#summary" class="tab-hidden">
-        <span class="only-mobile">Übersicht</span>
-        <span class="only-desktop">🛈 &nbsp;Reiseübersicht</span>
+        <span class="only-mobile">
+            <span lang="de">Übersicht</span>
+            <span lang="en">Summary</span>
+        </span>
+        <span class="only-desktop">
+            <span lang="de">🛈 Reiseübersicht</span>
+            <span lang="en">🛈 Trip summary</span>
+        </span>
     </a>
     <a id="tab-config" data-content="#config" class="only-mobile tab-hidden">
         <img src="images/icons/settings.svg" alt="icon for a config menu">
@@ -171,12 +202,21 @@
 <div id="pad" class="hidden"></div> <!-- utility class for desktop view -->
 
 <div id="journey" class="hidden">
-    <aside id="warning">Prototyp, Datenfehler sind wahrscheinlich.
-        <a onclick="alert(
+    <aside id="warning">
+        <span lang="de">Prototyp, Datenfehler sind wahrscheinlich. </span>
+        <span lang="en">Prototype, data issues are very likely. </span>
+
+        <a lang="de" onclick="alert(
          'Datenabdeckung: Deutschland Fernverkehr vollständig plus ausgewählte Verbindungen im Ausland. ' +
          'Letzter Datenimport im November 2024 plus hoffen dass die Verbindungen sich nicht' +
          'allzusehr geändert haben. Grund für diese Schluderei: Entwicklung des User interface hatte ' +
          'erstmal höhere Priorität')">Details
+        </a>
+
+        <a lang="en" onclick="alert(
+         'Data coverage: Full German long distance network plus some selected non-german connections. ' +
+         'Last data import in November 2024, hoping that time tables have not changed all that much. ' +
+         'Reason for this slipshod work: Development of user interface had higher priority so far.')">Details
         </a>
     </aside>
 
@@ -187,22 +227,41 @@
 
     <div id="summary">
         <div>
-            <h3>Von <span class="from"></span> nach <span class="to"></span></h3> <span class="via"></span>
-            <div>Gesamte Reisezeit: <span class="total-time"></span></div>
+            <h3>
+                <span lang="de">Von</span>
+                <span lang="en">From</span>
+                <span class="from"></span>
+                <span lang="de">nach</span>
+                <span lang="to"></span>
+            </h3>
+            <span class="via"></span>
+            <div>
+                <span lang="de">Gesamte Reisezeit: </span>
+                <span lang="en">Total travel time: </span>
+                <span class="total-time"></span>
+            </div>
         </div>
-        <h3>Reiseverlauf:</h3>
+        <h3 lang="de">Reiseverlauf:</h3>
+        <h3 lang="en">Itinerary:</h3>
         <div id="perlschnur"></div>
     </div>
 
     <div id="share-book">
-        <button onclick="alert('coming soon');">🔗 Teilen</button>
-        <button onclick="alert('coming soon');">🎫 Buchen</button>
+        <button lang="de" onclick="alert('coming soon');">🔗 Teilen</button>
+        <button lang="de" onclick="alert('coming soon');">🎫 Buchen</button>
+        <button lang="en" onclick="alert('coming soon');">🔗 Share</button>
+        <button lang="en" onclick="alert('coming soon');">🎫 Book</button>
     </div>
 </div>
 
 
 <div id="config" class="hidden">
-    <h3><label for="date-picker-input">Abreisedatum: </label></h3>
+    <h3>
+        <label for="date-picker-input">
+            <span lang="de">Abreisedatum:</span>
+            <span lang="en">Departure date:</span>
+        </label>
+    </h3>
     <div>
         <a id="decrease-date" title="One day earlier">◀</a>
         <input type="date" id="date-picker-input" value="2025-02-01"/>
@@ -212,7 +271,11 @@
 
 
 <footer>
-    <span class="only-desktop">Trans Europe Planner - <em>Einfacher mit dem Zug quer durch Europa</em></span>
+    <span class="only-desktop">
+        Trans Europe Planner -
+        <em lang="de">Einfacher mit dem Zug quer durch Europa</em>
+        <em lang="en">The simpler way to plan your train trip across Europe</em>
+    </span>
     <a href="https://github.com/krasch/trans-europe-planner">
         <img src="images/logos/github.svg" alt="logo for github">
     </a>
@@ -220,8 +283,14 @@
         <img src="images/logos/mastodon.svg" alt="logo for mastodon">
     </a>
     <a href="about-impressum.html#about">About</a>
-    <a href="about-impressum.html#impressum">Impressum</a>
-    <a href="about-impressum.html#data-protection">Datenschutz</a>
+    <a href="about-impressum.html#impressum">
+        <span lang="de">Impressum</span>
+        <span lang="en">Imprint</span>
+    </a>
+    <a href="about-impressum.html#data-protection">
+        <span lang="de">Datenschutz</span>
+        <span lang="en">Data protection</span>
+    </a>
 </footer>
 
 
@@ -229,21 +298,31 @@
     <a class="logo" href="/">
         <img src="images/logo.svg" alt="logo for the trans-europe-planner">
     </a>
-    <div>
-       <h1>Willkommen beim Trans Europa Planer</h1>
-        <h3><em>Einfacher mit dem Zug quer durch Europa</em></h3>
+    <div class="claim">
+        <h1>
+            <span lang="de">Willkommen beim Trans Europa Planer</span>
+            <span lang="en">Welcome to Trans Europa Planer</span>
+        </h1>
+        <h3>
+            <em lang="de">Einfacher mit dem Zug quer durch Europa</em>
+            <em lang="en">The simpler way to plan your train trip across Europe</em>
+        </h3>
     </div>
 
     <img class="marker" src="images/markers/marker_home.svg" alt="map marker depicting a house">
     <div id="choose-home">
-        <h1>Wo soll die Reise starten?</h1>
+        <h1>
+            <span lang="de">Wo soll die Reise starten?</span>
+            <span lang="en">Where is your trip starting?</span>
+        </h1>
         <div>
             <a href="?start=Berlin">Berlin</a>
             <a href="?start=Hamburg">Hamburg</a>
             <a href="?start=Köln">Köln</a>
             <a href="?start=München">München</a>
         </div>
-        <em>(Weitere Startpunkte bald verfügbar)</em>
+        <em lang="de">(Weitere Startpunkte bald verfügbar)</em>
+        <em lang="en">(Additional departure cities coming soon)</em>
     </div>
 </div>
 

@@ -143,3 +143,12 @@
 .edge-menu button:hover img {
   filter: var(--filter-menu-light);
 }
+
+.city-menu em.num-transfers.transfers0 > span.transfers1,
+.city-menu em.num-transfers.transfers0 > span.transfersX,
+.city-menu em.num-transfers.transfers1 > span.transfers0,
+.city-menu em.num-transfers.transfers1 > span.transfersX,
+.city-menu em.num-transfers.transfersX > span.transfers0,
+.city-menu em.num-transfers.transfersX > span.transfers1{
+  display: none;
+}
