@@ -165,14 +165,15 @@ export class Cities {
     });
 
     this.#map._container.addEventListener("click", (e) => {
-      if (e.target.tagName !== "BUTTON") return;
+      const closest = e.target.closest("button");
+      if (!closest) return;
 
-      const container = e.target.parentElement.parentElement.parentElement;
-      if (!container.classList.contains("city-menu")) return;
+      const container = closest.closest(".city-menu");
+      if (!container) return;
 
       const id = container.dataset.cityId;
       this.#hideCityMenu(id);
-      this.#callbacks["menuClick"](id, e.target.value);
+      this.#callbacks["menuClick"](id, closest.value);
     });
 
     this.#map._container.addEventListener("click", (e) => {

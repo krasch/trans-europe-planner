@@ -76,13 +76,14 @@ export class Edges {
     });
 
     this.#map._container.addEventListener("click", (e) => {
-      if (e.target.tagName !== "BUTTON") return;
+      const closest = e.target.closest("button");
+      if (!closest) return;
 
-      const container = e.target.parentElement.parentElement.parentElement;
-      if (!container.classList.contains("edge-menu")) return;
+      const container = closest.closest(".city-menu");
+      if (!container) return;
 
       this.#hideJourneyMenu();
-      this.#callbacks["menuClick"](container.dataset.journeyId, e.target.value);
+      this.#callbacks["menuClick"](container.dataset.journeyId, closest.value);
     });
 
     // initial drawing
