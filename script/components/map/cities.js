@@ -9,13 +9,6 @@ import {
 } from "./util.js";
 import { createElementFromTemplate } from "../../util.js";
 
-// todo should be in template
-function getNumTransfersText(numTransfers) {
-  if (numTransfers === 0) return "Direkt erreichbar";
-  if (numTransfers === 1) return "Mit 1 Umstieg erreichbar";
-  else return `Mit ${numTransfers} Umstiegen erreichbar`;
-}
-
 function initHomeMarker(id, lngLat) {
   const element = createElementFromTemplate("template-city-marker-home", {
     $root$: { "data-city-id": id },
@@ -39,11 +32,22 @@ function initDestinationMarker(lngLat) {
 }
 
 function initCityMenu(id, name, numTransfer, lngLat) {
-  const element = createElementFromTemplate("template-city-menu", {
+  const data = {
     $root$: { "data-city-id": id },
     h3: { innerText: name },
-    ".num-transfers": { innerText: getNumTransfersText(numTransfer) },
-  });
+    ".count": { innerText: numTransfer },
+  };
+
+  const element = createElementFromTemplate("template-city-menu", data);
+
+  const textNumTransfers = element.querySelector(".num-transfers");
+  const buttonShowRoutes = element.querySelector("button[value='showRoutes']");
+  const buttonMakeCut = element.querySelector("button[value='makeCut']");
+
+  // choose which text will be shown
+  if (numTransfer === 0) textNumTransfers.classList.add("transfers0");
+  else if (numTransfer === 1) textNumTransfers.classList.add("transfers1");
+  else textNumTransfers.classList.add("transfersX");
 
   const popup = new maplibregl.Popup({
     anchor: "left",
@@ -51,10 +55,6 @@ function initCityMenu(id, name, numTransfer, lngLat) {
     closeButton: true,
   });
   popup.setDOMContent(element).setLngLat(lngLat);
-
-  const textNumTransfers = element.querySelector(".num-transfers");
-  const buttonShowRoutes = element.querySelector("button[value='showRoutes']");
-  const buttonMakeCut = element.querySelector("button[value='makeCut']");
 
   popup.updateElement = (state) => {
     if (state.isDestination !== undefined) {
