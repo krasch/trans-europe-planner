@@ -11,20 +11,12 @@
   top: 50%;
   transform: translate(-50%, -50%);
 
-  min-height: 50%;
-  min-width: 50%;
-
-    overflow: hidden;
+  overflow: hidden;
 
   --logo-size: 6rem;
 }
 
 @media only screen and (max-width: 1000px) {
-    #modal {
-      min-width: 80%;
-      min-height: 80%;
-    }
-
   #modal h1 {
     font-size: 1.5rem;
   }
@@ -35,17 +27,18 @@
 }
 
 #modal {
+  padding-bottom: 1rem;
   display: grid;
+
   grid-auto-flow: row;
-  grid-template-columns: calc(var(--logo-size) * 2) 1fr;
-  grid-template-rows: min(min-content, calc(var(--logo-size) * 2)) 1fr;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: 1fr auto;
+
 }
 
 #modal > * {
   height: 100%;
   width: 100%;
-
-  padding-right: 1rem;
 
   display: flex;
   flex-direction: column;
@@ -54,17 +47,23 @@
   align-content: center;
 }
 
-
 #modal .logo img,
 #modal .marker {
   align-self: center;
   height: var(--logo-size);
+  padding: 1rem;
+}
+
+#modal .claim {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 #modal #choose-home {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  padding: 1rem;
 }
 
 #modal #choose-home div {
