@@ -4,7 +4,11 @@
 
 Making it simpler to plan complex cross-country rail trips in Europe
 
-[INSERT VIDEO HERE]
+
+
+https://github.com/user-attachments/assets/d2ce643d-fe71-49ac-919d-f8b804b887fb
+
+
 
 ## How to start this locally
 
@@ -49,7 +53,7 @@ npm make-pretty
 
 ## Is this a react/vue.js/etc app?
 
-No, only vanilla Javascript, not even using a bundler or anything like that. Serving
+No, just plain old vanilla Javascript, not even using a bundler or anything like that. Serving
 up HTML+JS+CSS just like we did in the 90s. But, of course, keeping up-to-date with the features
 of each of those three. 
 
