@@ -48,7 +48,7 @@ npm install
 npm test
 
 # apply code formatting
-npm make-pretty
+npm run make-pretty
 ```
 
 ## Is this a react/vue.js/etc app?
