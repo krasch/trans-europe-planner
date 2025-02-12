@@ -3,17 +3,16 @@ import { Stop, Connection } from "/script/data/types/connection.js";
 import { initCityNameToId } from "/script/util.js";
 
 export const testCities = {
-  cityId1: { name: "City1", latitude: 10, longitude: 10, rank: 1 },
-  cityId2: { name: "City2", latitude: 20, longitude: 20, rank: 2 },
+  cityId1: { name: "City1", geo: { latitude: 10, longitude: 10 }, rank: 1 },
+  cityId2: { name: "City2", geo: { latitude: 20, longitude: 20 }, rank: 2 },
   cityId3: {
     name: "City3",
-    latitude: 30,
-    longitude: 30,
+    geo: { latitude: 30, longitude: 30 },
     rank: 3,
     routesAvailable: true,
   },
-  cityId4: { name: "City4", latitude: 40, longitude: 40, rank: 4 },
-  cityId5: { name: "City5", latitude: 50, longitude: 50, rank: 5 },
+  cityId4: { name: "City4", geo: { latitude: 40, longitude: 40 }, rank: 4 },
+  cityId5: { name: "City5", geo: { latitude: 50, longitude: 50 }, rank: 5 },
 };
 
 const testStations = {

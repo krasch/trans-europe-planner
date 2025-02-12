@@ -16,17 +16,21 @@ function isSlicingError(error) {
 export function enrichConnection(template, stations, cities, dummyDate) {
   const stops = [];
   for (let stop of template.stops) {
+    // todo should not be necessary
+    const arrival = stop.arrival !== "" ? stop.arrival : stop.departure;
+    const departure = stop.departure !== "" ? stop.departure : stop.arrival;
+
     stops.push(
       new Stop(
         // temporalize
-        DateTime.fromISO(dummyDate + "T" + stop.arrival),
-        DateTime.fromISO(dummyDate + "T" + stop.departure),
+        DateTime.fromISO(dummyDate + "T" + arrival),
+        DateTime.fromISO(dummyDate + "T" + departure),
         // enrich with additional station and city info
-        stop.station,
-        stations[stop.station].name,
-        stations[stop.station].preferred,
-        stations[stop.station].city,
-        cities[stations[stop.station].city].name,
+        stop.station_id,
+        stations[stop.station_id].name,
+        stations[stop.station_id].secondary,
+        stations[stop.station_id].city_id,
+        cities[stations[stop.station_id].city_id].name,
       ),
     );
   }
