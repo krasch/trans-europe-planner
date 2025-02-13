@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Title</title>
 
-    <script src="external/luxon@3.5.0/luxon.min.js"></script>
-    <script src="script/customElements/travelCalendar/travelCalendar.js"></script>
+    <script type="module" src="external/luxon@3.5.0/luxon.min.js"></script>
+    <script type="module" src="script/customElements/travelCalendar/travelCalendar.js"></script>
 
     <style>
         travel-calendar {
@@ -16,6 +16,14 @@
             border-radius: 5px;
         }
     </style>
+
+        <script type="module">
+        // this needs to get done before the HTML, otherwise TravelCalendar element is unknown
+        import {TravelCalendar} from "./script/customElements/travelCalendar/travelCalendar.js"
+
+        customElements.define("travel-calendar", TravelCalendar);
+    </script>
+
 </head>
 <body>
 
