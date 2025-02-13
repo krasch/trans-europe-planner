@@ -183,6 +183,8 @@ export class TravelCalendar extends HTMLElement {
   }
 
   #addEntry(externalElement) {
+    console.log(externalElement);
+
     const uiElements = {
       header: externalElement.querySelector(".header"),
       startInfo: externalElement.querySelector(".start"),
@@ -207,6 +209,7 @@ export class TravelCalendar extends HTMLElement {
         return part;
       }),
     );
+    console.log(entry);
 
     entry.group = externalElement.dataset.group;
     entry.active = externalElement.dataset.active === "active";

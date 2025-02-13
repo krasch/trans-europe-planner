@@ -205,11 +205,13 @@ export class RouteDatabase {
         route.map((leg) => this.#parseLeg(leg)),
       );
 
-      // sort so that route with mininum transfers first
+      // sort so that route with minimum transfers first
       parsed.sort((route1, route2) => route1.length - route2.length);
 
       this.#routes[key] = parsed;
     }
+
+    this.routes = this.#routes;
   }
 
   hasRoutes(startCityName, endCityName) {

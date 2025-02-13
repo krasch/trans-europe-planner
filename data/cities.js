@@ -1225,7 +1225,7 @@ export const CITIES = {
     },
   },
   Q239: {
-    name: "Brussel/Bruxelles",
+    name: "Bruxelles",
     geo: {
       latitude: 50.846666666666664,
       longitude: 4.351666666666667,
@@ -1281,7 +1281,7 @@ export const CITIES = {
     },
   },
   Q25287: {
-    name: "Gothenburg",
+    name: "Göteborg",
     geo: {
       latitude: 57.7075,
       longitude: 11.9675,

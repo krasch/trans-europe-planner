@@ -16,6 +16,7 @@ import { CONNECTIONS } from "../data/connections.js";
 import { CITIES } from "../data/cities.js";
 import { STATIONS } from "../data/stations.js";
 import { ROUTES } from "../data/routes.js";
+import { CITY_NAME_TO_ID } from "./util.js";
 
 // dummy date for initialising
 // today so that it is in range for date picker
@@ -71,6 +72,17 @@ export async function main(home, views) {
     routeDatabase,
   );
   const mapLoadedPromise = views.map.load(initialMapData);
+
+  for (let key in routeDatabase.routes) {
+    for (let r of routeDatabase.routes[key]) {
+      for (let leg of r) {
+        if (CITY_NAME_TO_ID[leg.startCityName] == undefined)
+          console.log(leg.startCityName);
+        if (CITY_NAME_TO_ID[leg.endCityName] == undefined)
+          console.log(leg.endCityName);
+      }
+    }
+  }
 
   // init update views
   const updateViews = initUpdateViews(views, database);
