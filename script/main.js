@@ -59,6 +59,7 @@ export async function main(home, views) {
   const connections = CONNECTIONS.flatMap(
     (c) => enrichConnection(c, STATIONS, CITIES, TODAY.toISODate()), // todo can use state.date here?
   );
+
   const database = new Database(connections);
 
   // prepare routes
@@ -72,17 +73,6 @@ export async function main(home, views) {
     routeDatabase,
   );
   const mapLoadedPromise = views.map.load(initialMapData);
-
-  for (let key in routeDatabase.routes) {
-    for (let r of routeDatabase.routes[key]) {
-      for (let leg of r) {
-        if (CITY_NAME_TO_ID[leg.startCityName] == undefined)
-          console.log(leg.startCityName);
-        if (CITY_NAME_TO_ID[leg.endCityName] == undefined)
-          console.log(leg.endCityName);
-      }
-    }
-  }
 
   // init update views
   const updateViews = initUpdateViews(views, database);
