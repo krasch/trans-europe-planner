@@ -315,12 +315,17 @@
             <span lang="de">Wo soll die Reise starten?</span>
             <span lang="en">Where is your trip starting?</span>
         </h1>
-        <div>
-            <a href="?start=Berlin">Berlin</a>
+        <form>
+            <select>
+                <option value="v1">v1</option>
+                <option value="v2">v2</option>
+            </select>
+            <button id="confirmBtn" value="default">Confirm</button>
+            <!--a href="?start=Berlin">Berlin</a>
             <a href="?start=Hamburg">Hamburg</a>
             <a href="?start=Köln">Köln</a>
-            <a href="?start=München">München</a>
-        </div>
+            <a href="?start=München">München</a-->
+        </form>
         <em lang="de">(Weitere Startpunkte bald verfügbar)</em>
         <em lang="en">(Additional departure cities coming soon)</em>
     </div>
@@ -339,6 +344,11 @@
     import {CITIES} from "./data/cities.js";
 
     const isMobile = window.matchMedia("(max-width: 1000px)");
+
+
+    document.querySelector("#confirmBtn").addEventListener("click", (e) => {
+        console.log(e);
+    });
 
     function getHome() {
         const params = new URLSearchParams(window.location.search);
