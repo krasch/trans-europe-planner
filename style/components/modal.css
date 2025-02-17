@@ -1,3 +1,8 @@
+dialog {
+  padding: 0;
+  margin: 0;
+}
+
 /***********************************************
  layout
 ************************************************/
@@ -26,14 +31,14 @@
   }
 }
 
-#modal {
+/* without [open], the modal would always be visible */
+#modal[open] {
   padding-bottom: 1rem;
   display: grid;
 
   grid-auto-flow: row;
   grid-template-columns: 1fr auto;
   grid-template-rows: 1fr auto;
-
 }
 
 #modal > * {
@@ -52,6 +57,11 @@
   align-self: center;
   height: var(--logo-size);
   padding: 1rem;
+}
+
+#modal .logo:focus,
+#modal .logo img:focus {
+  visibility: hidden;
 }
 
 #modal .claim {
@@ -73,11 +83,9 @@
   gap: 0.5rem;
 }
 
-
 /***********************************************
  style
 ************************************************/
-
 
 #modal {
   color: var(--color-dark);
@@ -94,7 +102,7 @@
 }
 
 #modal .logo img {
-  filter: var(--filter-white)
+  filter: var(--filter-white);
 }
 
 #modal .marker {
@@ -119,4 +127,3 @@
   background: var(--color-dark);
   color: white;
 }
-

@@ -41,7 +41,7 @@ export class Layout {
 
   showModal() {
     this.#elements.map.style.opacity = "30%";
-    this.#setVisible(this.#elements.modal);
+    this.#elements.modal.show();
   }
 
   #showAllElements(animation = false) {
