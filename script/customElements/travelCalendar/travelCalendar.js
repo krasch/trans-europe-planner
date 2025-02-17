@@ -275,10 +275,6 @@ export class TravelCalendar extends HTMLElement {
     const departureRow = this.#getRow(departureDatetime);
     const arrivalRow = this.#getRow(arrivalDatetime);
 
-    // if the arrival datetime is 1am the arrival column is wrongly calculated, hack :-(
-    if (arrivalRow < departureRow && departureColumn === arrivalColumn)
-      arrivalColumn += 1;
-
     const startOfDayRow = 0;
     const endOfDayRow = 24 * RESOLUTION;
 
