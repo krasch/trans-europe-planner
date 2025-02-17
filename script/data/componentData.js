@@ -162,7 +162,7 @@ export function prepareInitialDataForMap(
 
       cities.geo[id] = {
         name: cityInfo[id].name,
-        lngLat: [cityInfo[id].longitude, cityInfo[id].latitude],
+        lngLat: [cityInfo[id].geo.longitude, cityInfo[id].geo.latitude],
       };
       cities.defaults[id] = {
         rank: routes.length > 0 ? 2 : cityInfo[id].rank,
@@ -182,8 +182,8 @@ export function prepareInitialDataForMap(
       const end = cityInfo[CITY_NAME_TO_ID[edge.endCityName]];
 
       edges.geo[id] = {
-        startLngLat: [start.longitude, start.latitude],
-        endLngLat: [end.longitude, end.latitude],
+        startLngLat: [start.geo.longitude, start.geo.latitude],
+        endLngLat: [end.geo.longitude, end.geo.latitude],
       };
       edges.defaults[id] = { isVisible: false };
     }

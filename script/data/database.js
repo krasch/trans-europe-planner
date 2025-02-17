@@ -14,19 +14,33 @@ function isSlicingError(error) {
 }
 
 export function enrichConnection(template, stations, cities, dummyDate) {
+  dummyDate = DateTime.fromISO(dummyDate);
+
   const stops = [];
   for (let stop of template.stops) {
+    let arrivalTime = stop.arrival_time;
+    let departureTime = stop.departure_time;
+
+    // todo should not be necessary
+    if (!arrivalTime) arrivalTime = departureTime;
+    if (!departureTime) departureTime = arrivalTime;
+
+    const arrivalOffset = stop.arrival_date_offset ?? 0;
+    const departureOffset = stop.departure_date_offset ?? 0;
+
+    const arrivalDate = dummyDate.plus({ days: arrivalOffset });
+    const departureDate = dummyDate.plus({ days: departureOffset });
+
     stops.push(
       new Stop(
-        // temporalize
-        DateTime.fromISO(dummyDate + "T" + stop.arrival),
-        DateTime.fromISO(dummyDate + "T" + stop.departure),
+        DateTime.fromISO(arrivalDate.toISODate() + "T" + arrivalTime),
+        DateTime.fromISO(departureDate.toISODate() + "T" + departureTime),
         // enrich with additional station and city info
-        stop.station,
-        stations[stop.station].name,
-        stations[stop.station].preferred,
-        stations[stop.station].city,
-        cities[stations[stop.station].city].name,
+        stop.station_id,
+        stations[stop.station_id].name,
+        stations[stop.station_id].secondary,
+        stations[stop.station_id].city_id,
+        cities[stations[stop.station_id].city_id].name,
       ),
     );
   }

@@ -134,7 +134,10 @@ export class TravelCalendar extends HTMLElement {
   connectedCallback() {
     this.#drawGrid();
 
-    // mutations of the external calendar entries
+    // calendar entries that have been added in html
+    for (let child of this.children) this.#addEntry(child);
+
+    // mutations of the external calendar entries (=when adding new entries later)
     this.#setupMutationObserver({
       entryAdded: (e) => this.#addEntry(e),
       entryRemoved: (e) => this.#removeEntry(e),
@@ -192,7 +195,7 @@ export class TravelCalendar extends HTMLElement {
     const partsToCreate = this.#splitIntoDays(
       new Date(externalElement.dataset.departureDatetime),
       new Date(externalElement.dataset.arrivalDatetime),
-    );
+    ).filter((part) => part.column < 3); // HACK to not blow up grid with overnights
 
     const entry = new MultipartCalendarEntry(
       partsToCreate.map((p) => {
@@ -267,7 +270,7 @@ export class TravelCalendar extends HTMLElement {
 
   #splitIntoDays(departureDatetime, arrivalDatetime) {
     const departureColumn = this.#getColumn(departureDatetime);
-    const arrivalColumn = this.#getColumn(arrivalDatetime);
+    let arrivalColumn = this.#getColumn(arrivalDatetime);
 
     const departureRow = this.#getRow(departureDatetime);
     const arrivalRow = this.#getRow(arrivalDatetime);

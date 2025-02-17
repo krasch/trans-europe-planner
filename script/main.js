@@ -16,6 +16,7 @@ import { CONNECTIONS } from "../data/connections.js";
 import { CITIES } from "../data/cities.js";
 import { STATIONS } from "../data/stations.js";
 import { ROUTES } from "../data/routes.js";
+import { CITY_NAME_TO_ID } from "./util.js";
 
 // dummy date for initialising
 // today so that it is in range for date picker
@@ -58,6 +59,7 @@ export async function main(home, views) {
   const connections = CONNECTIONS.flatMap(
     (c) => enrichConnection(c, STATIONS, CITIES, TODAY.toISODate()), // todo can use state.date here?
   );
+
   const database = new Database(connections);
 
   // prepare routes

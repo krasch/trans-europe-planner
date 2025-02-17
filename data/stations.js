@@ -1,3964 +1,5889 @@
 export const STATIONS = {
-  8000001: {
+  Q801698: {
+    name: "'s-Hertogenbosch",
+    geo: {
+      latitude: 51.690278,
+      longitude: 5.293333,
+    },
+    city_id: "Q9807",
+    country: "NL",
+  },
+  Q300706: {
     name: "Aachen Hbf",
-    latitude: 50.767802,
-    longitude: 6.091495,
-    city: 6698,
-    preferred: true,
+    geo: {
+      latitude: 50.7677663,
+      longitude: 6.0913818,
+    },
+    city_id: "Q1017",
+    country: "DE",
   },
-  8000002: {
-    name: "Aalen",
-    latitude: 48.841009,
-    longitude: 10.09627,
-    city: 6706,
-    preferred: true,
+  Q1891814: {
+    name: "Aachen Süd",
+    geo: {
+      latitude: 50.7491053,
+      longitude: 6.0708062,
+    },
+    city_id: "Q1017",
+    country: "DE",
+    secondary: true,
   },
-  8704980: {
+  Q319241: {
+    name: "Aalen Hbf",
+    geo: {
+      latitude: 48.840833333333,
+      longitude: 10.096111111111,
+    },
+    city_id: "Q3951",
+    country: "DE",
+  },
+  Q3968813: {
+    name: "Acireale",
+    geo: {
+      latitude: 37.5958,
+      longitude: 15.1615,
+    },
+    city_id: "Q19319",
+    country: "IT",
+  },
+  Q16608718: {
+    name: "Agropoli-Castellabate",
+    geo: {
+      latitude: 40.3515,
+      longitude: 15.0016,
+    },
+    city_id: "Q80544",
+    country: "IT",
+  },
+  Q800366: {
     name: "Aix-en-Provence TGV",
-    latitude: 43.455237,
-    longitude: 5.317534,
-    city: 23614,
-    preferred: true,
+    geo: {
+      latitude: 43.455,
+      longitude: 5.3172222222222,
+    },
+    city_id: "Q47465",
+    country: "FR",
   },
-  8000513: {
-    name: "Altena (Westf)",
-    latitude: 51.301663,
-    longitude: 7.669389,
-    city: 6763,
-    preferred: true,
+  Q116155666: {
+    name: "Altena (Westfalen)",
+    geo: {
+      latitude: 51.301851666666664,
+      longitude: 7.669000333333333,
+    },
+    city_id: "Q5276",
+    country: "DE",
   },
-  8000004: {
+  Q322534: {
     name: "Altenbeken",
-    latitude: 51.766207,
-    longitude: 8.943206,
-    city: 6774,
-    preferred: true,
+    geo: {
+      latitude: 51.7664,
+      longitude: 8.94222,
+    },
+    city_id: "Q183262",
+    country: "DE",
   },
-  7400005: {
-    name: "Alvesta station",
-    latitude: 56.898481,
-    longitude: 14.556879,
-    city: 35774,
-    preferred: true,
+  Q11957628: {
+    name: "Alvesta",
+    geo: {
+      latitude: 56.898888888889,
+      longitude: 14.557222222222,
+    },
+    city_id: "Q2604885",
+    country: "SE",
   },
-  8400055: {
-    name: "Amersfoort",
-    latitude: 52.15366,
-    longitude: 5.371198,
-    city: 8658,
-    preferred: true,
+  Q21184964: {
+    name: "Amantea",
+    geo: {
+      latitude: 39.134343,
+      longitude: 16.068492,
+    },
+    city_id: "Q53827",
+    country: "IT",
   },
-  8400058: {
-    name: "Amsterdam-Centraal",
-    latitude: 52.37919,
-    longitude: 4.899426,
-    city: 8657,
-    preferred: true,
+  Q49854: {
+    name: "Amersfoort Centraal",
+    geo: {
+      latitude: 52.153888888889,
+      longitude: 5.3741666666667,
+    },
+    city_id: "Q992",
+    country: "NL",
   },
-  8100012: {
-    name: "Amstetten NÖ",
-    latitude: 48.121908,
-    longitude: 14.877444,
-    city: 17540,
-    preferred: true,
+  Q50719: {
+    name: "Amsterdam Centraal",
+    geo: {
+      latitude: 52.37895,
+      longitude: 4.90016,
+    },
+    city_id: "Q727",
+    country: "NL",
   },
-  8000331: {
-    name: "Andernach",
-    latitude: 50.434914,
-    longitude: 7.404405,
-    city: 6753,
-    preferred: true,
+  Q800385: {
+    name: "Amstetten",
+    geo: {
+      latitude: 48.1217,
+      longitude: 14.8781,
+    },
+    city_id: "Q251231",
+    country: "AT",
   },
-  8010004: {
+  Q439525: {
     name: "Angermünde",
-    latitude: 53.015222,
-    longitude: 13.996357,
-    city: 14233,
-    preferred: true,
+    geo: {
+      latitude: 53.0156,
+      longitude: 13.9961,
+    },
+    city_id: "Q490066",
+    country: "DE",
   },
-  8011044: {
+  Q4766078: {
     name: "Anklam",
-    latitude: 53.8561,
-    longitude: 13.701825,
-    city: 14524,
-    preferred: true,
+    geo: {
+      latitude: 53.856,
+      longitude: 13.7017,
+    },
+    city_id: "Q488513",
+    country: "DE",
   },
-  8000009: {
+  Q138493: {
     name: "Ansbach",
-    latitude: 49.29803,
-    longitude: 10.578236,
-    city: 6776,
-    preferred: true,
+    geo: {
+      latitude: 49.297943,
+      longitude: 10.577734,
+    },
+    city_id: "Q14859",
+    country: "DE",
   },
-  8400066: {
+  Q800395: {
     name: "Apeldoorn",
-    latitude: 52.20942,
-    longitude: 5.96748,
-    city: 8610,
-    preferred: true,
+    geo: {
+      latitude: 52.209167,
+      longitude: 5.9675,
+    },
+    city_id: "Q101918",
+    country: "NL",
   },
-  8505004: {
-    name: "Arth",
-    latitude: 47.049163,
-    longitude: 8.549478,
-    city: 6179,
-    preferred: true,
+  Q800399: {
+    name: "Arnhem Centraal",
+    geo: {
+      latitude: 51.984722,
+      longitude: 5.900833,
+    },
+    city_id: "Q1310",
+    country: "NL",
   },
-  8000010: {
+  Q365122: {
+    name: "Arth-Goldau",
+    geo: {
+      latitude: 47.049152,
+      longitude: 8.549482,
+    },
+    city_id: "Q69742",
+    country: "CH",
+  },
+  Q16608758: {
+    name: "Ascea",
+    geo: {
+      latitude: 40.141041,
+      longitude: 15.172291,
+    },
+    city_id: "Q80580",
+    country: "IT",
+  },
+  Q203532: {
     name: "Aschaffenburg Hbf",
-    latitude: 49.980554,
-    longitude: 9.143692,
-    city: 10544,
-    preferred: true,
+    geo: {
+      latitude: 49.98052777777778,
+      longitude: 9.14386111111111,
+    },
+    city_id: "Q3942",
+    country: "DE",
   },
-  8100017: {
+  Q698843: {
     name: "Attnang-Puchheim",
-    latitude: 48.012797,
-    longitude: 13.720721,
-    city: 17601,
-    preferred: true,
+    geo: {
+      latitude: 48.011389,
+      longitude: 13.719167,
+    },
+    city_id: "Q261216",
+    country: "AT",
   },
-  8000013: {
+  Q682505: {
     name: "Augsburg Hbf",
-    latitude: 48.365444,
-    longitude: 10.885568,
-    city: 10782,
-    preferred: true,
+    geo: {
+      latitude: 48.3655528739237,
+      longitude: 10.8863714696634,
+    },
+    city_id: "Q2749",
+    country: "DE",
   },
-  8000664: {
+  Q3968930: {
+    name: "Augusta",
+    geo: {
+      latitude: 37.2432,
+      longitude: 15.2185,
+    },
+    city_id: "Q194005",
+    country: "IT",
+  },
+  Q15193988: {
     name: "Augustfehn",
-    latitude: 53.220797,
-    longitude: 7.75929,
-    city: 6772,
-    preferred: true,
+    geo: {
+      latitude: 53.22086,
+      longitude: 7.75917,
+    },
+    city_id: "Q767483",
+    country: "DE",
   },
-  8000014: {
+  Q165899: {
     name: "Aulendorf",
-    latitude: 47.953055,
-    longitude: 9.64405,
-    city: 6773,
-    preferred: true,
+    geo: {
+      latitude: 47.953333333333,
+      longitude: 9.6438888888889,
+    },
+    city_id: "Q505459",
+    country: "DE",
   },
-  8704918: {
+  Q3968936: {
+    name: "Aversa",
+    geo: {
+      latitude: 40.97444444,
+      longitude: 14.21777778,
+    },
+    city_id: "Q19279",
+    country: "IT",
+  },
+  Q174845: {
     name: "Avignon TGV",
-    latitude: 43.921586,
-    longitude: 4.786079,
-    city: 489,
-    preferred: true,
+    geo: {
+      latitude: 43.921666666667,
+      longitude: 4.7858333333333,
+    },
+    city_id: "Q6397",
+    country: "FR",
   },
-  8000879: {
+  Q2028380: {
     name: "Bad Bentheim",
-    latitude: 52.309848,
-    longitude: 7.158541,
-    city: 6809,
-    preferred: true,
+    geo: {
+      latitude: 52.30972222,
+      longitude: 7.15722222,
+    },
+    city_id: "Q574332",
+    country: "DE",
   },
-  8000935: {
+  Q22917116: {
     name: "Bad Bevensen",
-    latitude: 53.078246,
-    longitude: 10.574137,
-    city: 6875,
-    preferred: true,
+    geo: {
+      latitude: 53.078247222222,
+      longitude: 10.574169444444,
+    },
+    city_id: "Q558569",
+    country: "DE",
   },
-  8001787: {
+  Q800421: {
     name: "Bad Endorf",
-    latitude: 47.905061,
-    longitude: 12.301558,
-    city: 6880,
-    preferred: true,
+    geo: {
+      latitude: 47.9051,
+      longitude: 12.3016,
+    },
+    city_id: "Q251462",
+    country: "DE",
   },
-  8100095: {
+  Q32173184: {
     name: "Bad Gastein",
-    latitude: 47.119773,
-    longitude: 13.145564,
-    city: 17542,
-    preferred: true,
+    geo: {
+      latitude: 47.11175,
+      longitude: 13.13193,
+    },
+    city_id: "Q254835",
+    country: "AT",
   },
-  8100097: {
+  Q324739: {
+    name: "Bad Hersfeld",
+    geo: {
+      latitude: 50.87,
+      longitude: 9.71597,
+    },
+    city_id: "Q16145",
+    country: "DE",
+  },
+  Q32312972: {
     name: "Bad Hofgastein",
-    latitude: 47.195714,
-    longitude: 13.100941,
-    city: 17636,
-    preferred: true,
+    geo: {
+      latitude: 47.195217,
+      longitude: 13.100729,
+    },
+    city_id: "Q671445",
+    country: "AT",
   },
-  8010018: {
+  Q324562: {
     name: "Bad Kleinen",
-    latitude: 53.766972,
-    longitude: 11.466927,
-    city: 7514,
-    preferred: true,
+    geo: {
+      latitude: 53.7667,
+      longitude: 11.4667,
+    },
+    city_id: "Q552679",
+    country: "DE",
   },
-  8000728: {
+  Q438766: {
     name: "Bad Nauheim",
-    latitude: 50.367899,
-    longitude: 8.749335,
-    city: 7544,
-    preferred: true,
+    geo: {
+      latitude: 50.3679,
+      longitude: 8.74933,
+    },
+    city_id: "Q16105",
+    country: "DE",
   },
-  8010022: {
+  Q323677: {
+    name: "Bad Oeynhausen",
+    geo: {
+      latitude: 52.205,
+      longitude: 8.796111,
+    },
+    city_id: "Q6858",
+    country: "DE",
+  },
+  Q800438: {
     name: "Bad Schandau",
-    latitude: 50.918713,
-    longitude: 14.139861,
-    city: 7502,
-    preferred: true,
+    geo: {
+      latitude: 50.91878,
+      longitude: 14.13907,
+    },
+    city_id: "Q6406",
+    country: "DE",
   },
-  8000770: {
+  Q9164004: {
     name: "Bad Zwischenahn",
-    latitude: 53.182547,
-    longitude: 8.002916,
-    city: 6803,
-    preferred: true,
+    geo: {
+      latitude: 53.1825,
+      longitude: 8.0037,
+    },
+    city_id: "Q504526",
+    country: "DE",
   },
-  8000774: {
+  Q442698: {
     name: "Baden-Baden",
-    latitude: 48.790085,
-    longitude: 8.190467,
-    city: 7726,
-    preferred: true,
+    geo: {
+      latitude: 48.7906,
+      longitude: 8.19083,
+    },
+    city_id: "Q4100",
+    country: "DE",
   },
-  590097: {
-    name: "Bahnhof Prien a Chiemsee",
-    latitude: 47.854355,
-    longitude: 12.346801,
-    city: 71109,
-    preferred: true,
-  },
-  8000025: {
+  Q800444: {
     name: "Bamberg",
-    latitude: 49.900757,
-    longitude: 10.899492,
-    city: 6805,
-    preferred: true,
+    geo: {
+      latitude: 49.900815,
+      longitude: 10.899516,
+    },
+    city_id: "Q3936",
+    country: "DE",
   },
-  8000026: {
+  Q3968974: {
+    name: "Barcellona-Castroreale",
+    geo: {
+      latitude: 38.154,
+      longitude: 15.1994,
+    },
+    city_id: "Q42495",
+    country: "IT",
+  },
+  Q666725: {
     name: "Basel Badischer Bahnhof",
-    latitude: 47.567292,
-    longitude: 7.607804,
-    city: 5877,
-    preferred: false,
+    geo: {
+      latitude: 47.5673079057,
+      longitude: 7.60692041847,
+    },
+    city_id: "Q78",
+    country: "CH",
+    secondary: true,
   },
-  8500010: {
+  Q667201: {
     name: "Basel SBB",
-    latitude: 47.547076,
-    longitude: 7.58917,
-    city: 5877,
-    preferred: true,
+    geo: {
+      latitude: 47.54738888888889,
+      longitude: 7.589611111111111,
+    },
+    city_id: "Q78",
+    country: "CH",
   },
-  "-2002": {
-    name: "Bastia Gare Maritime",
-    latitude: 42.704074,
-    longitude: 9.454851,
-    city: -1002,
-    preferred: true,
-  },
-  8300397: {
+  Q3969009: {
     name: "Battipaglia",
-    latitude: 40.605892,
-    longitude: 14.983256,
-    city: 19442,
-    preferred: true,
+    geo: {
+      latitude: 40.6057,
+      longitude: 14.9831,
+    },
+    city_id: "Q80652",
+    country: "IT",
   },
-  8730082: {
-    name: "Belfort – Montbéliard TGV",
-    latitude: 47.585937,
-    longitude: 6.897687,
-    city: 10610,
-    preferred: true,
+  Q326569: {
+    name: "Bebra",
+    geo: {
+      latitude: 50.9692,
+      longitude: 9.7979,
+    },
+    city_id: "Q558530",
+    country: "DE",
   },
-  8505213: {
+  Q800460: {
+    name: "Belfort-Montbéliard TGV",
+    geo: {
+      latitude: 47.585937,
+      longitude: 6.897687,
+    },
+    city_id: "Q800460",
+    country: "FR",
+  },
+  Q662556: {
     name: "Bellinzona",
-    latitude: 46.19543,
-    longitude: 9.029529,
-    city: 18291,
-    preferred: true,
+    geo: {
+      latitude: 46.19544,
+      longitude: 9.029505,
+    },
+    city_id: "Q64044",
+    country: "CH",
   },
-  8300243: {
+  Q751119: {
     name: "Benevento",
-    latitude: 41.141739,
-    longitude: 14.770112,
-    city: 22158,
-    preferred: true,
+    geo: {
+      latitude: 41.14194444,
+      longitude: 14.76972222,
+    },
+    city_id: "Q13437",
+    country: "IT",
   },
-  8000031: {
+  Q321004: {
     name: "Bensheim",
-    latitude: 49.681231,
-    longitude: 8.616978,
-    city: 7549,
-    preferred: true,
+    geo: {
+      latitude: 49.6824,
+      longitude: 8.61677,
+    },
+    city_id: "Q14872",
+    country: "DE",
   },
-  7400738: {
-    name: "Bergåsa station",
-    latitude: 56.182377,
-    longitude: 15.60086,
-    city: -1013,
-    preferred: true,
+  Q800466: {
+    name: "Bergen auf Rügen",
+    geo: {
+      latitude: 54.420278,
+      longitude: 13.418056,
+    },
+    city_id: "Q492538",
+    country: "DE",
   },
-  8011201: {
-    name: "Berlin Flughafen BER - Terminal 1-2",
-    latitude: 52.365641,
-    longitude: 13.5125,
-    city: 14609,
-    preferred: true,
+  Q99463150: {
+    name: "Bergåsa",
+    geo: {
+      latitude: 56.18261,
+      longitude: 15.60107,
+    },
+    city_id: "Q25789",
+    country: "SE",
+    secondary: true,
   },
-  8011102: {
+  Q702596: {
+    name: "Berlin Charlottenburg",
+    geo: {
+      latitude: 52.504722222222,
+      longitude: 13.303333333333,
+    },
+    city_id: "Q64",
+    country: "DE",
+    secondary: true,
+  },
+  Q678286: {
     name: "Berlin Gesundbrunnen",
-    latitude: 52.548961,
-    longitude: 13.388515,
-    city: 7527,
-    preferred: false,
+    geo: {
+      latitude: 52.548611111111,
+      longitude: 13.389444444444,
+    },
+    city_id: "Q64",
+    country: "DE",
+    secondary: true,
   },
-  8011160: {
+  Q1097: {
     name: "Berlin Hbf",
-    latitude: 52.525589,
-    longitude: 13.369548,
-    city: 7527,
-    preferred: true,
+    geo: {
+      latitude: 52.525083333333,
+      longitude: 13.369388888889,
+    },
+    city_id: "Q64",
+    country: "DE",
   },
-  8010255: {
+  Q683239: {
     name: "Berlin Ostbahnhof",
-    latitude: 52.510972,
-    longitude: 13.434567,
-    city: 7527,
-    preferred: false,
+    geo: {
+      latitude: 52.51,
+      longitude: 13.4347,
+    },
+    city_id: "Q64",
+    country: "DE",
+    secondary: true,
   },
-  8089028: {
+  Q660045: {
     name: "Berlin Ostkreuz",
-    latitude: 52.502999,
-    longitude: 13.46931,
-    city: 7527,
-    preferred: false,
+    geo: {
+      latitude: 52.5031,
+      longitude: 13.4689,
+    },
+    city_id: "Q64",
+    country: "DE",
+    secondary: true,
   },
-  8011113: {
+  Q654980: {
+    name: "Berlin Spandau",
+    geo: {
+      latitude: 52.5347,
+      longitude: 13.1958,
+    },
+    city_id: "Q64",
+    country: "DE",
+    secondary: true,
+  },
+  Q111323608: {
     name: "Berlin Südkreuz",
-    latitude: 52.475475,
-    longitude: 13.365571,
-    city: 7527,
-    preferred: false,
+    geo: {
+      latitude: 52.4765716,
+      longitude: 13.3660396,
+    },
+    city_id: "Q64",
+    country: "DE",
+    secondary: true,
   },
-  8010405: {
+  Q567336: {
     name: "Berlin Wannsee",
-    latitude: 52.421053,
-    longitude: 13.179336,
-    city: 7527,
-    preferred: false,
+    geo: {
+      latitude: 52.4214,
+      longitude: 13.1792,
+    },
+    city_id: "Q64",
+    country: "DE",
+    secondary: true,
   },
-  8010406: {
+  Q681785: {
     name: "Berlin Zoologischer Garten",
-    latitude: 52.507278,
-    longitude: 13.331991,
-    city: 7527,
-    preferred: false,
+    geo: {
+      latitude: 52.507222222222,
+      longitude: 13.3325,
+    },
+    city_id: "Q64",
+    country: "DE",
+    secondary: true,
   },
-  8010403: {
-    name: "Berlin-Charlottenburg",
-    latitude: 52.504725,
-    longitude: 13.303522,
-    city: 7527,
-    preferred: false,
+  Q28870: {
+    name: "Bern",
+    geo: {
+      latitude: 46.948819444444446,
+      longitude: 7.439116666666667,
+    },
+    city_id: "Q70",
+    country: "CH",
   },
-  8010404: {
-    name: "Berlin-Spandau",
-    latitude: 52.53447,
-    longitude: 13.19753,
-    city: 7527,
-    preferred: false,
+  Q479789: {
+    name: "Bernau bei Berlin",
+    geo: {
+      latitude: 52.6763,
+      longitude: 13.5931,
+    },
+    city_id: "Q9300",
+    country: "DE",
   },
-  8507000: {
-    name: "Bern Hbf",
-    latitude: 46.949113,
-    longitude: 7.438483,
-    city: 37400,
-    preferred: true,
+  Q599069: {
+    name: "Besançon Franche-Comté TGV",
+    geo: {
+      latitude: 47.308889,
+      longitude: 5.957778,
+    },
+    city_id: "Q599069",
+    country: "FR",
   },
-  8013470: {
-    name: "Bernau (b Berlin)",
-    latitude: 52.675834,
-    longitude: 13.592292,
-    city: 15793,
-    preferred: true,
-  },
-  8730086: {
-    name: "Besançon-Franche-Comté TGV",
-    latitude: 47.307361,
-    longitude: 5.953195,
-    city: 5029,
-    preferred: true,
-  },
-  8000943: {
+  Q9170701: {
     name: "Biberach (Riß)",
-    latitude: 48.101844,
-    longitude: 9.793127,
-    city: 6815,
-    preferred: true,
+    geo: {
+      latitude: 48.1018,
+      longitude: 9.79283,
+    },
+    city_id: "Q16069",
+    country: "DE",
   },
-  8000036: {
+  Q564750: {
     name: "Bielefeld Hbf",
-    latitude: 52.029258,
-    longitude: 8.532722,
-    city: 10773,
-    preferred: true,
+    geo: {
+      latitude: 52.028333333333,
+      longitude: 8.5316666666667,
+    },
+    city_id: "Q2112",
+    country: "DE",
   },
-  8100042: {
+  Q821332: {
+    name: "Bingen (Rhein) Hbf",
+    geo: {
+      latitude: 49.968888888889,
+      longitude: 7.8916666666667,
+    },
+    city_id: "Q285879",
+    country: "DE",
+  },
+  Q15107137: {
     name: "Bischofshofen",
-    latitude: 47.417361,
-    longitude: 13.220084,
-    city: 17725,
-    preferred: true,
+    geo: {
+      latitude: 47.41734722,
+      longitude: 13.21995278,
+    },
+    city_id: "Q254165",
+    country: "AT",
   },
-  8010050: {
+  Q9172296: {
     name: "Bitterfeld",
-    latitude: 51.623108,
-    longitude: 12.316704,
-    city: 7515,
-    preferred: true,
+    geo: {
+      latitude: 51.623888888889,
+      longitude: 12.315833333333,
+    },
+    city_id: "Q7007",
+    country: "DE",
   },
-  8100067: {
+  Q800537: {
     name: "Bludenz",
-    latitude: 47.154723,
-    longitude: 9.814566,
-    city: 17626,
-    preferred: true,
+    geo: {
+      latitude: 47.155,
+      longitude: 9.814722,
+    },
+    city_id: "Q494504",
+    country: "AT",
   },
-  5100227: {
+  Q2664707: {
     name: "Bochnia",
-    latitude: 49.96905,
-    longitude: 20.43028,
-    city: 32381,
-    preferred: true,
+    geo: {
+      latitude: 49.9773,
+      longitude: 20.4321,
+    },
+    city_id: "Q815903",
+    country: "PL",
   },
-  8000041: {
+  Q453861: {
     name: "Bochum Hbf",
-    latitude: 51.478651,
-    longitude: 7.224109,
-    city: 7470,
-    preferred: true,
+    geo: {
+      latitude: 51.4785,
+      longitude: 7.2227777777778,
+    },
+    city_id: "Q2103",
+    country: "DE",
   },
-  8300217: {
+  Q4189414: {
+    name: "Bohumín",
+    geo: {
+      latitude: 49.9011,
+      longitude: 18.3592,
+    },
+    city_id: "Q890949",
+    country: "CZ",
+  },
+  Q800557: {
     name: "Bologna Centrale",
-    latitude: 44.506141,
-    longitude: 11.343406,
-    city: 22159,
-    preferred: true,
+    geo: {
+      latitude: 44.505833333333,
+      longitude: 11.341666666667,
+    },
+    city_id: "Q1891",
+    country: "IT",
   },
-  8300084: {
+  Q800560: {
     name: "Bolzano/Bozen",
-    latitude: 46.49638,
-    longitude: 11.358787,
-    city: 29338,
-    preferred: true,
+    geo: {
+      latitude: 46.496619,
+      longitude: 11.358436,
+    },
+    city_id: "Q6526",
+    country: "IT",
   },
-  8001080: {
+  Q25090000: {
     name: "Bondorf (b Herrenberg)",
-    latitude: 48.523555,
-    longitude: 8.827658,
-    city: 11237,
-    preferred: true,
+    geo: {
+      latitude: 48.52281719,
+      longitude: 8.82811603,
+    },
+    city_id: "Q200744",
+    country: "DE",
   },
-  8000044: {
+  Q800550: {
+    name: "Bonn Beuel",
+    geo: {
+      latitude: 50.7384,
+      longitude: 7.12742,
+    },
+    city_id: "Q586",
+    country: "DE",
+    secondary: true,
+  },
+  Q55423: {
     name: "Bonn Hbf",
-    latitude: 50.732007,
-    longitude: 7.097136,
-    city: 7545,
-    preferred: true,
+    geo: {
+      latitude: 50.731944444444,
+      longitude: 7.0969444444444,
+    },
+    city_id: "Q586",
+    country: "DE",
   },
-  8010060: {
+  Q438795: {
+    name: "Boppard Hbf",
+    geo: {
+      latitude: 50.231111111111,
+      longitude: 7.5861111111111,
+    },
+    city_id: "Q521148",
+    country: "DE",
+  },
+  Q4956662: {
     name: "Brandenburg Hbf",
-    latitude: 52.400765,
-    longitude: 12.566245,
-    city: 7567,
-    preferred: true,
+    geo: {
+      latitude: 52.4008,
+      longitude: 12.5663,
+    },
+    city_id: "Q3931",
+    country: "DE",
   },
-  5600207: {
+  Q899662: {
     name: "Bratislava hl.st.",
-    latitude: 48.158908,
-    longitude: 17.106463,
-    city: 29295,
-    preferred: true,
+    geo: {
+      latitude: 48.158333,
+      longitude: 17.106944,
+    },
+    city_id: "Q1780",
+    country: "SK",
   },
-  8000049: {
+  Q318930: {
     name: "Braunschweig Hbf",
-    latitude: 52.252236,
-    longitude: 10.539699,
-    city: 29296,
-    preferred: true,
+    geo: {
+      latitude: 52.2522,
+      longitude: 10.5397,
+    },
+    city_id: "Q2773",
+    country: "DE",
   },
-  8100090: {
+  Q15282663: {
     name: "Bregenz",
-    latitude: 47.503001,
-    longitude: 9.739623,
-    city: 17544,
-    preferred: true,
+    geo: {
+      latitude: 47.502885,
+      longitude: 9.739579,
+    },
+    city_id: "Q1737",
+    country: "AT",
   },
-  8000050: {
+  Q43303857: {
+    name: "Bregenz Riedenburg",
+    geo: {
+      latitude: 47.493572,
+      longitude: 9.721241,
+    },
+    city_id: "Q1737",
+    country: "AT",
+    secondary: true,
+  },
+  Q631094: {
     name: "Bremen Hbf",
-    latitude: 53.083477,
-    longitude: 8.813833,
-    city: 28992,
-    preferred: true,
+    geo: {
+      latitude: 53.0831,
+      longitude: 8.81361,
+    },
+    city_id: "Q24879",
+    country: "DE",
   },
-  8000051: {
-    name: "Bremerhaven Hbf",
-    latitude: 53.534916,
-    longitude: 8.599557,
-    city: 7538,
-    preferred: true,
-  },
-  8001168: {
-    name: "Bremerhaven-Lehe",
-    latitude: 53.566342,
-    longitude: 8.600564,
-    city: 6834,
-    preferred: true,
-  },
-  8300092: {
+  Q373503: {
     name: "Brennero/Brenner",
-    latitude: 47.002338,
-    longitude: 11.505428,
-    city: 18827,
-    preferred: true,
+    geo: {
+      latitude: 47.001944,
+      longitude: 11.505,
+    },
+    city_id: "Q375769",
+    country: "IT",
   },
-  8300048: {
+  Q727319: {
     name: "Brescia",
-    latitude: 45.532161,
-    longitude: 10.212869,
-    city: 8524,
-    preferred: true,
+    geo: {
+      latitude: 45.532408333333,
+      longitude: 10.212783333333,
+    },
+    city_id: "Q6221",
+    country: "IT",
   },
-  8300076: {
+  Q3969119: {
     name: "Bressanone/Brixen",
-    latitude: 46.709892,
-    longitude: 11.649768,
-    city: 18825,
-    preferred: true,
+    geo: {
+      latitude: 46.71,
+      longitude: 11.6501,
+    },
+    city_id: "Q185541",
+    country: "IT",
   },
-  5400001: {
+  Q921772: {
     name: "Brno hl.n.",
-    latitude: 49.190537,
-    longitude: 16.612775,
-    city: 29314,
-    preferred: true,
+    geo: {
+      latitude: 49.19083333,
+      longitude: 16.61277778,
+    },
+    city_id: "Q14960",
+    country: "CZ",
   },
-  7400290: {
-    name: "Bromölla station",
-    latitude: 56.067249,
-    longitude: 14.480759,
-    city: 38189,
-    preferred: true,
+  Q10436057: {
+    name: "Bromölla",
+    geo: {
+      latitude: 56.06715,
+      longitude: 14.48136,
+    },
+    city_id: "Q927096",
+    country: "SE",
   },
-  8000055: {
+  Q318279: {
     name: "Bruchsal",
-    latitude: 49.124619,
-    longitude: 8.589651,
-    city: 7524,
-    preferred: true,
+    geo: {
+      latitude: 49.1239,
+      longitude: 8.58992,
+    },
+    city_id: "Q7059",
+    country: "DE",
   },
-  8100032: {
-    name: "Bruck/Mur",
-    latitude: 47.413828,
-    longitude: 15.279432,
-    city: 17606,
-    preferred: true,
+  Q800577: {
+    name: "Bruck an der Mur",
+    geo: {
+      latitude: 47.4135,
+      longitude: 15.2791,
+    },
+    city_id: "Q259893",
+    country: "AT",
   },
-  8800004: {
-    name: "Bruxelles-Midi",
-    latitude: 50.835374,
-    longitude: 4.335695,
-    city: 5974,
-    preferred: false,
+  Q800587: {
+    name: "Bruxelles Midi/Zuid",
+    geo: {
+      latitude: 50.835278,
+      longitude: 4.335833,
+    },
+    city_id: "Q239",
+    country: "BE",
   },
-  8898004: {
-    name: "Bruxelles-Midi Eurostar",
-    latitude: 50.835895,
-    longitude: 4.335317,
-    city: 5974,
-    preferred: false,
+  Q660792: {
+    name: "Bruxelles Nord",
+    geo: {
+      latitude: 50.860278,
+      longitude: 4.360833,
+    },
+    city_id: "Q239",
+    country: "BE",
+    secondary: true,
   },
-  8800002: {
-    name: "Bruxelles-Nord",
-    latitude: 50.860238,
-    longitude: 4.361458,
-    city: 5974,
-    preferred: false,
+  Q99462003: {
+    name: "Bräkne-Hoby",
+    geo: {
+      latitude: 56.2311,
+      longitude: 15.1159,
+    },
+    city_id: "Q995551",
+    country: "SE",
   },
-  7400288: {
-    name: "Bräkne-Hoby station",
-    latitude: 56.231059,
-    longitude: 15.116026,
-    city: 35341,
-    preferred: false,
-  },
-  8000057: {
+  Q800586: {
     name: "Buchloe",
-    latitude: 48.033724,
-    longitude: 10.71622,
-    city: 7546,
-    preferred: true,
+    geo: {
+      latitude: 48.0339,
+      longitude: 10.7164,
+    },
+    city_id: "Q265110",
+    country: "DE",
   },
-  5500728: {
+  Q800998: {
+    name: "Budapest-Kelenföld",
+    geo: {
+      latitude: 47.465,
+      longitude: 19.02166667,
+    },
+    city_id: "Q1781",
+    country: "HU",
+    secondary: true,
+  },
+  Q841167: {
+    name: "Budapest-Keleti",
+    geo: {
+      latitude: 47.50055555555556,
+      longitude: 19.08361111111111,
+    },
+    city_id: "Q1781",
+    country: "HU",
+  },
+  Q522868: {
     name: "Budapest-Nyugati",
-    latitude: 47.510705,
-    longitude: 19.057464,
-    city: 18819,
-    preferred: true,
+    geo: {
+      latitude: 47.510833333333,
+      longitude: 19.0575,
+    },
+    city_id: "Q1781",
+    country: "HU",
   },
-  7400305: {
-    name: "Burlöv station",
-    latitude: 55.64056,
-    longitude: 13.07972,
-    city: 63310,
-    preferred: true,
+  Q92592470: {
+    name: "Burlöv",
+    geo: {
+      latitude: 55.64076,
+      longitude: 13.08001,
+    },
+    city_id: "Q676026",
+    country: "SE",
   },
-  5100005: {
-    name: "Bydgoszcz Główna",
-    latitude: 53.135111,
-    longitude: 17.99164,
-    city: 19068,
-    preferred: true,
+  Q800602: {
+    name: "Bydgoszcz",
+    geo: {
+      latitude: 53.135278,
+      longitude: 17.991389,
+    },
+    city_id: "Q41252",
+    country: "PL",
   },
-  7400041: {
-    name: "Båstad station",
-    latitude: 56.425019,
-    longitude: 12.868723,
-    city: 19113,
-    preferred: true,
+  Q10438632: {
+    name: "Båstad",
+    geo: {
+      latitude: 56.43079,
+      longitude: 12.9048,
+    },
+    city_id: "Q1011844",
+    country: "SE",
   },
-  8001055: {
+  Q440075: {
     name: "Böblingen",
-    latitude: 48.687761,
-    longitude: 9.004126,
-    city: 6821,
-    preferred: true,
+    geo: {
+      latitude: 48.6875,
+      longitude: 9.00472,
+    },
+    city_id: "Q6931",
+    country: "DE",
   },
-  8000058: {
+  Q800600: {
     name: "Büchen",
-    latitude: 53.475371,
-    longitude: 10.622858,
-    city: 6828,
-    preferred: true,
+    geo: {
+      latitude: 53.4753,
+      longitude: 10.6229,
+    },
+    city_id: "Q631683",
+    country: "DE",
   },
-  8000059: {
+  Q317151: {
     name: "Bünde (Westf)",
-    latitude: 52.202076,
-    longitude: 8.573875,
-    city: 10810,
-    preferred: true,
+    geo: {
+      latitude: 52.202246,
+      longitude: 8.5743329,
+    },
+    city_id: "Q7021",
+    country: "DE",
   },
-  8010066: {
+  Q186740: {
     name: "Bützow",
-    latitude: 53.836809,
-    longitude: 11.997749,
-    city: 7556,
-    preferred: true,
+    geo: {
+      latitude: 53.837,
+      longitude: 11.9975,
+    },
+    city_id: "Q536634",
+    country: "DE",
   },
-  5400202: {
+  Q5005700: {
     name: "Břeclav",
-    latitude: 48.753904,
-    longitude: 16.893239,
-    city: 22628,
-    preferred: true,
+    geo: {
+      latitude: 48.753586,
+      longitude: 16.892338,
+    },
+    city_id: "Q581478",
+    country: "CZ",
   },
-  8301007: {
+  Q3969211: {
+    name: "Capo d'Orlando-Naso",
+    geo: {
+      latitude: 38.1576799,
+      longitude: 14.744504,
+    },
+    city_id: "Q51176",
+    country: "IT",
+  },
+  Q3969266: {
     name: "Cascina",
-    latitude: 43.674666,
-    longitude: 10.545074,
-    city: 20158,
-    preferred: true,
+    geo: {
+      latitude: 43.6746,
+      longitude: 10.5453,
+    },
+    city_id: "Q18490101",
+    country: "IT",
   },
-  8300244: {
+  Q3969276: {
     name: "Caserta",
-    latitude: 41.068468,
-    longitude: 14.328167,
-    city: 20159,
-    preferred: true,
+    geo: {
+      latitude: 41.06888889,
+      longitude: 14.32777778,
+    },
+    city_id: "Q1906",
+    country: "IT",
   },
-  8000064: {
+  Q1093710: {
+    name: "Catania Centrale",
+    geo: {
+      latitude: 37.506667,
+      longitude: 15.1,
+    },
+    city_id: "Q1903",
+    country: "IT",
+  },
+  Q16609014: {
+    name: "Cefalù",
+    geo: {
+      latitude: 38.032979,
+      longitude: 14.019523,
+    },
+    city_id: "Q235163",
+    country: "IT",
+  },
+  Q5058125: {
+    name: "Celje",
+    geo: {
+      latitude: 46.228611,
+      longitude: 15.267222,
+    },
+    city_id: "Q1012",
+    country: "SI",
+  },
+  Q23065531: {
     name: "Celle",
-    latitude: 52.621171,
-    longitude: 10.062704,
-    city: 7562,
-    preferred: true,
+    geo: {
+      latitude: 52.620883333333,
+      longitude: 10.062588888889,
+    },
+    city_id: "Q3933",
+    country: "DE",
   },
-  8700091: {
+  Q680195: {
     name: "Chalon-sur-Saône",
-    latitude: 46.781612,
-    longitude: 4.843454,
-    city: 5765,
-    preferred: true,
+    geo: {
+      latitude: 46.781435,
+      longitude: 4.842886,
+    },
+    city_id: "Q203645",
+    country: "FR",
   },
-  8010184: {
+  Q564795: {
     name: "Chemnitz Hbf",
-    latitude: 50.839266,
-    longitude: 12.930299,
-    city: 28997,
-    preferred: true,
+    geo: {
+      latitude: 50.840155555556,
+      longitude: 12.930594444444,
+    },
+    city_id: "Q2795",
+    country: "DE",
   },
-  8505307: {
+  Q683236: {
     name: "Chiasso",
-    latitude: 45.832167,
-    longitude: 9.031426,
-    city: 18294,
-    preferred: true,
+    geo: {
+      latitude: 45.83219,
+      longitude: 9.031448888888889,
+    },
+    city_id: "Q68111",
+    country: "CH",
   },
-  8509000: {
+  Q663869: {
     name: "Chur",
-    latitude: 46.85344,
-    longitude: 9.528475,
-    city: 6378,
-    preferred: true,
+    geo: {
+      latitude: 46.85308,
+      longitude: 9.528919,
+    },
+    city_id: "Q69007",
+    country: "CH",
   },
-  8001338: {
+  Q800626: {
     name: "Coburg",
-    latitude: 50.263094,
-    longitude: 10.957374,
-    city: 6845,
-    preferred: true,
+    geo: {
+      latitude: 50.262843,
+      longitude: 10.95759,
+    },
+    city_id: "Q14821",
+    country: "DE",
   },
-  8300056: {
+  Q260886: {
     name: "Como San Giovanni",
-    latitude: 45.80902,
-    longitude: 9.072796,
-    city: 29244,
-    preferred: true,
+    geo: {
+      latitude: 45.80894611111111,
+      longitude: 9.072331111111112,
+    },
+    city_id: "Q1308",
+    country: "IT",
   },
-  8010073: {
-    name: "Cottbus",
-    latitude: 51.750952,
-    longitude: 14.324158,
-    city: 7557,
-    preferred: true,
+  Q324997: {
+    name: "Cottbus Hbf",
+    geo: {
+      latitude: 51.7508,
+      longitude: 14.3264,
+    },
+    city_id: "Q3214",
+    country: "DE",
   },
-  8000067: {
+  Q800633: {
     name: "Crailsheim",
-    latitude: 49.137869,
-    longitude: 10.064322,
-    city: 7564,
-    preferred: true,
+    geo: {
+      latitude: 49.138505,
+      longitude: 10.064728,
+    },
+    city_id: "Q16048",
+    country: "DE",
   },
-  8000068: {
+  Q2782498: {
+    name: "Czechowice-Dziedzice",
+    geo: {
+      latitude: 49.91583333333333,
+      longitude: 19.008333333333333,
+    },
+    city_id: "Q263684",
+    country: "PL",
+  },
+  Q682529: {
     name: "Darmstadt Hbf",
-    latitude: 49.872503,
-    longitude: 8.629635,
-    city: 28993,
-    preferred: true,
+    geo: {
+      latitude: 49.8725,
+      longitude: 8.62889,
+    },
+    city_id: "Q2973",
+    country: "DE",
   },
-  8000070: {
+  Q5254284: {
     name: "Delmenhorst",
-    latitude: 53.052788,
-    longitude: 8.629761,
-    city: 7569,
-    preferred: true,
+    geo: {
+      latitude: 53.052777777778,
+      longitude: 8.6288888888889,
+    },
+    city_id: "Q3907",
+    country: "DE",
   },
-  8400173: {
+  Q17461651: {
     name: "Deventer",
-    latitude: 52.257611,
-    longitude: 6.160109,
-    city: 8616,
-    preferred: true,
+    geo: {
+      latitude: 52.25697,
+      longitude: 6.16108,
+    },
+    city_id: "Q10001",
+    country: "NL",
   },
-  8001443: {
+  Q5274966: {
     name: "Diepholz",
-    latitude: 52.605008,
-    longitude: 8.380508,
-    city: 6856,
-    preferred: true,
+    geo: {
+      latitude: 52.60472222,
+      longitude: 8.38055556,
+    },
+    city_id: "Q498534",
+    country: "DE",
   },
-  8000074: {
+  Q322795: {
     name: "Dillenburg",
-    latitude: 50.734884,
-    longitude: 8.294086,
-    city: 6858,
-    preferred: true,
+    geo: {
+      latitude: 50.735,
+      longitude: 8.29444,
+    },
+    city_id: "Q517381",
+    country: "DE",
   },
-  8010079: {
+  Q15214284: {
     name: "Doberlug-Kirchhain",
-    latitude: 51.620573,
-    longitude: 13.564236,
-    city: 14279,
-    preferred: true,
+    geo: {
+      latitude: 51.62055556,
+      longitude: 13.56416667,
+    },
+    city_id: "Q371098",
+    country: "DE",
   },
-  8000078: {
+  Q5286654: {
+    name: "Dobova",
+    geo: {
+      latitude: 45.898333,
+      longitude: 15.655278,
+    },
+    city_id: "Q2255086",
+    country: "SI",
+  },
+  Q324762: {
     name: "Donauwörth",
-    latitude: 48.714028,
-    longitude: 10.771441,
-    city: 6861,
-    preferred: true,
+    geo: {
+      latitude: 48.714444444444,
+      longitude: 10.771666666667,
+    },
+    city_id: "Q53742",
+    country: "DE",
   },
-  8100098: {
+  Q32800339: {
     name: "Dorfgastein",
-    latitude: 47.238673,
-    longitude: 13.103063,
-    city: 17637,
-    preferred: true,
+    geo: {
+      latitude: 47.2385,
+      longitude: 13.10338,
+    },
+    city_id: "Q541132",
+    country: "AT",
   },
-  8100122: {
+  Q24817320: {
     name: "Dornbirn",
-    latitude: 47.417693,
-    longitude: 9.738805,
-    city: 17545,
-    preferred: true,
+    geo: {
+      latitude: 47.4174,
+      longitude: 9.7389,
+    },
+    city_id: "Q171219",
+    country: "AT",
   },
-  8000080: {
+  Q704394: {
     name: "Dortmund Hbf",
-    latitude: 51.517898,
-    longitude: 7.459293,
-    city: 10781,
-    preferred: true,
+    geo: {
+      latitude: 51.5175,
+      longitude: 7.4588888888889,
+    },
+    city_id: "Q1295",
+    country: "DE",
   },
-  8010085: {
+  Q704354: {
     name: "Dresden Hbf",
-    latitude: 51.040562,
-    longitude: 13.732038,
-    city: 7518,
-    preferred: false,
+    geo: {
+      latitude: 51.040277777778,
+      longitude: 13.731666666667,
+    },
+    city_id: "Q1731",
+    country: "DE",
   },
-  8013444: {
-    name: "Dresden Mitte",
-    latitude: 51.056167,
-    longitude: 13.72411,
-    city: 15779,
-    preferred: true,
+  Q800686: {
+    name: "Dresden Neustadt",
+    geo: {
+      latitude: 51.065555555556,
+      longitude: 13.740833333333,
+    },
+    city_id: "Q1731",
+    country: "DE",
+    secondary: true,
   },
-  8010089: {
-    name: "Dresden-Neustadt",
-    latitude: 51.065768,
-    longitude: 13.740928,
-    city: 7518,
-    preferred: false,
-  },
-  8000086: {
+  Q567024: {
     name: "Duisburg Hbf",
-    latitude: 51.429786,
-    longitude: 6.775906,
-    city: 10780,
-    preferred: true,
+    geo: {
+      latitude: 51.43,
+      longitude: 6.7761111111111,
+    },
+    city_id: "Q2100",
+    country: "DE",
   },
-  8000084: {
-    name: "Düren",
-    latitude: 50.809395,
-    longitude: 6.482031,
-    city: 7577,
-    preferred: true,
-  },
-  8000082: {
+  Q800701: {
     name: "Düsseldorf Flughafen",
-    latitude: 51.292008,
-    longitude: 6.786837,
-    city: 7578,
-    preferred: false,
+    geo: {
+      latitude: 51.291638888889,
+      longitude: 6.7863333333333,
+    },
+    city_id: "Q1718",
+    country: "DE",
+    secondary: true,
   },
-  8000085: {
+  Q255951: {
     name: "Düsseldorf Hbf",
-    latitude: 51.21996,
-    longitude: 6.794316,
-    city: 7578,
-    preferred: false,
+    geo: {
+      latitude: 51.220277777778,
+      longitude: 6.7927777777778,
+    },
+    city_id: "Q1718",
+    country: "DE",
   },
-  5100228: {
+  Q2190272: {
     name: "Dębica",
-    latitude: 50.054418,
-    longitude: 21.405563,
-    city: 28504,
-    preferred: true,
+    geo: {
+      latitude: 50.0542,
+      longitude: 21.405,
+    },
+    city_id: "Q947404",
+    country: "PL",
   },
-  5400003: {
+  Q15735008: {
     name: "Děčín hl.n.",
-    latitude: 50.773411,
-    longitude: 14.201248,
-    city: 17505,
-    preferred: true,
+    geo: {
+      latitude: 50.7735,
+      longitude: 14.201,
+    },
+    city_id: "Q146307",
+    country: "CZ",
   },
-  8010093: {
+  Q440542: {
     name: "Eberswalde Hbf",
-    latitude: 52.834018,
-    longitude: 13.797057,
-    city: 7580,
-    preferred: true,
+    geo: {
+      latitude: 52.8338,
+      longitude: 13.7971,
+    },
+    city_id: "Q9306",
+    country: "DE",
   },
-  8010097: {
-    name: "Eisenach",
-    latitude: 50.977089,
-    longitude: 10.332147,
-    city: 7521,
-    preferred: true,
+  Q689942: {
+    name: "Eindhoven Centraal",
+    geo: {
+      latitude: 51.442778,
+      longitude: 5.479722,
+    },
+    city_id: "Q9832",
+    country: "NL",
   },
-  8001751: {
+  Q319908: {
+    name: "Eisenach Hbf",
+    geo: {
+      latitude: 50.97678,
+      longitude: 10.332013,
+    },
+    city_id: "Q7070",
+    country: "DE",
+  },
+  Q800720: {
     name: "Ellwangen",
-    latitude: 48.964117,
-    longitude: 10.129683,
-    city: 7585,
-    preferred: true,
+    geo: {
+      latitude: 48.9641,
+      longitude: 10.1297,
+    },
+    city_id: "Q163973",
+    country: "DE",
   },
-  8000092: {
-    name: "Elmshorn",
-    latitude: 53.755223,
-    longitude: 9.659062,
-    city: 6876,
-    preferred: true,
-  },
-  8010099: {
+  Q323268: {
     name: "Elsterwerda",
-    latitude: 51.459675,
-    longitude: 13.516432,
-    city: 16757,
-    preferred: true,
+    geo: {
+      latitude: 51.459167,
+      longitude: 13.516389,
+    },
+    city_id: "Q584473",
+    country: "DE",
   },
-  7400050: {
-    name: "Emmaboda station",
-    latitude: 56.629848,
-    longitude: 15.534933,
-    city: 38921,
-    preferred: true,
+  Q800727: {
+    name: "Emden (Ostfriesl) Außenhafen",
+    geo: {
+      latitude: 53.3442,
+      longitude: 7.18611,
+    },
+    city_id: "Q4174",
+    country: "DE",
+    secondary: true,
   },
-  8300498: {
+  Q320682: {
+    name: "Emden (Ostfriesl) Hbf",
+    geo: {
+      latitude: 53.3689,
+      longitude: 7.19556,
+    },
+    city_id: "Q4174",
+    country: "DE",
+  },
+  Q99511219: {
+    name: "Emmaboda",
+    geo: {
+      latitude: 56.62985,
+      longitude: 15.53474,
+    },
+    city_id: "Q1338169",
+    country: "SE",
+  },
+  Q3969560: {
     name: "Empoli",
-    latitude: 43.715693,
-    longitude: 10.94922,
-    city: 19975,
-    preferred: true,
+    geo: {
+      latitude: 43.716,
+      longitude: 10.9493,
+    },
+    city_id: "Q6697",
+    country: "IT",
   },
-  8001790: {
+  Q28029178: {
     name: "Engen",
-    latitude: 47.856349,
-    longitude: 8.772788,
-    city: 7587,
-    preferred: true,
+    geo: {
+      latitude: 47.856332,
+      longitude: 8.7727748,
+    },
+    city_id: "Q515527",
+    country: "DE",
   },
-  8010101: {
+  Q476107: {
     name: "Erfurt Hbf",
-    latitude: 50.972549,
-    longitude: 11.038501,
-    city: 29000,
-    preferred: true,
+    geo: {
+      latitude: 50.972518,
+      longitude: 11.037991,
+    },
+    city_id: "Q1729",
+    country: "DE",
   },
-  8001839: {
-    name: "Erkelenz",
-    latitude: 51.076564,
-    longitude: 6.321717,
-    city: 7589,
-    preferred: true,
+  Q116016537: {
+    name: "Ergenzingen",
+    geo: {
+      latitude: 48.489582999999996,
+      longitude: 8.809987499999998,
+    },
+    city_id: "Q7078",
+    country: "DE",
   },
-  8001844: {
+  Q800737: {
     name: "Erlangen",
-    latitude: 49.595896,
-    longitude: 11.001906,
-    city: 6883,
-    preferred: true,
+    geo: {
+      latitude: 49.595968,
+      longitude: 11.001572,
+    },
+    city_id: "Q3126",
+    country: "DE",
   },
-  7400053: {
-    name: "Eslöv station",
-    latitude: 55.836235,
-    longitude: 13.304286,
-    city: 19114,
-    preferred: true,
+  Q4992347: {
+    name: "Eslöv",
+    geo: {
+      latitude: 55.837777777778,
+      longitude: 13.304722222222,
+    },
+    city_id: "Q79237",
+    country: "SE",
   },
-  8000098: {
+  Q135607: {
     name: "Essen Hbf",
-    latitude: 51.451351,
-    longitude: 7.014795,
-    city: 10779,
-    preferred: true,
+    geo: {
+      latitude: 51.451388888889,
+      longitude: 7.0138888888889,
+    },
+    city_id: "Q2066",
+    country: "DE",
   },
-  8001920: {
-    name: "Esslingen (Neckar)",
-    latitude: 48.738811,
-    longitude: 9.300077,
-    city: 10783,
-    preferred: true,
-  },
-  8000101: {
+  Q15792330: {
     name: "Eutingen im Gäu",
-    latitude: 48.479949,
-    longitude: 8.782236,
-    city: 6891,
-    preferred: true,
+    geo: {
+      latitude: 48.4798,
+      longitude: 8.78281,
+    },
+    city_id: "Q81702",
+    country: "DE",
   },
-  7400965: {
-    name: "Falkenberg",
-    latitude: 56.919804,
-    longitude: 12.50831,
-    city: 19129,
-    preferred: true,
+  Q946397: {
+    name: "Falkenberg (S)",
+    geo: {
+      latitude: 56.919444444444,
+      longitude: 12.507777777778,
+    },
+    city_id: "Q54766",
+    country: "SE",
   },
-  8100197: {
+  Q698785: {
     name: "Feldkirch",
-    latitude: 47.241406,
-    longitude: 9.60376,
-    city: 17491,
-    preferred: true,
+    geo: {
+      latitude: 47.241111,
+      longitude: 9.604167,
+    },
+    city_id: "Q183104",
+    country: "AT",
   },
-  8000102: {
+  Q3969603: {
+    name: "Fidenza",
+    geo: {
+      latitude: 44.86746,
+      longitude: 10.063778,
+    },
+    city_id: "Q100811",
+    country: "IT",
+  },
+  Q2657899: {
     name: "Finnentrop",
-    latitude: 51.172631,
-    longitude: 7.964703,
-    city: 6901,
-    preferred: true,
+    geo: {
+      latitude: 51.17319444444445,
+      longitude: 7.964583333333334,
+    },
+    city_id: "Q10903",
+    country: "DE",
   },
-  8300497: {
+  Q800756: {
+    name: "Firenze Campo di Marte",
+    geo: {
+      latitude: 43.77758578,
+      longitude: 11.27628565,
+    },
+    city_id: "Q2044",
+    country: "IT",
+    secondary: true,
+  },
+  Q3968802: {
+    name: "Firenze Le Piagge",
+    geo: {
+      latitude: 43.7899,
+      longitude: 11.1715,
+    },
+    city_id: "Q2044",
+    country: "IT",
+    secondary: true,
+  },
+  Q1143028: {
     name: "Firenze Rifredi",
-    latitude: 43.800137,
-    longitude: 11.236408,
-    city: 8433,
-    preferred: false,
+    geo: {
+      latitude: 43.80027778,
+      longitude: 11.23666667,
+    },
+    city_id: "Q2044",
+    country: "IT",
+    secondary: true,
   },
-  8300151: {
-    name: "Firenze Santa Maria Novella",
-    latitude: 43.77681,
-    longitude: 11.247806,
-    city: 8433,
-    preferred: true,
+  Q800761: {
+    name: "Firenze S.M.N.",
+    geo: {
+      latitude: 43.776338,
+      longitude: 11.247527,
+    },
+    city_id: "Q2044",
+    country: "IT",
   },
-  8000103: {
+  Q459134: {
     name: "Flensburg",
-    latitude: 54.774088,
-    longitude: 9.436884,
-    city: 6903,
-    preferred: true,
+    geo: {
+      latitude: 54.7744,
+      longitude: 9.43667,
+    },
+    city_id: "Q3798",
+    country: "DE",
   },
-  8100353: {
-    name: "Flughafen Wien",
-    latitude: 48.120833,
-    longitude: 16.563056,
-    city: 26862,
-    preferred: false,
+  Q800759: {
+    name: "Flughafen BER",
+    geo: {
+      latitude: 52.3642841,
+      longitude: 13.5081573,
+    },
+    city_id: "Q64",
+    country: "DE",
+    secondary: true,
   },
-  8300287: {
+  Q3969635: {
     name: "Foggia",
-    latitude: 41.465944,
-    longitude: 15.555886,
-    city: 20074,
-    preferred: true,
+    geo: {
+      latitude: 41.46555556,
+      longitude: 15.55611111,
+    },
+    city_id: "Q13464",
+    country: "IT",
   },
-  8700271: {
-    name: "Forbach",
-    latitude: 49.189228,
-    longitude: 6.901318,
-    city: 115,
-    preferred: true,
+  Q2717025: {
+    name: "Forbach (F)",
+    geo: {
+      latitude: 49.189534,
+      longitude: 6.901277,
+    },
+    city_id: "Q22703",
+    country: "FR",
   },
-  8300089: {
+  Q3969649: {
+    name: "Formia-Gaeta",
+    geo: {
+      latitude: 41.25861111,
+      longitude: 13.60583333,
+    },
+    city_id: "Q128086",
+    country: "IT",
+  },
+  Q16609207: {
     name: "Fortezza/Franzensfeste",
-    latitude: 46.788718,
-    longitude: 11.61008,
-    city: 18840,
-    preferred: true,
+    geo: {
+      latitude: 46.788895,
+      longitude: 11.610293,
+    },
+    city_id: "Q381499",
+    country: "IT",
   },
-  8070003: {
-    name: "Frankfurt (M) Flughafen Fernbf",
-    latitude: 50.052906,
-    longitude: 8.569872,
-    city: 6943,
-    preferred: false,
+  Q371816: {
+    name: "Frankfurt (Main) Flughafen",
+    geo: {
+      latitude: 50.0528,
+      longitude: 8.57,
+    },
+    city_id: "Q1794",
+    country: "DE",
+    secondary: true,
   },
-  8070004: {
-    name: "Frankfurt (M) Flughafen Regionalbf",
-    latitude: 50.051218,
-    longitude: 8.57125,
-    city: 6943,
-    preferred: false,
+  Q513804: {
+    name: "Frankfurt (Main) Flughafen",
+    geo: {
+      latitude: 50.0519,
+      longitude: 8.57778,
+    },
+    city_id: "Q1794",
+    country: "DE",
+    secondary: true,
   },
-  8000105: {
+  Q165368: {
     name: "Frankfurt (Main) Hbf",
-    latitude: 50.107149,
-    longitude: 8.663785,
-    city: 7602,
-    preferred: true,
+    geo: {
+      latitude: 50.107256,
+      longitude: 8.662616,
+    },
+    city_id: "Q1794",
+    country: "DE",
   },
-  8002041: {
+  Q285550: {
     name: "Frankfurt (Main) Süd",
-    latitude: 50.09958,
-    longitude: 8.686303,
-    city: 7602,
-    preferred: false,
+    geo: {
+      latitude: 50.099204,
+      longitude: 8.686163,
+    },
+    city_id: "Q1794",
+    country: "DE",
+    secondary: true,
   },
-  8002042: {
+  Q463955: {
     name: "Frankfurt (Main) West",
-    latitude: 50.118862,
-    longitude: 8.639334,
-    city: 7602,
-    preferred: false,
+    geo: {
+      latitude: 50.1192,
+      longitude: 8.63944,
+    },
+    city_id: "Q1794",
+    country: "DE",
+    secondary: true,
   },
-  8010113: {
+  Q445993: {
     name: "Frankfurt (Oder)",
-    latitude: 52.336159,
-    longitude: 14.546506,
-    city: 7730,
-    preferred: true,
+    geo: {
+      latitude: 52.3368,
+      longitude: 14.5471,
+    },
+    city_id: "Q4024",
+    country: "DE",
   },
-  8002050: {
-    name: "Frankfurt-Niederrad",
-    latitude: 50.081287,
-    longitude: 8.637078,
-    city: 7602,
-    preferred: false,
+  Q2883173: {
+    name: "Fredericia",
+    geo: {
+      latitude: 55.5683,
+      longitude: 9.74024,
+    },
+    city_id: "Q21181",
+    country: "DK",
   },
-  8600623: {
-    name: "Fredericia St.",
-    latitude: 55.568087,
-    longitude: 9.738814,
-    city: 17594,
-    preferred: true,
-  },
-  8010115: {
+  Q800782: {
     name: "Freiberg (Sachs)",
-    latitude: 50.908348,
-    longitude: 13.344019,
-    city: 7523,
-    preferred: true,
+    geo: {
+      latitude: 50.9088,
+      longitude: 13.3446,
+    },
+    city_id: "Q14819",
+    country: "DE",
   },
-  8000107: {
-    name: "Freiburg (Breisgau) Hbf",
-    latitude: 47.99769,
-    longitude: 7.841594,
-    city: 7692,
-    preferred: true,
+  Q473572: {
+    name: "Freiburg Hbf",
+    geo: {
+      latitude: 47.997777777778,
+      longitude: 7.8419444444444,
+    },
+    city_id: "Q2833",
+    country: "DE",
   },
-  8000108: {
+  Q800783: {
     name: "Freilassing",
-    latitude: 47.836914,
-    longitude: 12.977196,
-    city: 7600,
-    preferred: true,
+    geo: {
+      latitude: 47.8372,
+      longitude: 12.9773,
+    },
+    city_id: "Q278352",
+    country: "DE",
   },
-  8000111: {
-    name: "Friedberg (Hess)",
-    latitude: 50.332607,
-    longitude: 8.762055,
-    city: 6912,
-    preferred: true,
-  },
-  8000112: {
+  Q406198: {
     name: "Friedrichshafen Stadt",
-    latitude: 47.65322,
-    longitude: 9.473902,
-    city: 29334,
-    preferred: true,
+    geo: {
+      latitude: 47.653281,
+      longitude: 9.473342,
+    },
+    city_id: "Q4051",
+    country: "DE",
   },
-  8000115: {
+  Q463931: {
     name: "Fulda",
-    latitude: 50.554722,
-    longitude: 9.68398,
-    city: 7727,
-    preferred: true,
+    geo: {
+      latitude: 50.554816,
+      longitude: 9.684279,
+    },
+    city_id: "Q3963",
+    country: "DE",
   },
-  5100009: {
-    name: "Gdańsk Główny",
-    latitude: 54.355523,
-    longitude: 18.643807,
-    city: -1006,
-    preferred: false,
+  Q319542: {
+    name: "Fürth (Bayern) Hbf",
+    geo: {
+      latitude: 49.469947,
+      longitude: 10.990124,
+    },
+    city_id: "Q3075",
+    country: "DE",
   },
-  5101104: {
+  Q557448: {
+    name: "Gdańsk Gł",
+    geo: {
+      latitude: 54.355556,
+      longitude: 18.644722,
+    },
+    city_id: "Q1792",
+    country: "PL",
+  },
+  Q594376: {
     name: "Gdańsk Oliwa",
-    latitude: 54.409933,
-    longitude: 18.572277,
-    city: -1006,
-    preferred: false,
+    geo: {
+      latitude: 54.4101,
+      longitude: 18.5713,
+    },
+    city_id: "Q1792",
+    country: "PL",
+    secondary: true,
   },
-  5101307: {
+  Q934967: {
     name: "Gdańsk Wrzeszcz",
-    latitude: 54.382049,
-    longitude: 18.60509,
-    city: -1006,
-    preferred: false,
+    geo: {
+      latitude: 54.382,
+      longitude: 18.6053,
+    },
+    city_id: "Q1792",
+    country: "PL",
+    secondary: true,
   },
-  5100010: {
-    name: "Gdynia Główna",
-    latitude: 54.520843,
-    longitude: 18.529554,
-    city: 19069,
-    preferred: true,
+  Q800808: {
+    name: "Gdynia",
+    geo: {
+      latitude: 54.5212,
+      longitude: 18.5286,
+    },
+    city_id: "Q385",
+    country: "PL",
   },
-  8002206: {
-    name: "Geilenkirchen",
-    latitude: 50.961097,
-    longitude: 6.124368,
-    city: 7609,
-    preferred: true,
-  },
-  8000118: {
+  Q462284: {
     name: "Gelsenkirchen Hbf",
-    latitude: 51.505016,
-    longitude: 7.102583,
-    city: 29372,
-    preferred: true,
+    geo: {
+      latitude: 51.504444444444,
+      longitude: 7.1013888888889,
+    },
+    city_id: "Q2765",
+    country: "DE",
   },
-  8300153: {
+  Q800816: {
     name: "Genova Piazza Principe",
-    latitude: 44.417507,
-    longitude: 8.922072,
-    city: 8450,
-    preferred: true,
+    geo: {
+      latitude: 44.41722222222222,
+      longitude: 8.921388888888888,
+    },
+    city_id: "Q1449",
+    country: "IT",
   },
-  8000124: {
-    name: "Gießen",
-    latitude: 50.579056,
-    longitude: 8.661466,
-    city: 7608,
-    preferred: true,
+  Q320986: {
+    name: "Gera Hbf",
+    geo: {
+      latitude: 50.883737,
+      longitude: 12.077499,
+    },
+    city_id: "Q3750",
+    country: "DE",
   },
-  8300344: {
+  Q3969728: {
+    name: "Giarre-Riposto",
+    geo: {
+      latitude: 37.7302,
+      longitude: 15.1936,
+    },
+    city_id: "Q478322",
+    country: "IT",
+  },
+  Q3969731: {
     name: "Gioia Tauro",
-    latitude: 38.42341,
-    longitude: 15.897369,
-    city: 20092,
-    preferred: true,
+    geo: {
+      latitude: 38.42286111111111,
+      longitude: 15.896666666666667,
+    },
+    city_id: "Q54614",
+    country: "IT",
   },
-  5100011: {
+  Q583287: {
     name: "Gliwice",
-    latitude: 50.301109,
-    longitude: 18.677157,
-    city: 28509,
-    preferred: true,
+    geo: {
+      latitude: 50.30138889,
+      longitude: 18.67722222,
+    },
+    city_id: "Q105084",
+    country: "PL",
   },
-  5100013: {
+  Q2304534: {
     name: "Gniezno",
-    latitude: 52.526434,
-    longitude: 17.601786,
-    city: 19070,
-    preferred: true,
+    geo: {
+      latitude: 52.529444444444,
+      longitude: 17.604444444444,
+    },
+    city_id: "Q51432",
+    country: "PL",
   },
-  8100041: {
+  Q60616614: {
     name: "Golling-Abtenau",
-    latitude: 47.600579,
-    longitude: 13.164082,
-    city: 17608,
-    preferred: true,
+    geo: {
+      latitude: 47.600781,
+      longitude: 13.164144,
+    },
+    city_id: "Q527800",
+    country: "AT",
   },
-  8100173: {
+  Q800830: {
+    name: "Gotha",
+    geo: {
+      latitude: 50.9392,
+      longitude: 10.7139,
+    },
+    city_id: "Q6986",
+    country: "DE",
+  },
+  Q873836: {
     name: "Graz Hbf",
-    latitude: 47.067842,
-    longitude: 15.415664,
-    city: 29008,
-    preferred: true,
+    geo: {
+      latitude: 47.072222,
+      longitude: 15.417222,
+    },
+    city_id: "Q13298",
+    country: "AT",
   },
-  8010139: {
+  Q800835: {
     name: "Greifswald",
-    latitude: 54.093002,
-    longitude: 13.370402,
-    city: 14315,
-    preferred: true,
+    geo: {
+      latitude: 54.092778,
+      longitude: 13.370556,
+    },
+    city_id: "Q4098",
+    country: "DE",
   },
-  8002166: {
+  Q3096600: {
+    name: "Györ",
+    geo: {
+      latitude: 47.682,
+      longitude: 17.634,
+    },
+    city_id: "Q134494",
+    country: "HU",
+  },
+  Q66499028: {
     name: "Gäufelden",
-    latitude: 48.559665,
-    longitude: 8.850311,
-    city: 11830,
-    preferred: true,
+    geo: {
+      latitude: 48.559717,
+      longitude: 8.849975,
+    },
+    city_id: "Q538579",
+    country: "DE",
   },
-  7400003: {
+  Q472217: {
+    name: "Göppingen",
+    geo: {
+      latitude: 48.700288888889,
+      longitude: 9.6522805555556,
+    },
+    city_id: "Q4072",
+    country: "DE",
+  },
+  Q54326: {
     name: "Göteborg Central",
-    latitude: 57.709308,
-    longitude: 11.973424,
-    city: 67303,
-    preferred: true,
+    geo: {
+      latitude: 57.708888888889,
+      longitude: 11.973333333333,
+    },
+    city_id: "Q25287",
+    country: "SE",
   },
-  8000128: {
+  Q320098: {
     name: "Göttingen",
-    latitude: 51.536614,
-    longitude: 9.925682,
-    city: 7613,
-    preferred: true,
+    geo: {
+      latitude: 51.5367,
+      longitude: 9.92694,
+    },
+    city_id: "Q3033",
+    country: "DE",
   },
-  8000139: {
+  Q800859: {
     name: "Günzburg",
-    latitude: 48.460334,
-    longitude: 10.278652,
-    city: 7622,
-    preferred: true,
+    geo: {
+      latitude: 48.4602,
+      longitude: 10.2786,
+    },
+    city_id: "Q489685",
+    country: "DE",
   },
-  8002461: {
+  Q323533: {
     name: "Gütersloh Hbf",
-    latitude: 51.90732,
-    longitude: 8.385632,
-    city: 7618,
-    preferred: true,
+    geo: {
+      latitude: 51.9069,
+      longitude: 8.38472,
+    },
+    city_id: "Q3771",
+    country: "DE",
   },
-  5100012: {
+  Q2111496: {
     name: "Głogów",
-    latitude: 51.668953,
-    longitude: 16.079715,
-    city: 28508,
-    preferred: true,
+    geo: {
+      latitude: 51.670555555556,
+      longitude: 16.076388888889,
+    },
+    city_id: "Q66013",
+    country: "PL",
   },
-  8000142: {
+  Q529644: {
     name: "Hagen Hbf",
-    latitude: 51.362744,
-    longitude: 7.460246,
-    city: 29376,
-    preferred: true,
+    geo: {
+      latitude: 51.362222222222,
+      longitude: 7.4616666666667,
+    },
+    city_id: "Q2871",
+    country: "DE",
   },
-  8000386: {
-    name: "Haiger",
-    latitude: 50.741356,
-    longitude: 8.220653,
-    city: 6715,
-    preferred: true,
-  },
-  8010159: {
+  Q320366: {
     name: "Halle (Saale) Hbf",
-    latitude: 51.477509,
-    longitude: 11.987088,
-    city: 29378,
-    preferred: true,
+    geo: {
+      latitude: 51.4781,
+      longitude: 11.9867,
+    },
+    city_id: "Q2814",
+    country: "DE",
   },
-  8100040: {
+  Q105094100: {
     name: "Hallein",
-    latitude: 47.685167,
-    longitude: 13.099431,
-    city: 17607,
-    preferred: true,
+    geo: {
+      latitude: 47.685175,
+      longitude: 13.099508,
+    },
+    city_id: "Q255684",
+    country: "AT",
   },
-  7400145: {
-    name: "Hallsberg Central",
-    latitude: 59.06704,
-    longitude: 15.109618,
-    city: -1011,
-    preferred: true,
+  Q54324: {
+    name: "Hallsberg",
+    geo: {
+      latitude: 59.066944444444,
+      longitude: 15.111111111111,
+    },
+    city_id: "Q1001505",
+    country: "SE",
   },
-  7400014: {
+  Q11973759: {
     name: "Halmstad Central",
-    latitude: 56.669211,
-    longitude: 12.8643,
-    city: 17521,
-    preferred: true,
+    geo: {
+      latitude: 56.66913,
+      longitude: 12.86459,
+    },
+    city_id: "Q26521",
+    country: "SE",
   },
-  8002548: {
+  Q650270: {
+    name: "Hamburg Altona",
+    geo: {
+      latitude: 53.55194444,
+      longitude: 9.935,
+    },
+    city_id: "Q1055",
+    country: "DE",
+    secondary: true,
+  },
+  Q320225: {
+    name: "Hamburg Bergedorf",
+    geo: {
+      latitude: 53.48944444,
+      longitude: 10.20638889,
+    },
+    city_id: "Q1055",
+    country: "DE",
+    secondary: true,
+  },
+  Q634142: {
     name: "Hamburg Dammtor",
-    latitude: 53.560751,
-    longitude: 9.989568,
-    city: 7626,
-    preferred: false,
+    geo: {
+      latitude: 53.560833,
+      longitude: 9.989444,
+    },
+    city_id: "Q1055",
+    country: "DE",
+    secondary: true,
   },
-  8002549: {
+  Q566812: {
+    name: "Hamburg Harburg",
+    geo: {
+      latitude: 53.456111,
+      longitude: 9.991667,
+    },
+    city_id: "Q1055",
+    country: "DE",
+    secondary: true,
+  },
+  Q6456: {
     name: "Hamburg Hbf",
-    latitude: 53.552732,
-    longitude: 10.006908,
-    city: 7626,
-    preferred: true,
+    geo: {
+      latitude: 53.552778,
+      longitude: 10.006389,
+    },
+    city_id: "Q1055",
+    country: "DE",
   },
-  8002553: {
-    name: "Hamburg-Altona",
-    latitude: 53.552696,
-    longitude: 9.935174,
-    city: 7626,
-    preferred: false,
+  Q528204: {
+    name: "Hamm (Westf) Hbf",
+    geo: {
+      latitude: 51.678333333333,
+      longitude: 7.8080555555556,
+    },
+    city_id: "Q2880",
+    country: "DE",
   },
-  8002554: {
-    name: "Hamburg-Bergedorf",
-    latitude: 53.489835,
-    longitude: 10.206172,
-    city: 7626,
-    preferred: false,
-  },
-  8000147: {
-    name: "Hamburg-Harburg",
-    latitude: 53.456296,
-    longitude: 9.991591,
-    city: 7626,
-    preferred: false,
-  },
-  8000149: {
-    name: "Hamm (Westf)",
-    latitude: 51.678077,
-    longitude: 7.807823,
-    city: 7741,
-    preferred: true,
-  },
-  8000150: {
+  Q538828: {
     name: "Hanau Hbf",
-    latitude: 50.12128,
-    longitude: 8.929165,
-    city: 29379,
-    preferred: true,
+    geo: {
+      latitude: 50.121102,
+      longitude: 8.92946,
+    },
+    city_id: "Q3802",
+    country: "DE",
   },
-  8000152: {
+  Q703918: {
     name: "Hannover Hbf",
-    latitude: 52.376763,
-    longitude: 9.741016,
-    city: 7623,
-    preferred: true,
+    geo: {
+      latitude: 52.3772,
+      longitude: 9.74167,
+    },
+    city_id: "Q1715",
+    country: "DE",
   },
-  8000155: {
+  Q16830551: {
+    name: "Hannover Linden/Fischerhof",
+    geo: {
+      latitude: 52.3527,
+      longitude: 9.72278,
+    },
+    city_id: "Q1715",
+    country: "DE",
+    secondary: true,
+  },
+  Q314955: {
+    name: "Hannover Messe/Laatzen",
+    geo: {
+      latitude: 52.3172,
+      longitude: 9.7925,
+    },
+    city_id: "Q14856",
+    country: "DE",
+  },
+  Q553145: {
+    name: "Hegyeshalom",
+    geo: {
+      latitude: 47.9125,
+      longitude: 17.1481,
+    },
+    city_id: "Q1012768",
+    country: "HU",
+  },
+  Q800902: {
     name: "Heide (Holst)",
-    latitude: 54.194364,
-    longitude: 9.101272,
-    city: 6955,
-    preferred: true,
+    geo: {
+      latitude: 54.193,
+      longitude: 9.10098,
+    },
+    city_id: "Q492322",
+    country: "DE",
   },
-  8000156: {
+  Q467998: {
     name: "Heidelberg Hbf",
-    latitude: 49.403779,
-    longitude: 8.675741,
-    city: 7632,
-    preferred: true,
+    geo: {
+      latitude: 49.403611111111,
+      longitude: 8.6752777777778,
+    },
+    city_id: "Q2966",
+    country: "DE",
   },
-  8000157: {
+  Q322693: {
     name: "Heilbronn Hbf",
-    latitude: 49.143308,
-    longitude: 9.207713,
-    city: 29003,
-    preferred: true,
+    geo: {
+      latitude: 49.1428,
+      longitude: 9.20794,
+    },
+    city_id: "Q715",
+    country: "DE",
   },
-  8000159: {
+  Q11708873: {
     name: "Helmstedt",
-    latitude: 52.222221,
-    longitude: 11.010734,
-    city: 7640,
-    preferred: true,
+    geo: {
+      latitude: 52.2221,
+      longitude: 11.0105,
+    },
+    city_id: "Q486562",
+    country: "DE",
   },
-  7400154: {
+  Q3062731: {
     name: "Helsingborg Central",
-    latitude: 56.043688,
-    longitude: 12.695069,
-    city: 17522,
-    preferred: true,
+    geo: {
+      latitude: 56.044388888889,
+      longitude: 12.694444444444,
+    },
+    city_id: "Q25411",
+    country: "SE",
   },
-  8400316: {
+  Q800910: {
     name: "Hengelo",
-    latitude: 52.261854,
-    longitude: 6.793723,
-    city: 19063,
-    preferred: true,
+    geo: {
+      latitude: 52.261944,
+      longitude: 6.794167,
+    },
+    city_id: "Q10006",
+    country: "NL",
   },
-  8000161: {
-    name: "Herborn (Dillkr)",
-    latitude: 50.6844,
-    longitude: 8.308136,
-    city: 6959,
-    preferred: true,
+  Q320668: {
+    name: "Herford",
+    geo: {
+      latitude: 52.1193,
+      longitude: 8.66436,
+    },
+    city_id: "Q3971",
+    country: "DE",
   },
-  8002785: {
+  Q800912: {
+    name: "Hermsdorf-Klosterlausnitz",
+    geo: {
+      latitude: 50.9036,
+      longitude: 11.8583,
+    },
+    city_id: "Q552692",
+    country: "DE",
+  },
+  Q440548: {
     name: "Herrenberg",
-    latitude: 48.593995,
-    longitude: 8.862662,
-    city: 6718,
-    preferred: true,
+    geo: {
+      latitude: 48.5936,
+      longitude: 8.86278,
+    },
+    city_id: "Q16100",
+    country: "DE",
   },
-  8002806: {
-    name: "Herzogenrath",
-    latitude: 50.870917,
-    longitude: 6.094488,
-    city: 6961,
-    preferred: true,
-  },
-  8000169: {
+  Q324775: {
     name: "Hildesheim Hbf",
-    latitude: 52.160627,
-    longitude: 9.953494,
-    city: 10772,
-    preferred: true,
+    geo: {
+      latitude: 52.1606,
+      longitude: 9.95389,
+    },
+    city_id: "Q3185",
+    country: "DE",
   },
-  8400322: {
+  Q49868: {
     name: "Hilversum",
-    latitude: 52.226347,
-    longitude: 5.180195,
-    city: 8624,
-    preferred: true,
+    geo: {
+      latitude: 52.226944,
+      longitude: 5.181111,
+    },
+    city_id: "Q9934",
+    country: "NL",
   },
-  8000176: {
+  Q31338289: {
+    name: "Hohenems",
+    geo: {
+      latitude: 47.364992,
+      longitude: 9.681708,
+    },
+    city_id: "Q698591",
+    country: "AT",
+  },
+  Q324828: {
     name: "Homburg (Saar) Hbf",
-    latitude: 49.328081,
-    longitude: 7.337031,
-    city: 7648,
-    preferred: true,
+    geo: {
+      latitude: 49.3278,
+      longitude: 7.33694,
+    },
+    city_id: "Q7040",
+    country: "DE",
   },
-  8000177: {
+  Q9293808: {
     name: "Horb",
-    latitude: 48.44169,
-    longitude: 8.689179,
-    city: 6970,
-    preferred: true,
+    geo: {
+      latitude: 48.44164,
+      longitude: 8.68902,
+    },
+    city_id: "Q82690",
+    country: "DE",
   },
-  7400517: {
-    name: "Hovmantorp station",
-    latitude: 56.78626,
-    longitude: 15.139884,
-    city: 38124,
-    preferred: true,
+  Q99496966: {
+    name: "Hovmantorp",
+    geo: {
+      latitude: 56.78604,
+      longitude: 15.14053,
+    },
+    city_id: "Q2034409",
+    country: "SE",
   },
-  8000522: {
+  Q5928360: {
     name: "Hude",
-    latitude: 53.109645,
-    longitude: 8.460476,
-    city: 6973,
-    preferred: true,
+    geo: {
+      latitude: 53.11,
+      longitude: 8.4607,
+    },
+    city_id: "Q703497",
+    country: "DE",
   },
-  8070180: {
+  Q472412: {
     name: "Husum",
-    latitude: 54.472724,
-    longitude: 9.055193,
-    city: 6982,
-    preferred: true,
+    geo: {
+      latitude: 54.4722,
+      longitude: 9.05556,
+    },
+    city_id: "Q21159",
+    country: "DE",
   },
-  7400006: {
+  Q3375660: {
     name: "Hässleholm Central",
-    latitude: 56.158516,
-    longitude: 13.763923,
-    city: 19104,
-    preferred: true,
+    geo: {
+      latitude: 56.1575,
+      longitude: 13.763333333333,
+    },
+    city_id: "Q847665",
+    country: "SE",
   },
-  7400286: {
-    name: "Höör Station",
-    latitude: 55.936923,
-    longitude: 13.541844,
-    city: 19123,
-    preferred: true,
+  Q12317725: {
+    name: "Höör",
+    geo: {
+      latitude: 55.9369,
+      longitude: 13.5415,
+    },
+    city_id: "Q765434",
+    country: "SE",
   },
-  8100062: {
+  Q11711967: {
     name: "Imst-Pitztal",
-    latitude: 47.219077,
-    longitude: 10.761669,
-    city: 17623,
-    preferred: true,
+    geo: {
+      latitude: 47.219041,
+      longitude: 10.762072,
+    },
+    city_id: "Q11711967",
+    country: "AT",
   },
-  8000183: {
+  Q564788: {
     name: "Ingolstadt Hbf",
-    latitude: 48.744537,
-    longitude: 11.437335,
-    city: 29013,
-    preferred: true,
+    geo: {
+      latitude: 48.744444444444,
+      longitude: 11.436944444444,
+    },
+    city_id: "Q3004",
+    country: "DE",
   },
-  8100108: {
+  Q668727: {
     name: "Innsbruck Hbf",
-    latitude: 47.263277,
-    longitude: 11.401,
-    city: 10461,
-    preferred: true,
+    geo: {
+      latitude: 47.263889,
+      longitude: 11.400833,
+    },
+    city_id: "Q1735",
+    country: "AT",
   },
-  5100015: {
+  Q11712657: {
     name: "Inowrocław",
-    latitude: 52.801405,
-    longitude: 18.239184,
-    city: 19071,
-    preferred: true,
+    geo: {
+      latitude: 52.8014,
+      longitude: 18.24,
+    },
+    city_id: "Q378821",
+    country: "PL",
   },
-  8507492: {
+  Q672006: {
     name: "Interlaken Ost",
-    latitude: 46.690691,
-    longitude: 7.868977,
-    city: 6403,
-    preferred: false,
+    geo: {
+      latitude: 46.6904999962,
+      longitude: 7.86900000435,
+    },
+    city_id: "Q68103",
+    country: "CH",
+    secondary: true,
   },
-  8507493: {
+  Q663794: {
     name: "Interlaken West",
-    latitude: 46.682627,
-    longitude: 7.851439,
-    city: 6403,
-    preferred: false,
+    geo: {
+      latitude: 46.6826279804,
+      longitude: 7.8514531376,
+    },
+    city_id: "Q68103",
+    country: "CH",
   },
-  8003102: {
+  Q29878878: {
+    name: "Iserlohn-Letmathe",
+    geo: {
+      latitude: 51.36297549,
+      longitude: 7.618348,
+    },
+    city_id: "Q1130",
+    country: "DE",
+  },
+  Q800962: {
     name: "Itzehoe",
-    latitude: 53.923384,
-    longitude: 9.510389,
-    city: 6990,
-    preferred: true,
+    geo: {
+      latitude: 53.924,
+      longitude: 9.51062,
+    },
+    city_id: "Q16073",
+    country: "DE",
   },
-  5100233: {
-    name: "Jaroslaw",
-    latitude: 50.01612,
-    longitude: 22.67775,
-    city: 32399,
-    preferred: true,
+  Q2316035: {
+    name: "Jarosław",
+    geo: {
+      latitude: 50.0109,
+      longitude: 22.6774,
+    },
+    city_id: "Q721928",
+    country: "PL",
   },
-  8011956: {
+  Q166545: {
+    name: "Jena Göschwitz",
+    geo: {
+      latitude: 50.8838,
+      longitude: 11.5933,
+    },
+    city_id: "Q3150",
+    country: "DE",
+    secondary: true,
+  },
+  Q320572: {
     name: "Jena Paradies",
-    latitude: 50.924853,
-    longitude: 11.587464,
-    city: 16753,
-    preferred: true,
+    geo: {
+      latitude: 50.925,
+      longitude: 11.5878,
+    },
+    city_id: "Q3150",
+    country: "DE",
   },
-  8010133: {
-    name: "Jena-Göschwitz",
-    latitude: 50.883943,
-    longitude: 11.59354,
-    city: 14312,
-    preferred: true,
+  Q319264: {
+    name: "Jena West",
+    geo: {
+      latitude: 50.9233,
+      longitude: 11.5781,
+    },
+    city_id: "Q3150",
+    country: "DE",
+    secondary: true,
   },
-  8100102: {
+  Q663697: {
     name: "Jenbach",
-    latitude: 47.388451,
-    longitude: 11.778457,
-    city: 10487,
-    preferred: true,
+    geo: {
+      latitude: 47.388611,
+      longitude: 11.778056,
+    },
+    city_id: "Q668227",
+    country: "AT",
   },
-  8000189: {
+  Q547299: {
     name: "Kaiserslautern Hbf",
-    latitude: 49.43614,
-    longitude: 7.768711,
-    city: 10774,
-    preferred: true,
+    geo: {
+      latitude: 49.4359,
+      longitude: 7.76882,
+    },
+    city_id: "Q3758",
+    country: "DE",
   },
-  7400074: {
+  Q10542835: {
     name: "Kalmar Central",
-    latitude: 56.661646,
-    longitude: 16.360194,
-    city: -1010,
-    preferred: true,
+    geo: {
+      latitude: 56.661527777778,
+      longitude: 16.36,
+    },
+    city_id: "Q26345",
+    country: "SE",
   },
-  8100031: {
-    name: "Kapfenberg Bahnhof",
-    latitude: 47.445195,
-    longitude: 15.292089,
-    city: 34349,
-    preferred: true,
+  Q111171460: {
+    name: "Kapfenberg",
+    geo: {
+      latitude: 47.445195,
+      longitude: 15.292089,
+    },
+    city_id: "Q623049",
+    country: "AT",
   },
-  7400075: {
-    name: "Karlshamn Station",
-    latitude: 56.176773,
-    longitude: 14.867816,
-    city: 19115,
-    preferred: true,
+  Q99462145: {
+    name: "Karlshamn Central",
+    geo: {
+      latitude: 56.17686,
+      longitude: 14.86757,
+    },
+    city_id: "Q54769",
+    country: "SE",
   },
-  7400076: {
+  Q12321415: {
     name: "Karlskrona Central",
-    latitude: 56.166319,
-    longitude: 15.585254,
-    city: 19116,
-    preferred: true,
+    geo: {
+      latitude: 56.1668,
+      longitude: 15.5852,
+    },
+    city_id: "Q25789",
+    country: "SE",
   },
-  8000191: {
+  Q688541: {
     name: "Karlsruhe Hbf",
-    latitude: 48.99351,
-    longitude: 8.401848,
-    city: 7665,
-    preferred: false,
+    geo: {
+      latitude: 48.993888888889,
+      longitude: 8.4005555555556,
+    },
+    city_id: "Q1040",
+    country: "DE",
   },
-  8003184: {
+  Q442305: {
     name: "Karlsruhe-Durlach",
-    latitude: 49.001961,
-    longitude: 8.462364,
-    city: 7665,
-    preferred: false,
+    geo: {
+      latitude: 49.002,
+      longitude: 8.4622,
+    },
+    city_id: "Q1040",
+    country: "DE",
+    secondary: true,
   },
-  8003200: {
-    name: "Kassel-Wilhelmshöhe",
-    latitude: 51.313115,
-    longitude: 9.446898,
-    city: 16766,
-    preferred: true,
+  Q563272: {
+    name: "Kassel Wilhelmshöhe",
+    geo: {
+      latitude: 51.312222222222,
+      longitude: 9.4472222222222,
+    },
+    city_id: "Q2865",
+    country: "DE",
   },
-  8601242: {
-    name: "Kastrup Lufthavn St.",
-    latitude: 55.629609,
-    longitude: 12.649377,
-    city: 22607,
-    preferred: true,
-  },
-  5100020: {
+  Q800992: {
     name: "Katowice",
-    latitude: 50.257511,
-    longitude: 19.017165,
-    city: 19072,
-    preferred: true,
+    geo: {
+      latitude: 50.258333333333,
+      longitude: 19.0175,
+    },
+    city_id: "Q588",
+    country: "PL",
   },
-  7400403: {
+  Q11980424: {
     name: "Katrineholm Central",
-    latitude: 58.996671,
-    longitude: 16.207712,
-    city: 38949,
-    preferred: true,
+    geo: {
+      latitude: 58.99662,
+      longitude: 16.207682,
+    },
+    city_id: "Q54758",
+    country: "SE",
   },
-  8003222: {
+  Q669924: {
+    name: "Kehl",
+    geo: {
+      latitude: 48.576848,
+      longitude: 7.808683,
+    },
+    city_id: "Q15979",
+    country: "DE",
+  },
+  Q66715417: {
     name: "Keitum",
-    latitude: 54.888817,
-    longitude: 8.368966,
-    city: 7004,
-    preferred: true,
+    geo: {
+      latitude: 54.889,
+      longitude: 8.369,
+    },
+    city_id: "Q21008",
+    country: "DE",
   },
-  8000199: {
+  Q454898: {
     name: "Kiel Hbf",
-    latitude: 54.314982,
-    longitude: 10.131975,
-    city: 28999,
-    preferred: true,
+    geo: {
+      latitude: 54.3148,
+      longitude: 10.1318,
+    },
+    city_id: "Q1707",
+    country: "DE",
   },
-  8000206: {
+  Q700931: {
+    name: "Klagenfurt Hbf",
+    geo: {
+      latitude: 46.615833,
+      longitude: 14.313333,
+    },
+    city_id: "Q41753",
+    country: "AT",
+  },
+  Q109380125: {
+    name: "Klanxbüll",
+    geo: {
+      latitude: 54.8625842,
+      longitude: 8.6755903,
+    },
+    city_id: "Q522859",
+    country: "DE",
+  },
+  Q111171383: {
+    name: "Knittelfeld",
+    geo: {
+      latitude: 47.215294,
+      longitude: 14.837616,
+    },
+    city_id: "Q494621",
+    country: "AT",
+  },
+  Q469682: {
     name: "Koblenz Hbf",
-    latitude: 50.35108,
-    longitude: 7.588648,
-    city: 29004,
-    preferred: true,
+    geo: {
+      latitude: 50.3506,
+      longitude: 7.58917,
+    },
+    city_id: "Q3104",
+    country: "DE",
   },
-  8601318: {
-    name: "Kolding St.",
-    latitude: 55.490842,
-    longitude: 9.481525,
-    city: 17514,
-    preferred: true,
+  Q3283910: {
+    name: "Kolding",
+    geo: {
+      latitude: 55.49094,
+      longitude: 9.48202,
+    },
+    city_id: "Q27119",
+    country: "DK",
   },
-  5400022: {
-    name: "Kolín",
-    latitude: 50.025401,
-    longitude: 15.213532,
-    city: 18578,
-    preferred: true,
+  Q166594: {
+    name: "Kolín (CZ)",
+    geo: {
+      latitude: 50.025,
+      longitude: 15.213611,
+    },
+    city_id: "Q470369",
+    country: "CZ",
   },
-  5100026: {
+  Q1978193: {
     name: "Konin",
-    latitude: 52.231399,
-    longitude: 18.253333,
-    city: 19073,
-    preferred: true,
+    geo: {
+      latitude: 52.231389,
+      longitude: 18.251667,
+    },
+    city_id: "Q52845",
+    country: "PL",
   },
-  8003400: {
+  Q438791: {
     name: "Konstanz",
-    latitude: 47.658757,
-    longitude: 9.177312,
-    city: 7673,
-    preferred: true,
+    geo: {
+      latitude: 47.658754,
+      longitude: 9.177312,
+    },
+    city_id: "Q3834",
+    country: "DE",
   },
-  5100240: {
-    name: "Krakow Plaszow",
-    latitude: 50.035091,
-    longitude: 19.974894,
-    city: 38753,
-    preferred: true,
+  Q2154725: {
+    name: "Kraków Gł",
+    geo: {
+      latitude: 50.065556,
+      longitude: 19.947222,
+    },
+    city_id: "Q31487",
+    country: "PL",
   },
-  5100028: {
-    name: "Kraków Główny",
-    latitude: 50.067192,
-    longitude: 19.947423,
-    city: 29325,
-    preferred: true,
+  Q3077203: {
+    name: "Kraków Płaszów",
+    geo: {
+      latitude: 50.035,
+      longitude: 19.9747,
+    },
+    city_id: "Q31487",
+    country: "PL",
+    secondary: true,
   },
-  8000211: {
-    name: "Krefeld Hbf",
-    latitude: 51.325772,
-    longitude: 6.570224,
-    city: 7660,
-    preferred: true,
-  },
-  8000214: {
+  Q801038: {
     name: "Kreuztal",
-    latitude: 50.956027,
-    longitude: 7.991697,
-    city: 7036,
-    preferred: true,
+    geo: {
+      latitude: 50.9561,
+      longitude: 7.99194,
+    },
+    city_id: "Q5999",
+    country: "DE",
   },
-  7400081: {
+  Q4993166: {
     name: "Kristianstad Central",
-    latitude: 56.031777,
-    longitude: 14.151052,
-    city: 19117,
-    preferred: true,
+    geo: {
+      latitude: 56.031666666667,
+      longitude: 14.151388888889,
+    },
+    city_id: "Q26937",
+    country: "SE",
   },
-  8003446: {
+  Q125954: {
     name: "Kronach",
-    latitude: 50.239551,
-    longitude: 11.320223,
-    city: 7028,
-    preferred: true,
+    geo: {
+      latitude: 50.239663,
+      longitude: 11.320195,
+    },
+    city_id: "Q494537",
+    country: "DE",
   },
-  8100001: {
+  Q12807494: {
+    name: "Krško",
+    geo: {
+      latitude: 45.95626389,
+      longitude: 15.49353056,
+    },
+    city_id: "Q15886",
+    country: "SI",
+  },
+  Q801040: {
     name: "Kufstein",
-    latitude: 47.583077,
-    longitude: 12.165551,
-    city: 10486,
-    preferred: true,
+    geo: {
+      latitude: 47.583056,
+      longitude: 12.165833,
+    },
+    city_id: "Q486341",
+    country: "AT",
   },
-  7400019: {
-    name: "Kungsbacka Station",
-    latitude: 57.490187,
-    longitude: 12.079938,
-    city: 19110,
-    preferred: true,
+  Q10550266: {
+    name: "Kungsbacka",
+    geo: {
+      latitude: 57.49048,
+      longitude: 12.07984,
+    },
+    city_id: "Q28374",
+    country: "SE",
   },
-  5100032: {
+  Q6448510: {
     name: "Kutno",
-    latitude: 52.226958,
-    longitude: 19.348615,
-    city: 19074,
-    preferred: true,
+    geo: {
+      latitude: 52.22722222,
+      longitude: 19.34888889,
+    },
+    city_id: "Q202160",
+    country: "PL",
   },
-  5600081: {
-    name: "Kuty",
-    latitude: 48.66189,
-    longitude: 17.047691,
-    city: 19101,
-    preferred: true,
+  Q10551964: {
+    name: "Kävlinge",
+    geo: {
+      latitude: 55.794444444444,
+      longitude: 13.111388888889,
+    },
+    city_id: "Q117493",
+    country: "SE",
   },
-  7400309: {
-    name: "Kävlinge Station",
-    latitude: 55.793905,
-    longitude: 13.111683,
-    city: 19126,
-    preferred: true,
-  },
-  8000207: {
+  Q1954: {
     name: "Köln Hbf",
-    latitude: 50.943029,
-    longitude: 6.958729,
-    city: 7558,
-    preferred: false,
+    geo: {
+      latitude: 50.9425,
+      longitude: 6.9580555555556,
+    },
+    city_id: "Q365",
+    country: "DE",
   },
-  8003368: {
+  Q151146: {
     name: "Köln Messe/Deutz",
-    latitude: 50.940871,
-    longitude: 6.975,
-    city: 7558,
-    preferred: false,
+    geo: {
+      latitude: 50.940833333333,
+      longitude: 6.975,
+    },
+    city_id: "Q365",
+    country: "DE",
+    secondary: true,
   },
-  8073368: {
-    name: "Köln Messe/Deutz Gleis 11-12",
-    latitude: 50.941716,
-    longitude: 6.974065,
-    city: 7560,
-    preferred: true,
-  },
-  8000208: {
+  Q3131028: {
     name: "Köln-Ehrenfeld",
-    latitude: 50.951533,
-    longitude: 6.91728,
-    city: 7558,
-    preferred: false,
+    geo: {
+      latitude: 50.9516,
+      longitude: 6.9177,
+    },
+    city_id: "Q365",
+    country: "DE",
+    secondary: true,
   },
-  8003330: {
+  Q569474: {
     name: "Köln/Bonn Flughafen",
-    latitude: 50.8789,
-    longitude: 7.119303,
-    city: 7558,
-    preferred: false,
+    geo: {
+      latitude: 50.8789,
+      longitude: 7.11917,
+    },
+    city_id: "Q365",
+    country: "DE",
+    secondary: true,
   },
-  8010193: {
+  Q178002: {
     name: "Königs Wusterhausen",
-    latitude: 52.296634,
-    longitude: 13.631476,
-    city: 14354,
-    preferred: true,
+    geo: {
+      latitude: 52.2966,
+      longitude: 13.6311,
+    },
+    city_id: "Q16013",
+    country: "DE",
   },
-  8010195: {
+  Q15107206: {
     name: "Köthen",
-    latitude: 51.751932,
-    longitude: 11.989353,
-    city: 14356,
-    preferred: true,
+    geo: {
+      latitude: 51.75221,
+      longitude: 11.98843,
+    },
+    city_id: "Q1796771",
+    country: "DE",
   },
-  8601309: {
-    name: "København",
-    latitude: 55.672721,
-    longitude: 12.564618,
-    city: 17515,
-    preferred: true,
+  Q1495052: {
+    name: "København H",
+    geo: {
+      latitude: 55.672778,
+      longitude: 12.564444,
+    },
+    city_id: "Q1748",
+    country: "DK",
   },
-  7400083: {
-    name: "Laholm station",
-    latitude: 56.501644,
-    longitude: 12.998554,
-    city: 19118,
-    preferred: true,
+  Q2431774: {
+    name: "Københavns Lufthavn Kastrup",
+    geo: {
+      latitude: 55.6296,
+      longitude: 12.6494,
+    },
+    city_id: "Q1748",
+    country: "DK",
+    secondary: true,
   },
-  8300328: {
+  Q4851: {
+    name: "Kúty",
+    geo: {
+      latitude: 48.661975,
+      longitude: 17.047161111111,
+    },
+    city_id: "Q1018849",
+    country: "SK",
+  },
+  Q3931997: {
+    name: "Kędzierzyn Koźle",
+    geo: {
+      latitude: 50.3447,
+      longitude: 18.205,
+    },
+    city_id: "Q605483",
+    country: "PL",
+  },
+  Q12323579: {
+    name: "Laholm",
+    geo: {
+      latitude: 56.5022,
+      longitude: 12.999,
+    },
+    city_id: "Q503050",
+    country: "SE",
+  },
+  Q3969913: {
     name: "Lamezia Terme Centrale",
-    latitude: 38.921161,
-    longitude: 16.25602,
-    city: 29341,
-    preferred: true,
+    geo: {
+      latitude: 38.92111111,
+      longitude: 16.25555556,
+    },
+    city_id: "Q53643",
+    country: "IT",
   },
-  5101932: {
-    name: "Lancut",
-    latitude: 50.064678,
-    longitude: 22.239401,
-    city: 32414,
-    preferred: true,
-  },
-  8100063: {
+  Q801057: {
     name: "Landeck-Zams",
-    latitude: 47.148242,
-    longitude: 10.578388,
-    city: 17726,
-    preferred: true,
+    geo: {
+      latitude: 47.148472,
+      longitude: 10.578472,
+    },
+    city_id: "Q660183",
+    country: "AT",
   },
-  8509002: {
+  Q382743: {
     name: "Landquart",
-    latitude: 46.967451,
-    longitude: 9.554059,
-    city: 18357,
-    preferred: true,
+    geo: {
+      latitude: 46.96744,
+      longitude: 9.554021,
+    },
+    city_id: "Q70631",
+    country: "CH",
   },
-  7400311: {
-    name: "Landskrona station",
-    latitude: 55.879087,
-    longitude: 12.85719,
-    city: 19127,
-    preferred: true,
+  Q10553944: {
+    name: "Landskrona",
+    geo: {
+      latitude: 55.8791,
+      longitude: 12.8572,
+    },
+    city_id: "Q54352",
+    country: "SE",
   },
-  8003515: {
+  Q15785183: {
     name: "Landstuhl",
-    latitude: 49.416283,
-    longitude: 7.565932,
-    city: 7070,
-    preferred: true,
+    geo: {
+      latitude: 49.4163,
+      longitude: 7.56602,
+    },
+    city_id: "Q22950",
+    country: "DE",
   },
-  8100065: {
+  Q56908659: {
     name: "Langen am Arlberg",
-    latitude: 47.131719,
-    longitude: 10.12037,
-    city: 17625,
-    preferred: true,
+    geo: {
+      latitude: 47.13145,
+      longitude: 10.12123,
+    },
+    city_id: "Q1804970",
+    country: "AT",
   },
-  8003545: {
+  Q23912214: {
     name: "Langenhagen Mitte",
-    latitude: 52.440964,
-    longitude: 9.726337,
-    city: 12478,
-    preferred: true,
+    geo: {
+      latitude: 52.440655555556,
+      longitude: 9.725875,
+    },
+    city_id: "Q4158",
+    country: "DE",
   },
-  8338974: {
-    name: "Le Piagge",
-    latitude: 43.7899,
-    longitude: 11.1715,
-    city: 22080,
-    preferred: true,
+  Q3969927: {
+    name: "Latina",
+    geo: {
+      latitude: 41.53808889,
+      longitude: 12.94605556,
+    },
+    city_id: "Q13410",
+    country: "IT",
   },
-  8000225: {
+  Q325154: {
     name: "Leer (Ostfriesl)",
-    latitude: 53.231647,
-    longitude: 7.46528,
-    city: 7053,
-    preferred: true,
+    geo: {
+      latitude: 53.231111,
+      longitude: 7.465278,
+    },
+    city_id: "Q15984",
+    country: "DE",
   },
-  5100035: {
+  Q801070: {
     name: "Legnica",
-    latitude: 51.213847,
-    longitude: 16.168924,
-    city: 19075,
-    preferred: true,
+    geo: {
+      latitude: 51.213269,
+      longitude: 16.16843,
+    },
+    city_id: "Q106274",
+    country: "PL",
   },
-  8010205: {
+  Q703916: {
     name: "Leipzig Hbf",
-    latitude: 51.346546,
-    longitude: 12.383333,
-    city: 16756,
-    preferred: false,
+    geo: {
+      latitude: 51.34527777777778,
+      longitude: 12.382222222222222,
+    },
+    city_id: "Q2079",
+    country: "DE",
   },
-  8010207: {
-    name: "Leipzig-Leutzsch",
-    latitude: 51.353324,
-    longitude: 12.304479,
-    city: 16756,
-    preferred: false,
-  },
-  8012183: {
+  Q325491: {
     name: "Leipzig/Halle Flughafen",
-    latitude: 51.42334,
-    longitude: 12.223423,
-    city: 16756,
-    preferred: false,
+    geo: {
+      latitude: 51.4234,
+      longitude: 12.2226,
+    },
+    city_id: "Q2079",
+    country: "DE",
+    secondary: true,
   },
-  8000532: {
+  Q108921347: {
     name: "Lennestadt-Altenhundem",
-    latitude: 51.104134,
-    longitude: 8.071513,
-    city: 6782,
-    preferred: true,
+    geo: {
+      latitude: 51.104512,
+      longitude: 8.071711,
+    },
+    city_id: "Q10893",
+    country: "DE",
+    secondary: true,
   },
-  8002370: {
+  Q56492137: {
     name: "Lennestadt-Grevenbrück",
-    latitude: 51.14178,
-    longitude: 8.017973,
-    city: 11925,
-    preferred: true,
+    geo: {
+      latitude: 51.141644444444,
+      longitude: 8.0180361111111,
+    },
+    city_id: "Q10893",
+    country: "DE",
   },
-  8100070: {
+  Q3969942: {
+    name: "Lentini",
+    geo: {
+      latitude: 37.3008,
+      longitude: 14.9976,
+    },
+    city_id: "Q488240",
+    country: "IT",
+  },
+  Q873541: {
     name: "Leoben Hbf",
-    latitude: 47.3866,
-    longitude: 15.089607,
-    city: 17555,
-    preferred: true,
+    geo: {
+      latitude: 47.386663,
+      longitude: 15.089724,
+    },
+    city_id: "Q485294",
+    country: "AT",
   },
-  7400300: {
-    name: "Lessebo station",
-    latitude: 56.750285,
-    longitude: 15.258658,
-    city: 38138,
-    preferred: true,
+  Q99510945: {
+    name: "Lessebo",
+    geo: {
+      latitude: 56.75032,
+      longitude: 15.25856,
+    },
+    city_id: "Q1820923",
+    country: "SE",
   },
-  8000227: {
-    name: "Letmathe",
-    latitude: 51.362834,
-    longitude: 7.618393,
-    city: 7055,
-    preferred: true,
+  Q324749: {
+    name: "Lichtenfels",
+    geo: {
+      latitude: 50.146469,
+      longitude: 11.05936,
+    },
+    city_id: "Q160405",
+    country: "DE",
   },
-  8089335: {
-    name: "Lichtenfels Bahnhof",
-    latitude: 50.146018,
-    longitude: 11.06039,
-    city: 16737,
-    preferred: true,
-  },
-  8500023: {
+  Q3096881: {
     name: "Liestal",
-    latitude: 47.484375,
-    longitude: 7.731352,
-    city: 18169,
-    preferred: true,
+    geo: {
+      latitude: 47.4844611632,
+      longitude: 7.73136745412,
+    },
+    city_id: "Q68972",
+    country: "CH",
   },
-  8100131: {
+  Q111167784: {
     name: "Liezen",
-    latitude: 47.562662,
-    longitude: 14.241798,
-    city: 17556,
-    preferred: true,
+    geo: {
+      latitude: 47.562689,
+      longitude: 14.24187,
+    },
+    city_id: "Q698520",
+    country: "AT",
   },
-  8798949: {
-    name: "Lille Europe Eurostar",
-    latitude: 50.639229,
-    longitude: 3.074877,
-    city: 4652,
-    preferred: true,
+  Q801099: {
+    name: "Lille Europe",
+    geo: {
+      latitude: 50.639444444444,
+      longitude: 3.0752777777778,
+    },
+    city_id: "Q648",
+    country: "FR",
   },
-  8003680: {
+  Q322806: {
     name: "Limburg Süd",
-    latitude: 50.382498,
-    longitude: 8.096107,
-    city: 10778,
-    preferred: true,
+    geo: {
+      latitude: 50.3822,
+      longitude: 8.09611,
+    },
+    city_id: "Q16026",
+    country: "DE",
   },
-  8003693: {
+  Q28777562: {
     name: "Lindau-Reutin",
-    latitude: 47.552455,
-    longitude: 9.703115,
-    city: 29006,
-    preferred: true,
+    geo: {
+      latitude: 47.552222222222,
+      longitude: 9.705,
+    },
+    city_id: "Q153969",
+    country: "DE",
   },
-  8003701: {
-    name: "Lingen (Ems)",
-    latitude: 52.519863,
-    longitude: 7.321731,
-    city: 7060,
-    preferred: true,
+  Q320255: {
+    name: "Lingen",
+    geo: {
+      latitude: 52.519444,
+      longitude: 7.321667,
+    },
+    city_id: "Q4185",
+    country: "DE",
   },
-  7400008: {
+  Q3270957: {
     name: "Linköping Central",
-    latitude: 58.416013,
-    longitude: 15.626676,
-    city: 19106,
-    preferred: true,
+    geo: {
+      latitude: 58.41612,
+      longitude: 15.62594,
+    },
+    city_id: "Q25413",
+    country: "SE",
   },
-  8100013: {
-    name: "Linz",
-    latitude: 48.290249,
-    longitude: 14.291518,
-    city: 17557,
-    preferred: true,
+  Q763157: {
+    name: "Linz Hbf",
+    geo: {
+      latitude: 48.290556,
+      longitude: 14.291111,
+    },
+    city_id: "Q41329",
+    country: "AT",
   },
-  8000571: {
+  Q801105: {
     name: "Lippstadt",
-    latitude: 51.670688,
-    longitude: 8.348785,
-    city: 7062,
-    preferred: true,
+    geo: {
+      latitude: 51.6707,
+      longitude: 8.34878,
+    },
+    city_id: "Q3943",
+    country: "DE",
   },
-  8300157: {
+  Q3969976: {
     name: "Livorno Centrale",
-    latitude: 43.553986,
-    longitude: 10.336624,
-    city: 29239,
-    preferred: true,
+    geo: {
+      latitude: 43.55416667,
+      longitude: 10.33583333,
+    },
+    city_id: "Q6761",
+    country: "IT",
   },
-  8800012: {
+  Q801116: {
     name: "Liège-Guillemins",
-    latitude: 50.624297,
-    longitude: 5.566667,
-    city: 23044,
-    preferred: true,
+    geo: {
+      latitude: 50.624699,
+      longitude: 5.566968,
+    },
+    city_id: "Q3992",
+    country: "BE",
   },
-  7004428: {
-    name: "London St-Pancras",
-    latitude: 51.531921,
-    longitude: -0.126361,
-    city: 8267,
-    preferred: true,
+  Q720102: {
+    name: "London St. Pancras",
+    geo: {
+      latitude: 51.53,
+      longitude: -0.12527777777778,
+    },
+    city_id: "Q84",
+    country: "UK",
   },
-  5100308: {
+  Q2174315: {
     name: "Lubin Górniczy",
-    latitude: 51.394039,
-    longitude: 16.192803,
-    city: 28539,
-    preferred: true,
+    geo: {
+      latitude: 51.395,
+      longitude: 16.1931,
+    },
+    city_id: "Q237512",
+    country: "PL",
   },
-  8000235: {
+  Q801127: {
     name: "Ludwigsburg",
-    latitude: 48.891861,
-    longitude: 9.18542,
-    city: 7067,
-    preferred: true,
+    geo: {
+      latitude: 48.8922,
+      longitude: 9.18528,
+    },
+    city_id: "Q622",
+    country: "DE",
   },
-  8003770: {
+  Q319977: {
+    name: "Ludwigshafen Hbf",
+    geo: {
+      latitude: 49.4778,
+      longitude: 8.43417,
+    },
+    city_id: "Q2910",
+    country: "DE",
+  },
+  Q801130: {
+    name: "Ludwigslust",
+    geo: {
+      latitude: 53.335278,
+      longitude: 11.493056,
+    },
+    city_id: "Q156119",
+    country: "DE",
+  },
+  Q55621428: {
     name: "Ludwigsstadt",
-    latitude: 50.486584,
-    longitude: 11.382986,
-    city: 7068,
-    preferred: true,
+    geo: {
+      latitude: 50.486658,
+      longitude: 11.383006,
+    },
+    city_id: "Q163024",
+    country: "DE",
   },
-  8505300: {
+  Q174946: {
     name: "Lugano",
-    latitude: 46.005506,
-    longitude: 8.946873,
-    city: 6345,
-    preferred: true,
+    geo: {
+      latitude: 46.00551,
+      longitude: 8.946878055555555,
+    },
+    city_id: "Q7024",
+    country: "CH",
   },
-  7400115: {
+  Q766707: {
     name: "Lund Central",
-    latitude: 55.705523,
-    longitude: 13.186582,
-    city: 19130,
-    preferred: true,
+    geo: {
+      latitude: 55.7067,
+      longitude: 13.1863,
+    },
+    city_id: "Q2167",
+    country: "SE",
   },
-  8601512: {
-    name: "Lunderskov St.",
-    latitude: 55.480118,
-    longitude: 9.30379,
-    city: 18792,
-    preferred: true,
+  Q2571198: {
+    name: "Lunderskov",
+    geo: {
+      latitude: 55.4799,
+      longitude: 9.30344,
+    },
+    city_id: "Q12325132",
+    country: "DK",
   },
-  8010222: {
-    name: "Lutherstadt Wittenberg",
-    latitude: 51.867533,
-    longitude: 12.662016,
-    city: 10784,
-    preferred: true,
+  Q801132: {
+    name: "Lutherstadt Wittenberg Hbf",
+    geo: {
+      latitude: 51.8676,
+      longitude: 12.6622,
+    },
+    city_id: "Q6837",
+    country: "DE",
   },
-  8700152: {
-    name: "Lyon Part-Dieu",
-    latitude: 45.760559,
-    longitude: 4.859355,
-    city: 4718,
-    preferred: true,
+  Q2008: {
+    name: "Lyon Part Dieu",
+    geo: {
+      latitude: 45.760555555556,
+      longitude: 4.8594444444444,
+    },
+    city_id: "Q456",
+    country: "FR",
   },
-  8010217: {
+  Q801141: {
     name: "Lübben (Spreewald)",
-    latitude: 51.939735,
-    longitude: 13.877178,
-    city: 14371,
-    preferred: true,
+    geo: {
+      latitude: 51.9397,
+      longitude: 13.8775,
+    },
+    city_id: "Q584815",
+    country: "DE",
   },
-  8010220: {
+  Q11764500: {
     name: "Lübbenau (Spreewald)",
-    latitude: 51.862167,
-    longitude: 13.960903,
-    city: 14372,
-    preferred: true,
+    geo: {
+      latitude: 51.8622,
+      longitude: 13.961,
+    },
+    city_id: "Q147895",
+    country: "DE",
   },
-  8000237: {
+  Q564926: {
     name: "Lübeck Hbf",
-    latitude: 53.867768,
-    longitude: 10.670348,
-    city: 7677,
-    preferred: true,
+    geo: {
+      latitude: 53.8672,
+      longitude: 10.6692,
+    },
+    city_id: "Q2843",
+    country: "DE",
   },
-  8000238: {
+  Q801145: {
     name: "Lüneburg",
-    latitude: 53.249652,
-    longitude: 10.419891,
-    city: 7079,
-    preferred: true,
+    geo: {
+      latitude: 53.2499,
+      longitude: 10.4199,
+    },
+    city_id: "Q3920",
+    country: "DE",
   },
-  8010224: {
+  Q455960: {
     name: "Magdeburg Hbf",
-    latitude: 52.130351,
-    longitude: 11.62689,
-    city: 28994,
-    preferred: true,
+    geo: {
+      latitude: 52.1306,
+      longitude: 11.6278,
+    },
+    city_id: "Q1733",
+    country: "DE",
   },
-  8000240: {
+  Q15927310: {
+    name: "Magdeburg-Buckau",
+    geo: {
+      latitude: 52.1093,
+      longitude: 11.6305,
+    },
+    city_id: "Q1733",
+    country: "DE",
+    secondary: true,
+  },
+  Q636700: {
     name: "Mainz Hbf",
-    latitude: 50.001112,
-    longitude: 8.258722,
-    city: 28996,
-    preferred: true,
+    geo: {
+      latitude: 50.0013,
+      longitude: 8.25865,
+    },
+    city_id: "Q1720",
+    country: "DE",
   },
-  7400004: {
+  Q575797: {
     name: "Malmö Central",
-    latitude: 55.60923,
-    longitude: 13.00126,
-    city: 38712,
-    preferred: false,
+    geo: {
+      latitude: 55.60889,
+      longitude: 12.99965,
+    },
+    city_id: "Q2211",
+    country: "SE",
   },
-  7400976: {
-    name: "Malmö Hyllie station",
-    latitude: 55.56306,
-    longitude: 12.97667,
-    city: 63816,
-    preferred: true,
+  Q1844369: {
+    name: "Malmö Hyllie",
+    geo: {
+      latitude: 55.562694444444,
+      longitude: 12.975833333333,
+    },
+    city_id: "Q2211",
+    country: "SE",
+    secondary: true,
   },
-  7400977: {
-    name: "Malmö Triangeln station",
-    latitude: 55.59306,
-    longitude: 13.00139,
-    city: 38712,
-    preferred: false,
+  Q2196259: {
+    name: "Malmö Triangeln",
+    geo: {
+      latitude: 55.59324,
+      longitude: 13.00104,
+    },
+    city_id: "Q2211",
+    country: "SE",
+    secondary: true,
   },
-  8000244: {
+  Q706994: {
     name: "Mannheim Hbf",
-    latitude: 49.479296,
-    longitude: 8.469531,
-    city: 7478,
-    preferred: true,
+    geo: {
+      latitude: 49.479722222222,
+      longitude: 8.4697222222222,
+    },
+    city_id: "Q2119",
+    country: "DE",
   },
-  8000631: {
-    name: "Mannheim-Friedrichsfeld",
-    latitude: 49.448671,
-    longitude: 8.580122,
-    city: 7090,
-    preferred: true,
+  Q3970038: {
+    name: "Maratea",
+    geo: {
+      latitude: 39.9953,
+      longitude: 15.7098,
+    },
+    city_id: "Q52597",
+    country: "IT",
   },
-  8000337: {
-    name: "Marburg (Lahn)",
-    latitude: 50.819274,
-    longitude: 8.775017,
-    city: 7091,
-    preferred: true,
+  Q6762546: {
+    name: "Maribor",
+    geo: {
+      latitude: 46.561667,
+      longitude: 15.6575,
+    },
+    city_id: "Q1010",
+    country: "SI",
   },
-  8700074: {
-    name: "Marseille St-Charles",
-    latitude: 43.302666,
-    longitude: 5.380407,
-    city: 4790,
-    preferred: true,
+  Q15247532: {
+    name: "Marienhafe",
+    geo: {
+      latitude: 53.520833333333,
+      longitude: 7.2705555555556,
+    },
+    city_id: "Q622159",
+    country: "DE",
   },
-  8000249: {
+  Q371217: {
+    name: "Marseille St Charles",
+    geo: {
+      latitude: 43.303055555556,
+      longitude: 5.3811111111111,
+    },
+    city_id: "Q23482",
+    country: "FR",
+  },
+  Q801171: {
     name: "Memmingen",
-    latitude: 47.985578,
-    longitude: 10.186854,
-    city: 7102,
-    preferred: true,
+    geo: {
+      latitude: 47.9858,
+      longitude: 10.1867,
+    },
+    city_id: "Q14825",
+    country: "DE",
   },
-  8003978: {
+  Q651214: {
     name: "Meppen",
-    latitude: 52.696024,
-    longitude: 7.298018,
-    city: 7103,
-    preferred: true,
+    geo: {
+      latitude: 52.695833,
+      longitude: 7.298889,
+    },
+    city_id: "Q15977",
+    country: "DE",
   },
-  8300046: {
+  Q3970096: {
+    name: "Messina Centrale",
+    geo: {
+      latitude: 38.18513333,
+      longitude: 15.56093056,
+    },
+    city_id: "Q13666",
+    country: "IT",
+  },
+  Q801176: {
+    name: "Metzingen",
+    geo: {
+      latitude: 48.53969,
+      longitude: 9.29006,
+    },
+    city_id: "Q82881",
+    country: "DE",
+  },
+  Q2278160: {
+    name: "Miechów",
+    geo: {
+      latitude: 50.354,
+      longitude: 20.0109,
+    },
+    city_id: "Q324927",
+    country: "PL",
+  },
+  Q801193: {
     name: "Milano Centrale",
-    latitude: 45.487143,
-    longitude: 9.204828,
-    city: 8483,
-    preferred: true,
+    geo: {
+      latitude: 45.485658,
+      longitude: 9.203988,
+    },
+    city_id: "Q490",
+    country: "IT",
   },
-  8300062: {
+  Q801184: {
     name: "Milano Lambrate",
-    latitude: 45.485066,
-    longitude: 9.237225,
-    city: 8483,
-    preferred: false,
+    geo: {
+      latitude: 45.484933,
+      longitude: 9.237333,
+    },
+    city_id: "Q490",
+    country: "IT",
+    secondary: true,
   },
-  8300418: {
+  Q801189: {
     name: "Milano Rogoredo",
-    latitude: 45.433666,
-    longitude: 9.239014,
-    city: 8483,
-    preferred: false,
+    geo: {
+      latitude: 45.433611111111,
+      longitude: 9.2391666666667,
+    },
+    city_id: "Q490",
+    country: "IT",
+    secondary: true,
   },
-  8000252: {
-    name: "Minden (Westf)",
-    latitude: 52.290134,
-    longitude: 8.934729,
-    city: 7744,
-    preferred: true,
+  Q22324821: {
+    name: "Milazzo",
+    geo: {
+      latitude: 38.197825,
+      longitude: 15.258089,
+    },
+    city_id: "Q487929",
+    country: "IT",
   },
-  7400021: {
-    name: "Mjölby Station",
-    latitude: 58.322831,
-    longitude: 15.131919,
-    city: 35707,
-    preferred: true,
+  Q472651: {
+    name: "Minden",
+    geo: {
+      latitude: 52.2906,
+      longitude: 8.93444,
+    },
+    city_id: "Q3846",
+    country: "DE",
   },
-  8300214: {
+  Q16459384: {
+    name: "Mjölby",
+    geo: {
+      latitude: 58.322361111111,
+      longitude: 15.131666666667,
+    },
+    city_id: "Q538915",
+    country: "SE",
+  },
+  Q1451461: {
     name: "Modena",
-    latitude: 44.654616,
-    longitude: 10.929948,
-    city: 8493,
-    preferred: true,
+    geo: {
+      latitude: 44.65388889,
+      longitude: 10.93055556,
+    },
+    city_id: "Q279",
+    country: "IT",
   },
-  8000667: {
+  Q469336: {
     name: "Montabaur",
-    latitude: 50.444838,
-    longitude: 7.825334,
-    city: 11030,
-    preferred: true,
+    geo: {
+      latitude: 50.4447,
+      longitude: 7.82528,
+    },
+    city_id: "Q632991",
+    country: "DE",
   },
-  8301004: {
+  Q3970203: {
     name: "Montelupo-Capraia",
-    latitude: 43.733617,
-    longitude: 11.019094,
-    city: 19670,
-    preferred: true,
+    geo: {
+      latitude: 43.7335,
+      longitude: 11.0189,
+    },
+    city_id: "Q82766",
+    country: "IT",
   },
-  8700031: {
-    name: "Mulhouse",
-    latitude: 47.742224,
-    longitude: 7.342396,
-    city: 4753,
-    preferred: true,
+  Q21891728: {
+    name: "Mosonmagyaróvár",
+    geo: {
+      latitude: 47.850564,
+      longitude: 17.266354,
+    },
+    city_id: "Q207406",
+    country: "HU",
   },
-  7400566: {
-    name: "Mölndal Nedre station",
-    latitude: 57.655912,
-    longitude: 12.018847,
-    city: 38956,
-    preferred: true,
+  Q801205: {
+    name: "Mulhouse-Ville",
+    geo: {
+      latitude: 47.7426,
+      longitude: 7.3433,
+    },
+    city_id: "Q79815",
+    country: "FR",
   },
-  8000253: {
+  Q10546761: {
+    name: "Mölndal",
+    geo: {
+      latitude: 57.655694444444,
+      longitude: 12.018888888889,
+    },
+    city_id: "Q27437",
+    country: "SE",
+  },
+  Q547338: {
     name: "Mönchengladbach Hbf",
-    latitude: 51.196579,
-    longitude: 6.44611,
-    city: 29016,
-    preferred: false,
+    geo: {
+      latitude: 51.196388888889,
+      longitude: 6.4461111111111,
+    },
+    city_id: "Q2758",
+    country: "DE",
   },
-  7400289: {
-    name: "Mörrum station",
-    latitude: 56.186832,
-    longitude: 14.743262,
-    city: 19125,
-    preferred: true,
+  Q99463114: {
+    name: "Mörrum",
+    geo: {
+      latitude: 56.18684,
+      longitude: 14.74322,
+    },
+    city_id: "Q600012",
+    country: "SE",
   },
-  8000339: {
+  Q442758: {
     name: "Mühlacker",
-    latitude: 48.953195,
-    longitude: 8.846104,
-    city: 7111,
-    preferred: true,
+    geo: {
+      latitude: 48.9531,
+      longitude: 8.84639,
+    },
+    city_id: "Q80670",
+    country: "DE",
   },
-  8000259: {
+  Q468107: {
     name: "Mülheim (Ruhr) Hbf",
-    latitude: 51.431323,
-    longitude: 6.88668,
-    city: 29400,
-    preferred: true,
+    geo: {
+      latitude: 51.431388888889,
+      longitude: 6.8863888888889,
+    },
+    city_id: "Q2899",
+    country: "DE",
   },
-  8000261: {
+  Q3097154: {
+    name: "Müllheim (Baden)",
+    geo: {
+      latitude: 47.810078,
+      longitude: 7.599347,
+    },
+    city_id: "Q505468",
+    country: "DE",
+  },
+  Q254647: {
     name: "München Hbf",
-    latitude: 48.140228,
-    longitude: 11.558338,
-    city: 7686,
-    preferred: true,
+    geo: {
+      latitude: 48.140833,
+      longitude: 11.555,
+    },
+    city_id: "Q1726",
+    country: "DE",
   },
-  8098261: {
-    name: "München Hbf Gleis 27-36",
-    latitude: 48.141532,
-    longitude: 11.556711,
-    city: 7480,
-    preferred: false,
-  },
-  8098262: {
-    name: "München Hbf Gleis 5-10",
-    latitude: 48.140093,
-    longitude: 11.555372,
-    city: 7480,
-    preferred: false,
-  },
-  8000262: {
+  Q801228: {
     name: "München Ost",
-    latitude: 48.127437,
-    longitude: 11.604975,
-    city: 7686,
-    preferred: false,
+    geo: {
+      latitude: 48.126944,
+      longitude: 11.604722,
+    },
+    city_id: "Q1726",
+    country: "DE",
+    secondary: true,
   },
-  8004158: {
+  Q564970: {
     name: "München-Pasing",
-    latitude: 48.149892,
-    longitude: 11.461489,
-    city: 7686,
-    preferred: false,
+    geo: {
+      latitude: 48.15,
+      longitude: 11.461388888889,
+    },
+    city_id: "Q1726",
+    country: "DE",
+    secondary: true,
   },
-  8000263: {
-    name: "Münster (Westf) Hbf",
-    latitude: 51.956563,
-    longitude: 7.635716,
-    city: 29401,
-    preferred: true,
+  Q564761: {
+    name: "Münster (Westfalen) Hbf",
+    geo: {
+      latitude: 51.956666666667,
+      longitude: 7.635,
+    },
+    city_id: "Q2742",
+    country: "DE",
   },
-  8100029: {
+  Q801226: {
     name: "Mürzzuschlag",
-    latitude: 47.607611,
-    longitude: 15.677128,
-    city: 23520,
-    preferred: true,
+    geo: {
+      latitude: 47.6076,
+      longitude: 15.6771,
+    },
+    city_id: "Q492868",
+    country: "AT",
   },
-  5500913: {
-    name: "Nagymaros-Visegrad",
-    latitude: 47.790889,
-    longitude: 18.958798,
-    city: 68102,
-    preferred: true,
+  Q21866920: {
+    name: "Nagymaros-Visegrád",
+    geo: {
+      latitude: 47.785798,
+      longitude: 18.956018,
+    },
+    city_id: "Q282460",
+    country: "HU",
   },
-  8309988: {
+  Q3970269: {
     name: "Napoli Afragola",
-    latitude: 40.931389,
-    longitude: 14.331111,
-    city: 22184,
-    preferred: false,
+    geo: {
+      latitude: 40.931389,
+      longitude: 14.331111,
+    },
+    city_id: "Q2634",
+    country: "IT",
+    secondary: true,
   },
-  8300239: {
+  Q801237: {
     name: "Napoli Centrale",
-    latitude: 40.852826,
-    longitude: 14.273072,
-    city: 22184,
-    preferred: true,
+    geo: {
+      latitude: 40.85230271,
+      longitude: 14.2720929,
+    },
+    city_id: "Q2634",
+    country: "IT",
   },
-  8010240: {
+  Q1971888: {
     name: "Naumburg (Saale) Hbf",
-    latitude: 51.163067,
-    longitude: 11.796984,
-    city: 7497,
-    preferred: true,
+    geo: {
+      latitude: 51.1631,
+      longitude: 11.797,
+    },
+    city_id: "Q15986",
+    country: "DE",
   },
-  8301802: {
+  Q3970286: {
     name: "Navacchio",
-    latitude: 43.685992,
-    longitude: 10.486851,
-    city: 19978,
-    preferred: true,
+    geo: {
+      latitude: 43.685966,
+      longitude: 10.486898,
+    },
+    city_id: "Q3873391",
+    country: "IT",
   },
-  8006730: {
+  Q801236: {
     name: "Neu-Ulm",
-    latitude: 48.393041,
-    longitude: 10.004823,
-    city: 7145,
-    preferred: true,
+    geo: {
+      latitude: 48.3933,
+      longitude: 10.0054,
+    },
+    city_id: "Q4120",
+    country: "DE",
   },
-  8000271: {
+  Q48177596: {
+    name: "Neumarkt am Wallersee",
+    geo: {
+      latitude: 47.9544524,
+      longitude: 13.2248855,
+    },
+    city_id: "Q260687",
+    country: "AT",
+  },
+  Q475520: {
     name: "Neumünster",
-    latitude: 54.075554,
-    longitude: 9.979716,
-    city: 7137,
-    preferred: true,
+    geo: {
+      latitude: 54.076,
+      longitude: 9.97988,
+    },
+    city_id: "Q3879",
+    country: "DE",
   },
-  8000275: {
-    name: "Neustadt (Weinstr) Hbf",
-    latitude: 49.34961,
-    longitude: 8.140379,
-    city: 7481,
-    preferred: true,
+  Q472236: {
+    name: "Neuss Hbf",
+    geo: {
+      latitude: 51.204222222222,
+      longitude: 6.6840277777778,
+    },
+    city_id: "Q2948",
+    country: "DE",
   },
-  8010250: {
+  Q320066: {
+    name: "Neustadt (Weinstraße) Hbf",
+    geo: {
+      latitude: 49.35,
+      longitude: 8.14056,
+    },
+    city_id: "Q4149",
+    country: "DE",
+  },
+  Q678650: {
     name: "Neustrelitz Hbf",
-    latitude: 53.359257,
-    longitude: 13.074603,
-    city: 14394,
-    preferred: true,
+    geo: {
+      latitude: 53.3593,
+      longitude: 13.0748,
+    },
+    city_id: "Q20352",
+    country: "DE",
   },
-  8004343: {
+  Q323542: {
     name: "Niebüll",
-    latitude: 54.789603,
-    longitude: 8.834571,
-    city: 7160,
-    preferred: true,
+    geo: {
+      latitude: 54.788889,
+      longitude: 8.834167,
+    },
+    city_id: "Q21014",
+    country: "DE",
   },
-  8000279: {
+  Q323374: {
     name: "Nienburg (Weser)",
-    latitude: 52.645568,
-    longitude: 9.217754,
-    city: 7152,
-    preferred: true,
+    geo: {
+      latitude: 52.64503,
+      longitude: 9.21658,
+    },
+    city_id: "Q16079",
+    country: "DE",
   },
-  7400007: {
+  Q1660405: {
+    name: "Norddeich (Norden)",
+    geo: {
+      latitude: 53.621111,
+      longitude: 7.161667,
+    },
+    city_id: "Q896276",
+    country: "DE",
+  },
+  Q7050584: {
+    name: "Norddeich (Norden) Mole",
+    geo: {
+      latitude: 53.62444444,
+      longitude: 7.15888889,
+    },
+    city_id: "Q896276",
+    country: "DE",
+    secondary: true,
+  },
+  Q7050599: {
+    name: "Norden (Ostfriesl)",
+    geo: {
+      latitude: 53.5885,
+      longitude: 7.2189,
+    },
+    city_id: "Q492366",
+    country: "DE",
+  },
+  Q3359812: {
     name: "Norrköping Central",
-    latitude: 58.596562,
-    longitude: 16.183675,
-    city: 19105,
-    preferred: true,
+    geo: {
+      latitude: 58.59638889,
+      longitude: 16.18361111,
+    },
+    city_id: "Q25724",
+    country: "SE",
   },
-  5600025: {
-    name: "Nove Zamky",
-    latitude: 47.994999,
-    longitude: 18.173959,
-    city: 38889,
-    preferred: true,
+  Q12781948: {
+    name: "Nové Zámky",
+    geo: {
+      latitude: 47.99472222222222,
+      longitude: 18.174444444444443,
+    },
+    city_id: "Q276362",
+    country: "SK",
   },
-  7400123: {
-    name: "Nybro Station",
-    latitude: 56.742357,
-    longitude: 15.908875,
-    city: 38146,
-    preferred: true,
+  Q99520868: {
+    name: "Nybro",
+    geo: {
+      latitude: 56.74225,
+      longitude: 15.90797,
+    },
+    city_id: "Q930238",
+    country: "SE",
   },
-  7400017: {
+  Q11992879: {
     name: "Nässjö Central",
-    latitude: 57.652128,
-    longitude: 14.694783,
-    city: 19109,
-    preferred: true,
+    geo: {
+      latitude: 57.652083333333,
+      longitude: 14.694305555556,
+    },
+    city_id: "Q654299",
+    country: "SE",
   },
-  8601699: {
-    name: "Nørreport St.",
-    latitude: 55.683107,
-    longitude: 12.571506,
-    city: 27793,
-    preferred: true,
+  Q801282: {
+    name: "Nørreport",
+    geo: {
+      latitude: 55.683333,
+      longitude: 12.571667,
+    },
+    city_id: "Q1748",
+    country: "DK",
+    secondary: true,
   },
-  8000284: {
+  Q682583: {
     name: "Nürnberg Hbf",
-    latitude: 49.445615,
-    longitude: 11.082989,
-    city: 10777,
-    preferred: true,
+    geo: {
+      latitude: 49.446388888889,
+      longitude: 11.081944444444,
+    },
+    city_id: "Q2090",
+    country: "DE",
   },
-  8000286: {
+  Q801272: {
+    name: "Nürtingen",
+    geo: {
+      latitude: 48.6281,
+      longitude: 9.3425,
+    },
+    city_id: "Q14853",
+    country: "DE",
+  },
+  Q472955: {
     name: "Oberhausen Hbf",
-    latitude: 51.475118,
-    longitude: 6.852036,
-    city: 10776,
-    preferred: true,
+    geo: {
+      latitude: 51.474166666667,
+      longitude: 6.8533333333333,
+    },
+    city_id: "Q2838",
+    country: "DE",
   },
-  8004563: {
+  Q116155640: {
     name: "Oberndorf (Neckar)",
-    latitude: 48.295382,
-    longitude: 8.575637,
-    city: 7171,
-    preferred: true,
+    geo: {
+      latitude: 48.29542625,
+      longitude: 8.575555249999999,
+    },
+    city_id: "Q83206",
+    country: "DE",
   },
-  8601770: {
-    name: "Odense St.",
-    latitude: 55.401777,
-    longitude: 10.386001,
-    city: 29284,
-    preferred: true,
+  Q2203165: {
+    name: "Odense",
+    geo: {
+      latitude: 55.4017,
+      longitude: 10.3861,
+    },
+    city_id: "Q25331",
+    country: "DK",
   },
-  8000290: {
+  Q470320: {
     name: "Offenburg",
-    latitude: 48.476479,
-    longitude: 7.946724,
-    city: 7746,
-    preferred: true,
+    geo: {
+      latitude: 48.476,
+      longitude: 7.94572,
+    },
+    city_id: "Q4044",
+    country: "DE",
   },
-  8000291: {
-    name: "Oldenburg (Oldb)",
-    latitude: 53.144343,
-    longitude: 8.22246,
-    city: 7178,
-    preferred: true,
+  Q543350: {
+    name: "Oldenburg Hbf",
+    geo: {
+      latitude: 53.1436,
+      longitude: 8.2225,
+    },
+    city_id: "Q2936",
+    country: "DE",
   },
-  8500218: {
+  Q29370: {
     name: "Olten",
-    latitude: 47.352009,
-    longitude: 7.907621,
-    city: 6393,
-    preferred: true,
+    geo: {
+      latitude: 47.35193,
+      longitude: 7.907683,
+    },
+    city_id: "Q68129",
+    country: "CH",
   },
-  5100046: {
-    name: "Opole Główne",
-    latitude: 50.661456,
-    longitude: 17.926319,
-    city: 23012,
-    preferred: true,
+  Q1905381: {
+    name: "Opoczno Południe",
+    geo: {
+      latitude: 51.3606,
+      longitude: 20.2342,
+    },
+    city_id: "Q994271",
+    country: "PL",
   },
-  8013487: {
+  Q801305: {
+    name: "Opole",
+    geo: {
+      latitude: 50.6623,
+      longitude: 17.9267,
+    },
+    city_id: "Q92212",
+    country: "PL",
+  },
+  Q2341669: {
     name: "Oranienburg",
-    latitude: 52.754454,
-    longitude: 13.249111,
-    city: 15807,
-    preferred: true,
+    geo: {
+      latitude: 52.75461111111111,
+      longitude: 13.249222222222222,
+    },
+    city_id: "Q14808",
+    country: "DE",
   },
-  7400157: {
-    name: "Osby",
-    latitude: 56.379876,
-    longitude: 13.994811,
-    city: 19122,
-    preferred: true,
+  Q12330479: {
+    name: "Osby (S)",
+    geo: {
+      latitude: 56.381,
+      longitude: 13.9955,
+    },
+    city_id: "Q26511",
+    country: "SE",
   },
-  8000294: {
+  Q464355: {
     name: "Osnabrück Hbf",
-    latitude: 52.272848,
-    longitude: 8.061777,
-    city: 26860,
-    preferred: true,
+    geo: {
+      latitude: 52.2728,
+      longitude: 8.06111,
+    },
+    city_id: "Q2916",
+    country: "DE",
   },
-  625052: {
-    name: "Ostbahnhof München",
-    latitude: 48.127357,
-    longitude: 11.602854,
-    city: 71394,
-    preferred: true,
+  Q3505100: {
+    name: "Ostrava hl.n.",
+    geo: {
+      latitude: 49.85149388888889,
+      longitude: 18.267059444444445,
+    },
+    city_id: "Q8385",
+    country: "CZ",
   },
-  8004702: {
-    name: "Osterholz-Scharmbeck",
-    latitude: 53.222774,
-    longitude: 8.797437,
-    city: 7182,
-    preferred: true,
+  Q801302: {
+    name: "Ostseebad Binz",
+    geo: {
+      latitude: 54.405,
+      longitude: 13.600278,
+    },
+    city_id: "Q523490",
+    country: "DE",
   },
-  8601899: {
-    name: "Padborg St.",
-    latitude: 54.824247,
-    longitude: 9.358804,
-    city: 18786,
-    preferred: true,
+  Q2735909: {
+    name: "Oświęcim",
+    geo: {
+      latitude: 50.0417,
+      longitude: 19.2006,
+    },
+    city_id: "Q7342",
+    country: "PL",
   },
-  8000297: {
+  Q1965072: {
+    name: "Padborg",
+    geo: {
+      latitude: 54.82418,
+      longitude: 9.35842,
+    },
+    city_id: "Q707345",
+    country: "DK",
+  },
+  Q474433: {
     name: "Paderborn Hbf",
-    latitude: 51.712982,
-    longitude: 8.740508,
-    city: 29002,
-    preferred: true,
+    geo: {
+      latitude: 51.713055555556,
+      longitude: 8.7405555555556,
+    },
+    city_id: "Q2971",
+    country: "DE",
   },
-  8300098: {
+  Q1150874: {
     name: "Padova",
-    latitude: 45.417827,
-    longitude: 11.88062,
-    city: 8528,
-    preferred: true,
+    geo: {
+      latitude: 45.4175,
+      longitude: 11.88027778,
+    },
+    city_id: "Q617",
+    country: "IT",
   },
-  8300335: {
+  Q801315: {
+    name: "Palermo Centrale",
+    geo: {
+      latitude: 38.11,
+      longitude: 13.366944,
+    },
+    city_id: "Q2656",
+    country: "IT",
+  },
+  Q3970418: {
     name: "Paola",
-    latitude: 39.358999,
-    longitude: 16.033852,
-    city: 20065,
-    preferred: true,
+    geo: {
+      latitude: 39.35944444,
+      longitude: 16.03305556,
+    },
+    city_id: "Q53928",
+    country: "IT",
   },
-  8004751: {
-    name: "Papenburg (Ems)",
-    latitude: 53.089707,
-    longitude: 7.386705,
-    city: 7192,
-    preferred: true,
+  Q7132569: {
+    name: "Papenburg",
+    geo: {
+      latitude: 53.089722,
+      longitude: 7.386944,
+    },
+    city_id: "Q14957",
+    country: "DE",
   },
-  5400161: {
+  Q617791: {
     name: "Pardubice hl.n.",
-    latitude: 50.031262,
-    longitude: 15.75871,
-    city: 18581,
-    preferred: true,
+    geo: {
+      latitude: 50.031890833333335,
+      longitude: 15.756375277777778,
+    },
+    city_id: "Q36989",
+    country: "CZ",
   },
-  8700011: {
-    name: "Paris Gare de l’Est",
-    latitude: 48.876742,
-    longitude: 2.358424,
-    city: 4916,
-    preferred: false,
+  Q757180: {
+    name: "Paris Est",
+    geo: {
+      latitude: 48.876944444444,
+      longitude: 2.3591666666667,
+    },
+    city_id: "Q90",
+    country: "FR",
   },
-  8798014: {
-    name: "Paris Gare du Nord Eurostar",
-    latitude: 48.880697,
-    longitude: 2.354598,
-    city: 4916,
-    preferred: false,
+  Q745942: {
+    name: "Paris Nord",
+    geo: {
+      latitude: 48.88111111111111,
+      longitude: 2.355277777777778,
+    },
+    city_id: "Q90",
+    country: "FR",
   },
-  8300215: {
-    name: "Parma",
-    latitude: 44.810219,
-    longitude: 10.328569,
-    city: 8514,
-    preferred: true,
+  Q3970427: {
+    name: "Parma (I)",
+    geo: {
+      latitude: 44.810271,
+      longitude: 10.328393,
+    },
+    city_id: "Q2683",
+    country: "IT",
   },
-  8010268: {
+  Q801310: {
     name: "Pasewalk",
-    latitude: 53.515337,
-    longitude: 13.988644,
-    city: 14404,
-    preferred: true,
+    geo: {
+      latitude: 53.515,
+      longitude: 13.988889,
+    },
+    city_id: "Q493924",
+    country: "DE",
   },
-  8000298: {
+  Q315801: {
     name: "Passau Hbf",
-    latitude: 48.573634,
-    longitude: 13.450775,
-    city: 10775,
-    preferred: true,
+    geo: {
+      latitude: 48.573715,
+      longitude: 13.450802,
+    },
+    city_id: "Q4190",
+    country: "DE",
   },
-  8300049: {
+  Q3970426: {
+    name: "Patti-San Piero Patti",
+    geo: {
+      latitude: 38.146927777778,
+      longitude: 14.975322222222,
+    },
+    city_id: "Q489948",
+    country: "IT",
+  },
+  Q179302: {
     name: "Pavia",
-    latitude: 45.188971,
-    longitude: 9.144807,
-    city: 19483,
-    preferred: true,
+    geo: {
+      latitude: 45.188788,
+      longitude: 9.14488,
+    },
+    city_id: "Q6259",
+    country: "IT",
   },
-  8004760: {
+  Q11815432: {
     name: "Peine",
-    latitude: 52.318801,
-    longitude: 10.23216,
-    city: 7195,
-    preferred: true,
+    geo: {
+      latitude: 52.319,
+      longitude: 10.2316,
+    },
+    city_id: "Q6850",
+    country: "DE",
   },
-  8300124: {
+  Q3970454: {
     name: "Peschiera del Garda",
-    latitude: 45.437576,
-    longitude: 10.701181,
-    city: 19496,
-    preferred: true,
+    geo: {
+      latitude: 45.43861111,
+      longitude: 10.70222222,
+    },
+    city_id: "Q47649",
+    country: "IT",
   },
-  8000299: {
+  Q322374: {
     name: "Pforzheim Hbf",
-    latitude: 48.894154,
-    longitude: 8.703095,
-    city: 7695,
-    preferred: true,
+    geo: {
+      latitude: 48.8937,
+      longitude: 8.70299,
+    },
+    city_id: "Q3046",
+    country: "DE",
   },
-  8300230: {
+  Q613204: {
     name: "Piacenza",
-    latitude: 45.052101,
-    longitude: 9.706363,
-    city: 8529,
-    preferred: true,
+    geo: {
+      latitude: 45.05202,
+      longitude: 9.70634,
+    },
+    city_id: "Q13329",
+    country: "IT",
   },
-  8004819: {
+  Q801317: {
     name: "Pinneberg",
-    latitude: 53.655182,
-    longitude: 9.797603,
-    city: 13106,
-    preferred: true,
+    geo: {
+      latitude: 53.6553,
+      longitude: 9.79761,
+    },
+    city_id: "Q7074",
+    country: "DE",
   },
-  8300169: {
+  Q849256: {
     name: "Pisa Centrale",
-    latitude: 43.707971,
-    longitude: 10.398173,
-    city: 22187,
-    preferred: true,
+    geo: {
+      latitude: 43.70833333,
+      longitude: 10.39833333,
+    },
+    city_id: "Q13375",
+    country: "IT",
   },
-  8000301: {
+  Q16609617: {
+    name: "Pisciotta-Palinuro",
+    geo: {
+      latitude: 40.091367,
+      longitude: 15.243501,
+    },
+    city_id: "Q81330",
+    country: "IT",
+  },
+  Q801322: {
     name: "Plattling",
-    latitude: 48.779622,
-    longitude: 12.863941,
-    city: 7209,
-    preferred: true,
+    geo: {
+      latitude: 48.779686,
+      longitude: 12.863979,
+    },
+    city_id: "Q509566",
+    country: "DE",
   },
-  8004838: {
+  Q56492116: {
     name: "Plettenberg",
-    latitude: 51.231681,
-    longitude: 7.86975,
-    city: 13110,
-    preferred: true,
+    geo: {
+      latitude: 51.231905555556,
+      longitude: 7.8687833333333,
+    },
+    city_id: "Q5542",
+    country: "DE",
   },
-  8000302: {
+  Q324687: {
     name: "Plochingen",
-    latitude: 48.713084,
-    longitude: 9.410807,
-    city: 7201,
-    preferred: true,
+    geo: {
+      latitude: 48.7131,
+      longitude: 9.41167,
+    },
+    city_id: "Q82274",
+    country: "DE",
   },
-  8300167: {
+  Q3970542: {
     name: "Pontedera-Casciana Terme",
-    latitude: 43.6623,
-    longitude: 10.629,
-    city: -1001,
-    preferred: true,
+    geo: {
+      latitude: 43.6623,
+      longitude: 10.629,
+    },
+    city_id: "Q103219",
+    country: "IT",
   },
-  8012666: {
+  Q34953565: {
+    name: "Port de Bastia",
+    geo: {
+      latitude: 42.70134,
+      longitude: 9.45315,
+    },
+    city_id: "Q134698",
+    country: "FR",
+  },
+  Q3909242: {
+    name: "Porto di Livorno",
+    geo: {
+      latitude: 43.5622,
+      longitude: 10.295,
+    },
+    city_id: "Q6761",
+    country: "IT",
+    secondary: true,
+  },
+  Q647973: {
     name: "Potsdam Hbf",
-    latitude: 52.391703,
-    longitude: 13.066782,
-    city: 7722,
-    preferred: true,
+    geo: {
+      latitude: 52.3917,
+      longitude: 13.0667,
+    },
+    city_id: "Q1711",
+    country: "DE",
   },
-  5100081: {
-    name: "Poznan Gl",
-    latitude: 52.401996,
-    longitude: 16.910866,
-    city: 10483,
-    preferred: true,
+  Q53394: {
+    name: "Poznań Gł",
+    geo: {
+      latitude: 52.401694,
+      longitude: 16.911583,
+    },
+    city_id: "Q268",
+    country: "PL",
   },
-  5400014: {
+  Q7237627: {
+    name: "Pragersko",
+    geo: {
+      latitude: 46.395556,
+      longitude: 15.661944,
+    },
+    city_id: "Q752081",
+    country: "SI",
+  },
+  Q373868: {
+    name: "Praha Holešovice",
+    geo: {
+      latitude: 50.109667,
+      longitude: 14.439919,
+    },
+    city_id: "Q1085",
+    country: "CZ",
+  },
+  Q751174: {
     name: "Praha hl.n.",
-    latitude: 50.083058,
-    longitude: 14.436037,
-    city: 17587,
-    preferred: true,
+    geo: {
+      latitude: 50.083055555556,
+      longitude: 14.435833333333,
+    },
+    city_id: "Q1085",
+    country: "CZ",
   },
-  5400201: {
-    name: "Praha-Holešovice",
-    latitude: 50.110214,
-    longitude: 14.44001,
-    city: 18582,
-    preferred: true,
+  Q3970613: {
+    name: "Prato Centrale",
+    geo: {
+      latitude: 43.87861111,
+      longitude: 11.10916667,
+    },
+    city_id: "Q13377",
+    country: "IT",
   },
-  8010282: {
+  Q323587: {
     name: "Prenzlau",
-    latitude: 53.321611,
-    longitude: 13.866535,
-    city: 14414,
-    preferred: true,
+    geo: {
+      latitude: 53.32222222222222,
+      longitude: 13.866666666666667,
+    },
+    city_id: "Q537214",
+    country: "DE",
   },
-  8004885: {
+  Q801333: {
     name: "Prien am Chiemsee",
-    latitude: 47.855513,
-    longitude: 12.346612,
-    city: 7206,
-    preferred: true,
+    geo: {
+      latitude: 47.8555,
+      longitude: 12.3466,
+    },
+    city_id: "Q18863",
+    country: "DE",
   },
-  5100234: {
-    name: "Przemyśl Główny",
-    latitude: 49.783663,
-    longitude: 22.776364,
-    city: 28559,
-    preferred: true,
+  Q7250482: {
+    name: "Prora",
+    geo: {
+      latitude: 54.443889,
+      longitude: 13.564722,
+    },
+    city_id: "Q523490",
+    country: "DE",
+    secondary: true,
   },
-  5100195: {
+  Q11829017: {
+    name: "Przemyśl Gł",
+    geo: {
+      latitude: 49.78333333333333,
+      longitude: 22.77638888888889,
+    },
+    city_id: "Q208473",
+    country: "PL",
+  },
+  Q2060837: {
+    name: "Przemyśl Zasanie",
+    geo: {
+      latitude: 49.7935,
+      longitude: 22.7737,
+    },
+    city_id: "Q208473",
+    country: "PL",
+    secondary: true,
+  },
+  Q2109826: {
     name: "Przeworsk",
-    latitude: 50.05912,
-    longitude: 22.49408,
-    city: 32440,
-    preferred: true,
+    geo: {
+      latitude: 50.0672,
+      longitude: 22.5022,
+    },
+    city_id: "Q983875",
+    country: "PL",
   },
-  8000880: {
+  Q11833501: {
     name: "Radolfzell",
-    latitude: 47.735875,
-    longitude: 8.968987,
-    city: 7702,
-    preferred: true,
+    geo: {
+      latitude: 47.735873,
+      longitude: 8.968984,
+    },
+    city_id: "Q16113",
+    country: "DE",
   },
-  8100138: {
+  Q111166283: {
     name: "Radstadt",
-    latitude: 47.384424,
-    longitude: 13.468393,
-    city: 17656,
-    preferred: true,
+    geo: {
+      latitude: 47.384424,
+      longitude: 13.468583,
+    },
+    city_id: "Q260950",
+    country: "AT",
   },
-  7400306: {
-    name: "Ramlösa station",
-    latitude: 56.023804,
-    longitude: 12.727529,
-    city: 67936,
-    preferred: true,
+  Q10649089: {
+    name: "Ramlösa",
+    geo: {
+      latitude: 56.023611111111,
+      longitude: 12.7275,
+    },
+    city_id: "Q25411",
+    country: "SE",
+    secondary: true,
   },
-  8004965: {
+  Q56887319: {
+    name: "Rankweil",
+    geo: {
+      latitude: 47.27185,
+      longitude: 9.6376,
+    },
+    city_id: "Q871383",
+    country: "AT",
+  },
+  Q11172012: {
     name: "Ravensburg",
-    latitude: 47.784336,
-    longitude: 9.60607,
-    city: 7242,
-    preferred: true,
+    geo: {
+      latitude: 47.7848,
+      longitude: 9.60582,
+    },
+    city_id: "Q6832",
+    country: "DE",
   },
-  8000307: {
+  Q466357: {
     name: "Recklinghausen Hbf",
-    latitude: 51.616357,
-    longitude: 7.203487,
-    city: 7217,
-    preferred: true,
+    geo: {
+      latitude: 51.616388888889,
+      longitude: 7.2033333333333,
+    },
+    city_id: "Q3050",
+    country: "DE",
   },
-  8000309: {
+  Q138888: {
     name: "Regensburg Hbf",
-    latitude: 49.011669,
-    longitude: 12.099615,
-    city: 10771,
-    preferred: true,
+    geo: {
+      latitude: 49.011766,
+      longitude: 12.099691,
+    },
+    city_id: "Q2978",
+    country: "DE",
   },
-  8300220: {
+  Q1604991: {
     name: "Reggio Emilia",
-    latitude: 44.697674,
-    longitude: 10.643048,
-    city: 23045,
-    preferred: true,
+    geo: {
+      latitude: 44.69777778,
+      longitude: 10.64305556,
+    },
+    city_id: "Q13360",
+    country: "IT",
   },
-  8305254: {
-    name: "Reggio Emilia AV Mediopadana",
-    latitude: 44.7245,
-    longitude: 10.6532,
-    city: 23045,
-    preferred: false,
+  Q1155591: {
+    name: "Reggio Emilia AV",
+    geo: {
+      latitude: 44.724372,
+      longitude: 10.655193,
+    },
+    city_id: "Q13360",
+    country: "IT",
   },
-  8300337: {
+  Q3970657: {
     name: "Reggio di Calabria Centrale",
-    latitude: 38.104123,
-    longitude: 15.635792,
-    city: 22399,
-    preferred: true,
+    geo: {
+      latitude: 38.10370556,
+      longitude: 15.63603333,
+    },
+    city_id: "Q8471",
+    country: "IT",
   },
-  8000310: {
-    name: "Remagen",
-    latitude: 50.577213,
-    longitude: 7.229781,
-    city: 7220,
-    preferred: true,
+  Q801354: {
+    name: "Rendsburg",
+    geo: {
+      latitude: 54.3025,
+      longitude: 9.67083,
+    },
+    city_id: "Q490457",
+    country: "DE",
   },
-  8000316: {
+  Q2146704: {
+    name: "Reutlingen Hbf",
+    geo: {
+      latitude: 48.496,
+      longitude: 9.2092,
+    },
+    city_id: "Q3085",
+    country: "DE",
+  },
+  Q277743: {
     name: "Rheine",
-    latitude: 52.2763,
-    longitude: 7.434258,
-    city: 7225,
-    preferred: true,
+    geo: {
+      latitude: 52.2765,
+      longitude: 7.43486,
+    },
+    city_id: "Q3890",
+    country: "DE",
   },
-  8000318: {
-    name: "Rheydt Hbf",
-    latitude: 51.163049,
-    longitude: 6.439359,
-    city: 29016,
-    preferred: false,
-  },
-  8012763: {
+  Q7322379: {
     name: "Ribnitz-Damgarten West",
-    latitude: 54.239175,
-    longitude: 12.436962,
-    city: 7706,
-    preferred: true,
+    geo: {
+      latitude: 54.239167,
+      longitude: 12.436944,
+    },
+    city_id: "Q571959",
+    country: "DE",
   },
-  8010297: {
+  Q801361: {
     name: "Riesa",
-    latitude: 51.309726,
-    longitude: 13.287396,
-    city: 7750,
-    preferred: true,
+    geo: {
+      latitude: 51.3094,
+      longitude: 13.2872,
+    },
+    city_id: "Q8775",
+    country: "DE",
   },
-  8005101: {
+  Q110233880: {
     name: "Ringsheim/Europa-Park",
-    latitude: 48.248728,
-    longitude: 7.773035,
-    city: 13237,
-    preferred: true,
+    geo: {
+      latitude: 48.24849,
+      longitude: 7.77295,
+    },
+    city_id: "Q557798",
+    country: "DE",
   },
-  8601979: {
-    name: "Ringsted St.",
-    latitude: 55.43804,
-    longitude: 11.786152,
-    city: 18793,
-    preferred: true,
+  Q2879428: {
+    name: "Ringsted",
+    geo: {
+      latitude: 55.4381,
+      longitude: 11.7864,
+    },
+    city_id: "Q283658",
+    country: "DK",
   },
-  8300263: {
+  Q754485: {
     name: "Roma Termini",
-    latitude: 41.900833,
-    longitude: 12.501944,
-    city: 8542,
-    preferred: true,
+    geo: {
+      latitude: 41.900648,
+      longitude: 12.501755,
+    },
+    city_id: "Q220",
+    country: "IT",
   },
-  8300262: {
+  Q801376: {
     name: "Roma Tiburtina",
-    latitude: 41.911072,
-    longitude: 12.531457,
-    city: 8542,
-    preferred: false,
+    geo: {
+      latitude: 41.910277777778,
+      longitude: 12.530833333333,
+    },
+    city_id: "Q220",
+    country: "IT",
+    secondary: true,
   },
-  7400135: {
-    name: "Ronneby station",
-    latitude: 56.206636,
-    longitude: 15.283351,
-    city: 35341,
-    preferred: false,
+  Q99463064: {
+    name: "Ronneby",
+    geo: {
+      latitude: 56.206985,
+      longitude: 15.283052,
+    },
+    city_id: "Q823785",
+    country: "SE",
   },
-  8300430: {
+  Q3970718: {
     name: "Rosarno",
-    latitude: 38.488717,
-    longitude: 15.970199,
-    city: 19609,
-    preferred: true,
+    geo: {
+      latitude: 38.488677777778,
+      longitude: 15.970216666667,
+    },
+    city_id: "Q54644",
+    country: "IT",
   },
-  8000320: {
+  Q473903: {
     name: "Rosenheim",
-    latitude: 47.850128,
-    longitude: 12.119113,
-    city: 7231,
-    preferred: true,
+    geo: {
+      latitude: 47.850361111111,
+      longitude: 12.119527777778,
+    },
+    city_id: "Q4007",
+    country: "DE",
   },
-  8010304: {
+  Q682569: {
     name: "Rostock Hbf",
-    latitude: 54.078323,
-    longitude: 12.131706,
-    city: 29007,
-    preferred: true,
+    geo: {
+      latitude: 54.0781,
+      longitude: 12.1308,
+    },
+    city_id: "Q2861",
+    country: "DE",
   },
-  8000322: {
+  Q324806: {
     name: "Rottweil",
-    latitude: 48.165299,
-    longitude: 8.639298,
-    city: 7238,
-    preferred: true,
+    geo: {
+      latitude: 48.164819444444,
+      longitude: 8.6417972222222,
+    },
+    city_id: "Q82960",
+    country: "DE",
   },
-  8300113: {
+  Q3970745: {
     name: "Rovereto",
-    latitude: 45.890956,
-    longitude: 11.033602,
-    city: 18831,
-    preferred: true,
+    geo: {
+      latitude: 45.89083333,
+      longitude: 11.03388889,
+    },
+    city_id: "Q279373",
+    country: "IT",
   },
-  8010306: {
-    name: "Rudolstadt (Thür)",
-    latitude: 50.717993,
-    longitude: 11.339155,
-    city: 29410,
-    preferred: true,
+  Q50300514: {
+    name: "Rudolstadt (Thüringen)",
+    geo: {
+      latitude: 50.718177777778,
+      longitude: 11.339208333333,
+    },
+    city_id: "Q517107",
+    country: "DE",
   },
-  5100082: {
+  Q801385: {
     name: "Rzepin",
-    latitude: 52.350218,
-    longitude: 14.815076,
-    city: 19082,
-    preferred: true,
+    geo: {
+      latitude: 52.349722,
+      longitude: 14.814167,
+    },
+    city_id: "Q990823",
+    country: "PL",
   },
-  5100229: {
-    name: "Rzeszów",
-    latitude: 50.04311,
-    longitude: 22.006797,
-    city: 28487,
-    preferred: true,
+  Q7385770: {
+    name: "Rzeszów Gł",
+    geo: {
+      latitude: 50.0428,
+      longitude: 22.0069,
+    },
+    city_id: "Q598",
+    country: "PL",
   },
-  8601996: {
-    name: "Rødekro St.",
-    latitude: 55.069689,
-    longitude: 9.332753,
-    city: 18708,
-    preferred: true,
+  Q4986933: {
+    name: "Rødekro",
+    geo: {
+      latitude: 55.0695,
+      longitude: 9.3329,
+    },
+    city_id: "Q4541616",
+    country: "DK",
   },
-  8010309: {
+  Q320974: {
     name: "Saalfeld (Saale)",
-    latitude: 50.650313,
-    longitude: 11.374986,
-    city: 7503,
-    preferred: true,
+    geo: {
+      latitude: 50.650486,
+      longitude: 11.374385,
+    },
+    city_id: "Q155984",
+    country: "DE",
   },
-  8000323: {
+  Q127089: {
     name: "Saarbrücken Hbf",
-    latitude: 49.241152,
-    longitude: 6.990985,
-    city: 10495,
-    preferred: true,
+    geo: {
+      latitude: 49.2414,
+      longitude: 6.99056,
+    },
+    city_id: "Q1724",
+    country: "DE",
   },
-  8300269: {
+  Q964932: {
     name: "Salerno",
-    latitude: 40.675307,
-    longitude: 14.772557,
-    city: 20259,
-    preferred: true,
+    geo: {
+      latitude: 40.675388,
+      longitude: 14.772419,
+    },
+    city_id: "Q1083",
+    country: "IT",
   },
-  8100002: {
+  Q694694: {
     name: "Salzburg Hbf",
-    latitude: 47.813046,
-    longitude: 13.045819,
-    city: 6994,
-    preferred: false,
+    geo: {
+      latitude: 47.813056,
+      longitude: 13.046667,
+    },
+    city_id: "Q34713",
+    country: "AT",
   },
-  8101917: {
-    name: "Salzburg Süd Bahnhof",
-    latitude: 47.770263,
-    longitude: 13.078549,
-    city: 6994,
-    preferred: false,
+  Q47092843: {
+    name: "Salzburg Süd",
+    geo: {
+      latitude: 47.770278,
+      longitude: 13.078333,
+    },
+    city_id: "Q34713",
+    country: "AT",
+    secondary: true,
   },
-  8010310: {
+  Q801391: {
     name: "Salzwedel",
-    latitude: 52.858109,
-    longitude: 11.162031,
-    city: 14433,
-    preferred: true,
+    geo: {
+      latitude: 52.8581,
+      longitude: 11.1617,
+    },
+    city_id: "Q486985",
+    country: "DE",
   },
-  8302108: {
+  Q3970791: {
     name: "San Frediano a Settimo",
-    latitude: 43.680545,
-    longitude: 10.516704,
-    city: 20480,
-    preferred: true,
+    geo: {
+      latitude: 43.680627777778,
+      longitude: 10.517355555556,
+    },
+    city_id: "Q3947144",
+    country: "IT",
   },
-  8301005: {
+  Q3970834: {
     name: "San Miniato-Fucecchio",
-    latitude: 43.701804,
-    longitude: 10.834239,
-    city: 20337,
-    preferred: true,
+    geo: {
+      latitude: 43.7013,
+      longitude: 10.8317,
+    },
+    city_id: "Q103244",
+    country: "IT",
   },
-  8301006: {
+  Q3970844: {
     name: "San Romano-Montopoli-Santa Croce",
-    latitude: 43.690586,
-    longitude: 10.759764,
-    city: 20747,
-    preferred: true,
+    geo: {
+      latitude: 43.690511111111,
+      longitude: 10.760225,
+    },
+    city_id: "Q103161",
+    country: "IT",
   },
-  8300333: {
+  Q576448: {
+    name: "Sankt Valentin",
+    geo: {
+      latitude: 48.1794,
+      longitude: 14.5208,
+    },
+    city_id: "Q661451",
+    country: "AT",
+  },
+  Q21154151: {
+    name: "Sant'Agata di Militello",
+    geo: {
+      latitude: 38.073602,
+      longitude: 14.640701,
+    },
+    city_id: "Q491724",
+    country: "IT",
+  },
+  Q20009825: {
+    name: "Santo Stefano di Camastra-Mistretta",
+    geo: {
+      latitude: 38.017506,
+      longitude: 14.351835,
+    },
+    city_id: "Q494809",
+    country: "IT",
+  },
+  Q3970901: {
     name: "Sapri",
-    latitude: 40.077965,
-    longitude: 15.627764,
-    city: 20392,
-    preferred: true,
+    geo: {
+      latitude: 40.0779,
+      longitude: 15.6277,
+    },
+    city_id: "Q81654",
+    country: "IT",
   },
-  8509411: {
+  Q605247: {
     name: "Sargans",
-    latitude: 47.044794,
-    longitude: 9.446269,
-    city: 18573,
-    preferred: true,
+    geo: {
+      latitude: 47.04536,
+      longitude: 9.445391944444445,
+    },
+    city_id: "Q64571",
+    country: "CH",
   },
-  8300923: {
+  Q16609878: {
     name: "Scalea-Santa Domenica Talao",
-    latitude: 39.808531,
-    longitude: 15.801202,
-    city: 21889,
-    preferred: true,
+    geo: {
+      latitude: 39.808198,
+      longitude: 15.80118,
+    },
+    city_id: "Q54000",
+    country: "IT",
   },
-  8503424: {
+  Q690055: {
     name: "Schaffhausen",
-    latitude: 47.698283,
-    longitude: 8.632736,
-    city: 6395,
-    preferred: true,
+    geo: {
+      latitude: 47.6982815148,
+      longitude: 8.63275578013,
+    },
+    city_id: "Q9009",
+    country: "CH",
   },
-  8100137: {
+  Q61588138: {
     name: "Schladming",
-    latitude: 47.393827,
-    longitude: 13.678148,
-    city: 17730,
-    preferred: true,
+    geo: {
+      latitude: 47.3939,
+      longitude: 13.67863,
+    },
+    city_id: "Q254221",
+    country: "AT",
   },
-  8005362: {
+  Q323865: {
     name: "Schleswig",
-    latitude: 54.499746,
-    longitude: 9.537509,
-    city: 7271,
-    preferred: true,
+    geo: {
+      latitude: 54.4999,
+      longitude: 9.5376,
+    },
+    city_id: "Q501661",
+    country: "DE",
   },
-  8000891: {
-    name: "Schlüchtern",
-    latitude: 50.341174,
-    longitude: 9.510038,
-    city: 11141,
-    preferred: true,
-  },
-  8005424: {
+  Q321722: {
     name: "Schorndorf",
-    latitude: 48.807147,
-    longitude: 9.526309,
-    city: 7276,
-    preferred: true,
+    geo: {
+      latitude: 48.806944444444,
+      longitude: 9.5263888888889,
+    },
+    city_id: "Q14882",
+    country: "DE",
   },
-  8100044: {
+  Q20480853: {
     name: "Schwarzach-St. Veit",
-    latitude: 47.318533,
-    longitude: 13.154463,
-    city: 17610,
-    preferred: true,
+    geo: {
+      latitude: 47.3185702,
+      longitude: 13.1544566,
+    },
+    city_id: "Q253179",
+    country: "AT",
   },
-  8010324: {
+  Q464303: {
     name: "Schwerin Hbf",
-    latitude: 53.63466,
-    longitude: 11.407553,
-    city: 29011,
-    preferred: true,
+    geo: {
+      latitude: 53.6344,
+      longitude: 11.4081,
+    },
+    city_id: "Q1709",
+    country: "DE",
   },
-  8000329: {
+  Q322983: {
     name: "Schwäbisch Gmünd",
-    latitude: 48.801007,
-    longitude: 9.787796,
-    city: 7268,
-    preferred: true,
+    geo: {
+      latitude: 48.801111111111,
+      longitude: 9.7883333333333,
+    },
+    city_id: "Q4037",
+    country: "DE",
   },
-  8100024: {
+  Q111045845: {
     name: "Schärding",
-    latitude: 48.463238,
-    longitude: 13.44272,
-    city: 17605,
-    preferred: true,
+    geo: {
+      latitude: 48.463456,
+      longitude: 13.442568,
+    },
+    city_id: "Q255012",
+    country: "AT",
   },
-  8100150: {
+  Q111703432: {
     name: "Selzthal",
-    latitude: 47.550356,
-    longitude: 14.312768,
-    city: 17731,
-    preferred: true,
+    geo: {
+      latitude: 47.550042,
+      longitude: 14.312175,
+    },
+    city_id: "Q676033",
+    country: "AT",
   },
-  8300329: {
+  Q83706074: {
+    name: "Semmering",
+    geo: {
+      latitude: 47.63961,
+      longitude: 15.83064,
+    },
+    city_id: "Q659891",
+    country: "AT",
+  },
+  Q9335716: {
+    name: "Sevnica",
+    geo: {
+      latitude: 46.0095,
+      longitude: 15.3016,
+    },
+    city_id: "Q15915",
+    country: "SI",
+  },
+  Q3970996: {
     name: "Sibari",
-    latitude: 39.74931,
-    longitude: 16.4563,
-    city: 20634,
-    preferred: true,
+    geo: {
+      latitude: 39.74929,
+      longitude: 16.45632,
+    },
+    city_id: "Q53853",
+    country: "IT",
   },
-  8005556: {
+  Q316905: {
     name: "Siegburg/Bonn",
-    latitude: 50.793916,
-    longitude: 7.203029,
-    city: 7290,
-    preferred: true,
+    geo: {
+      latitude: 50.7938,
+      longitude: 7.2025,
+    },
+    city_id: "Q14870",
+    country: "DE",
   },
-  8000046: {
-    name: "Siegen",
-    latitude: 50.876086,
-    longitude: 8.016661,
-    city: 7291,
-    preferred: true,
+  Q324364: {
+    name: "Siegen Hbf",
+    geo: {
+      latitude: 50.8756,
+      longitude: 8.01611,
+    },
+    city_id: "Q3167",
+    country: "DE",
   },
-  8003020: {
+  Q105620061: {
     name: "Siegen-Weidenau",
-    latitude: 50.895988,
-    longitude: 8.030036,
-    city: 6981,
-    preferred: true,
+    geo: {
+      latitude: 50.89596,
+      longitude: 8.02982,
+    },
+    city_id: "Q3167",
+    country: "DE",
+    secondary: true,
   },
-  8300237: {
+  Q3971000: {
     name: "Signa",
-    latitude: 43.775498,
-    longitude: 11.095709,
-    city: 20983,
-    preferred: true,
+    geo: {
+      latitude: 43.7756,
+      longitude: 11.0958,
+    },
+    city_id: "Q82869",
+    country: "IT",
   },
-  8000073: {
+  Q18682229: {
     name: "Singen (Hohentwiel)",
-    latitude: 47.758438,
-    longitude: 8.840378,
-    city: 7292,
-    preferred: true,
+    geo: {
+      latitude: 47.758438,
+      longitude: 8.840383,
+    },
+    city_id: "Q6979",
+    country: "DE",
   },
-  7400404: {
+  Q1158776: {
+    name: "Siracusa",
+    geo: {
+      latitude: 37.068889,
+      longitude: 15.280556,
+    },
+    city_id: "Q13670",
+    country: "IT",
+  },
+  Q2156575: {
+    name: "Skawina",
+    geo: {
+      latitude: 49.9772,
+      longitude: 19.8222,
+    },
+    city_id: "Q301924",
+    country: "PL",
+  },
+  Q10671304: {
     name: "Skövde Central",
-    latitude: 58.390654,
-    longitude: 13.853748,
-    city: -1012,
-    preferred: true,
+    geo: {
+      latitude: 58.3894,
+      longitude: 13.8522,
+    },
+    city_id: "Q21166",
+    country: "SE",
   },
-  8000076: {
+  Q7553541: {
     name: "Soest",
-    latitude: 51.578278,
-    longitude: 8.104303,
-    city: 22788,
-    preferred: true,
+    geo: {
+      latitude: 51.578211,
+      longitude: 8.105348,
+    },
+    city_id: "Q6149",
+    country: "DE",
   },
-  8000087: {
+  Q471599: {
     name: "Solingen Hbf",
-    latitude: 51.160909,
-    longitude: 7.004241,
-    city: 7711,
-    preferred: true,
+    geo: {
+      latitude: 51.161527777778,
+      longitude: 7.0041666666667,
+    },
+    city_id: "Q2942",
+    country: "DE",
   },
-  5100056: {
+  Q7563186: {
     name: "Sopot",
-    latitude: 54.440165,
-    longitude: 18.56232,
-    city: 19076,
-    preferred: true,
+    geo: {
+      latitude: 54.44,
+      longitude: 18.5625,
+    },
+    city_id: "Q92689",
+    country: "PL",
   },
-  8005616: {
+  Q801449: {
     name: "Spaichingen",
-    latitude: 48.068989,
-    longitude: 8.740148,
-    city: 7314,
-    preferred: true,
+    geo: {
+      latitude: 48.069,
+      longitude: 8.74015,
+    },
+    city_id: "Q519688",
+    country: "DE",
   },
-  8507483: {
+  Q801450: {
+    name: "Spielfeld-Straß",
+    geo: {
+      latitude: 46.7098,
+      longitude: 15.6292,
+    },
+    city_id: "Q690920",
+    country: "AT",
+  },
+  Q1709253: {
     name: "Spiez",
-    latitude: 46.686394,
-    longitude: 7.680095,
-    city: 6388,
-    preferred: true,
+    geo: {
+      latitude: 46.6861,
+      longitude: 7.68,
+    },
+    city_id: "Q69484",
+    country: "CH",
   },
-  8506302: {
-    name: "St-Gallen",
-    latitude: 47.423276,
-    longitude: 9.369303,
-    city: 6358,
-    preferred: true,
-  },
-  8506314: {
-    name: "St-Margrethen",
-    latitude: 47.45315,
-    longitude: 9.63819,
-    city: 6156,
-    preferred: true,
-  },
-  8100064: {
+  Q7587118: {
     name: "St. Anton am Arlberg",
-    latitude: 47.127566,
-    longitude: 10.266993,
-    city: 17624,
-    preferred: true,
+    geo: {
+      latitude: 47.1273,
+      longitude: 10.2669,
+    },
+    city_id: "Q659996",
+    country: "AT",
   },
-  8100043: {
+  Q117694: {
+    name: "St. Gallen (CH) Hbf",
+    geo: {
+      latitude: 47.423183,
+      longitude: 9.369873,
+    },
+    city_id: "Q25607",
+    country: "CH",
+  },
+  Q37918335: {
     name: "St. Johann im Pongau",
-    latitude: 47.348108,
-    longitude: 13.194843,
-    city: 17609,
-    preferred: true,
+    geo: {
+      latitude: 47.348319,
+      longitude: 13.195299,
+    },
+    city_id: "Q251022",
+    country: "AT",
   },
-  8100071: {
-    name: "St. Michael in Obersteiermark",
-    latitude: 47.346625,
-    longitude: 15.009189,
-    city: 17627,
-    preferred: true,
+  Q15639432: {
+    name: "St. Margrethen SG",
+    geo: {
+      latitude: 47.45321111111111,
+      longitude: 9.638244444444444,
+    },
+    city_id: "Q66243",
+    country: "CH",
   },
-  8100008: {
+  Q662913: {
     name: "St. Pölten Hbf",
-    latitude: 48.207683,
-    longitude: 15.625912,
-    city: 17560,
-    preferred: true,
+    geo: {
+      latitude: 48.208056,
+      longitude: 15.623889,
+    },
+    city_id: "Q82500",
+    country: "AT",
   },
-  8100009: {
-    name: "St. Valentin",
-    latitude: 48.179143,
-    longitude: 14.521848,
-    city: 17582,
-    preferred: true,
+  Q111171399: {
+    name: "St.Michael in Obersteiermark",
+    geo: {
+      latitude: 47.34673,
+      longitude: 15.009178,
+    },
+    city_id: "Q696235",
+    country: "AT",
   },
-  8100132: {
+  Q111171345: {
+    name: "St.Veit/Glan Westbahnhof",
+    geo: {
+      latitude: 46.762519,
+      longitude: 14.362037,
+    },
+    city_id: "Q494604",
+    country: "AT",
+  },
+  Q111167799: {
+    name: "Stadt Rottenmann",
+    geo: {
+      latitude: 47.527276,
+      longitude: 14.367096,
+    },
+    city_id: "Q675678",
+    country: "AT",
+  },
+  Q801458: {
+    name: "Stadtroda",
+    geo: {
+      latitude: 50.8678,
+      longitude: 11.7228,
+    },
+    city_id: "Q520088",
+    country: "DE",
+  },
+  Q104630036: {
     name: "Stainach-Irdning",
-    latitude: 47.529195,
-    longitude: 14.106753,
-    city: 17729,
-    preferred: true,
+    geo: {
+      latitude: 47.52947,
+      longitude: 14.10651,
+    },
+    city_id: "Q18631090",
+    country: "AT",
   },
-  8000091: {
-    name: "Steinach (b Rothenburg)",
-    latitude: 49.45322,
-    longitude: 10.273537,
-    city: 7301,
-    preferred: true,
+  Q801462: {
+    name: "Steinach (b Rothenburg o d Tauber)",
+    geo: {
+      latitude: 49.453216,
+      longitude: 10.273575,
+    },
+    city_id: "Q2339629",
+    country: "DE",
   },
-  8010334: {
-    name: "Stendal",
-    latitude: 52.594725,
-    longitude: 11.854407,
-    city: 7752,
-    preferred: true,
+  Q801468: {
+    name: "Stendal Hbf",
+    geo: {
+      latitude: 52.594444,
+      longitude: 11.854444,
+    },
+    city_id: "Q7082",
+    country: "DE",
   },
-  7400002: {
+  Q54315: {
     name: "Stockholm Central",
-    latitude: 59.330009,
-    longitude: 18.057629,
-    city: 38711,
-    preferred: true,
+    geo: {
+      latitude: 59.33,
+      longitude: 18.056111111111,
+    },
+    city_id: "Q1754",
+    country: "SE",
   },
-  8010338: {
+  Q320175: {
     name: "Stralsund Hbf",
-    latitude: 54.308626,
-    longitude: 13.077318,
-    city: 29024,
-    preferred: true,
+    geo: {
+      latitude: 54.3086,
+      longitude: 13.0772,
+    },
+    city_id: "Q4065",
+    country: "DE",
   },
-  8700023: {
-    name: "Strasbourg",
-    latitude: 48.584967,
-    longitude: 7.734584,
-    city: 5260,
-    preferred: true,
+  Q801473: {
+    name: "Strasbourg-Ville",
+    geo: {
+      latitude: 48.585144,
+      longitude: 7.734263,
+    },
+    city_id: "Q6602",
+    country: "FR",
   },
-  8000095: {
+  Q16054532: {
     name: "Straubing",
-    latitude: 48.876975,
-    longitude: 12.574093,
-    city: 7303,
-    preferred: true,
+    geo: {
+      latitude: 48.877061,
+      longitude: 12.574036,
+    },
+    city_id: "Q7027",
+    country: "DE",
   },
-  5603745: {
-    name: "Sturovo",
-    latitude: 47.800121,
-    longitude: 18.679917,
-    city: 38916,
-    preferred: true,
-  },
-  8000096: {
+  Q613766: {
     name: "Stuttgart Hbf",
-    latitude: 48.784081,
-    longitude: 9.181636,
-    city: 7714,
-    preferred: false,
+    geo: {
+      latitude: 48.783888888889,
+      longitude: 9.1816666666667,
+    },
+    city_id: "Q1022",
+    country: "DE",
   },
-  8005776: {
+  Q801478: {
     name: "Stuttgart-Vaihingen",
-    latitude: 48.72628,
-    longitude: 9.113228,
-    city: 7714,
-    preferred: false,
+    geo: {
+      latitude: 48.7267,
+      longitude: 9.11306,
+    },
+    city_id: "Q1022",
+    country: "DE",
+    secondary: true,
   },
-  8005791: {
+  Q117303565: {
     name: "Sulz (Neckar)",
-    latitude: 48.366487,
-    longitude: 8.636745,
-    city: 7306,
-    preferred: true,
+    geo: {
+      latitude: 48.36682,
+      longitude: 8.63702,
+    },
+    city_id: "Q83167",
+    country: "DE",
   },
-  5500006: {
-    name: "Szob",
-    latitude: 47.820994,
-    longitude: 18.862056,
-    city: 28253,
-    preferred: true,
+  Q21866926: {
+    name: "Szob vasútállomás",
+    geo: {
+      latitude: 47.821061,
+      longitude: 18.862018,
+    },
+    city_id: "Q429409",
+    country: "HU",
   },
-  7400700: {
-    name: "Södertälje Syd station",
-    latitude: 59.162513,
-    longitude: 17.645672,
-    city: 19128,
-    preferred: true,
+  Q3429432: {
+    name: "Södertälje Syd",
+    geo: {
+      latitude: 59.1625,
+      longitude: 17.645555555556,
+    },
+    city_id: "Q26518",
+    country: "SE",
   },
-  7400127: {
-    name: "Sölvesborg station",
-    latitude: 56.049873,
-    longitude: 14.583928,
-    city: 19120,
-    preferred: true,
+  Q10689129: {
+    name: "Sölvesborg",
+    geo: {
+      latitude: 56.04954,
+      longitude: 14.58336,
+    },
+    city_id: "Q898727",
+    country: "SE",
   },
-  5100230: {
+  Q3971081: {
+    name: "Taormina-Giardini",
+    geo: {
+      latitude: 37.8455,
+      longitude: 15.2825,
+    },
+    city_id: "Q199952",
+    country: "IT",
+  },
+  Q2472727: {
     name: "Tarnów",
-    latitude: 50.0054,
-    longitude: 20.974179,
-    city: 28578,
-    preferred: true,
+    geo: {
+      latitude: 50.0053,
+      longitude: 20.9753,
+    },
+    city_id: "Q106281",
+    country: "PL",
   },
-  5100061: {
+  Q726594: {
+    name: "Tarvisio Boscoverde",
+    geo: {
+      latitude: 46.5062,
+      longitude: 13.6076,
+    },
+    city_id: "Q18801",
+    country: "IT",
+  },
+  Q12816463: {
+    name: "Tatabánya vasútállomás",
+    geo: {
+      latitude: 47.58559,
+      longitude: 18.393157,
+    },
+    city_id: "Q187821",
+    country: "HU",
+  },
+  Q2253001: {
     name: "Tczew",
-    latitude: 54.097317,
-    longitude: 18.790151,
-    city: 19078,
-    preferred: true,
+    geo: {
+      latitude: 54.097,
+      longitude: 18.7893,
+    },
+    city_id: "Q474697",
+    country: "PL",
   },
-  8100060: {
+  Q72833913: {
     name: "Telfs-Pfaffenhofen",
-    latitude: 47.300708,
-    longitude: 11.078872,
-    city: 17621,
-    preferred: true,
+    geo: {
+      latitude: 47.300644,
+      longitude: 11.078629,
+    },
+    city_id: "Q667627",
+    country: "AT",
   },
-  8507100: {
+  Q3971098: {
+    name: "Termini Imerese",
+    geo: {
+      latitude: 37.9801,
+      longitude: 13.7034,
+    },
+    city_id: "Q490851",
+    country: "IT",
+  },
+  Q801516: {
     name: "Thun",
-    latitude: 46.754856,
-    longitude: 7.629576,
-    city: 6104,
-    preferred: true,
+    geo: {
+      latitude: 46.7548527757,
+      longitude: 7.62960576339,
+    },
+    city_id: "Q68978",
+    country: "CH",
   },
-  8602553: {
-    name: "Tinglev St.",
-    latitude: 54.936172,
-    longitude: 9.258233,
-    city: 17595,
-    preferred: true,
+  Q4993889: {
+    name: "Tinglev",
+    geo: {
+      latitude: 54.93617,
+      longitude: 9.2583,
+    },
+    city_id: "Q3618891",
+    country: "DK",
   },
-  8302714: {
+  Q22321717: {
     name: "Torano-Lattarico",
-    latitude: 39.494808,
-    longitude: 16.210589,
-    city: 20477,
-    preferred: true,
+    geo: {
+      latitude: 39.494547,
+      longitude: 16.210501,
+    },
+    city_id: "Q54027",
+    country: "IT",
   },
-  8300001: {
+  Q801523: {
     name: "Torino Porta Nuova",
-    latitude: 45.061,
-    longitude: 7.677713,
-    city: 8565,
-    preferred: true,
+    geo: {
+      latitude: 45.0625,
+      longitude: 7.6788888888889,
+    },
+    city_id: "Q495",
+    country: "IT",
   },
-  8300522: {
+  Q782123: {
     name: "Torino Porta Susa",
-    latitude: 45.071832,
-    longitude: 7.665164,
-    city: 8565,
-    preferred: false,
+    geo: {
+      latitude: 45.0727,
+      longitude: 7.66601,
+    },
+    city_id: "Q495",
+    country: "IT",
+    secondary: true,
   },
-  8300029: {
+  Q3971162: {
     name: "Tortona",
-    latitude: 44.900201,
-    longitude: 8.862078,
-    city: 20332,
-    preferred: true,
+    geo: {
+      latitude: 44.9,
+      longitude: 8.86204,
+    },
+    city_id: "Q17686",
+    country: "IT",
   },
-  7400010: {
+  Q99194018: {
     name: "Tranås",
-    latitude: 58.039,
-    longitude: 14.9759,
-    city: 37625,
-    preferred: true,
+    geo: {
+      latitude: 58.038048,
+      longitude: 14.975493,
+    },
+    city_id: "Q988403",
+    country: "SE",
   },
-  8000116: {
+  Q801525: {
     name: "Traunstein",
-    latitude: 47.869725,
-    longitude: 12.638797,
-    city: 7337,
-    preferred: true,
+    geo: {
+      latitude: 47.869522222222,
+      longitude: 12.638569444444,
+    },
+    city_id: "Q253119",
+    country: "DE",
   },
-  8300101: {
+  Q1404881: {
     name: "Trento",
-    latitude: 46.072287,
-    longitude: 11.118901,
-    city: 18829,
-    preferred: true,
+    geo: {
+      latitude: 46.072606,
+      longitude: 11.119086,
+    },
+    city_id: "Q3376",
+    country: "IT",
   },
-  8000122: {
+  Q721990: {
     name: "Treuchtlingen",
-    latitude: 48.961267,
-    longitude: 10.908158,
-    city: 7334,
-    preferred: true,
+    geo: {
+      latitude: 48.961127,
+      longitude: 10.908202,
+    },
+    city_id: "Q252466",
+    country: "DE",
   },
-  8000129: {
-    name: "Treysa",
-    latitude: 50.910659,
-    longitude: 9.185672,
-    city: 7335,
-    preferred: true,
+  Q801528: {
+    name: "Tullnerfeld",
+    geo: {
+      latitude: 48.2951,
+      longitude: 15.9967,
+    },
+    city_id: "Q489810",
+    country: "AT",
   },
-  8000163: {
+  Q285633: {
     name: "Tuttlingen",
-    latitude: 47.98058,
-    longitude: 8.798542,
-    city: 7339,
-    preferred: true,
+    geo: {
+      latitude: 47.98,
+      longitude: 8.79833,
+    },
+    city_id: "Q15987",
+    country: "DE",
   },
-  8602997: {
-    name: "Tårnby St.",
-    latitude: 55.629825,
-    longitude: 12.601995,
-    city: 18771,
-    preferred: true,
+  Q1924055: {
+    name: "Tårnby",
+    geo: {
+      latitude: 55.6298,
+      longitude: 12.6022,
+    },
+    city_id: "Q28173",
+    country: "DK",
   },
-  8000168: {
+  Q325592: {
+    name: "Tübingen Hbf",
+    geo: {
+      latitude: 48.5158,
+      longitude: 9.05585,
+    },
+    city_id: "Q3806",
+    country: "DE",
+  },
+  Q322286: {
     name: "Uelzen",
-    latitude: 52.969782,
-    longitude: 10.553057,
-    city: 7349,
-    preferred: true,
+    geo: {
+      latitude: 52.9697,
+      longitude: 10.5531,
+    },
+    city_id: "Q15989",
+    country: "DE",
   },
-  8000170: {
+  Q472937: {
     name: "Ulm Hbf",
-    latitude: 48.399432,
-    longitude: 9.982224,
-    city: 10796,
-    preferred: true,
+    geo: {
+      latitude: 48.4,
+      longitude: 9.9833333333333,
+    },
+    city_id: "Q3012",
+    country: "DE",
   },
-  8400621: {
+  Q575655: {
     name: "Utrecht Centraal",
-    latitude: 52.08758,
-    longitude: 5.111167,
-    city: 28938,
-    preferred: true,
+    geo: {
+      latitude: 52.089316,
+      longitude: 5.109972,
+    },
+    city_id: "Q803",
+    country: "NL",
   },
-  8006053: {
+  Q324238: {
     name: "Vaihingen (Enz)",
-    latitude: 48.947567,
-    longitude: 8.958478,
-    city: 7355,
-    preferred: true,
+    geo: {
+      latitude: 48.947,
+      longitude: 8.95832,
+    },
+    city_id: "Q61928",
+    country: "DE",
   },
-  8300345: {
-    name: "Vallo della Lucania-Castelnuovo",
-    latitude: 40.229631,
-    longitude: 15.158419,
-    city: 22000,
-    preferred: true,
+  Q16610017: {
+    name: "Vallo della Lucania",
+    geo: {
+      latitude: 40.229562,
+      longitude: 15.158392,
+    },
+    city_id: "Q81786",
+    country: "IT",
   },
-  8602722: {
-    name: "Vamdrup St.",
-    latitude: 55.428089,
-    longitude: 9.28645,
-    city: 18755,
-    preferred: true,
+  Q1823112: {
+    name: "Vamdrup",
+    geo: {
+      latitude: 55.42811,
+      longitude: 9.28645,
+    },
+    city_id: "Q3547196",
+    country: "DK",
   },
-  7400016: {
-    name: "Varberg Station",
-    latitude: 57.109341,
-    longitude: 12.248413,
-    city: 19108,
-    preferred: true,
+  Q3429145: {
+    name: "Varberg",
+    geo: {
+      latitude: 57.109361111111,
+      longitude: 12.248888888889,
+    },
+    city_id: "Q21168",
+    country: "SE",
   },
-  8010355: {
+  Q7918908: {
     name: "Velgast",
-    latitude: 54.277317,
-    longitude: 12.803138,
-    city: 7719,
-    preferred: true,
+    geo: {
+      latitude: 54.277222,
+      longitude: 12.802222,
+    },
+    city_id: "Q263965",
+    country: "DE",
   },
-  8300093: {
+  Q520844: {
     name: "Venezia Mestre",
-    latitude: 45.481902,
-    longitude: 12.2319,
-    city: 8573,
-    preferred: false,
+    geo: {
+      latitude: 45.48245,
+      longitude: 12.23204,
+    },
+    city_id: "Q641",
+    country: "IT",
+    secondary: true,
   },
-  8300094: {
+  Q801567: {
     name: "Venezia Santa Lucia",
-    latitude: 45.441397,
-    longitude: 12.320462,
-    city: 8573,
-    preferred: true,
+    geo: {
+      latitude: 45.440975,
+      longitude: 12.321038888889,
+    },
+    city_id: "Q641",
+    country: "IT",
   },
-  8006076: {
+  Q612074: {
     name: "Verden (Aller)",
-    latitude: 52.920818,
-    longitude: 9.237854,
-    city: 7357,
-    preferred: true,
+    geo: {
+      latitude: 52.9208,
+      longitude: 9.2375,
+    },
+    city_id: "Q486551",
+    country: "DE",
   },
-  8300120: {
+  Q908640: {
     name: "Verona Porta Nuova",
-    latitude: 45.428659,
-    longitude: 10.982741,
-    city: 8580,
-    preferred: true,
+    geo: {
+      latitude: 45.429167,
+      longitude: 10.982222,
+    },
+    city_id: "Q2028",
+    country: "IT",
   },
-  8300346: {
+  Q3971290: {
     name: "Vibo Valentia-Pizzo",
-    latitude: 38.715191,
-    longitude: 16.139979,
-    city: 20957,
-    preferred: true,
+    geo: {
+      latitude: 38.7147,
+      longitude: 16.1399,
+    },
+    city_id: "Q13625",
+    country: "IT",
   },
-  8300126: {
+  Q3971299: {
     name: "Vicenza",
-    latitude: 45.541096,
-    longitude: 11.540774,
-    city: 10459,
-    preferred: true,
+    geo: {
+      latitude: 45.5411,
+      longitude: 11.5404,
+    },
+    city_id: "Q6537",
+    country: "IT",
   },
-  8000174: {
-    name: "Viersen",
-    latitude: 51.255161,
-    longitude: 6.403888,
-    city: 7359,
-    preferred: true,
-  },
-  8300342: {
+  Q3971321: {
     name: "Villa San Giovanni",
-    latitude: 38.216655,
-    longitude: 15.634555,
-    city: 20521,
-    preferred: true,
+    geo: {
+      latitude: 38.2166,
+      longitude: 15.6344,
+    },
+    city_id: "Q54689",
+    country: "IT",
   },
-  8602887: {
-    name: "Vojens St.",
-    latitude: 55.248475,
-    longitude: 9.304914,
-    city: 18765,
-    preferred: true,
+  Q699533: {
+    name: "Villach Hbf",
+    geo: {
+      latitude: 46.618333,
+      longitude: 13.848333,
+    },
+    city_id: "Q483522",
+    country: "AT",
   },
-  5501413: {
+  Q9369061: {
+    name: "Vojens",
+    geo: {
+      latitude: 55.248611111111,
+      longitude: 9.305,
+    },
+    city_id: "Q1645444",
+    country: "DK",
+  },
+  Q21850265: {
     name: "Vác",
-    latitude: 47.782727,
-    longitude: 19.133063,
-    city: 18816,
-    preferred: true,
+    geo: {
+      latitude: 47.782630555556,
+      longitude: 19.132861111111,
+    },
+    city_id: "Q207408",
+    country: "HU",
   },
-  7400106: {
-    name: "Växjö station",
-    latitude: 56.876889,
-    longitude: 14.806806,
-    city: 35380,
-    preferred: true,
+  Q99470334: {
+    name: "Växjö",
+    geo: {
+      latitude: 56.87662,
+      longitude: 14.80554,
+    },
+    city_id: "Q26152",
+    country: "SE",
   },
-  8100507: {
+  Q7944860: {
     name: "Vöcklabruck",
-    latitude: 48.010064,
-    longitude: 13.663702,
-    city: 17696,
-    preferred: true,
+    geo: {
+      latitude: 48.009722,
+      longitude: 13.664444,
+    },
+    city_id: "Q251325",
+    country: "AT",
   },
-  8000368: {
-    name: "Wabern (Bz Kassel)",
-    latitude: 51.103136,
-    longitude: 9.35804,
-    city: 7372,
-    preferred: true,
+  Q323640: {
+    name: "Waiblingen",
+    geo: {
+      latitude: 48.8261,
+      longitude: 9.30056,
+    },
+    city_id: "Q4140",
+    country: "DE",
   },
-  8000192: {
+  Q468749: {
     name: "Wanne-Eickel Hbf",
-    latitude: 51.531256,
-    longitude: 7.165787,
-    city: 7377,
-    preferred: true,
+    geo: {
+      latitude: 51.531389,
+      longitude: 7.165833,
+    },
+    city_id: "Q2904",
+    country: "DE",
   },
-  8000196: {
-    name: "Warburg (Westf)",
-    latitude: 51.492953,
-    longitude: 9.163846,
-    city: 7378,
-    preferred: true,
+  Q801579: {
+    name: "Warburg (Westfalen)",
+    geo: {
+      latitude: 51.4928,
+      longitude: 9.16361,
+    },
+    city_id: "Q968",
+    country: "DE",
   },
-  8010361: {
+  Q9371000: {
     name: "Waren (Müritz)",
-    latitude: 53.521513,
-    longitude: 12.680678,
-    city: 7507,
-    preferred: true,
+    geo: {
+      latitude: 53.5214,
+      longitude: 12.6808,
+    },
+    city_id: "Q4346",
+    country: "DE",
   },
-  8013236: {
+  Q801578: {
     name: "Warnemünde",
-    latitude: 54.176853,
-    longitude: 12.091273,
-    city: 7757,
-    preferred: true,
+    geo: {
+      latitude: 54.1771,
+      longitude: 12.0908,
+    },
+    city_id: "Q2861",
+    country: "DE",
+    secondary: true,
   },
-  5100067: {
+  Q693034: {
+    name: "Warszawa Centralna",
+    geo: {
+      latitude: 52.228611111111,
+      longitude: 21.003055555556,
+    },
+    city_id: "Q270",
+    country: "PL",
+  },
+  Q3270196: {
+    name: "Warszawa Wschodnia",
+    geo: {
+      latitude: 52.2508,
+      longitude: 21.0529,
+    },
+    city_id: "Q270",
+    country: "PL",
+    secondary: true,
+  },
+  Q2694091: {
     name: "Warszawa Zachodnia",
-    latitude: 52.219974,
-    longitude: 20.965244,
-    city: 10491,
-    preferred: false,
+    geo: {
+      latitude: 52.220278,
+      longitude: 20.965278,
+    },
+    city_id: "Q270",
+    country: "PL",
+    secondary: true,
   },
-  5100065: {
-    name: "Warszawa-Centralna",
-    latitude: 52.228864,
-    longitude: 21.003233,
-    city: 10491,
-    preferred: false,
+  Q320995: {
+    name: "Weimar",
+    geo: {
+      latitude: 50.9917,
+      longitude: 11.3269,
+    },
+    city_id: "Q3955",
+    country: "DE",
   },
-  5100066: {
-    name: "Warszawa-Wschodnia",
-    latitude: 52.251544,
-    longitude: 21.052332,
-    city: 10491,
-    preferred: false,
+  Q324220: {
+    name: "Weinheim (Bergstraße) Hbf",
+    geo: {
+      latitude: 49.5533,
+      longitude: 8.66528,
+    },
+    city_id: "Q7050",
+    country: "DE",
   },
-  8000377: {
-    name: "Weinheim (Bergstr)",
-    latitude: 49.553306,
-    longitude: 8.66552,
-    city: 7385,
-    preferred: true,
-  },
-  8010368: {
+  Q9371879: {
     name: "Weißenfels",
-    latitude: 51.204831,
-    longitude: 11.9708,
-    city: 7498,
-    preferred: true,
+    geo: {
+      latitude: 51.204594,
+      longitude: 11.970888,
+    },
+    city_id: "Q14815",
+    country: "DE",
   },
-  8100014: {
+  Q872526: {
     name: "Wels Hbf",
-    latitude: 48.165874,
-    longitude: 14.026561,
-    city: 17502,
-    preferred: true,
+    geo: {
+      latitude: 48.165556,
+      longitude: 14.026667,
+    },
+    city_id: "Q178582",
+    country: "AT",
   },
-  8006339: {
+  Q801591: {
     name: "Werdohl",
-    latitude: 51.25944,
-    longitude: 7.757573,
-    city: 7432,
-    preferred: true,
+    geo: {
+      latitude: 51.2593,
+      longitude: 7.75831,
+    },
+    city_id: "Q5575",
+    country: "DE",
   },
-  8100539: {
+  Q111045738: {
     name: "Werfen",
-    latitude: 47.472599,
-    longitude: 13.195184,
-    city: 17700,
-    preferred: true,
+    geo: {
+      latitude: 47.472913,
+      longitude: 13.195197,
+    },
+    city_id: "Q255361",
+    country: "AT",
   },
-  8006369: {
+  Q801596: {
     name: "Westerland (Sylt)",
-    latitude: 54.90729,
-    longitude: 8.310311,
-    city: 7390,
-    preferred: true,
+    geo: {
+      latitude: 54.906667,
+      longitude: 8.311667,
+    },
+    city_id: "Q27998",
+    country: "DE",
   },
-  8004610: {
+  Q15945001: {
     name: "Westerstede-Ocholt",
-    latitude: 53.202162,
-    longitude: 7.88647,
-    city: 7176,
-    preferred: true,
+    geo: {
+      latitude: 53.2022,
+      longitude: 7.88684,
+    },
+    city_id: "Q492360",
+    country: "DE",
   },
-  8000383: {
+  Q472580: {
     name: "Wetzlar",
-    latitude: 50.565662,
-    longitude: 8.504217,
-    city: 7416,
-    preferred: true,
+    geo: {
+      latitude: 50.565,
+      longitude: 8.50361,
+    },
+    city_id: "Q4178",
+    country: "DE",
   },
-  8103000: {
+  Q17381787: {
+    name: "Wien Flughafen",
+    geo: {
+      latitude: 48.12025,
+      longitude: 16.56422,
+    },
+    city_id: "Q1741",
+    country: "AT",
+    secondary: true,
+  },
+  Q697300: {
     name: "Wien Hbf",
-    latitude: 48.184923,
-    longitude: 16.375864,
-    city: 26862,
-    preferred: false,
+    geo: {
+      latitude: 48.185,
+      longitude: 16.377777777778,
+    },
+    city_id: "Q1741",
+    country: "AT",
   },
-  8100447: {
+  Q801605: {
     name: "Wien Hütteldorf",
-    latitude: 48.197651,
-    longitude: 16.260551,
-    city: 26862,
-    preferred: false,
+    geo: {
+      latitude: 48.196389,
+      longitude: 16.263889,
+    },
+    city_id: "Q1741",
+    country: "AT",
+    secondary: true,
   },
-  8100514: {
+  Q514441: {
     name: "Wien Meidling",
-    latitude: 48.174999,
-    longitude: 16.336123,
-    city: 26862,
-    preferred: false,
+    geo: {
+      latitude: 48.175,
+      longitude: 16.335278,
+    },
+    city_id: "Q1741",
+    country: "AT",
+    secondary: true,
   },
-  8100003: {
+  Q698145: {
     name: "Wien Westbahnhof",
-    latitude: 48.197597,
-    longitude: 16.337067,
-    city: 26862,
-    preferred: false,
+    geo: {
+      latitude: 48.196667,
+      longitude: 16.337778,
+    },
+    city_id: "Q1741",
+    country: "AT",
+    secondary: true,
   },
-  8100516: {
+  Q663815: {
     name: "Wiener Neustadt Hbf",
-    latitude: 47.811636,
-    longitude: 16.234312,
-    city: 23591,
-    preferred: true,
+    geo: {
+      latitude: 47.811667,
+      longitude: 16.234167,
+    },
+    city_id: "Q131612",
+    country: "AT",
   },
-  8000250: {
+  Q667121: {
     name: "Wiesbaden Hbf",
-    latitude: 50.070788,
-    longitude: 8.243728,
-    city: 7721,
-    preferred: true,
+    geo: {
+      latitude: 50.0708,
+      longitude: 8.24389,
+    },
+    city_id: "Q1721",
+    country: "DE",
   },
-  8006421: {
+  Q324979: {
     name: "Wiesloch-Walldorf",
-    latitude: 49.291351,
-    longitude: 8.664145,
-    city: 6754,
-    preferred: true,
+    geo: {
+      latitude: 49.2909,
+      longitude: 8.6641,
+    },
+    city_id: "Q22874",
+    country: "DE",
   },
-  8506000: {
+  Q677527: {
     name: "Winterthur",
-    latitude: 47.500331,
-    longitude: 8.723815,
-    city: 6040,
-    preferred: true,
+    geo: {
+      latitude: 47.50032777777778,
+      longitude: 8.723786111111112,
+    },
+    city_id: "Q9125",
+    country: "CH",
   },
-  8000251: {
+  Q470060: {
     name: "Witten Hbf",
-    latitude: 51.435548,
-    longitude: 7.329444,
-    city: 7405,
-    preferred: true,
+    geo: {
+      latitude: 51.435555555556,
+      longitude: 7.3297222222222,
+    },
+    city_id: "Q3764",
+    country: "DE",
   },
-  8006552: {
+  Q320778: {
+    name: "Wittenberge",
+    geo: {
+      latitude: 53.0019,
+      longitude: 11.7628,
+    },
+    city_id: "Q541956",
+    country: "DE",
+  },
+  Q455346: {
     name: "Wolfsburg Hbf",
-    latitude: 52.429494,
-    longitude: 10.788197,
-    city: 7410,
-    preferred: true,
+    geo: {
+      latitude: 52.4292,
+      longitude: 10.7878,
+    },
+    city_id: "Q3014",
+    country: "DE",
   },
-  8000257: {
+  Q320361: {
     name: "Worms Hbf",
-    latitude: 49.634748,
-    longitude: 8.356633,
-    city: 29018,
-    preferred: true,
+    geo: {
+      latitude: 49.6347,
+      longitude: 8.35687,
+    },
+    city_id: "Q3852",
+    country: "DE",
   },
-  5100069: {
-    name: "Wrocław Główny",
-    latitude: 51.098075,
-    longitude: 17.037084,
-    city: 29323,
-    preferred: true,
+  Q428443: {
+    name: "Wrocław Gł",
+    geo: {
+      latitude: 51.0988,
+      longitude: 17.0365,
+    },
+    city_id: "Q1799",
+    country: "PL",
   },
-  8000266: {
+  Q15944999: {
+    name: "Wunstorf",
+    geo: {
+      latitude: 52.42218,
+      longitude: 9.451017,
+    },
+    city_id: "Q14827",
+    country: "DE",
+  },
+  Q541041: {
     name: "Wuppertal Hbf",
-    latitude: 51.254334,
-    longitude: 7.149381,
-    city: 7483,
-    preferred: true,
+    geo: {
+      latitude: 51.254722222222,
+      longitude: 7.15,
+    },
+    city_id: "Q2107",
+    country: "DE",
   },
-  8100099: {
-    name: "Wörgl",
-    latitude: 47.4918,
-    longitude: 12.060584,
-    city: 10485,
-    preferred: true,
+  Q871927: {
+    name: "Wörgl Hbf",
+    geo: {
+      latitude: 47.491667,
+      longitude: 12.061944,
+    },
+    city_id: "Q253639",
+    country: "AT",
   },
-  8000260: {
+  Q682609: {
     name: "Würzburg Hbf",
-    latitude: 49.801794,
-    longitude: 9.935777,
-    city: 10797,
-    preferred: true,
+    geo: {
+      latitude: 49.802684,
+      longitude: 9.93607,
+    },
+    city_id: "Q2999",
+    country: "DE",
   },
-  5100070: {
+  Q2309003: {
+    name: "Włoszczowa Północ",
+    geo: {
+      latitude: 50.8531,
+      longitude: 19.9447,
+    },
+    city_id: "Q611784",
+    country: "PL",
+  },
+  Q2562351: {
     name: "Zabrze",
-    latitude: 50.30528,
-    longitude: 18.786942,
-    city: 28592,
-    preferred: true,
+    geo: {
+      latitude: 50.3053,
+      longitude: 18.7871,
+    },
+    city_id: "Q103892",
+    country: "PL",
   },
-  5100071: {
+  Q140377: {
+    name: "Zagreb Glavni kolodvor",
+    geo: {
+      latitude: 45.804435833333336,
+      longitude: 15.978704444444444,
+    },
+    city_id: "Q1435",
+    country: "HR",
+  },
+  Q1885966: {
     name: "Zbąszynek",
-    latitude: 52.242509,
-    longitude: 15.818093,
-    city: 19081,
-    preferred: true,
+    geo: {
+      latitude: 52.241944444444,
+      longitude: 15.8175,
+    },
+    city_id: "Q168902",
+    country: "PL",
   },
-  5100222: {
+  Q2202082: {
+    name: "Zebrzydowice",
+    geo: {
+      latitude: 49.8697,
+      longitude: 18.6247,
+    },
+    city_id: "Q169521",
+    country: "PL",
+  },
+  Q2219492: {
     name: "Zielona Góra",
-    latitude: 51.947439,
-    longitude: 15.513709,
-    city: 28598,
-    preferred: true,
+    geo: {
+      latitude: 51.9475,
+      longitude: 15.514444444444,
+    },
+    city_id: "Q104720",
+    country: "PL",
   },
-  8502204: {
-    name: "Zug Bahnhof",
-    latitude: 47.173528,
-    longitude: 8.515274,
-    city: 6230,
-    preferred: true,
+  Q178444: {
+    name: "Zug (CH)",
+    geo: {
+      latitude: 47.173622,
+      longitude: 8.51529,
+    },
+    city_id: "Q68144",
+    country: "CH",
   },
-  8503016: {
+  Q40700: {
     name: "Zürich Flughafen",
-    latitude: 47.450279,
-    longitude: 8.562333,
-    city: 6401,
-    preferred: false,
+    geo: {
+      latitude: 47.450382,
+      longitude: 8.562367,
+    },
+    city_id: "Q72",
+    country: "CH",
+    secondary: true,
   },
-  8503000: {
+  Q224494: {
     name: "Zürich HB",
-    latitude: 47.378186,
-    longitude: 8.539203,
-    city: 6401,
-    preferred: false,
+    geo: {
+      latitude: 47.378169444444445,
+      longitude: 8.540177777777778,
+    },
+    city_id: "Q72",
+    country: "CH",
   },
-  8010396: {
+  Q801681: {
     name: "Züssow",
-    latitude: 53.973877,
-    longitude: 13.548191,
-    city: 14496,
-    preferred: true,
+    geo: {
+      latitude: 53.973889,
+      longitude: 13.548333,
+    },
+    city_id: "Q248869",
+    country: "DE",
   },
-  7400028: {
-    name: "Älmhult station",
-    latitude: 56.550994,
-    longitude: 14.137263,
-    city: 19112,
-    preferred: true,
+  Q12344258: {
+    name: "Älmhult",
+    geo: {
+      latitude: 56.5509,
+      longitude: 14.1368,
+    },
+    city_id: "Q122872",
+    country: "SE",
   },
-  7400013: {
-    name: "Ängelholm Station",
-    latitude: 56.245703,
-    longitude: 12.854178,
-    city: 19107,
-    preferred: true,
+  Q10725868: {
+    name: "Ängelholm",
+    geo: {
+      latitude: 56.24603,
+      longitude: 12.85367,
+    },
+    city_id: "Q54755",
+    country: "SE",
   },
-  8100061: {
+  Q8079090: {
     name: "Ötztal",
-    latitude: 47.238484,
-    longitude: 10.859113,
-    city: 17622,
-    preferred: true,
+    geo: {
+      latitude: 47.23862,
+      longitude: 10.859795,
+    },
+    city_id: "Q17493220",
+    country: "AT",
   },
-  8601560: {
-    name: "Ørestad St.",
-    latitude: 55.62844,
-    longitude: 12.57865,
-    city: 18686,
-    preferred: true,
+  Q616388: {
+    name: "Ørestad",
+    geo: {
+      latitude: 55.628406,
+      longitude: 12.579508,
+    },
+    city_id: "Q260675",
+    country: "DK",
   },
-  8601878: {
-    name: "Østerport St.",
-    latitude: 55.692704,
-    longitude: 12.587612,
-    city: 18796,
-    preferred: true,
+  Q635929: {
+    name: "Østerport",
+    geo: {
+      latitude: 55.692222,
+      longitude: 12.5875,
+    },
+    city_id: "Q1748",
+    country: "DK",
+    secondary: true,
   },
-  5400019: {
+  Q14806970: {
     name: "Ústí nad Labem hl.n.",
-    latitude: 50.659563,
-    longitude: 14.044728,
-    city: 29027,
-    preferred: true,
+    geo: {
+      latitude: 50.6597,
+      longitude: 14.0444,
+    },
+    city_id: "Q156974",
+    country: "CZ",
   },
-  8005940: {
+  Q801684: {
     name: "Übersee",
-    latitude: 47.822046,
-    longitude: 12.487338,
-    city: 7348,
-    preferred: true,
+    geo: {
+      latitude: 47.822,
+      longitude: 12.4873,
+    },
+    city_id: "Q257831",
+    country: "DE",
   },
-  5400002: {
-    name: "Česka Třebová",
-    latitude: 49.897323,
-    longitude: 16.446807,
-    city: 28207,
-    preferred: true,
+  Q2321172: {
+    name: "Česká Třebová",
+    geo: {
+      latitude: 49.89667,
+      longitude: 16.4475,
+    },
+    city_id: "Q341056",
+    country: "CZ",
   },
-  5103284: {
+  Q4486619: {
+    name: "Łańcut",
+    geo: {
+      latitude: 50.0817,
+      longitude: 22.2297,
+    },
+    city_id: "Q345331",
+    country: "PL",
+  },
+  Q2805115: {
     name: "Świebodzin",
-    latitude: 52.245143,
-    longitude: 15.539535,
-    city: 19086,
-    preferred: true,
+    geo: {
+      latitude: 52.24528,
+      longitude: 15.53967,
+    },
+    city_id: "Q387463",
+    country: "PL",
   },
-  8400319: {
-    name: "’s-Hertogenbosch",
-    latitude: 51.690671,
-    longitude: 5.293801,
-    city: 17569,
-    preferred: true,
+  Q12807536: {
+    name: "Šentilj",
+    geo: {
+      latitude: 46.67420556,
+      longitude: 15.65798333,
+    },
+    city_id: "Q283389",
+    country: "SI",
+  },
+  Q12781949: {
+    name: "Štúrovo",
+    geo: {
+      latitude: 47.799777777778,
+      longitude: 18.679027777778,
+    },
+    city_id: "Q60038",
+    country: "SK",
   },
 };

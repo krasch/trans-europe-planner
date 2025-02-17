@@ -13,7 +13,7 @@ export class Stop {
     departure,
     stationId,
     stationName,
-    stationIsPreferred,
+    stationIsSecondary,
     cityId,
     cityName,
   ) {
@@ -21,7 +21,7 @@ export class Stop {
     this.departure = departure;
     this.stationId = stationId;
     this.stationName = stationName;
-    this.stationIsPreferred = stationIsPreferred;
+    this.stationIsSecondary = stationIsSecondary;
     this.cityId = cityId;
     this.cityName = cityName;
   }
@@ -32,7 +32,7 @@ export class Stop {
       this.departure.plus({ days: numDays }),
       this.stationId,
       this.stationName,
-      this.stationIsPreferred,
+      this.stationIsSecondary,
       this.cityId,
       this.cityName,
     );
@@ -136,12 +136,12 @@ export class Connection {
 
     for (let i in stops) {
       if (stops[i].cityName === startCity) {
-        if (startIndex === null || stops[i].stationIsPreferred)
+        if (startIndex === null || !stops[i].stationIsSecondary)
           startIndex = Number(i);
       }
 
       if (stops[i].cityName === endCity) {
-        if (endIndex === null || stops[i].stationIsPreferred)
+        if (endIndex === null || !stops[i].stationIsSecondary)
           endIndex = Number(i);
       }
     }
