@@ -193,6 +193,39 @@
 </nav>
 
 
+<dialog id="modal">
+    <a class="logo" href="/">
+        <img src="images/logo.svg" alt="logo for the trans-europe-planner">
+    </a>
+    <div class="claim">
+        <h1>
+            <span lang="de">Willkommen beim Trans Europa Planer</span>
+            <span lang="en">Welcome to Trans Europe Planner</span>
+        </h1>
+        <h3>
+            <em lang="de">Einfacher mit dem Zug quer durch Europa</em>
+            <em lang="en">The simpler way to plan your train trip across Europe</em>
+        </h3>
+    </div>
+
+    <img class="marker" src="images/markers/marker_home.svg" alt="map marker depicting a house">
+    <div id="choose-home">
+        <h1>
+            <span lang="de">Wo soll die Reise starten?</span>
+            <span lang="en">Where is your trip starting?</span>
+        </h1>
+        <form method="dialog">
+            <button value="Berlin">Berlin</button>
+            <button value="Hamburg">Hamburg</button>
+            <button value="Köln">Köln</button>
+            <button value="München">München</button>
+        </form>
+        <em lang="de">(Weitere Startpunkte bald verfügbar)</em>
+        <em lang="en">(Additional departure cities coming soon)</em>
+    </div>
+</dialog>
+
+
 <div id="logo" class="hidden">
     <a href="/"><img src="images/logo.svg" alt="logo for the trans-europe-planner"></a>
 </div>
@@ -293,44 +326,6 @@
     </a>
 </footer>
 
-
-<dialog id="modal">
-    <a class="logo" href="/">
-        <img src="images/logo.svg" alt="logo for the trans-europe-planner">
-    </a>
-    <div class="claim">
-        <h1>
-            <span lang="de">Willkommen beim Trans Europa Planer</span>
-            <span lang="en">Welcome to Trans Europe Planner</span>
-        </h1>
-        <h3>
-            <em lang="de">Einfacher mit dem Zug quer durch Europa</em>
-            <em lang="en">The simpler way to plan your train trip across Europe</em>
-        </h3>
-    </div>
-
-    <img class="marker" src="images/markers/marker_home.svg" alt="map marker depicting a house">
-    <div id="choose-home">
-        <h1>
-            <span lang="de">Wo soll die Reise starten?</span>
-            <span lang="en">Where is your trip starting?</span>
-        </h1>
-        <form>
-            <select>
-                <option value="v1">v1</option>
-                <option value="v2">v2</option>
-            </select>
-            <button id="confirmBtn" value="default">Confirm</button>
-            <!--a href="?start=Berlin">Berlin</a>
-            <a href="?start=Hamburg">Hamburg</a>
-            <a href="?start=Köln">Köln</a>
-            <a href="?start=München">München</a-->
-        </form>
-        <em lang="de">(Weitere Startpunkte bald verfügbar)</em>
-        <em lang="en">(Additional departure cities coming soon)</em>
-    </div>
-</dialog>
-
 <script type="module">
     import {Layout} from "./script/components/layout.js";
     import {Perlschnur} from "./script/components/perlschnur.js";
@@ -345,19 +340,26 @@
 
     const isMobile = window.matchMedia("(max-width: 1000px)");
 
-
-    document.querySelector("#confirmBtn").addEventListener("click", (e) => {
-        console.log(e);
-    });
-
-    function getHome() {
+    function parseURLParams() {
         const params = new URLSearchParams(window.location.search);
         const home = params.get("start");
 
         if (home && ["Berlin", "Hamburg", "Köln", "München", "Stockholm"].includes(home))
-            return home;
+            return home
 
         return null;
+    }
+
+    async function askForHome() {
+        const modal = document.querySelector("dialog");
+
+        const promise = new Promise(resolve => modal.addEventListener("click", e => {
+            if (e.target.tagName === "BUTTON")
+                resolve(e.target.value);
+        }));
+
+        modal.show();
+        return promise;
     }
 
     function initNavigation() {
@@ -421,16 +423,18 @@
             layout: new Layout(document.body, isMobile)
         }
 
-        const home = getHome()
-        if (home) {
-            try {
-                main(home, views);
-            } catch (error) {
-                console.error(error);
-            }
-        } else {
-            views.layout.showModal();
+        let home = parseURLParams();
+        if (!home)
+            home = await askForHome();
+
+        console.log(home);
+
+        try {
+            await main(home, views);
+        } catch (error) {
+            console.error(error);
         }
+
     };
 
 

@@ -13,9 +13,7 @@ export class Layout {
       pad: container.querySelector("#pad"),
       nav: container.querySelector("nav"),
       journey: container.querySelector("#journey"),
-      map: container.querySelector("#map"),
       config: container.querySelector("#config"),
-      modal: container.querySelector("#modal"),
     };
 
     this.#isMobile = isMobile;
@@ -37,11 +35,6 @@ export class Layout {
 
       this.#beforeFirstJourney = false;
     }
-  }
-
-  showModal() {
-    this.#elements.map.style.opacity = "30%";
-    this.#elements.modal.show();
   }
 
   #showAllElements(animation = false) {

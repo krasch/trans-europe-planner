@@ -83,6 +83,10 @@ dialog {
   gap: 0.5rem;
 }
 
+#modal #choose-home button {
+  padding: 0.5rem;
+}
+
 /***********************************************
  style
 ************************************************/
@@ -109,21 +113,18 @@ dialog {
   filter: var(--filter-dark);
 }
 
-#modal #choose-home a {
+#modal #choose-home button {
+  background: white;
+  color: var(--color-dark);
+
   border: 1px solid var(--color-dark);
   border-radius: 0.25rem;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 
-  padding: 0.5rem;
-
   cursor: pointer;
-  text-decoration: none;
-
-  background: white;
-  color: var(--color-dark);
 }
 
-#modal #choose-home a:hover {
+#modal #choose-home button:hover {
   background: var(--color-dark);
   color: white;
 }
