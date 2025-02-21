@@ -111,8 +111,6 @@ export async function main(home, views) {
   );
 
   views.datepicker.on("dateChanged", (date) => {
-    if (date === null) date = TODAY; // todo move into datepicker
-
     const diff = diffDays(state.date, date);
     if (diff === 0) return;
 
