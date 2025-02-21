@@ -44,7 +44,8 @@ function initUpdateViews(views, database) {
 export async function main(home, views) {
   // init state
   const state = {
-    date: views.datepicker.currentDate || TODAY,
+    home: home,
+    date: views.datepicker.currentDate,
     journeys: new JourneyCollection(),
   };
 
@@ -55,9 +56,8 @@ export async function main(home, views) {
   );
 
   // prepare database
-  // todo having troubles with trains starting before 01:00 because than diffDays does not work correctly
-  const connections = CONNECTIONS.flatMap(
-    (c) => enrichConnection(c, STATIONS, CITIES, TODAY.toISODate()), // todo can use state.date here?
+  const connections = CONNECTIONS.flatMap((c) =>
+    enrichConnection(c, STATIONS, CITIES, state.date.toISODate()),
   );
 
   const database = new Database(connections);
@@ -67,7 +67,7 @@ export async function main(home, views) {
 
   // prepare all geo etc data that map needs
   const initialMapData = prepareInitialDataForMap(
-    home,
+    state.home,
     CITIES,
     connections,
     routeDatabase,
@@ -90,7 +90,7 @@ export async function main(home, views) {
 
   views.map.on("showCityRoutes", (cityName) => {
     const itineraries = routeDatabase.getItineraries(
-      home,
+      state.home,
       cityName,
       state.date,
       database,
