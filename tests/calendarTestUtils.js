@@ -1,9 +1,6 @@
 // to get drag events
 import("@atlaskit/pragmatic-drag-and-drop-unit-testing/drag-event-polyfill");
 
-import { TravelCalendar } from "/script/customElements/travelCalendar/travelCalendar.js";
-customElements.define("travel-calendar", TravelCalendar);
-
 export const ROW_MIDNIGHT = 2; // 1 for header, 1 because indexes start at 1
 export const COLUMN_FIRST_DAY = 2; // 1 for hour column, 1 because indexes start at 1
 export const DATES = ["2024-10-15", "2024-10-16", "2024-10-17"];
