@@ -58,7 +58,7 @@ test("update should fill in template correctly", async function () {
     },
   ];
 
-  calendar.updateView(connections);
+  calendar.updateView({ startDate: util.DATES[0], connections: connections });
   await util.timeout(10);
 
   const got = util.getShadowDOMItems(container, ".entry-part");
@@ -133,7 +133,7 @@ test("update view should sort connections by start datetime", async function () 
     },
   ];
 
-  calendar.updateView(connections);
+  calendar.updateView({ startDate: util.DATES[0], connections: connections });
   await util.timeout(10);
 
   const got = util.getShadowDOMItems(container, ".entry-part");
@@ -176,17 +176,20 @@ test("update view should add/delete connections as necessary", async function ()
   }
 
   // all 3 connections currently relevant
-  calendar.updateView(connections);
+  calendar.updateView({ startDate: util.DATES[0], connections: connections });
   await util.timeout(10);
   expect(startStations()).toEqual(["station1", "station2", "station3"]);
 
   // they are still relevant
-  calendar.updateView(connections);
+  calendar.updateView({ startDate: util.DATES[0], connections: connections });
   await util.timeout(10);
   expect(startStations()).toEqual(["station1", "station2", "station3"]);
 
   // now first one is no longer relevant
-  calendar.updateView(connections.slice(1, 3));
+  calendar.updateView({
+    startDate: util.DATES[0],
+    connections: connections.slice(1, 3),
+  });
   await util.timeout(10);
   expect(startStations()).toEqual(["station2", "station3"]);
 
@@ -195,7 +198,10 @@ test("update view should add/delete connections as necessary", async function ()
   // todo if it happens to be in good time order, i.e. this test fails,
   //  then "station3" entry was identified as changed and removed and re-added
   // which means that this will happen to all the entries which means bad performance
-  calendar.updateView([connections[0], connections[2]]);
+  calendar.updateView({
+    startDate: util.DATES[0],
+    connections: [connections[0], connections[2]],
+  });
   await util.timeout(10);
   expect(startStations()).toEqual(["station3", "station1"]);
 });
@@ -221,7 +227,7 @@ test("update view should propagate dataset changes to calendar entries", async f
     },
   ];
 
-  calendar.updateView(connections);
+  calendar.updateView({ startDate: util.DATES[0], connections: connections });
   await util.timeout(10);
 
   let got = util.getShadowDOMItems(container, ".entry-part");
@@ -241,7 +247,7 @@ test("update view should propagate dataset changes to calendar entries", async f
   connections[0].color = "black";
   connections[1].leg = "legZ";
   connections[1].selected = true;
-  calendar.updateView(connections);
+  calendar.updateView({ startDate: util.DATES[0], connections: connections });
   await util.timeout(10);
 
   got = util.getShadowDOMItems(container, ".entry-part");
@@ -280,7 +286,7 @@ test("calendar wrapper should propagate callbacks from calendar", async function
     },
   ];
 
-  calendar.updateView(connections);
+  calendar.updateView({ startDate: util.DATES[0], connections: connections });
   await util.timeout(10);
   const entries = util.getShadowDOMItems(container, ".entry-part");
 
@@ -324,7 +330,7 @@ test("calendar wrapper should propagate commands into calendar", async function 
     },
   ];
 
-  calendar.updateView(connections);
+  calendar.updateView({ startDate: util.DATES[0], connections: connections });
   await util.timeout(10);
   const entries = util.getShadowDOMItems(container, ".entry-part");
 

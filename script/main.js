@@ -49,12 +49,6 @@ export async function main(home, views) {
     journeys: new JourneyCollection(),
   };
 
-  // redraw calendar header
-  views.calendar.travelCalendar.setAttribute(
-    "start-date",
-    state.date.toISODate(),
-  );
-
   // prepare database
   const connections = CONNECTIONS.flatMap((c) =>
     enrichConnection(c, STATIONS, CITIES, state.date.toISODate()),
@@ -117,18 +111,13 @@ export async function main(home, views) {
   );
 
   views.datepicker.on("dateChanged", (date) => {
-    if (date === null) date = TODAY;
+    if (date === null) date = TODAY; // todo move into datepicker
 
     const diff = diffDays(state.date, date);
     if (diff === 0) return;
 
     state.journeys.shiftDate(diff, database);
     state.date = date;
-
-    views.calendar.travelCalendar.setAttribute(
-      "start-date",
-      state.date.toISODate(),
-    );
 
     updateViews(state);
   });

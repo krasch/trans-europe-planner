@@ -33,7 +33,7 @@ export function humanReadableTimedelta(minutes) {
 }
 
 export function prepareDataForCalendar(calendarStartDate, journeys, database) {
-  const data = [];
+  const data = { startDate: calendarStartDate.toISODate(), connections: [] };
 
   if (!journeys.hasActiveJourney) return data;
 
@@ -55,7 +55,7 @@ export function prepareDataForCalendar(calendarStartDate, journeys, database) {
     for (let option of connectionsForLeg) {
       const legString = toEdgeString(option.startCityName, option.endCityName);
 
-      data.push({
+      data.connections.push({
         uniqueId: option.uniqueId,
         // used for communicating with map
         leg: legString,
