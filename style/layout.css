@@ -98,7 +98,7 @@ footer {
 @media only screen and (min-width: 1000px) {
     body {
 
-        --logo-size: 6rem;
+        --logo-size: 7rem;
         --logo-size-with-padding: 9rem;
 
         display: grid;
