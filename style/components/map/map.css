@@ -28,8 +28,8 @@
   background-size: contain;
   filter: var(--filter-dark);
 
-  height: 2.5rem;
-  width: calc(2.5rem * 0.64);
+  height: 0;
+  width: 0;
 }
 
 /***********************************************************************
@@ -149,6 +149,6 @@
 .city-menu em.num-transfers.transfers1 > span.transfers0,
 .city-menu em.num-transfers.transfers1 > span.transfersX,
 .city-menu em.num-transfers.transfersX > span.transfers0,
-.city-menu em.num-transfers.transfersX > span.transfers1{
+.city-menu em.num-transfers.transfersX > span.transfers1 {
   display: none;
 }

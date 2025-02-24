@@ -136,5 +136,41 @@ export async function main(home, views) {
   // now have done all we can do without having the map ready
   await mapLoadedPromise;
 
+  state.journeys.addJourney(
+    new Journey(
+      routeDatabase.getItineraries("Köln", "Gdańsk", state.date, database)[0],
+    ),
+  );
+  state.journeys.addJourney(
+    new Journey(
+      routeDatabase.getItineraries(
+        "Berlin",
+        "Palermo",
+        state.date,
+        database,
+      )[1],
+    ),
+  );
+  state.journeys.addJourney(
+    new Journey(
+      routeDatabase.getItineraries(
+        "München",
+        "Stockholm",
+        state.date,
+        database,
+      )[0],
+    ),
+  );
+  state.journeys.addJourney(
+    new Journey(
+      routeDatabase.getItineraries(
+        "Hamburg",
+        "London",
+        state.date,
+        database,
+      )[0],
+    ),
+  );
+
   updateViews(state);
 }

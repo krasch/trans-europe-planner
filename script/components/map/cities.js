@@ -100,7 +100,7 @@ function showStartAnimation(map, geo, initialState, animationDoneCallback) {
   );
 }
 
-const ANIMATION = true;
+const ANIMATION = false;
 
 export class Cities {
   #callbacks = {
