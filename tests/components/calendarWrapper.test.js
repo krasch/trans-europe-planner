@@ -12,18 +12,10 @@ beforeEach(() => {
   initDOMFromFile("index.html");
 });
 
-expect.extend({
-  customMatches(expected, actual) {
-    function toObject(a) {
-      for (let selector in expected[0].selectors) {
-        console.log(a.querySelector(selector));
-      }
-    }
-
-    toObject(actual[0]);
-    return true;
-  },
-});
+async function updateCalendar(calendar, conns) {
+  calendar.updateView({ startDate: util.DATES[0], connections: conns });
+  await util.timeout(10);
+}
 
 test("update should fill in template correctly", async function () {
   const calendar = new CalendarWrapper(DOM.calendar);
@@ -43,17 +35,21 @@ test("update should fill in template correctly", async function () {
     },
   ];
 
-  calendar.updateView({ startDate: util.DATES[0], connections: connections });
-  await util.timeout(10);
+  await updateCalendar(calendar, connections);
 
-  const got = DOM.calendarEvents.asObjects();
-  expect(got).toMatchObject([
+  expect(DOM.calendarEntryParts).toMatchDOMObject([
     {
       dataset: { group: "Berlin->Oulu", status: "active" },
       style: {
         "grid-column": util.COLUMN_FIRST_DAY,
         "grid-row-start": util.ROW_MIDNIGHT + 19 * 4,
         "grid-row-end": util.ROW_MIDNIGHT + 24 * 4,
+      },
+      selectors: {
+        ".connection-icon": { src: expect.stringMatching("train.svg") },
+        ".connection-number": { innerHTML: "nachtzug 123" },
+        ".start .time": { innerHTML: "19:00" },
+        ".start .station": { innerHTML: "Berlin Gesundbrunnen" },
       },
     },
     {
@@ -71,35 +67,16 @@ test("update should fill in template correctly", async function () {
         "grid-row-start": util.ROW_MIDNIGHT,
         "grid-row-end": util.ROW_MIDNIGHT + 10 * 4,
       },
+      selectors: {
+        ".destination .time": { innerHTML: "10:00" },
+        ".destination .station": { innerHTML: "Oulu Station" },
+      },
     },
   ]);
-
-  const got2 = DOM.calendarEvents;
-  expect(got2).customMatches([{ selectors: { ".connection-number": "123" } }]);
-
-  /*
-  const gotContents = {
-    // header and start info in first part
-    connectionIcon: got.elements[0].querySelector(".connection-icon"),
-    connectionNumber: got.elements[0].querySelector(".connection-number"),
-    startTime: got.elements[0].querySelector(".start .time"),
-    startStation: got.elements[0].querySelector(".start .station"),
-    // destination info in last part
-    destinationTime: got.elements[2].querySelector(".destination .time"),
-    destinationStation: got.elements[2].querySelector(".destination .station"),
-  };
-
-  expect(gotContents.connectionIcon.src).toContain("train.svg");
-  expect(gotContents.connectionNumber.innerHTML).toBe("nachtzug 123");
-  expect(gotContents.startTime.innerHTML).toBe("19:00");
-  expect(gotContents.startStation.innerHTML).toBe("Berlin Gesundbrunnen");
-  expect(gotContents.destinationTime.innerHTML).toBe("10:00");
-  expect(gotContents.destinationStation.innerHTML).toBe("Oulu Station");*/
 });
 
 test("update view should sort connections by start datetime", async function () {
-  const container = document.querySelector("#calendar");
-  const calendar = new CalendarWrapper(container);
+  const calendar = new CalendarWrapper(DOM.calendar);
 
   const connections = [
     {
@@ -122,19 +99,16 @@ test("update view should sort connections by start datetime", async function () 
     },
   ];
 
-  calendar.updateView({ startDate: util.DATES[0], connections: connections });
-  await util.timeout(10);
-
-  const got = util.getShadowDOMItems(container, ".entry-part");
-  expect(got.elements.length).toBe(3);
-  expect(got.elements[0].innerHTML).toContain("station2");
-  expect(got.elements[1].innerHTML).toContain("station3");
-  expect(got.elements[2].innerHTML).toContain("station1");
+  await updateCalendar(calendar, connections);
+  expect(DOM.calendarEntryParts).toMatchDOMObject([
+    { innerHTML: expect.stringMatching("station2") },
+    { innerHTML: expect.stringMatching("station3") },
+    { innerHTML: expect.stringMatching("station1") },
+  ]);
 });
 
 test("update view should add/delete connections as necessary", async function () {
-  const container = document.querySelector("#calendar");
-  const calendar = new CalendarWrapper(container);
+  const calendar = new CalendarWrapper(DOM.calendar);
 
   const connections = [
     {
@@ -157,29 +131,21 @@ test("update view should add/delete connections as necessary", async function ()
     },
   ];
 
-  function startStations() {
-    const entries = util.getShadowDOMItems(container, ".entry-part");
-    return entries.elements.map(
+  const startStations = () =>
+    DOM.calendarEntryParts.map(
       (e) => e.querySelector(".start .station").innerHTML,
     );
-  }
 
   // all 3 connections currently relevant
-  calendar.updateView({ startDate: util.DATES[0], connections: connections });
-  await util.timeout(10);
+  await updateCalendar(calendar, connections);
   expect(startStations()).toEqual(["station1", "station2", "station3"]);
 
   // they are still relevant
-  calendar.updateView({ startDate: util.DATES[0], connections: connections });
-  await util.timeout(10);
+  await updateCalendar(calendar, connections);
   expect(startStations()).toEqual(["station1", "station2", "station3"]);
 
   // now first one is no longer relevant
-  calendar.updateView({
-    startDate: util.DATES[0],
-    connections: connections.slice(1, 3),
-  });
-  await util.timeout(10);
+  await updateCalendar(calendar, connections.slice(1, 3));
   expect(startStations()).toEqual(["station2", "station3"]);
 
   // now first is back but second is gone
@@ -187,17 +153,12 @@ test("update view should add/delete connections as necessary", async function ()
   // todo if it happens to be in good time order, i.e. this test fails,
   //  then "station3" entry was identified as changed and removed and re-added
   // which means that this will happen to all the entries which means bad performance
-  calendar.updateView({
-    startDate: util.DATES[0],
-    connections: [connections[0], connections[2]],
-  });
-  await util.timeout(10);
+  await updateCalendar(calendar, [connections[0], connections[2]]);
   expect(startStations()).toEqual(["station3", "station1"]);
 });
 
 test("update view should propagate dataset changes to calendar entries", async function () {
-  const container = document.querySelector("#calendar");
-  const calendar = new CalendarWrapper(container);
+  const calendar = new CalendarWrapper(DOM.calendar);
 
   const connections = [
     {
@@ -216,47 +177,37 @@ test("update view should propagate dataset changes to calendar entries", async f
     },
   ];
 
-  calendar.updateView({ startDate: util.DATES[0], connections: connections });
-  await util.timeout(10);
-
-  let got = util.getShadowDOMItems(container, ".entry-part");
-  expect(got.data).toMatchObject([
+  await updateCalendar(calendar, connections);
+  expect(DOM.calendarEntryParts).toMatchDOMObject([
     {
-      color: "purple",
-      group: "leg1",
-      isActive: false,
+      style: { "--color": "purple" },
+      dataset: { group: "leg1", status: "inactive" },
     },
     {
-      color: "orange",
-      group: "leg2",
-      isActive: false,
+      style: { "--color": "orange" },
+      dataset: { group: "leg2", status: "inactive" },
     },
   ]);
 
   connections[0].color = "black";
   connections[1].leg = "legZ";
   connections[1].selected = true;
-  calendar.updateView({ startDate: util.DATES[0], connections: connections });
-  await util.timeout(10);
 
-  got = util.getShadowDOMItems(container, ".entry-part");
-  expect(got.data).toMatchObject([
+  await updateCalendar(calendar, connections);
+  expect(DOM.calendarEntryParts).toMatchDOMObject([
     {
-      color: "black",
-      group: "leg1",
-      isActive: false,
+      style: { "--color": "black" },
+      dataset: { group: "leg1", status: "inactive" },
     },
     {
-      color: "orange",
-      group: "legZ",
-      isActive: true,
+      style: { "--color": "orange" },
+      dataset: { group: "legZ", status: "active" },
     },
   ]);
 });
 
-test("calendar wrapper should propagate callbacks from calendar", async function () {
-  const container = document.querySelector("#calendar");
-  const calendar = new CalendarWrapper(container);
+test("calendar wrapper should propagate callbacks/commands from/to calendar", async function () {
+  const calendar = new CalendarWrapper(DOM.calendar);
 
   const connections = [
     {
@@ -275,10 +226,10 @@ test("calendar wrapper should propagate callbacks from calendar", async function
     },
   ];
 
-  calendar.updateView({ startDate: util.DATES[0], connections: connections });
-  await util.timeout(10);
-  const entries = util.getShadowDOMItems(container, ".entry-part");
+  // add the entries to the calendar
+  await updateCalendar(calendar, connections);
 
+  // setup callback mocks
   const dropCallback = jest.fn();
   const hoverOnCallback = jest.fn();
   const hoverOffCallback = jest.fn();
@@ -286,43 +237,27 @@ test("calendar wrapper should propagate callbacks from calendar", async function
   calendar.on("legHoverStart", hoverOnCallback);
   calendar.on("legHoverStop", hoverOffCallback);
 
-  await util.dispatchEvent(entries.elements[0], "mouseover");
+  // run a bunch of callbacks on the calendar entries
+  // -> these should be propagated to calendar wrapper and our callback mocks should be called
+  await util.dispatchEvent(DOM.calendarEntryParts[0], "mouseover");
   expect(hoverOnCallback).toBeCalledWith("leg1");
 
-  await util.dispatchEvent(entries.elements[1], "mouseout");
+  await util.dispatchEvent(DOM.calendarEntryParts[1], "mouseout");
   expect(hoverOffCallback).toBeCalledWith("leg2");
 
-  await util.dispatchEvent(entries.elements[0], "dragstart");
-  await util.dispatchEvent(entries.elements[0], "dragenter");
-  await util.dispatchEvent(entries.elements[0], "drop");
+  await util.dispatchEvent(DOM.calendarEntryParts[0], "dragstart");
+  await util.dispatchEvent(DOM.calendarEntryParts[0], "dragenter");
+  await util.dispatchEvent(DOM.calendarEntryParts[0], "drop");
   expect(dropCallback).toBeCalledWith(connections[0].uniqueId);
-});
 
-test("calendar wrapper should propagate commands into calendar", async function () {
-  const container = document.querySelector("#calendar");
-  const calendar = new CalendarWrapper(container);
-
-  const connections = [
-    {
-      uniqueId: { id: 1, somekey: "someval" },
-      startStation: "station1",
-      leg: "leg1",
-      startDateTime: DateTime.fromISO(util.t1("19:00")),
-      endDateTime: DateTime.fromISO(util.t1("20:00")),
-    },
-    {
-      uniqueId: { id: 2, somekey: "someval" },
-      startStation: "station2",
-      leg: "leg2",
-      startDateTime: DateTime.fromISO(util.t2("09:00")),
-      endDateTime: DateTime.fromISO(util.t2("10:00")),
-    },
-  ];
-
-  calendar.updateView({ startDate: util.DATES[0], connections: connections });
-  await util.timeout(10);
-  const entries = util.getShadowDOMItems(container, ".entry-part");
-
+  // when sending a command to calendar wrapper it should be propagated to the calendar
   calendar.setHoverLeg("leg1");
-  expect(entries.all.isHover).toStrictEqual([true, false]);
+  expect(DOM.calendarEntryParts).toMatchDOMObject([
+    {
+      class: expect.stringMatching("hover"),
+    },
+    {
+      class: expect.not.stringMatching("hover"),
+    },
+  ]);
 });

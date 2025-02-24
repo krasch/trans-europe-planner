@@ -15,22 +15,49 @@ export function initDOMFromFile(htmlFilename) {
   document.body.innerHTML = body.innerHTML;
 }
 
+export function domElementToObject(element, optionalSelectors = null) {
+  const result = {
+    dataset: Object.assign({}, element.dataset),
+    style: Object.assign({}, element.style._values),
+    innerHTML: element.innerHTML,
+  };
+
+  for (let s of element.attributes) {
+    if (s.name.startsWith("data") || ["style"].includes(s.name)) continue;
+    result[s.name] = s.value;
+  }
+
+  if (optionalSelectors) {
+    result.selectors = {};
+    for (let s in optionalSelectors)
+      result.selectors[s] = domElementToObject(element.querySelector(s));
+  }
+
+  return result;
+}
+
+expect.extend({
+  toMatchDOMObject(actual, expected) {
+    expect(actual).toHaveLength(expected.length);
+
+    // extract all the necessary data from the dom element
+    actual = actual.map((e, i) => domElementToObject(e, expected[i].selectors));
+
+    // then can do normal object matching
+    expect(actual).toMatchObject(expected);
+
+    // this is only necessary to satisfy the API requirements of jest
+    return { pass: true };
+  },
+});
+
 class DOMQueryHelper {
   get calendar() {
     return document.querySelector("travel-calendar");
   }
 
-  get calendarEvents() {
-    const parts = this.calendar.shadowRoot.querySelectorAll(".entry-part");
-    parts.asObjects = () => Array.from(parts).map(this.#asObject);
-    return parts;
-  }
-
-  #asObject(element) {
-    return {
-      dataset: Object.assign({}, element.dataset),
-      style: Object.assign({}, element.style._values),
-    };
+  get calendarEntryParts() {
+    return Array.from(this.calendar.shadowRoot.querySelectorAll(".entry-part"));
   }
 }
 
