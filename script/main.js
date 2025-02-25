@@ -136,11 +136,12 @@ export async function main(home, views) {
   // now have done all we can do without having the map ready
   await mapLoadedPromise;
 
-  state.journeys.addJourney(
-    new Journey(
-      routeDatabase.getItineraries("Köln", "Gdańsk", state.date, database)[0],
-    ),
-  );
+  const timeout = (ms) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
+
+  await timeout(2000);
+
   state.journeys.addJourney(
     new Journey(
       routeDatabase.getItineraries(
@@ -151,6 +152,9 @@ export async function main(home, views) {
       )[1],
     ),
   );
+  updateViews(state);
+
+  await timeout(2000);
   state.journeys.addJourney(
     new Journey(
       routeDatabase.getItineraries(
@@ -161,6 +165,17 @@ export async function main(home, views) {
       )[0],
     ),
   );
+  updateViews(state);
+
+  await timeout(2000);
+  state.journeys.addJourney(
+    new Journey(
+      routeDatabase.getItineraries("Köln", "Gdańsk", state.date, database)[0],
+    ),
+  );
+  updateViews(state);
+
+  await timeout(2000);
   state.journeys.addJourney(
     new Journey(
       routeDatabase.getItineraries(

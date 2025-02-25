@@ -159,6 +159,7 @@ export function prepareInitialDataForMap(
       const id = CITY_NAME_TO_ID[cityName];
 
       const routes = routeDatabase.getRoutes(home, cityName);
+      if (cityName === "London") console.log(routes);
 
       cities.geo[id] = {
         name: cityInfo[id].name,

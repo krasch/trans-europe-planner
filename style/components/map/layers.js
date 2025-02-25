@@ -56,13 +56,13 @@ const mapStyles = [
       "line-opacity": [
         "case",
         ["boolean", ["feature-state", "isActive"], false],
-        0.0,
+        0.8,
         0.4,
       ],
       "line-width": [
         "case",
         ["boolean", ["feature-state", "isVisible"], false],
-        0,
+        2,
         0,
       ],
     },
@@ -142,6 +142,8 @@ const mapStyles = [
     paint: {
       "circle-radius": [
         "case",
+        ["boolean", ["feature-state", "isDestination"], false],
+        8.0,
         ["boolean", ["feature-state", "isStop"], false],
         5.0,
         0,
@@ -150,7 +152,7 @@ const mapStyles = [
       "circle-opacity": [
         "case",
         ["boolean", ["feature-state", "isDestination"], false],
-        0.6,
+        1.0,
         ["boolean", ["feature-state", "isStop"], false],
         0.6,
         0,
@@ -158,7 +160,7 @@ const mapStyles = [
       "circle-stroke-width": [
         "case",
         ["boolean", ["feature-state", "isDestination"], false],
-        0,
+        1,
         ["boolean", ["feature-state", "isStop"], false],
         1,
         0,
