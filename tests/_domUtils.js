@@ -4,6 +4,7 @@ import { TravelCalendar } from "/script/customElements/travelCalendar/travelCale
 
 customElements.define("travel-calendar", TravelCalendar);
 
+/* read HTML file and instantiate in global document object */
 export function initDOMFromFile(htmlFilename) {
   const html = fs.readFileSync(htmlFilename, "utf8");
 
@@ -16,6 +17,7 @@ export function initDOMFromFile(htmlFilename) {
   document.body.innerHTML = body.innerHTML;
 }
 
+/* make content of DOM element easier accessible in tests*/
 export function domElementToObject(element, optionalSelectors = null) {
   if (!element) return null;
 
@@ -39,6 +41,8 @@ export function domElementToObject(element, optionalSelectors = null) {
   return result;
 }
 
+/* custom jest matcher to be able to test DOM elements very similar to testing objects*/
+/* this is called every time this file is imported, i.e. extending multiple times, seems not an issue */
 expect.extend({
   toMatchDOMObject(actual, expected) {
     expect(actual).toHaveLength(expected.length);
@@ -78,6 +82,7 @@ export const dispatchEvent = async (element, eventName, timeout_ms = 10) => {
   await timeout(timeout_ms);
 };
 
+/*utility class to easily access items in the DOM */
 class DOMQueryHelper {
   get calendar() {
     return document.querySelector("travel-calendar");
