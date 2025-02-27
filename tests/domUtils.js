@@ -16,6 +16,8 @@ export function initDOMFromFile(htmlFilename) {
 }
 
 export function domElementToObject(element, optionalSelectors = null) {
+  if (!element) return null;
+
   const result = {
     dataset: Object.assign({}, element.dataset),
     style: Object.assign({}, element.style._values),

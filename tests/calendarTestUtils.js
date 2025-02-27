@@ -1,6 +1,8 @@
 // to get drag events
 import("@atlaskit/pragmatic-drag-and-drop-unit-testing/drag-event-polyfill");
 
+import { DateTime } from "/external/luxon@3.5.0/luxon.min.js";
+
 export const ROW_MIDNIGHT = 2; // 1 for header, 1 because indexes start at 1
 export const COLUMN_FIRST_DAY = 2; // 1 for hour column, 1 because indexes start at 1
 export const DATES = ["2024-10-15", "2024-10-16", "2024-10-17"];
@@ -16,22 +18,28 @@ export const createDocument = () => {
 };
 
 export const createEntry = (startDateTime, endDateTime, kwargs = {}) => {
-  const element = document.createElement("div");
-  element.classList.add("calendar-entry");
+  const template = document.getElementById("template-calendar-connection");
+  const e = template.content.firstElementChild.cloneNode(true);
 
-  element.dataset.color = "test-color"; // not actually a valid color
-  element.dataset.departureDatetime = startDateTime;
-  element.dataset.arrivalDatetime = endDateTime;
-  element.dataset.active = kwargs.active ? "active" : "";
-  element.dataset.group = kwargs.group ?? "default-group";
+  e.dataset.departureDatetime = startDateTime;
+  e.dataset.arrivalDatetime = endDateTime;
+  e.dataset.color = kwargs.color ?? "test-color";
+  e.dataset.active = kwargs.active ?? "inactive";
+  e.dataset.group = kwargs.group ?? "default-group";
 
-  element.innerHTML = `
-        <div class="header">From somewhere</div>
-        <div class="start">Start time and city</div>
-        <div class="destination">End time and city</div>
-  `;
+  e.querySelector(".connection-icon").src = "train.svg";
+  e.querySelector(".connection-number").innerHTML =
+    kwargs.connectionNumber ?? "test-connection-number";
+  e.querySelector(".start .time").innerHTML =
+    DateTime.fromISO(startDateTime).toFormat("HH:mm");
+  e.querySelector(".start .station").innerHTML =
+    kwargs.startStation ?? "start-station";
+  e.querySelector(".destination .time").innerHTML =
+    DateTime.fromISO(endDateTime).toFormat("HH:mm");
+  e.querySelector(".destination .station").innerHTML =
+    kwargs.endStation ?? "end-station";
 
-  return element;
+  return e;
 };
 
 // to grab items from grid to compare with expectations
