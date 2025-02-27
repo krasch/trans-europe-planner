@@ -1,6 +1,7 @@
 import fs from "fs";
 
 import { TravelCalendar } from "/script/customElements/travelCalendar/travelCalendar.js";
+
 customElements.define("travel-calendar", TravelCalendar);
 
 export function initDOMFromFile(htmlFilename) {
@@ -52,6 +53,30 @@ expect.extend({
     return { pass: true };
   },
 });
+
+export const timeout = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+export const dispatchEvent = async (element, eventName, timeout_ms = 10) => {
+  const classes = {
+    mouseover: MouseEvent,
+    mouseout: MouseEvent,
+    dragstart: DragEvent,
+    dragend: DragEvent,
+    dragenter: DragEvent,
+    dragleave: DragEvent,
+    drop: DragEvent,
+  };
+
+  const clazz = classes[eventName];
+  const event = new clazz(eventName, { bubbles: true });
+
+  element.dispatchEvent(event);
+
+  // wait for changes after dispatching to hove finished (hopefully waiting long enough)...
+  await timeout(timeout_ms);
+};
 
 class DOMQueryHelper {
   get calendar() {

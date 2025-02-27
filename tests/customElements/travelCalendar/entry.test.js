@@ -3,7 +3,7 @@
  */
 
 import * as util from "tests/calendarTestUtils.js";
-import { initDOMFromFile, DOM } from "../../domUtils.js";
+import { DOM, initDOMFromFile, timeout } from "../../domUtils.js";
 
 beforeEach(async () => {
   initDOMFromFile("index.html");
@@ -209,7 +209,7 @@ test("entry parts should be moved when entry start/end change", async function (
 
   entry.dataset.departureDatetime = util.t1("10:00");
   entry.dataset.arrivalDatetime = util.t2("14:00");
-  await util.timeout(10); // give calendar time to update
+  await timeout(10); // give calendar time to update
 
   expect(DOM.calendarEntryParts).toMatchDOMObject([
     {
@@ -236,7 +236,7 @@ test("entry parts group should be updated when entry group changes", async funct
   await DOM.calendar.appendChild(entry);
 
   entry.dataset.group = "OTHER-GROUP-VERY-RANDOM";
-  await util.timeout(10); // give calendar time to update
+  await timeout(10); // give calendar time to update
 
   expect(groups()).toMatchObject([
     "OTHER-GROUP-VERY-RANDOM",
@@ -252,12 +252,12 @@ test("entry parts active should be updated when external active status changes",
 
   // set active
   entry.dataset.active = "active";
-  await util.timeout(10); // give calendar time to update
+  await timeout(10); // give calendar time to update
   expect(status()).toMatchObject(["active", "active"]);
 
   // set inactive
   entry.dataset.active = "";
-  await util.timeout(10); // give calendar time to update
+  await timeout(10); // give calendar time to update
   expect(status()).toMatchObject(["inactive", "inactive"]);
 });
 
@@ -270,6 +270,6 @@ test("entry parts color should be updated when external color changes", async fu
 
   // change color
   entry.dataset.color = "new color";
-  await util.timeout(10); // give calendar time to update
+  await timeout(10); // give calendar time to update
   expect(color()).toMatchObject(["new color", "new color"]);
 });

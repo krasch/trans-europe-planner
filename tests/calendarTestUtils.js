@@ -12,11 +12,6 @@ export const t1 = (timeStr) => `${DATES[0]}T${timeStr}`;
 export const t2 = (timeStr) => `${DATES[1]}T${timeStr}`;
 export const t3 = (timeStr) => `${DATES[2]}T${timeStr}`;
 
-export const createDocument = () => {
-  document.body.innerHTML = `
-    <travel-calendar id='calendar' start-date='${DATES[0]}'></travel-calendar>`;
-};
-
 export const createEntry = (startDateTime, endDateTime, kwargs = {}) => {
   const template = document.getElementById("template-calendar-connection");
   const e = template.content.firstElementChild.cloneNode(true);
@@ -84,28 +79,4 @@ export const getShadowDOMItems = (calendar, querySelector) => {
       },
     },
   };
-};
-
-export const dispatchEvent = async (element, eventName, timeout_ms = 10) => {
-  const classes = {
-    mouseover: MouseEvent,
-    mouseout: MouseEvent,
-    dragstart: DragEvent,
-    dragend: DragEvent,
-    dragenter: DragEvent,
-    dragleave: DragEvent,
-    drop: DragEvent,
-  };
-
-  const clazz = classes[eventName];
-  const event = new clazz(eventName, { bubbles: true });
-
-  element.dispatchEvent(event);
-
-  // wait for changes after dispatching to hove finished (hopefully waiting long enough)...
-  await timeout(timeout_ms);
-};
-
-export const timeout = (ms) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 };

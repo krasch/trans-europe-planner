@@ -5,7 +5,12 @@
 import { jest } from "@jest/globals";
 import { DateTime } from "luxon";
 import { CalendarWrapper } from "/script/components/calendar.js";
-import { initDOMFromFile, DOM } from "tests/domUtils.js";
+import {
+  dispatchEvent,
+  DOM,
+  initDOMFromFile,
+  timeout,
+} from "tests/domUtils.js";
 import * as util from "tests/calendarTestUtils.js";
 
 beforeEach(() => {
@@ -14,7 +19,7 @@ beforeEach(() => {
 
 async function updateCalendar(calendar, conns) {
   calendar.updateView({ startDate: util.DATES[0], connections: conns });
-  await util.timeout(10);
+  await timeout(10);
 }
 
 test("update should fill in template correctly", async function () {
@@ -239,15 +244,15 @@ test("calendar wrapper should propagate callbacks/commands from/to calendar", as
 
   // run a bunch of callbacks on the calendar entries
   // -> these should be propagated to calendar wrapper and our callback mocks should be called
-  await util.dispatchEvent(DOM.calendarEntryParts[0], "mouseover");
+  await dispatchEvent(DOM.calendarEntryParts[0], "mouseover");
   expect(hoverOnCallback).toBeCalledWith("leg1");
 
-  await util.dispatchEvent(DOM.calendarEntryParts[1], "mouseout");
+  await dispatchEvent(DOM.calendarEntryParts[1], "mouseout");
   expect(hoverOffCallback).toBeCalledWith("leg2");
 
-  await util.dispatchEvent(DOM.calendarEntryParts[0], "dragstart");
-  await util.dispatchEvent(DOM.calendarEntryParts[0], "dragenter");
-  await util.dispatchEvent(DOM.calendarEntryParts[0], "drop");
+  await dispatchEvent(DOM.calendarEntryParts[0], "dragstart");
+  await dispatchEvent(DOM.calendarEntryParts[0], "dragenter");
+  await dispatchEvent(DOM.calendarEntryParts[0], "drop");
   expect(dropCallback).toBeCalledWith(connections[0].uniqueId);
 
   // when sending a command to calendar wrapper it should be propagated to the calendar
