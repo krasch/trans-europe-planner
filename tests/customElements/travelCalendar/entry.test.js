@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import * as util from "tests/calendarTestUtils.js";
-import { DOM, initDOMFromFile, timeout } from "../../domUtils.js";
+import * as util from "tests/_calendarTestUtils.js";
+import { DOM, initDOMFromFile, timeout } from "../../_domUtils.js";
 
 beforeEach(async () => {
   initDOMFromFile("index.html");

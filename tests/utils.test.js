@@ -1,4 +1,4 @@
-import { createConnection } from "tests/data.js";
+import { createConnection } from "tests/_data.js";
 import { sortConnectionsByDepartureTime } from "/script/util.js";
 
 test("sortByDepartureTime", function () {

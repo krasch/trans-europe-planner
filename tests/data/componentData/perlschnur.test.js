@@ -1,4 +1,4 @@
-import { createConnection } from "tests/data.js";
+import { createConnection } from "tests/_data.js";
 import { Journey, JourneyCollection } from "/script/data/types/journey.js";
 import { Database } from "/script/data/database.js";
 import {

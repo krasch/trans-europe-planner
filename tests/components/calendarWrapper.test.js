@@ -10,8 +10,8 @@ import {
   DOM,
   initDOMFromFile,
   timeout,
-} from "tests/domUtils.js";
-import * as util from "tests/calendarTestUtils.js";
+} from "tests/_domUtils.js";
+import * as util from "tests/_calendarTestUtils.js";
 
 beforeEach(() => {
   initDOMFromFile("index.html");

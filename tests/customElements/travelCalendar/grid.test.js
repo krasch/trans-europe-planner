@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import * as util from "tests/calendarTestUtils.js";
-import { DOM, initDOMFromFile } from "../../domUtils.js";
+import * as util from "tests/_calendarTestUtils.js";
+import { DOM, initDOMFromFile } from "../../_domUtils.js";
 
 beforeEach(() => {
   initDOMFromFile("index.html");

@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
-import * as util from "tests/calendarTestUtils.js";
+import * as util from "tests/_calendarTestUtils.js";
 import { jest } from "@jest/globals";
 import {
   dispatchEvent,
   DOM,
   initDOMFromFile,
   timeout,
-} from "../../domUtils.js";
+} from "../../_domUtils.js";
 
 beforeEach(async () => {
   initDOMFromFile("index.html");
