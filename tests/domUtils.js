@@ -59,6 +59,10 @@ class DOMQueryHelper {
   get calendarEntryParts() {
     return Array.from(this.calendar.shadowRoot.querySelectorAll(".entry-part"));
   }
+
+  get calendarDateLabels() {
+    return Array.from(this.calendar.shadowRoot.querySelectorAll(".date-label"));
+  }
 }
 
 export const DOM = new DOMQueryHelper();
