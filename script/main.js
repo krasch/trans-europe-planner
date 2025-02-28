@@ -1,5 +1,3 @@
-import { DateTime } from "/external/luxon@3.5.0/luxon.min.js";
-
 import { Database } from "./data/database.js";
 import { diffDays, RouteDatabase } from "./data/routing.js";
 import { Journey, JourneyCollection } from "./data/types/journey.js";
@@ -11,17 +9,6 @@ import {
   prepareDataForCalendar,
   prepareDataForPerlschnur,
 } from "./data/componentData.js";
-
-import { CONNECTIONS } from "../data/connections.js";
-import { CITIES } from "../data/cities.js";
-import { STATIONS } from "../data/stations.js";
-import { ROUTES } from "../data/routes.js";
-import { CITY_NAME_TO_ID } from "./util.js";
-
-// dummy date for initialising
-// today so that it is in range for date picker
-// double "new Date" so that can get rid of time component
-const TODAY = DateTime.now().startOf("day");
 
 function initUpdateViews(views, database) {
   function updateViews(state) {
@@ -41,7 +28,7 @@ function initUpdateViews(views, database) {
   return updateViews;
 }
 
-export async function main(home, views) {
+export async function main(home, views, data) {
   // init state
   const state = {
     home: home,
@@ -50,19 +37,19 @@ export async function main(home, views) {
   };
 
   // prepare database
-  const connections = CONNECTIONS.flatMap((c) =>
-    enrichConnection(c, STATIONS, CITIES, state.date.toISODate()),
+  const connections = data.connections.flatMap((c) =>
+    enrichConnection(c, data.stations, data.cities, state.date.toISODate()),
   );
 
   const database = new Database(connections);
 
   // prepare routes
-  const routeDatabase = new RouteDatabase(ROUTES);
+  const routeDatabase = new RouteDatabase(data.routes);
 
   // prepare all geo etc data that map needs
   const initialMapData = prepareInitialDataForMap(
     state.home,
-    CITIES,
+    data.cities,
     connections,
     routeDatabase,
   );
