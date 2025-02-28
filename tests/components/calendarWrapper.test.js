@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import("@atlaskit/pragmatic-drag-and-drop-unit-testing/drag-event-polyfill");
 import { jest } from "@jest/globals";
 import { DateTime } from "luxon";
 import { CalendarWrapper } from "/script/components/calendar.js";
@@ -11,14 +12,14 @@ import {
   initDOMFromFile,
   timeout,
 } from "tests/_domUtils.js";
-import * as util from "tests/_calendarTestUtils.js";
+import { CALENDAR_GRID, DAY1, DAY1T, DAY2T, DAY3T } from "tests/_data.js";
 
 beforeEach(() => {
   initDOMFromFile("index.html");
 });
 
 async function updateCalendar(calendar, conns) {
-  calendar.updateView({ startDate: util.DATES[0], connections: conns });
+  calendar.updateView({ startDate: DAY1, connections: conns });
   await timeout(10);
 }
 
@@ -32,9 +33,9 @@ test("update should fill in template correctly", async function () {
       name: "nachtzug 123",
       type: "train",
       startStation: "Berlin Gesundbrunnen",
-      startDateTime: DateTime.fromISO(util.t1("19:00")),
+      startDateTime: DateTime.fromISO(DAY1T("19:00")),
       endStation: "Oulu Station",
-      endDateTime: DateTime.fromISO(util.t3("10:00")), // 3-day connection
+      endDateTime: DateTime.fromISO(DAY3T("10:00")), // 3-day connection
       selected: true,
       color: "purple",
     },
@@ -46,9 +47,9 @@ test("update should fill in template correctly", async function () {
     {
       dataset: { group: "Berlin->Oulu", status: "active" },
       style: {
-        "grid-column": util.COLUMN_FIRST_DAY,
-        "grid-row-start": util.ROW_MIDNIGHT + 19 * 4,
-        "grid-row-end": util.ROW_MIDNIGHT + 24 * 4,
+        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY,
+        "grid-row-start": CALENDAR_GRID.ROW_MIDNIGHT + 19 * 4,
+        "grid-row-end": CALENDAR_GRID.ROW_MIDNIGHT + 24 * 4,
       },
       selectors: {
         ".connection-icon": { src: expect.stringMatching("train.svg") },
@@ -60,17 +61,17 @@ test("update should fill in template correctly", async function () {
     {
       dataset: { group: "Berlin->Oulu", status: "active" },
       style: {
-        "grid-column": util.COLUMN_FIRST_DAY + 1,
-        "grid-row-start": util.ROW_MIDNIGHT,
-        "grid-row-end": util.ROW_MIDNIGHT + 24 * 4,
+        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY + 1,
+        "grid-row-start": CALENDAR_GRID.ROW_MIDNIGHT,
+        "grid-row-end": CALENDAR_GRID.ROW_MIDNIGHT + 24 * 4,
       },
     },
     {
       dataset: { group: "Berlin->Oulu", status: "active" },
       style: {
-        "grid-column": util.COLUMN_FIRST_DAY + 2,
-        "grid-row-start": util.ROW_MIDNIGHT,
-        "grid-row-end": util.ROW_MIDNIGHT + 10 * 4,
+        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY + 2,
+        "grid-row-start": CALENDAR_GRID.ROW_MIDNIGHT,
+        "grid-row-end": CALENDAR_GRID.ROW_MIDNIGHT + 10 * 4,
       },
       selectors: {
         ".destination .time": { innerHTML: "10:00" },
@@ -87,20 +88,20 @@ test("update view should sort connections by start datetime", async function () 
     {
       uniqueId: { id: 1, somekey: "someval" },
       startStation: "station1",
-      startDateTime: DateTime.fromISO(util.t2("19:00")),
-      endDateTime: DateTime.fromISO(util.t2("20:00")),
+      startDateTime: DateTime.fromISO(DAY2T("19:00")),
+      endDateTime: DateTime.fromISO(DAY2T("20:00")),
     },
     {
       uniqueId: { id: 2, somekey: "someval" },
       startStation: "station2",
-      startDateTime: DateTime.fromISO(util.t1("09:00")),
-      endDateTime: DateTime.fromISO(util.t1("10:00")),
+      startDateTime: DateTime.fromISO(DAY1T("09:00")),
+      endDateTime: DateTime.fromISO(DAY1T("10:00")),
     },
     {
       uniqueId: { id: 3, somekey: "someval" },
       startStation: "station3",
-      startDateTime: DateTime.fromISO(util.t1("14:00")),
-      endDateTime: DateTime.fromISO(util.t1("15:00")),
+      startDateTime: DateTime.fromISO(DAY1T("14:00")),
+      endDateTime: DateTime.fromISO(DAY1T("15:00")),
     },
   ];
 
@@ -119,20 +120,20 @@ test("update view should add/delete connections as necessary", async function ()
     {
       uniqueId: { id: 1, somekey: "someval" },
       startStation: "station1",
-      startDateTime: DateTime.fromISO(util.t1("19:00")),
-      endDateTime: DateTime.fromISO(util.t1("20:00")),
+      startDateTime: DateTime.fromISO(DAY1T("19:00")),
+      endDateTime: DateTime.fromISO(DAY1T("20:00")),
     },
     {
       uniqueId: { id: 2, somekey: "someval" },
       startStation: "station2",
-      startDateTime: DateTime.fromISO(util.t2("09:00")),
-      endDateTime: DateTime.fromISO(util.t2("10:00")),
+      startDateTime: DateTime.fromISO(DAY2T("09:00")),
+      endDateTime: DateTime.fromISO(DAY2T("10:00")),
     },
     {
       uniqueId: { id: 3, somekey: "someval" },
       startStation: "station3",
-      startDateTime: DateTime.fromISO(util.t3("14:00")),
-      endDateTime: DateTime.fromISO(util.t3("15:00")),
+      startDateTime: DateTime.fromISO(DAY3T("14:00")),
+      endDateTime: DateTime.fromISO(DAY3T("15:00")),
     },
   ];
 
@@ -170,15 +171,15 @@ test("update view should propagate dataset changes to calendar entries", async f
       uniqueId: { id: 1, somekey: "someval" },
       color: "purple",
       leg: "leg1",
-      startDateTime: DateTime.fromISO(util.t1("19:00")),
-      endDateTime: DateTime.fromISO(util.t1("20:00")),
+      startDateTime: DateTime.fromISO(DAY1T("19:00")),
+      endDateTime: DateTime.fromISO(DAY1T("20:00")),
     },
     {
       uniqueId: { id: 2, somekey: "someval" },
       color: "orange",
       leg: "leg2",
-      startDateTime: DateTime.fromISO(util.t2("09:00")),
-      endDateTime: DateTime.fromISO(util.t2("10:00")),
+      startDateTime: DateTime.fromISO(DAY2T("09:00")),
+      endDateTime: DateTime.fromISO(DAY2T("10:00")),
     },
   ];
 
@@ -219,15 +220,15 @@ test("calendar wrapper should propagate callbacks/commands from/to calendar", as
       uniqueId: { id: 1, somekey: "someval" },
       startStation: "station1",
       leg: "leg1",
-      startDateTime: DateTime.fromISO(util.t1("19:00")),
-      endDateTime: DateTime.fromISO(util.t1("20:00")),
+      startDateTime: DateTime.fromISO(DAY1T("19:00")),
+      endDateTime: DateTime.fromISO(DAY1T("20:00")),
     },
     {
       uniqueId: { id: 2, somekey: "someval" },
       startStation: "station2",
       leg: "leg2",
-      startDateTime: DateTime.fromISO(util.t2("09:00")),
-      endDateTime: DateTime.fromISO(util.t2("10:00")),
+      startDateTime: DateTime.fromISO(DAY2T("09:00")),
+      endDateTime: DateTime.fromISO(DAY2T("10:00")),
     },
   ];
 

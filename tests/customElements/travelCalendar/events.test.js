@@ -2,19 +2,33 @@
  * @jest-environment jsdom
  */
 
-import * as util from "tests/_calendarTestUtils.js";
 import { jest } from "@jest/globals";
+import("@atlaskit/pragmatic-drag-and-drop-unit-testing/drag-event-polyfill");
+
 import {
   dispatchEvent,
   DOM,
   initDOMFromFile,
   timeout,
-} from "../../_domUtils.js";
+} from "tests/_domUtils.js";
+import {
+  connectionToCalendarEntry,
+  createConnection,
+  DAY1,
+  DAY2,
+  DAY3,
+} from "tests/_data.js";
 
 beforeEach(async () => {
   initDOMFromFile("index.html");
-  await DOM.calendar.setAttribute("start-date", util.DATES[0]);
+  await DOM.calendar.setAttribute("start-date", DAY1);
 });
+
+async function addEntryToCalendar(connection, kwargs) {
+  const entry = connectionToCalendarEntry(createConnection(connection), kwargs);
+  await DOM.calendar.appendChild(entry);
+  return entry;
+}
 
 const isHover = () =>
   DOM.calendarEntryParts.map((e) => e.classList.contains("hover"));
@@ -46,8 +60,10 @@ const drag = () =>
   });
 
 test("when hovering over a part of multiparty entry, then all parts should hover", async function () {
-  const entry = util.createEntry(util.t1("16:29"), util.t3("18:04"));
-  await DOM.calendar.appendChild(entry);
+  await addEntryToCalendar([
+    [DAY1, "16:29", "city1MainStationId"],
+    [DAY3, "18:04", "city2MainStationId"],
+  ]);
 
   // by default no part should hover
   expect(isHover()).toStrictEqual([false, false, false]);
@@ -62,8 +78,10 @@ test("when hovering over a part of multiparty entry, then all parts should hover
 });
 
 test("hover on/off callback should be called when hovering over entry", async function () {
-  const entry = util.createEntry(util.t1("16:29"), util.t3("18:04"));
-  await DOM.calendar.appendChild(entry);
+  const entry = await addEntryToCalendar([
+    [DAY1, "16:29", "city1MainStationId"],
+    [DAY3, "18:04", "city2MainStationId"],
+  ]);
 
   const hoverOnCallback = jest.fn();
   const hoverOffCallback = jest.fn();
@@ -80,25 +98,25 @@ test("hover on/off callback should be called when hovering over entry", async fu
 });
 
 test("drag and drop of multi-part entries", async function () {
-  const group = "Berlin->München";
-  const other = "München->Verona";
+  const c1 = [
+    [DAY1, "16:29", "city1MainStationId"],
+    [DAY2, "18:04", "city2MainStationId"],
+  ];
+  const c2 = [
+    [DAY2, "16:29", "city1MainStationId"],
+    [DAY3, "18:04", "city2MainStationId"],
+  ];
+  const c3 = [
+    [DAY3, "16:29", "city2MainStationId"],
+    [DAY3, "18:04", "city3MainStationId"],
+  ];
 
-  const e1 = util.createEntry(util.t1("16:29"), util.t2("18:04"), {
-    group: group,
-    active: "active",
-  });
-  const e2 = util.createEntry(util.t2("16:29"), util.t3("18:04"), {
-    group: group,
-    active: "",
-  });
-  const e3 = util.createEntry(util.t1("04:30"), util.t1("05:11"), {
-    group: other,
-    active: "active",
-  });
-
-  await DOM.calendar.appendChild(e1);
-  await DOM.calendar.appendChild(e2);
-  await DOM.calendar.appendChild(e3);
+  // City1 (day1)->City2 (day2)
+  await addEntryToCalendar(c1, { active: "active" });
+  // City1 (day2)->City2 (day3)
+  await addEntryToCalendar(c2, { active: "" });
+  // City1 (day2)->City2 (day3)
+  await addEntryToCalendar(c3, { active: "active" });
 
   // this makes it easier to send events (and understand from which calendar entry event was sent)
   const elements = {
@@ -158,18 +176,19 @@ test("drag and drop of multi-part entries", async function () {
 });
 
 test("drag and drop after changing entry group", async function () {
-  const e1 = util.createEntry(util.t1("16:29"), util.t1("18:04"), {
-    group: "group1",
-    active: true,
-  });
-  const e2 = util.createEntry(util.t2("16:29"), util.t2("18:04"), {
-    group: "group2",
-    active: true,
-  });
-  await DOM.calendar.appendChild(e1);
-  await DOM.calendar.appendChild(e2);
+  const c1 = [
+    [DAY1, "16:29", "city1MainStationId"],
+    [DAY1, "18:04", "city2MainStationId"],
+  ];
+  const c2 = [
+    [DAY2, "16:29", "city1MainStationId"],
+    [DAY2, "18:04", "city2MainStationId"],
+  ];
 
-  e2.dataset.group = "group1"; // now have the same group and should be drag&droppable
+  const e1 = await addEntryToCalendar(c1, { active: "active" });
+  const e2 = await addEntryToCalendar(c2, { active: "active" });
+
+  e2.dataset.group = e1.dataset.group; // now have the same group and should be drag&droppable
   await timeout(10); // give calendar time to update
 
   await dispatchEvent(DOM.calendarEntryParts[0], "dragstart");
@@ -177,8 +196,10 @@ test("drag and drop after changing entry group", async function () {
 });
 
 test("drop callback should be called after drop occurs", async function () {
-  const entry = util.createEntry(util.t1("16:29"), util.t3("18:04"));
-  await DOM.calendar.appendChild(entry);
+  const entry = await addEntryToCalendar([
+    [DAY1, "16:29", "city1MainStationId"],
+    [DAY3, "18:04", "city2MainStationId"],
+  ]);
 
   const dropCallback = jest.fn();
   DOM.calendar.on("drop", dropCallback);
@@ -190,18 +211,18 @@ test("drop callback should be called after drop occurs", async function () {
 });
 
 test("can set group hover state from outside calendar", async function () {
-  const e1 = util.createEntry(util.t1("16:29"), util.t1("18:04"), {
-    group: "group1",
-  });
-  const e2 = util.createEntry(util.t2("16:29"), util.t2("18:04"), {
-    group: "group2",
-  });
-  await DOM.calendar.appendChild(e1);
-  await DOM.calendar.appendChild(e2);
+  await addEntryToCalendar([
+    [DAY1, "16:29", "city2MainStationId"],
+    [DAY1, "18:04", "city3MainStationId"],
+  ]);
+  await addEntryToCalendar([
+    [DAY2, "16:29", "city1MainStationId"],
+    [DAY2, "18:04", "city2MainStationId"],
+  ]);
 
-  DOM.calendar.setHoverGroup("group2");
+  DOM.calendar.setHoverGroup("City1->City2");
   expect(isHover()).toStrictEqual([false, true]);
 
-  DOM.calendar.setNoHoverGroup("group2");
+  DOM.calendar.setNoHoverGroup("City1->City2");
   expect(isHover()).toStrictEqual([false, false]);
 });

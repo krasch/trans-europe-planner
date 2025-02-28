@@ -1,6 +1,7 @@
 import fs from "fs";
 
 import { TravelCalendar } from "/script/customElements/travelCalendar/travelCalendar.js";
+import { createConnection } from "./_data.js";
 
 customElements.define("travel-calendar", TravelCalendar);
 
