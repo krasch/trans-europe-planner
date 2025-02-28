@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { createConnection } from "tests/data.js";
+import { createConnection } from "tests/_data.js";
 import { Database, DatabaseError } from "/script/data/database.js";
 import { SlicingError } from "../../script/data/types/connection.js";
 

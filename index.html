@@ -337,6 +337,9 @@
     import {initColors} from "./script/util.js";
     import {initCityNameToId} from "./script/util.js";
     import {CITIES} from "./data/cities.js";
+    import {STATIONS} from "./data/stations.js";
+    import {CONNECTIONS} from "./data/connections.js";
+    import {ROUTES} from "./data/routes.js";
 
     const isMobile = window.matchMedia("(max-width: 1000px)");
 
@@ -411,10 +414,17 @@
             layout: new Layout(document.body, isMobile)
         }
 
+        const data = {
+            connections: CONNECTIONS,
+            cities: CITIES,
+            stations: STATIONS,
+            routes: ROUTES
+        }
+
         const home = getHome()
         if (home) {
             try {
-                main(home, views);
+                main(home, views, data);
             } catch (error) {
                 console.error(error);
             }

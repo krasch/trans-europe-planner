@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { createConnection } from "tests/data.js";
+import { createConnection } from "tests/_data.js";
 
 import { Journey, JourneyCollection } from "/script/data/types/journey.js";
 import { Database } from "/script/data/database.js";
@@ -22,15 +22,19 @@ function expected(connection, selected, color) {
 }
 
 test("prepareDataForCalendarEmpty", function () {
+  const calendarStartDate = DateTime.fromISO("2024-10-15");
+
   const database = new Database([]);
 
   const journeys = new JourneyCollection();
 
-  const got = prepareDataForCalendar(journeys, database);
-  expect(got).toStrictEqual([]);
+  const got = prepareDataForCalendar(calendarStartDate, journeys, database);
+  expect(got).toStrictEqual({ startDate: "2024-10-15", connections: [] });
 });
 
 test("prepareDataForCalendarNoActiveJourney", function () {
+  const calendarStartDate = DateTime.fromISO("2024-10-15");
+
   const c1 = createConnection([
     ["2024-10-15", "06:00", "city1MainStationId"],
     ["2024-10-15", "08:00", "city2MainStationId"],
@@ -42,8 +46,8 @@ test("prepareDataForCalendarNoActiveJourney", function () {
   const journeys = new JourneyCollection();
   journeys.addJourney([c1.id]);
 
-  const got = prepareDataForCalendar(journeys, database);
-  expect(got).toStrictEqual([]);
+  const got = prepareDataForCalendar(calendarStartDate, journeys, database);
+  expect(got).toStrictEqual({ startDate: "2024-10-15", connections: [] });
 });
 
 test("prepareDataForCalendarSingleJourneyNoAlternatives", function () {
@@ -72,7 +76,7 @@ test("prepareDataForCalendarSingleJourneyNoAlternatives", function () {
   ];
 
   const got = prepareDataForCalendar(calendarStartDate, journeys, database);
-  expect(got).toEqual(exp);
+  expect(got.connections).toEqual(exp);
 });
 
 test("prepareDataForCalendarSingleJourneyNoAlternativesDifferentStartDate", function () {
@@ -101,7 +105,7 @@ test("prepareDataForCalendarSingleJourneyNoAlternativesDifferentStartDate", func
   ];
 
   const got = prepareDataForCalendar(calendarStartDate, journeys, database);
-  expect(got).toEqual(exp);
+  expect(got.connections).toEqual(exp);
 });
 
 test("prepareDataForCalendarSingleJourneyAfterShift", function () {
@@ -132,7 +136,7 @@ test("prepareDataForCalendarSingleJourneyAfterShift", function () {
   ];
 
   const got = prepareDataForCalendar(calendarStartDate, journeys, database);
-  expect(got).toEqual(exp);
+  expect(got.connections).toEqual(exp);
 });
 
 test("prepareDataForCalendarTwoJourneysNoAlternatives", function () {
@@ -167,7 +171,7 @@ test("prepareDataForCalendarTwoJourneysNoAlternatives", function () {
   ];
 
   const got = prepareDataForCalendar(calendarStartDate, journeys, database);
-  expect(got).toEqual(exp);
+  expect(got.connections).toEqual(exp);
 });
 
 test("prepareDataForCalendarSingleJourneyMultipleConnectionsWithAlternatives", function () {
@@ -221,5 +225,5 @@ test("prepareDataForCalendarSingleJourneyMultipleConnectionsWithAlternatives", f
   ];
 
   const got = prepareDataForCalendar(calendarStartDate, journeys, database);
-  expect(got).toEqual(exp);
+  expect(got.connections).toEqual(exp);
 });

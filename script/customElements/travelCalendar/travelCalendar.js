@@ -195,7 +195,7 @@ export class TravelCalendar extends HTMLElement {
     const partsToCreate = this.#splitIntoDays(
       new Date(externalElement.dataset.departureDatetime),
       new Date(externalElement.dataset.arrivalDatetime),
-    ).filter((part) => part.column < 3); // HACK to not blow up grid with overnights
+    ).filter((part) => part.column < 3); // todo HACK to not blow up grid with overnights
 
     const entry = new MultipartCalendarEntry(
       partsToCreate.map((p) => {
@@ -215,20 +215,30 @@ export class TravelCalendar extends HTMLElement {
     entry.active = externalElement.dataset.active === "active";
     entry.color = externalElement.dataset.color;
 
-    entry.parts[0].appendChild(uiElements.header.cloneNode(true));
-    entry.parts[0].appendChild(uiElements.startInfo.cloneNode(true));
-    entry.parts.at(-1).appendChild(uiElements.destinationInfo.cloneNode(true));
+    // todo when changing the calendar date, often the changed entries arrive before the calender grid has changed
+    // this means that entries might end up in columns > 3. but since we are filtering out those parts
+    // for overnights to not blow up the grid (see above), some "normal" parts might also get filtered away
+    // which means we can add up with an entry with zero parts
+    // this is not a big problem, because the entry will get re-added when the calendar grid changes, so for
+    // now can keep it like that, but it is not the nicest thing...
+    if (partsToCreate.length > 0) {
+      entry.parts[0].appendChild(uiElements.header.cloneNode(true));
+      entry.parts[0].appendChild(uiElements.startInfo.cloneNode(true));
+      entry.parts
+        .at(-1)
+        .appendChild(uiElements.destinationInfo.cloneNode(true));
 
-    entry.parts[0].classList.add("entry-first-part");
-    entry.parts.at(-1).classList.add("entry-last-part");
+      entry.parts[0].classList.add("entry-first-part");
+      entry.parts.at(-1).classList.add("entry-last-part");
+    }
 
     this.#lookup.register(externalElement, entry);
   }
 
-  #removeEntry(travelOption) {
-    for (let part of this.#lookup.entry(travelOption).parts)
+  #removeEntry(externalElement) {
+    for (let part of this.#lookup.entry(externalElement).parts)
       this.shadowRoot.removeChild(part);
-    this.#lookup.unregister(travelOption);
+    this.#lookup.unregister(externalElement);
   }
 
   #changeCalendarStartDate(newDate) {
@@ -241,10 +251,10 @@ export class TravelCalendar extends HTMLElement {
     // also need to update the column in which the parts of the entry lie
     // for now, simple remove the entry and add it again,
     // then all parts should end up at the right place
-    const options = Array.from(this.children);
-    for (let travelOption of options) {
-      this.#removeEntry(travelOption);
-      this.#addEntry(travelOption);
+    const externalElement = Array.from(this.children);
+    for (let element of externalElement) {
+      this.#removeEntry(element);
+      this.#addEntry(element);
     }
   }
 

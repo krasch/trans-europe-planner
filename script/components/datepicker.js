@@ -9,6 +9,7 @@ export class Datepicker {
 
   #start;
   #end;
+  #default;
 
   #callbacks = {
     dateChanged: () => {},
@@ -25,7 +26,7 @@ export class Datepicker {
     const today = DateTime.now().startOf("day");
     this.#start = today.plus({ days: 1 });
     this.#end = today.plus({ days: 3 * 30 });
-    const defaultDate = today.plus({ days: 30 });
+    this.#default = today.plus({ days: 30 });
 
     this.#inputElement.min = this.#start.toISODate();
     this.#inputElement.max = this.#end.toISODate();
@@ -37,10 +38,14 @@ export class Datepicker {
       this.#currentDate >= this.#start &&
       this.#currentDate <= this.#end;
 
-    if (!stillValid) this.#currentDate = defaultDate;
+    if (!stillValid) this.#currentDate = this.#default;
     this.#showHideArrows();
 
     this.#container.addEventListener("input", (e) => {
+      // clear button was pressed -> set to default value (meh)
+      // todo why is it so hard to remove the clear button?
+      if (this.#currentDate === null) this.#currentDate = this.#default;
+
       this.#showHideArrows();
       this.#callbacks["dateChanged"](this.#currentDate);
     });

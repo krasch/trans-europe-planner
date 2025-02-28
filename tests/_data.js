@@ -15,36 +15,36 @@ export const testCities = {
   cityId5: { name: "City5", geo: { latitude: 50, longitude: 50 }, rank: 5 },
 };
 
-const testStations = {
+export const testStations = {
   city1MainStationId: {
     name: "City 1 Main Station",
-    city: "cityId1",
+    city_id: "cityId1",
   },
   city1ExtraStationId: {
     name: "City 1 Extra Station",
-    city: "cityId1",
+    city_id: "cityId1",
     secondary: true,
   },
   city2MainStationId: {
     name: "City 2 Main Station",
-    city: "cityId2",
+    city_id: "cityId2",
   },
   city3MainStationId: {
     name: "City 3 Main Station",
-    city: "cityId3",
+    city_id: "cityId3",
   },
   city3ExtraStationId: {
     name: "City 3 Extra Station",
-    city: "cityId3",
+    city_id: "cityId3",
     secondary: true,
   },
   city4MainStationId: {
     name: "City 4 Main Station",
-    city: "cityId4",
+    city_id: "cityId4",
   },
   city5MainStationId: {
     name: "City 5 Main Station",
-    city: "cityId5",
+    city_id: "cityId5",
   },
 };
 
@@ -73,8 +73,8 @@ export function createConnection(stops, id = null) {
         stationId,
         testStations[stationId].name,
         testStations[stationId].secondary,
-        testStations[stationId].city,
-        testCities[testStations[stationId].city].name,
+        testStations[stationId].city_id,
+        testCities[testStations[stationId].city_id].name,
       ),
     );
   }

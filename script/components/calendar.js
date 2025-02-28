@@ -10,21 +10,21 @@ export class CalendarWrapper {
     legHoverStop: () => {},
   };
 
-  travelCalendar;
+  #travelCalendar;
 
   #idToEntry = new Map();
   #entryToId = new Map();
 
   constructor(travelCalendar) {
-    this.travelCalendar = travelCalendar;
+    this.#travelCalendar = travelCalendar;
 
-    this.travelCalendar.on("hoverOn", (entry) => {
+    this.#travelCalendar.on("hoverOn", (entry) => {
       this.#callbacks.legHoverStart(entry.dataset.group);
     });
-    this.travelCalendar.on("hoverOff", (entry) => {
+    this.#travelCalendar.on("hoverOff", (entry) => {
       this.#callbacks.legHoverStop(entry.dataset.group);
     });
-    this.travelCalendar.on("drop", (entry) => {
+    this.#travelCalendar.on("drop", (entry) => {
       this.#callbacks.legChanged(this.#entryToId.get(entry));
     });
   }
@@ -34,33 +34,37 @@ export class CalendarWrapper {
   }
 
   setHoverLeg(leg) {
-    this.travelCalendar.setHoverGroup(leg);
+    this.#travelCalendar.setHoverGroup(leg);
   }
 
   setNoHoverLeg(leg) {
-    this.travelCalendar.setNoHoverGroup(leg);
+    this.#travelCalendar.setNoHoverGroup(leg);
   }
 
-  updateView(connections) {
+  updateView(data) {
+    // change calendar start date if necessary
+    if (this.#travelCalendar.getAttribute("start-date") !== data.startDate)
+      this.#travelCalendar.setAttribute("start-date", data.startDate);
+
     // sort such that earliest will be first child etc
     // otherwise they might overlay each other and drag&drop won't work
     // warning: this only works because we are never adding new connections to existing legs
-    connections.sort((c1, c2) => c1.startDateTime - c2.startDateTime);
+    data.connections.sort((c1, c2) => c1.startDateTime - c2.startDateTime);
 
     // remove entries that are currently in calendar but no longer necessary
-    const ids = connections.map((c) => c.uniqueId);
+    const ids = data.connections.map((c) => c.uniqueId);
     for (let id_ of this.#idToEntry.keys()) {
       if (ids.includes(id_)) continue; // still necessary
 
       const entry = this.#idToEntry.get(id_);
-      this.travelCalendar.removeChild(entry);
+      this.#travelCalendar.removeChild(entry);
 
       this.#idToEntry.delete(id_);
       this.#entryToId.delete(entry);
     }
 
     // add new entries
-    for (let c of connections) {
+    for (let c of data.connections) {
       // already added before, just need to update
       if (this.#idToEntry.has(c.uniqueId)) {
         const entry = this.#idToEntry.get(c.uniqueId);
@@ -69,7 +73,7 @@ export class CalendarWrapper {
       // new connection -> new entry
       else {
         const entry = this.#createEntryFromConnection(c);
-        this.travelCalendar.appendChild(entry);
+        this.#travelCalendar.appendChild(entry);
 
         this.#idToEntry.set(c.uniqueId, entry);
         this.#entryToId.set(entry, c.uniqueId);
