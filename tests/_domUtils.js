@@ -88,6 +88,10 @@ class DOMQueryHelper {
     return document.querySelector("travel-calendar");
   }
 
+  get datePicker() {
+    return document.querySelector("#config");
+  }
+
   get calendarEntryParts() {
     return Array.from(this.calendar.shadowRoot.querySelectorAll(".entry-part"));
   }
