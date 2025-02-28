@@ -336,10 +336,12 @@
     import {main} from "./script/main.js";
     import {initColors} from "./script/util.js";
     import {initCityNameToId} from "./script/util.js";
+
     import {CITIES} from "./data/cities.js";
     import {STATIONS} from "./data/stations.js";
     import {CONNECTIONS} from "./data/connections.js";
     import {ROUTES} from "./data/routes.js";
+    import {enrichConnection} from "./script/data/database.js";
 
     const isMobile = window.matchMedia("(max-width: 1000px)");
 
@@ -414,8 +416,16 @@
             layout: new Layout(document.body, isMobile)
         }
 
+        // add station and city info and turn each raw connection into 3 dated connections (3 calendar dates)
+        const connections = CONNECTIONS.flatMap((c) => enrichConnection(
+            c,
+            STATIONS,
+            CITIES,
+            views.datepicker.currentDate.toISODate())
+        );
+
         const data = {
-            connections: CONNECTIONS,
+            connections: connections,
             cities: CITIES,
             stations: STATIONS,
             routes: ROUTES

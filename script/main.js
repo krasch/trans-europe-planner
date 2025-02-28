@@ -36,21 +36,15 @@ export async function main(home, views, data) {
     journeys: new JourneyCollection(),
   };
 
-  // prepare database
-  const connections = data.connections.flatMap((c) =>
-    enrichConnection(c, data.stations, data.cities, state.date.toISODate()),
-  );
-
-  const database = new Database(connections);
-
-  // prepare routes
+  // prepare databases
+  const database = new Database(data.connections);
   const routeDatabase = new RouteDatabase(data.routes);
 
   // prepare all geo etc data that map needs
   const initialMapData = prepareInitialDataForMap(
     state.home,
     data.cities,
-    connections,
+    data.connections,
     routeDatabase,
   );
   const mapLoadedPromise = views.map.load(initialMapData);
