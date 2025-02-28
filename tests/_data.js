@@ -2,6 +2,18 @@ import { DateTime } from "/external/luxon@3.5.0/luxon.min.js";
 import { Stop, Connection } from "/script/data/types/connection.js";
 import { initCityNameToId } from "/script/util.js";
 
+export const DAY1 = "2024-10-15";
+export const DAY2 = "2024-10-16";
+export const DAY3 = "2024-10-17";
+export const DAY1T = (t) => `${DAY1}T${t}`;
+export const DAY2T = (t) => `${DAY2}T${t}`;
+export const DAY3T = (t) => `${DAY3}T${t}`;
+
+export const CALENDAR_GRID = {
+  ROW_MIDNIGHT: 2, // 1 for header, 1 because indexes start at 1
+  COLUMN_FIRST_DAY: 2, // 1 for header, 1 because indexes start at 1
+};
+
 export const testCities = {
   cityId1: { name: "City1", geo: { latitude: 10, longitude: 10 }, rank: 1 },
   cityId2: { name: "City2", geo: { latitude: 20, longitude: 20 }, rank: 2 },
@@ -57,6 +69,29 @@ function initIncrementalId() {
   }
 
   return increment;
+}
+
+export function connectionToCalendarEntry(connection, kwargs = {}) {
+  const template = document.getElementById("template-calendar-connection");
+  const e = template.content.firstElementChild.cloneNode(true);
+
+  e.dataset.color = kwargs.color ?? "test-color";
+  e.dataset.active = kwargs.active ?? "";
+
+  e.dataset.group = `${connection.startCityName}->${connection.endCityName}`;
+  e.dataset.departureDatetime = connection.departure.toISO();
+  e.dataset.arrivalDatetime = connection.arrival.toISO();
+
+  e.querySelector(".connection-icon").src = "train.svg";
+  e.querySelector(".connection-number").innerHTML = connection.id;
+  e.querySelector(".start .time").innerHTML =
+    connection.departure.toFormat("HH:mm");
+  e.querySelector(".start .station").innerHTML = connection.startCityName;
+  e.querySelector(".destination .time").innerHTML =
+    connection.arrival.toFormat("HH:mm");
+  e.querySelector(".destination .station").innerHTML = connection.endCityName;
+
+  return e;
 }
 
 const incrementalId = initIncrementalId();

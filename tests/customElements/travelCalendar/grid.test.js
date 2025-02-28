@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import * as util from "tests/_calendarTestUtils.js";
 import { DOM, initDOMFromFile } from "../../_domUtils.js";
+import { CALENDAR_GRID } from "../../_data.js";
 
 beforeEach(() => {
   initDOMFromFile("index.html");
@@ -16,7 +16,7 @@ test("date labels should be set correctly", async function () {
     {
       innerHTML: expect.stringMatching("20"),
       style: {
-        "grid-column": util.COLUMN_FIRST_DAY,
+        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY,
         "grid-row-start": 1,
         "grid-row-end": 2,
       },
@@ -24,7 +24,7 @@ test("date labels should be set correctly", async function () {
     {
       innerHTML: expect.stringMatching("21"),
       style: {
-        "grid-column": util.COLUMN_FIRST_DAY + 1,
+        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY + 1,
         "grid-row-start": 1,
         "grid-row-end": 2,
       },
@@ -32,7 +32,7 @@ test("date labels should be set correctly", async function () {
     {
       innerHTML: expect.stringMatching("22"),
       style: {
-        "grid-column": util.COLUMN_FIRST_DAY + 2,
+        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY + 2,
         "grid-row-start": 1,
         "grid-row-end": 2,
       },

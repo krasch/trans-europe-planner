@@ -3,13 +3,17 @@
  */
 
 import { jest } from "@jest/globals";
-import { createConnection, testCities, testStations } from "tests/_data.js";
+import {
+  createConnection,
+  testCities,
+  testStations,
+  CALENDAR_GRID,
+} from "tests/_data.js";
 import { initDOMFromFile, DOM, timeout } from "tests/_domUtils.js";
 import { main } from "/script/main.js";
 
 import { CalendarWrapper } from "/script/components/calendar.js";
 import { Datepicker } from "/script/components/datepicker.js";
-import * as util from "../_calendarTestUtils.js";
 
 beforeEach(() => {
   initDOMFromFile("index.html");
@@ -56,23 +60,23 @@ test("changing date in datepicker should change calendar events", async function
   expect(DOM.calendarEntryParts).toMatchDOMObject([
     {
       style: {
-        "grid-column": util.COLUMN_FIRST_DAY,
-        "grid-row-start": util.ROW_MIDNIGHT + 8 * 4,
-        "grid-row-end": util.ROW_MIDNIGHT + 9 * 4,
+        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY,
+        "grid-row-start": CALENDAR_GRID.ROW_MIDNIGHT + 8 * 4,
+        "grid-row-end": CALENDAR_GRID.ROW_MIDNIGHT + 9 * 4,
       },
     },
     {
       style: {
-        "grid-column": util.COLUMN_FIRST_DAY + 1,
-        "grid-row-start": util.ROW_MIDNIGHT + 8 * 4,
-        "grid-row-end": util.ROW_MIDNIGHT + 9 * 4,
+        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY + 1,
+        "grid-row-start": CALENDAR_GRID.ROW_MIDNIGHT + 8 * 4,
+        "grid-row-end": CALENDAR_GRID.ROW_MIDNIGHT + 9 * 4,
       },
     },
     {
       style: {
-        "grid-column": util.COLUMN_FIRST_DAY + 2,
-        "grid-row-start": util.ROW_MIDNIGHT + 8 * 4,
-        "grid-row-end": util.ROW_MIDNIGHT + 9 * 4,
+        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY + 2,
+        "grid-row-start": CALENDAR_GRID.ROW_MIDNIGHT + 8 * 4,
+        "grid-row-end": CALENDAR_GRID.ROW_MIDNIGHT + 9 * 4,
       },
     },
   ]);
