@@ -5,9 +5,11 @@ import { initCityNameToId } from "/script/util.js";
 export const DAY1 = "2024-10-15";
 export const DAY2 = "2024-10-16";
 export const DAY3 = "2024-10-17";
+export const DAY4 = "2024-10-18";
 export const DAY1T = (t) => `${DAY1}T${t}`;
 export const DAY2T = (t) => `${DAY2}T${t}`;
 export const DAY3T = (t) => `${DAY3}T${t}`;
+export const DAY4T = (t) => `${DAY4}T${t}`;
 
 export const CALENDAR_GRID = {
   ROW_MIDNIGHT: 2, // 1 for header, 1 because indexes start at 1
