@@ -32,22 +32,62 @@ main {
 
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 
   justify-content: center;
-  justify-items: center;
-  align-content: center;
   align-items: center;
+  gap: 1rem;
 }
 
 #logo img {
   height: 6rem;
+  padding: 2rem;
 }
 
-#footer {
+form,
+section {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+section,
+form {
+  background-color: var(--color-light);
+  color: var(--color-dark);
+  max-width: calc(min(95%, 30rem));
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-radius: 5px;
+}
+
+footer {
   grid-area: footer;
 }
 
 img {
   filter: var(--filter-white);
+}
+
+select {
+  height: 2rem;
+  font-size: 1rem;
+  background-color: var(--color-light);
+  color: var(--color-dark);
+  border-radius: 5px;
+}
+
+button {
+  height: 2rem;
+  font-size: 1rem;
+  background-color: green;
+  color: var(--color-light);
+  border-radius: 5px;
+  border: 0;
+}
+
+a {
+  color: var(--color-light);
 }

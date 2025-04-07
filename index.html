@@ -21,37 +21,27 @@
     <div id="logo" href="/">
         <img src="images/logo2.svg" alt="logo for the trans-europe-planner">
     </div>
-    <h2>
-        <span lang="de">Zugreisen einfach per drag&drop planen</span>
-        <span lang="en">The simpler way to plan your train trip across Europe</span>
-    </h2>
 
-    <!--div class="claim">
-        <h1>
-            <span lang="de">Willkommen beim Trans Europa Planer</span>
-            <span lang="en">Welcome to Trans Europe Planner</span>
-        </h1>
-        <h3>
-            <em lang="de">Einfacher mit dem Zug quer durch Europa</em>
-            <em lang="en">The simpler way to plan your train trip across Europe</em>
-        </h3>
-    </div>
+    <section>
+        <h2>
+            <span lang="de">Zugreisen einfach per drag&drop planen</span>
+            <span lang="en">The simpler way to plan your train trip across Europe</span>
+        </h2>
+        <video src="images/videos/intro.mp4" height="400px"></video>
+    </section>
 
-    <img class="marker" src="images/markers/marker_home.svg" alt="map marker depicting a house">
-    <div id="choose-home">
-        <h1>
-            <span lang="de">Wo soll die Reise starten?</span>
-            <span lang="en">Where is your trip starting?</span>
-        </h1>
-        <div>
-            <a href="?start=Berlin">Berlin</a>
-            <a href="?start=Hamburg">Hamburg</a>
-            <a href="?start=Köln">Köln</a>
-            <a href="?start=München">München</a>
-        </div>
-        <em lang="de">(Weitere Startpunkte bald verfügbar)</em>
-        <em lang="en">(Additional departure cities coming soon)</em>
-    </div-->
+    <form method="get" action="/planner.html">
+        <label for="select-start"><h2>Wo soll deine Reise starten?</h2></label>
+        <select name="start" id="select-start">
+            <option value="Berlin">Berlin</option>
+            <option value="Hamburg">Hamburg</option>
+            <option value="Köln">Köln</option>
+            <option value="München">München</option>
+            <option value="" disabled>Weitere Städte bald verfügbar</option>
+        </select>
+        <button type="submit">Trans Europa Planer ausprobieren</button>
+    </form>
+    <a href="/blog.html"><h3>Warum bauen wir den Trans Europa Planer?</h3></a>
 </main>
 
 <footer>
