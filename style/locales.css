@@ -1,4 +1,0 @@
-body.de *:lang(en),
-body.en *:lang(de) {
-  display: none;
-}

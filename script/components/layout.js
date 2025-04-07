@@ -39,11 +39,6 @@ export class Layout {
     }
   }
 
-  showModal() {
-    this.#elements.map.style.opacity = "30%";
-    this.#setVisible(this.#elements.modal);
-  }
-
   #showAllElements(animation = false) {
     this.#removeBorderRadius(this.#elements.logo);
 

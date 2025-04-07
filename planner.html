@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta name="description" content="Ohne Flugzeug quer durch Europa"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- external -->
+    <link rel="stylesheet" href="external/maplibre-gl@4.6.0/maplibre-gl.css"/>
+    <script src="external/maplibre-gl@4.6.0/maplibre-gl.js"></script>
+
+    <script defer data-domain="trans-europe-planner.eu" src="https://plausible.io/js/script.js"></script>
+
+    <!-- styles -->
+    <link rel="stylesheet" href="style/common.css">
+    <link rel="stylesheet" href="style/planner/layout.css">
+    <link rel="stylesheet" href="style/planner/style.css">
+    <link rel="stylesheet" href="style/planner/components/perlschnur.css">
+    <link rel="stylesheet" href="style/planner/components/config.css">
+    <link rel="stylesheet" href="style/planner/components/map/map.css">
+    <link rel="stylesheet" href="style/footer.css">
+
+    <!-- style scripts -->
+    <script src="style/planner/components/map/layers.js"></script> <!-- only contains css styles for map in js -->
+
+    <title>Trans Europe Planner</title>
+
+    <script type="module">
+        // this needs to get done before the HTML, otherwise TravelCalendar element is unknown
+        import {TravelCalendar} from "./script/customElements/travelCalendar/travelCalendar.js"
+
+        customElements.define("travel-calendar", TravelCalendar);
+    </script>
+
+</head>
+
+<body class="de">
+
+<!-- the connections to be displayed in the calendar -->
+<template id="template-calendar-connection">
+    <div class="calendar-entry"
+         data-departure-datetime=""
+         data-arrival-datetime=""
+         data-active=""
+         data-group=""
+         data-color="">
+
+        <div class="header">
+            <img class="connection-icon" alt="icon for train/ferry/etc" src=""/>
+            <span class="connection-number"></span>
+            <img src="images/icons/move.svg" alt="icon to move calendar event"/>
+        </div>
+        <div class="start">
+            <span class="time"></span>
+            <span class="station"></span>
+        </div>
+        <div class="destination">
+            <span class="time"></span>
+            <span class="station"></span>
+        </div>
+    </div>
+</template>
+
+<template id="template-perlschnur-connection">
+    <div class="card perlschnur-connection">
+        <h3>
+            <img class="connection-icon">
+            <span class="connection-number"></span>
+            <span class="connection-travel-time"></span>
+            <a class="connection-plus hidden">››</a>
+            <a class="connection-minus hidden">‹‹</a>
+        </h3>
+        <ul></ul>
+    </div>
+</template>
+
+<template id="template-perlschnur-stop">
+    <li class="perlschnur-stop">
+        <span></span> <!--otherwise circle is elipse-->
+        <span class="circle"></span>
+        <span class="time"></span>
+        <span class="date"></span>
+        <span class="station"></span>
+    </li>
+</template>
+
+<template id="template-perlschnur-collapse">
+    <li class="perlschnur-collapse">
+        <span lang="de">... <span class="count"></span> weitere Halte</span>
+        <span lang="en">... <span class="count"></span> additional stops</span>
+    </li>
+</template>
+
+
+<template id="template-perlschnur-transfer">
+    <div class="perlschnur-transfer">
+        <span lang="de">Umstiegszeit </span>
+        <span lang="en">Transfer time </span>
+        <span class="transfer-time"></span>
+    </div>
+</template>
+
+<template id="template-city-marker-home">
+    <div class="city-marker-home" data-city-id="to-be-filled"></div>
+</template>
+
+<template id="template-city-marker-destination">
+    <div class="city-marker-destination">
+        <div class="inner-circle"></div>
+        <div class="outer-circle"></div>
+    </div>
+</template>
+
+<template id="template-city-menu">
+    <div class="card city-menu" data-city-id="to-be-filled">
+        <h3></h3> <!-- title -->
+        <menu>
+            <li class="hidden">
+                <em class="num-transfers">
+                    <span lang="de" class="transfers0">Direkt erreichbar</span>
+                    <span lang="de" class="transfers1">Mit 1 Umstieg erreichbar</span>
+                    <span lang="de" class="transfersX">Mit <span class="count"></span> Umstiegen erreichbar</span>
+                    <span lang="en" class="transfers0">Directly reachable</span>
+                    <span lang="en" class="transfers1">Reachable with 1 transfer</span>
+                    <span lang="en" class="transfersX">Reachable with <span class="count"></span> transfers</span>
+                </em>
+            </li>
+            <li class="hidden">
+                <button value="showRoutes">
+                    <img src="images/icons/eye.svg" alt="icon of eye"/>
+                    <span lang="de">Reiserouten anzeigen</span>
+                    <span lang="en">Show routes</span>
+                </button>
+            </li>
+            <li class="hidden">
+                <button value="makeCut">
+                    <img src="images/icons/scissors.svg" alt="icon of a pair of scissors"/>
+                    <span lang="de">Aufenthalt einfügen</span>
+                    <span lang="en">Stay here for longer</span>
+                </button>
+            </li>
+        </menu>
+    </div>
+</template>
+
+<!--template id="template-edge-menu">
+    <div class="card edge-menu" data-journey-id="to-be-filled">
+        <h3><span class="from"></span> &nbsp;⮕&nbsp;<span class="to"></span></h3>
+        <menu class="edge-menu" data-journey-id="to-be-filled">
+            <li><span>Reisezeit: &nbsp;<strong class="travel-time"></strong></span></li>
+            <li>
+                <button value="showCalendar">
+                    <img src="images/icons/calendar.svg" alt="icon of a calendar"/>
+                    Reisekalender anzeigen
+                </button>
+            </li>
+        </menu>
+    </div>
+</template-->
+
+
+<nav class="hidden">
+    <a id="tab-map" data-content="#map" class="only-mobile active">
+        <span lang="de">Karte</span>
+        <span lang="en">Map</span>
+    </a>
+
+    <a id="tab-calendar" data-content="#calendar" class="tab-hidden">
+        <span class="only-mobile">
+            <span lang="de">Kalendar</span>
+            <span lang="en">Calendar</span>
+        </span>
+        <span class="only-desktop">
+            <span lang="de">🖉 Reise anpassen</span>
+            <span lang="en">🖉 Edit trip</span>
+        </span>
+    </a>
+    <a id="tab-summary" data-content="#summary" class="tab-hidden">
+        <span class="only-mobile">
+            <span lang="de">Übersicht</span>
+            <span lang="en">Summary</span>
+        </span>
+        <span class="only-desktop">
+            <span lang="de">🛈 Reiseübersicht</span>
+            <span lang="en">🛈 Trip summary</span>
+        </span>
+    </a>
+    <a id="tab-config" data-content="#config" class="only-mobile tab-hidden">
+        <img src="images/icons/settings.svg" alt="icon for a config menu">
+    </a>
+</nav>
+
+
+<div id="logo" class="hidden">
+    <a href="/"><img src="images/logo.svg" alt="logo for the trans-europe-planner"></a>
+</div>
+
+<div id="map"></div>
+
+<div id="pad" class="hidden"></div> <!-- utility class for desktop view -->
+
+<div id="journey" class="hidden">
+    <aside id="warning">
+        <span lang="de">Prototyp, Datenfehler sind wahrscheinlich. </span>
+        <span lang="en">Prototype, data issues are very likely. </span>
+
+        <a lang="de" onclick="alert(
+         'Datenabdeckung: Deutschland Fernverkehr vollständig plus ausgewählte Verbindungen im Ausland. ' +
+         'Letzter Datenimport im November 2024 plus hoffen dass die Verbindungen sich nicht' +
+         'allzusehr geändert haben. Grund für diese Schluderei: Entwicklung des User interface hatte ' +
+         'erstmal höhere Priorität')">Details
+        </a>
+
+        <a lang="en" onclick="alert(
+         'Data coverage: Full German long distance network plus some selected non-german connections. ' +
+         'Last data import in November 2024, hoping that time tables have not changed all that much. ' +
+         'Reason for this slipshod work: Development of user interface had higher priority so far.')">Details
+        </a>
+    </aside>
+
+
+    <div id="calendar">
+        <travel-calendar start-date="2025-01-01"></travel-calendar>
+    </div>
+
+    <div id="summary">
+        <div>
+            <h3>
+                <span lang="de">Von</span>
+                <span lang="en">From</span>
+                <span class="from"></span>
+                <span lang="de">nach</span>
+                <span lang="to"></span>
+            </h3>
+            <span class="via"></span>
+            <div>
+                <span lang="de">Gesamte Reisezeit: </span>
+                <span lang="en">Total travel time: </span>
+                <span class="total-time"></span>
+            </div>
+        </div>
+        <h3 lang="de">Reiseverlauf:</h3>
+        <h3 lang="en">Itinerary:</h3>
+        <div id="perlschnur"></div>
+    </div>
+
+    <div id="share-book">
+        <button lang="de" onclick="alert('coming soon');">🔗 Teilen</button>
+        <button lang="de" onclick="alert('coming soon');">🎫 Buchen</button>
+        <button lang="en" onclick="alert('coming soon');">🔗 Share</button>
+        <button lang="en" onclick="alert('coming soon');">🎫 Book</button>
+    </div>
+</div>
+
+
+<div id="config" class="hidden">
+    <h3>
+        <label for="date-picker-input">
+            <span lang="de">Abreisedatum:</span>
+            <span lang="en">Departure date:</span>
+        </label>
+    </h3>
+    <div>
+        <a id="decrease-date" title="One day earlier">◀</a>
+        <input type="date" id="date-picker-input" value="2025-02-01"/>
+        <a id="increase-date" title="One day later">▶</a>
+    </div>
+</div>
+
+<footer>
+    <span class="only-desktop">
+        Trans Europe Planner -
+        <em lang="de">Einfacher mit dem Zug quer durch Europa</em>
+        <em lang="en">The simpler way to plan your train trip across Europe</em>
+    </span>
+    <a href="https://github.com/krasch/trans-europe-planner">
+        <img src="images/logos/github.svg" alt="logo for github">
+    </a>
+    <a href="https://fosstodon.org/@trans_europe_planner">
+        <img src="images/logos/mastodon.svg" alt="logo for mastodon">
+    </a>
+    <a href="about-impressum.html#about">About</a>
+    <a href="about-impressum.html#impressum">
+        <span lang="de">Impressum</span>
+        <span lang="en">Imprint</span>
+    </a>
+    <a href="about-impressum.html#data-protection">
+        <span lang="de">Datenschutz</span>
+        <span lang="en">Data protection</span>
+    </a>
+</footer>
+
+<script type="module">
+    import {Layout} from "./script/components/layout.js";
+    import {Perlschnur} from "./script/components/perlschnur.js";
+    import {Datepicker} from "./script/components/datepicker.js";
+    import {MapWrapper} from "./script/components/map/map.js";
+    import {CalendarWrapper} from "./script/components/calendar.js";
+
+    import {main} from "./script/main.js";
+    import {initColors} from "./script/util.js";
+    import {initCityNameToId} from "./script/util.js";
+
+    import {CITIES} from "./data/cities.js";
+    import {STATIONS} from "./data/stations.js";
+    import {CONNECTIONS} from "./data/connections.js";
+    import {ROUTES} from "./data/routes.js";
+    import {enrichConnection} from "./script/data/database.js";
+
+    const isMobile = window.matchMedia("(max-width: 1000px)");
+
+    function getHome() {
+        const params = new URLSearchParams(window.location.search);
+        const home = params.get("start");
+
+        if (home && ["Berlin", "Hamburg", "Köln", "München", "Stockholm"].includes(home))
+            return home;
+
+        return null;
+    }
+
+    function initNavigation() {
+        const tabs = Array.from(document.querySelectorAll("nav > a"));
+        const contents = tabs.map(t => document.querySelector(t.dataset.content));
+
+        const warning = document.querySelector("#warning");
+        const shareBook = document.querySelector("#share-book");
+
+        const defaultMobile = document.querySelector("#tab-map"); // is one of nav > a
+        const defaultDesktop = document.querySelector("#tab-calendar"); // same
+
+        function setActive(tab) {
+            for (let i in tabs) {
+                if (tabs[i] === tab) {
+                    tabs[i].classList.add("active");
+                    contents[i].classList.add("active");
+                } else {
+                    tabs[i].classList.remove("active");
+                    contents[i].classList.remove("active");
+                }
+
+                // todo did not manage to do this via CSS selectors
+                if (tab.id === "tab-calendar" || tab.id === "tab-summary") {
+                    warning.classList.add("active");
+                    shareBook.classList.add("active");
+                } else {
+                    warning.classList.remove("active");
+                    shareBook.classList.remove("active");
+                }
+            }
+        }
+
+        document.querySelector("nav").addEventListener("click", e => {
+            setActive(e.target.closest("a"));
+        });
+
+        isMobile.matches ? setActive(defaultMobile) : setActive(defaultDesktop);
+
+        isMobile.addEventListener("change", e => {
+            const current = document.querySelector("nav > a.active");
+            if (!isMobile.matches && current.classList.contains("only-mobile"))
+                setActive(defaultDesktop);
+        });
+    }
+
+    onload = async (event) => {
+        const home = getHome();
+
+        // redirect to landing page to ask for user's home
+        if (!home) window.location.href = "/";
+
+        initNavigation();
+        initColors();
+        initCityNameToId(CITIES);
+
+        let defaultZoom = 4.3
+        if (isMobile.matches) defaultZoom = 3.3;
+
+        const views = {
+            map: new MapWrapper('map', [10.0821932, 49.786322], defaultZoom), // starts async loading map
+            calendar: new CalendarWrapper(document.querySelector("travel-calendar")),
+            perlschnur: new Perlschnur(document.querySelector("#summary")),
+            datepicker: new Datepicker(document.querySelector("#config")),
+            layout: new Layout(document.body, isMobile)
+        }
+
+        // add station and city info and turn each raw connection into 3 dated connections (3 calendar dates)
+        const connections = CONNECTIONS.flatMap((c) => enrichConnection(
+            c,
+            STATIONS,
+            CITIES,
+            views.datepicker.currentDate.toISODate())
+        );
+
+        const data = {
+            connections: connections,
+            cities: CITIES,
+            stations: STATIONS,
+            routes: ROUTES
+        }
+
+        try {
+            main(home, views, data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
+</script>
+
+</body>
+</html>

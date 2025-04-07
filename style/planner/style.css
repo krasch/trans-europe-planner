@@ -1,0 +1,126 @@
+/***********************************************
+ Style backgrounds
+************************************************/
+
+/* on desktop, need to put a background for all sidebar elements because are above map */
+@media only screen and (min-width: 1000px) {
+  nav,
+  #journey,
+  #pad {
+    background-color: var(--color-light);
+    opacity: 95%;
+  }
+}
+
+/***********************************************
+ Style navigation tabs
+************************************************/
+
+nav > * {
+  color: var(--color-light);
+  background-color: var(--color-dark);
+
+  text-decoration: none;
+  text-align: center;
+}
+
+nav > * > img {
+  filter: var(--filter-white);
+}
+
+/* on mobile, active tab element is inverted */
+@media only screen and (max-width: 1000px) {
+  nav > *.active {
+    color: var(--color-dark);
+    background-color: var(--color-light);
+  }
+
+  nav > *.active > img {
+    filter: var(--filter-dark);
+  }
+}
+
+/* on desktop, tabs look like folders */
+@media only screen and (min-width: 1000px) {
+  nav > * {
+    color: var(--color-dark);
+    background-color: var(--color-light);
+
+    border-color: var(--color-dark);
+    border-style: solid;
+    border-width: 1px 1px 1px 0; /* border at top/right/bottom */
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  nav > #tab-calendar {
+    /* todo assumes calendar is left-most tab */
+    border-left-width: 1px;
+  }
+
+  nav > *.active {
+    border-bottom-width: 0;
+  }
+}
+
+/***********************************************
+ Style logo
+************************************************/
+
+#logo {
+  background-color: var(--color-dark);
+}
+
+#logo img {
+  filter: var(--filter-white);
+}
+
+@media only screen and (min-width: 1000px) {
+  /* on desktop, logo should have a bottom right radius */
+  #logo {
+    border-bottom-right-radius: 1rem;
+  }
+}
+
+/*********************************************************
+Style journey container (containing calendar and summary)
+*********************************************************/
+
+/* additional border on desktop to help with tabbing-folder look */
+@media only screen and (min-width: 1000px) {
+  #journey {
+    border: 1px solid var(--color-dark);
+    border-top: 0; /* tabs */
+  }
+}
+
+/***********************************************
+Style calendar
+************************************************/
+
+travel-calendar {
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+}
+
+/***********************************************
+Summary
+************************************************/
+
+#summary {
+  color: var(--color-dark);
+}
+
+/***********************************************
+Style warning and booking buttons
+************************************************/
+
+#warning {
+  color: darkgray;
+  font-style: italic;
+}
+
+#warning a {
+  text-decoration: underline;
+  cursor: pointer;
+}

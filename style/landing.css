@@ -1,0 +1,53 @@
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-dark);
+  color: var(--color-light);
+}
+
+body {
+  /* this is a grid simply to conform with planner, which is laid out in a grid, too */
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows:
+    1fr /* main content */
+    2rem; /* footer */
+  grid-template-areas:
+    "main"
+    "footer";
+}
+
+main {
+  grid-area: main;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  justify-content: center;
+  justify-items: center;
+  align-content: center;
+  align-items: center;
+}
+
+#logo img {
+  height: 6rem;
+}
+
+#footer {
+  grid-area: footer;
+}
+
+img {
+  filter: var(--filter-white);
+}
