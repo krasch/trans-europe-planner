@@ -18,7 +18,7 @@ import { initDOMFromFile, timeout } from "tests/_domUtils.js";
 import { main } from "/script/main.js";
 
 beforeEach(() => {
-  initDOMFromFile("index.html");
+  initDOMFromFile("planner.html");
 });
 
 async function initWithMockViews(home, data) {

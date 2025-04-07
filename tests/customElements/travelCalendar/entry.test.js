@@ -13,7 +13,7 @@ import {
 } from "tests/_data.js";
 
 beforeEach(async () => {
-  initDOMFromFile("index.html");
+  initDOMFromFile("planner.html");
   await DOM.calendar.setAttribute("start-date", DAY1);
 });
 

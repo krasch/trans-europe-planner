@@ -6,7 +6,7 @@ import { DOM, initDOMFromFile } from "../../_domUtils.js";
 import { CALENDAR_GRID } from "../../_data.js";
 
 beforeEach(() => {
-  initDOMFromFile("index.html");
+  initDOMFromFile("planner.html");
 });
 
 test("date labels should be set correctly", async function () {

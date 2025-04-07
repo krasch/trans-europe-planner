@@ -15,7 +15,7 @@ import {
 import { CALENDAR_GRID, DAY1, DAY1T, DAY2T, DAY3T } from "tests/_data.js";
 
 beforeEach(() => {
-  initDOMFromFile("index.html");
+  initDOMFromFile("planner.html");
 });
 
 async function updateCalendar(calendar, conns) {
