@@ -7,8 +7,8 @@
   "scripts": {
     "start": "serve -p 8000",
     "test": "node --experimental-vm-modules node_modules/.bin/jest tests",
-    "check-pretty": "node node_modules/.bin/prettier data/ script/ style/components/map/layers.js --check",
-    "make-pretty": "node node_modules/.bin/prettier data/ script/ style/components/map/layers.js --write"
+    "check-pretty": "node node_modules/.bin/prettier data/ script/ style/planner/components/map/layers.js --check",
+    "make-pretty": "node node_modules/.bin/prettier data/ script/ style/planner/components/map/layers.js --write"
   },
   "devDependencies": {
     "@atlaskit/pragmatic-drag-and-drop-unit-testing": "^1.1.0",
