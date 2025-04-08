@@ -31,7 +31,7 @@ main {
 }
 
 footer {
-  grid-area: footer
+  grid-area: footer;
 }
 
 footer {
@@ -73,8 +73,8 @@ form {
   padding-bottom: 1rem;
 }
 
-
-select, button {
+select,
+button {
   height: 2rem;
   font-size: 1rem;
 }

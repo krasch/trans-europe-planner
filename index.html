@@ -27,7 +27,89 @@
             <span lang="de">Zugreisen einfach per drag&drop planen</span>
             <span lang="en">The simpler way to plan your train trip across Europe</span>
         </h2>
-        <video controls src="images/trans-europe-planner.mp4" height="400px"></video>
+        <img src="images/videos/short-calendar-video.gif" alt="Short GIF showing how to move trains around in the calendar view"/>
+        <!--video controls src="images/trans-europe-planner.mp4" height="400px"></video-->
+        <!--svg id="calendarAnimation" viewBox="0 0 116.091 185.208" xmlns="http://www.w3.org/2000/svg">
+            <g>
+                <image x="0" y="0" width="100%" height="100%" href="images/videos/calendarAnimation/grid.svg"/>
+                <image id="ice507" x="14.269" y="74.746" width="31.540" height="46.656"
+                       href="images/videos/calendarAnimation/ice507.svg"/>
+                <image id="rjx69" x="14.269" y="124.684" width="31.540" height="32.350"
+                       href="images/videos/calendarAnimation/rjx69.svg"/>
+                <image id="rjx69_preview" x="14.269" y="124.684" width="31.540" height="32.350"
+                       href="images/videos/calendarAnimation/rjx69_preview.svg"/>
+                <image id="cursor" x="73" y="142" width="3.097" height="3.685"
+                       href="images/videos/calendarAnimation/cursor.svg"/>
+            </g>
+
+            <style>
+
+                g {
+                    --k1: 1s; /* initial delay */
+                    --l1: 500ms; /* moving mouse to border of second calendar event */
+                    --l2: 100ms; /* show/hide elements */
+                    --k2: calc(var(--k1) + var(--l1));
+                    --k3: 1s; /* initial delay */
+                    --k4: 1s; /* initial delay */
+
+                }
+
+                #ice507 {
+                }
+
+                #rjx69 {
+                    animation: var(--l2) fadeout 3s forwards;
+                }
+
+                #rjx69_preview {
+                    opacity: 0;
+                    animation: var(--l2) fadein var(--k2) forwards, var(--l2) fadeout 3s forwards;
+                }
+
+                #cursor {
+                    offset-path: path("M 0 0 L -32 -14");
+                    offset-rotate: 0deg;
+                    animation: var(--l1) move var(--k1) forwards;
+                }
+
+
+                @keyframes fadein {
+                    from {
+                        opacity: 0;
+                    }
+                    to {
+                        opacity: 1;
+                    }
+                }
+
+                @keyframes fadeout {
+                    from {
+                        opacity: 1;
+                    }
+                    to {
+                        opacity: 0;
+                    }
+                }
+
+                @keyframes move {
+                    0% {
+                        offset-distance: 0;
+                    }
+                    100% {
+                        offset-distance: 100%;
+                    }
+                }
+
+                /*@keyframes flip {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+                    100% {
+                        transform: rotate(360deg);
+                    }
+                }*/
+            </style>
+        </svg-->
     </section>
 
     <form method="get" action="/planner.html">
