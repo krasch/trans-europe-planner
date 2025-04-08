@@ -10,10 +10,9 @@ body {
   padding: 0;
 }
 
-body {
-  background-color: var(--color-dark);
-  color: var(--color-light);
-}
+/***********************************************
+Overall layout
+************************************************/
 
 body {
   /* this is a grid simply to conform with planner, which is laid out in a grid, too */
@@ -29,18 +28,32 @@ body {
 
 main {
   grid-area: main;
+}
 
+footer {
+  grid-area: footer
+}
+
+footer {
+  justify-content: center !important;
+  padding-right: 0 !important;
+}
+
+/***********************************************
+Layout details
+************************************************/
+
+main {
   display: flex;
   flex-direction: column;
 
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 3rem;
 }
 
 #logo img {
   height: 6rem;
-  padding: 2rem;
 }
 
 form,
@@ -55,39 +68,66 @@ section {
 
 section,
 form {
-  background-color: var(--color-light);
-  color: var(--color-dark);
-  max-width: calc(min(95%, 30rem));
+  width: calc(min(95%, 30rem));
   padding-top: 1rem;
   padding-bottom: 1rem;
-  border-radius: 5px;
 }
 
-footer {
-  grid-area: footer;
-}
 
-img {
-  filter: var(--filter-white);
-}
-
-select {
+select, button {
   height: 2rem;
   font-size: 1rem;
-  background-color: var(--color-light);
-  color: var(--color-dark);
-  border-radius: 5px;
 }
 
 button {
-  height: 2rem;
-  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+/***********************************************
+Styling
+************************************************/
+
+body {
+  background-color: var(--color-dark);
+  color: var(--color-light);
+}
+
+#logo > img {
+  filter: var(--filter-white);
+}
+
+a {
+  color: var(--color-dark);
+}
+
+section,
+form {
+  background-color: var(--color-light);
+  color: var(--color-dark);
+  border-radius: 5px;
+}
+
+select {
+  background-color: var(--color-light);
+  color: var(--color-dark);
+  border-radius: 5px;
+}
+
+form em {
+  color: darkgray;
+}
+
+button {
+  cursor: pointer;
+
   background-color: green;
   color: var(--color-light);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+
   border-radius: 5px;
   border: 0;
 }
 
-a {
-  color: var(--color-light);
+button:hover {
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
