@@ -44,6 +44,9 @@ Layout details
 ************************************************/
 
 main {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+
   display: flex;
   flex-direction: column;
 
@@ -54,6 +57,10 @@ main {
 
 #logo img {
   height: 6rem;
+}
+
+#calendar-video {
+  max-height: 512px;
 }
 
 form,
