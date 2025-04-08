@@ -5,7 +5,12 @@
     <meta name="description" content="Ohne Flugzeug quer durch Europa"/>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <script defer data-domain="trans-europe-planner.eu" src="https://plausible.io/js/script.js"></script>
+
+    <!-- external -->
+    <link rel="stylesheet" href="external/maplibre-gl@4.6.0/maplibre-gl.css"/>
+    <script src="external/maplibre-gl@4.6.0/maplibre-gl.js"></script>
 
     <!-- styles -->
     <link rel="stylesheet" href="style/common.css">
@@ -17,18 +22,12 @@
 
 <body class="de">
 
+<div id="map"></div>
+
 <main id="landing">
     <div id="logo" href="/">
         <img src="images/logo2.svg" alt="logo for the trans-europe-planner">
     </div>
-
-    <section>
-        <h2>
-            <span lang="de">Zugreisen einfach per drag&drop planen</span>
-            <span lang="en">The simpler way to plan your train trip across Europe</span>
-        </h2>
-        <img id="calendar-video" src="images/videos/short-calendar-video.gif" alt="Short GIF showing how to move trains around in the calendar view"/>
-    </section>
 
     <form method="get" action="/planner.html">
         <h2><label for="select-start">Wo soll deine Zugreise starten?</label></h2>
@@ -39,9 +38,18 @@
             <option value="München">München</option>
             <option value="" disabled>Weitere Städte bald verfügbar</option>
         </select>
-        <button type="submit">Reise planen</button>
+        <button type="submit">Ausprobieren!</button>
         <em>Der Trans Europe Planner ist aktuell noch ein Prototyp</em>
     </form>
+
+    <section>
+        <h2>
+            <span lang="de">Zugreisen einfach per drag&drop planen</span>
+            <span lang="en">The simpler way to plan your train trip across Europe</span>
+        </h2>
+        <img id="calendar-video" src="images/videos/short-calendar-video.gif"
+             alt="Short GIF showing how to move trains around in the calendar view"/>
+    </section>
 
     <section>
         <h2>
@@ -50,7 +58,6 @@
         </h2>
         <a href="/blog.html"><h3>Warum bauen wir den Trans Europe Planner?</h3></a>
     </section>
-
 </main>
 
 <footer>
@@ -76,7 +83,14 @@
     </a>
 </footer>
 
-<script type="module"></script>
+<script type="module">
+    import {MapWrapper} from "./script/components/map/map.js";
+
+    onload = async (event) => {
+        new MapWrapper('map', [10.0821932, 49.786322], 4.3);
+    };
+
+</script>
 
 </body>
 </html>

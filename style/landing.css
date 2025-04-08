@@ -26,17 +26,17 @@ body {
     "footer";
 }
 
+#map {
+  grid-area: main;
+}
+
 main {
   grid-area: main;
+  z-index: 2;
 }
 
 footer {
   grid-area: footer;
-}
-
-footer {
-  justify-content: center !important;
-  padding-right: 0 !important;
 }
 
 /***********************************************
@@ -44,8 +44,7 @@ Layout details
 ************************************************/
 
 main {
-  margin-top: 3rem;
-  margin-bottom: 3rem;
+  height: 100%;
 
   display: flex;
   flex-direction: column;
@@ -95,8 +94,8 @@ Styling
 ************************************************/
 
 body {
-  background-color: var(--color-dark);
-  color: var(--color-light);
+  /*background-color: var(--color-dark);
+  color: var(--color-light);*/
 }
 
 #logo > img {
@@ -110,6 +109,7 @@ a {
 section,
 form {
   background-color: var(--color-light);
+  opacity: 0.95;
   color: var(--color-dark);
   border-radius: 5px;
 }
