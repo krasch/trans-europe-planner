@@ -44,6 +44,64 @@ Layout details
 ************************************************/
 
 main {
+  width: min(95%, 70rem);
+  align-self: center;
+  justify-self: center;
+
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  row-gap: 2rem;
+
+  /*justify-items: center;
+  justify-content: center;
+
+  /*align-items: center;
+  justify-content: space-around;*/
+}
+
+#s1 {
+  flex-basis: 100%;
+}
+
+#s1,
+#s2 {
+  width: min(95%, 30rem);
+  height: 10rem;
+}
+
+#s3 {
+  width: min(95%, 30rem);
+  height: 20rem;
+}
+
+#s2,
+#s3 {
+  flex-grow: 2;
+}
+
+#s1,
+#s2,
+#s3 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/*#s1 {
+  order: 1;
+}
+
+#s2 {
+  order: 3;
+}
+
+#s3 {
+  order: 2;
+}*/
+
+/*main {
   height: 100%;
 
   display: flex;
@@ -87,7 +145,7 @@ button {
 
 button {
   padding: 0.5rem;
-}
+}*/
 
 /***********************************************
 Styling
@@ -98,7 +156,19 @@ body {
   color: var(--color-light);*/
 }
 
-#logo > img {
+#s1 {
+  background-color: lightblue;
+}
+
+#s2 {
+  background-color: lightyellow;
+}
+
+#s3 {
+  background-color: lightsalmon;
+}
+
+/*#logo > img {
   filter: var(--filter-white);
 }
 
@@ -137,4 +207,4 @@ button {
 
 button:hover {
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
+}*/
