@@ -42,6 +42,7 @@ footer {
 /***********************************************
 Layout details
 ************************************************/
+/* todo overflow */
 
 main {
   width: min(95%, 70rem);
@@ -49,57 +50,29 @@ main {
   justify-self: center;
 
   display: flex;
-  flex-direction: row-reverse;
   flex-wrap: wrap;
-  row-gap: 2rem;
-
-  /*justify-items: center;
-  justify-content: center;
-
-  /*align-items: center;
-  justify-content: space-around;*/
+  /* CSS magic to get us a different ordering on desktop and mobile */
+  flex-direction: row-reverse;
+  gap: 2rem;
 }
 
-#s1 {
+/* by default (on mobile), each child gets its own row */
+main > * {
   flex-basis: 100%;
 }
 
-#s1,
-#s2 {
-  width: min(95%, 30rem);
-  height: 10rem;
-}
+/* on desktop, can have two children per row */
+@media only screen and (min-width: 1000px) {
+  main > * {
+    flex-basis: 40%;
+  }
 
-#s3 {
-  width: min(95%, 30rem);
-  height: 20rem;
+  /* add a pseudo-child to create a blank space in the first row */
+  main::before {
+    content: "";
+    flex-basis: 40%;
+  }
 }
-
-#s2,
-#s3 {
-  flex-grow: 2;
-}
-
-#s1,
-#s2,
-#s3 {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-/*#s1 {
-  order: 1;
-}
-
-#s2 {
-  order: 3;
-}
-
-#s3 {
-  order: 2;
-}*/
 
 /*main {
   height: 100%;
