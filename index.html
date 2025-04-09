@@ -25,9 +25,42 @@
 <div id="map"></div>
 
 <main id="landing">
-    <section id="s1"><h1>S1</h1></section>
-    <section id="s2"><h1>S2</h1></section>
-    <section id="s3"><h1>S3</h1></section>
+    <a id="logo" href="/">
+        <img src="images/logo2.svg" alt="logo for the trans-europe-planner">
+    </a>
+
+    <form method="get" action="/planner.html">
+        <h2><label for="select-start">Wo soll deine Zugreise starten?</label></h2>
+        <select name="start" id="select-start">
+            <option value="Berlin">Berlin</option>
+            <option value="Hamburg">Hamburg</option>
+            <option value="Köln">Köln</option>
+            <option value="München">München</option>
+            <option value="" disabled>Weitere Städte bald verfügbar</option>
+        </select>
+        <button type="submit">Ausprobieren!</button>
+        <em>Der Trans Europe Planner ist aktuell noch ein Prototyp. Details </em>
+    </form>
+
+    <section id="showcase">
+        <h2>Reiseplanung neu gedacht</h2>
+        <div id="video-container">
+            <h3>
+                <span lang="de">Reise per Drag&Drop anpassen</span>
+                <span lang="en">The simpler way to plan your train trip across Europe</span>
+            </h3>
+            <img id="calendar-video" src="images/videos/short-calendar-video.gif"
+                 alt="Short GIF showing how to move trains around in the calendar view"/>
+            <div id="pagination">
+                <img src="images/icons/dot_empty.svg" alt="just a circle"/>
+                <img src="images/icons/dot_empty.svg" alt="just a circle"/>
+                <img src="images/icons/dot_filled.svg" alt="just a circle"/>
+            </div>
+
+        </div>
+        <a href="blog.html"><em>Blog: Warum denken wir Reiseplanung neu?</em></a>
+    </section>
+
 
     <!--div id="logo" href="/">
         <img src="images/logo2.svg" alt="logo for the trans-europe-planner">
