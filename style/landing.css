@@ -145,6 +145,7 @@ a {
   align-items: center;
 }
 
+
 #slides {
   /* this makes the slides scrollable */
   width: 100%;
@@ -196,8 +197,21 @@ a {
 }
 
 #pagination > img {
+  cursor: pointer;
   height: 0.5rem;
   width: 0.5rem;
+
+}
+
+#pagination > span {
+  cursor: pointer;
+
+  font-size: 1.5rem;
+  font-weight: bold;
+
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 0.15rem; /* todo find out why not vertically centered */
 }
 
 /***********************************************
@@ -223,14 +237,14 @@ a {
  Layout the form
 ************************************************/
 
-select,
-button {
+form select,
+form button {
   height: 2rem;
   font-size: 1rem;
   max-width: 100%; /* otherwise select can become too wide on small displays */
 }
 
-button {
+form button {
   padding-left: 1rem;
   padding-right: 1rem;
 }
@@ -239,13 +253,13 @@ button {
  Style the form
 ************************************************/
 
-select {
+form select {
   background-color: var(--color-light);
   color: var(--color-dark);
   border-radius: 5px;
 }
 
-button {
+form button {
   cursor: pointer;
 
   background-color: #289929;
@@ -256,6 +270,6 @@ button {
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-button:hover {
+form button:hover {
   background-color: #2faf30;
 }
