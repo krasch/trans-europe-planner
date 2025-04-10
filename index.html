@@ -60,33 +60,6 @@
         </div>
         <a href="blog.html"><em>Blog: Warum denken wir Reiseplanung neu?</em></a>
     </section>
-
-
-    <!--div id="logo" href="/">
-        <img src="images/logo2.svg" alt="logo for the trans-europe-planner">
-    </div>
-
-    <form method="get" action="/planner.html">
-        <h2><label for="select-start">Wo soll deine Zugreise starten?</label></h2>
-        <select name="start" id="select-start">
-            <option value="Berlin">Berlin</option>
-            <option value="Hamburg">Hamburg</option>
-            <option value="Köln">Köln</option>
-            <option value="München">München</option>
-            <option value="" disabled>Weitere Städte bald verfügbar</option>
-        </select>
-        <button type="submit">Ausprobieren!</button>
-        <em>Der Trans Europe Planner ist aktuell noch ein Prototyp</em>
-    </form>
-
-    <section>
-        <h2>
-            <span lang="de">Zugreisen einfach per drag&drop planen</span>
-            <span lang="en">The simpler way to plan your train trip across Europe</span>
-        </h2>
-        <img id="calendar-video" src="images/videos/short-calendar-video.gif"
-             alt="Short GIF showing how to move trains around in the calendar view"/>
-    </section-->
 </main>
 
 <footer>
@@ -116,7 +89,7 @@
     import {MapWrapper} from "./script/components/map/map.js";
 
     onload = async (event) => {
-        new MapWrapper('map', [10.0821932, 49.786322], 4.3);
+        const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3);
     };
 
 </script>

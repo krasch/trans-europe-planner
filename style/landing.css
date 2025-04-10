@@ -37,21 +37,20 @@ main {
 
 footer {
   grid-area: footer;
+  overflow-x: hidden; /* todo move into footer */
 }
 
 /***********************************************
 Layout details
 ************************************************/
-/* todo overflow */
 
 main {
-  --item-width: min(95%, 400px);
+  --item-width: min(80%, 400px);
   --gap: 1rem;
 
-  width: min(95%, var(--item-width));
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  overflow-y: scroll;
+  width: var(--item-width);
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 
   align-self: center;
   justify-self: center;
@@ -60,6 +59,8 @@ main {
   flex-wrap: wrap;
   /* CSS magic to get us a different ordering on desktop and mobile */
   flex-direction: row-reverse;
+
+  justify-content: center;
 
   gap: var(--gap);
 }
@@ -96,8 +97,12 @@ main > * {
 }
 
 #logo img {
-  height: 6rem;
+  max-height: 6rem;
   padding: 1rem;
+}
+
+#showcase {
+  overflow-y: auto;
 }
 
 /***********************************************
@@ -135,6 +140,7 @@ select,
 button {
   height: 2rem;
   font-size: 1rem;
+  max-width: 100%; /* otherwise select can become too wide on small displays */
 }
 
 button {
