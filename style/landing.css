@@ -135,7 +135,7 @@ a {
  Layout the showcase (GIF preview etc)
 ************************************************/
 
-#showcase #carousel {
+#carousel {
   padding: 0.75rem;
 
   display: flex;
@@ -145,12 +145,45 @@ a {
   align-items: center;
 }
 
-#showcase .carousel-item img {
-  width: 100%; /* image should fit into the space it has */
+#slides {
+  /* this makes the slides scrollable */
+  width: 100%;
+  overflow-y: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth; /* when scrolling programmatically, don't just jump there but make it nice */
+
+  display: flex;
+  flex-direction: row;
 }
 
-#showcase .carousel-item:not(.active) {
-  display: none;
+/* hide scrollbar */
+#slides {
+  scrollbar-width: none; /* for Firefox and latest Chromium */
+}
+#slides::-webkit-scrollbar {
+  display: none; /* for Safari and legacy Chromium */
+}
+
+#slides > * {
+  /* otherwise borders etc will mess up the width */
+  box-sizing: border-box;
+
+  /* each item takes up all space -> will need scrolling (which is what we want) */
+  width: 100%;
+
+  /* items in carousel should not grow or shrink - otherwise flex will just place them 33% instead of 100% */
+  flex: none;
+
+  /* when scrolling always scroll from center to center of item */
+  scroll-snap-align: center;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+#slides img {
+  width: 100%; /* image should fit into the space it has */
 }
 
 #showcase #pagination {
@@ -162,7 +195,7 @@ a {
   justify-content: center;
 }
 
-#showcase .carousel-dot {
+#pagination > img {
   height: 0.5rem;
   width: 0.5rem;
 }
@@ -178,11 +211,11 @@ a {
   opacity: 95%;
 }
 
-#showcase .carousel-dot {
+#pagination > img {
   filter: var(--filter-light-gray);
 }
 
-#showcase .carousel-dot.active {
+#pagination > img.active {
   filter: var(--filter-dark);
 }
 

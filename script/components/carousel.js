@@ -2,33 +2,55 @@
 // https://medium.com/web-dev-survey-from-kyoto/vanilla-js-carousel-that-is-accessible-swipeable-infinite-scrolling-and-autoplaying-5de5f281ef13
 
 export class Carousel {
-  #container;
+  #slidesContainer;
+  #dotsContainer;
 
-  #items;
+  #slides;
   #dots;
 
-  constructor(container) {
-    this.#container = container;
+  #current;
 
-    this.#items = Array.from(document.querySelectorAll(".carousel-item"));
-    this.#dots = Array.from(document.querySelectorAll(".carousel-dot"));
+  constructor(container, initialPosition = 2) {
+    this.#slidesContainer = container.querySelector("#slides");
+    this.#slides = this.#slidesContainer.querySelectorAll("*");
 
-    const pagination = this.#container.querySelector("#pagination");
+    this.#dotsContainer = container.querySelector("#pagination");
+    this.#dots = this.#dotsContainer.querySelectorAll("img");
 
-    pagination.addEventListener("click", (e) => {
-      const closest = e.target.closest(".carousel-dot");
-      if (closest) this.#setActive(closest.dataset.item);
+    this.#scrollTo(initialPosition);
+
+    this.#slidesContainer.addEventListener("scroll", () => this.#updateState());
+    this.#dotsContainer.addEventListener("click", (e) => {
+      const closest = e.target.closest("img");
+      if (!closest) return;
+
+      const idx = Number(closest.dataset.slide) - 1;
+      this.#scrollTo(idx);
     });
   }
 
-  #setActive(item) {
-    // set all currently active things (items and dots) to inactive
-    for (let el of this.#container.querySelectorAll(".active"))
-      el.classList.remove("active");
+  get #slideWidth() {
+    return this.#slides[0].offsetWidth;
+  }
 
-    // set the new one to active
-    const idx = Number(item) - 1;
-    this.#items[idx].classList.add("active");
-    this.#dots[idx].classList.add("active");
+  get #scrollPosition() {
+    return this.#slidesContainer.scrollLeft;
+  }
+
+  #scrollTo(newIdx) {
+    this.#slidesContainer.scrollTo(this.#slideWidth * newIdx, 0);
+    this.#updateState(); // scrollTo does not trigger "scroll" event listener, need to call update specifically
+  }
+
+  #updateState() {
+    const newIdx = Math.round(this.#scrollPosition / this.#slideWidth);
+    if (this.#current === newIdx) return;
+
+    // update the dots
+    if (this.#current !== undefined)
+      this.#dots[this.#current].classList.remove("active");
+    this.#dots[newIdx].classList.add("active");
+
+    this.#current = newIdx;
   }
 }

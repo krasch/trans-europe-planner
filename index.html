@@ -45,39 +45,36 @@
     <section id="showcase">
         <h2>Reiseplanung neu gedacht</h2>
         <div id="carousel">
-            <div class="carousel-item">
-                <h3>
-                    <span lang="de">Reiseziel auf Karte auswählen</span>
-                    <span lang="en">Choose destination from the map</span>
-                </h3>
-                <img src="images/showcase/map.png"
-                     alt="Image showing a map with different cities"/>
+            <div id="slides">
+                <div id="slide1">
+                    <h3>
+                        <span lang="de">Reiseziel auf Karte auswählen</span>
+                        <span lang="en">Choose destination from the map</span>
+                    </h3>
+                    <img src="images/showcase/map.png" alt="Image showing a map with different cities"/>
+                </div>
+                <div id="slide2">
+                    <h3>
+                        <span lang="de">Übersichtliche Kalenderansicht</span>
+                        <span lang="en">Calendar view</span>
+                    </h3>
+                    <img src="images/showcase/calendar.png"
+                         alt="Image showing how a journey/train connections are displayed in a calendar view"/>
+                </div>
+                <div id="slide3">
+                    <h3>
+                        <span lang="de">Reise per Drag&Drop anpassen</span>
+                        <span lang="en">Modify trip via Drag&Drop</span>
+                    </h3>
+                    <img src="images/showcase/calendar-edit.gif"
+                         alt="Image showing how train connections can be moved around in calendar"/>
+                </div>
             </div>
-
-            <div class="carousel-item">
-                <h3>
-                    <span lang="de">Übersichtliche Kalenderansicht</span>
-                    <span lang="en">Calendar view</span>
-                </h3>
-                <img src="images/showcase/calendar.png"
-                     alt="Image showing how a journey/train connections are displayed in a calendar view"/>
-            </div>
-
-            <div class="carousel-item active">
-                <h3>
-                    <span lang="de">Reise per Drag&Drop anpassen</span>
-                    <span lang="en">Modify trip via Drag&Drop</span>
-                </h3>
-                <img src="images/showcase/calendar-edit.gif"
-                     alt="Image showing how train connections can be moved around in calendar"/>
-            </div>
-
             <div id="pagination">
-                <img class="carousel-dot" data-item="1" src="images/icons/dot.svg" alt="just a circle"/>
-                <img class="carousel-dot" data-item="2" src="images/icons/dot.svg" alt="just a circle"/>
-                <img class="carousel-dot active" data-item="3" src="images/icons/dot.svg" alt="just a circle"/>
+                <img data-slide="1" src="images/icons/dot.svg" alt="just a circle"/>
+                <img data-slide="2" src="images/icons/dot.svg" alt="just a circle"/>
+                <img data-slide="3" src="images/icons/dot.svg" alt="just a circle"/>
             </div>
-
         </div>
         <a href="blog.html"><em>Blog: Warum Reiseplanung neu denken?</em></a>
     </section>
