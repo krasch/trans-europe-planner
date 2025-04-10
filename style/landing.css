@@ -45,13 +45,13 @@ Layout details
 ************************************************/
 
 main {
-  --item-width: min(80%, 400px);
+  --item-width: min(95%, 400px);
   --gap: 1rem;
 
+  /* by default (=on mobile), we want only one item to fit per row */
   width: var(--item-width);
-  padding-top: 2rem;
-  padding-bottom: 2rem;
 
+  /* location of this container in its grid cell */
   align-self: center;
   justify-self: center;
 
@@ -60,18 +60,22 @@ main {
   /* CSS magic to get us a different ordering on desktop and mobile */
   flex-direction: row-reverse;
 
+  /* horizontal centering of the items */
   justify-content: center;
 
+  padding-top: 2rem;
+  padding-bottom: 2rem;
   gap: var(--gap);
 }
 
 main > * {
+  /* every flex item has the same width */
   box-sizing: border-box;
   width: var(--item-width);
 }
 
-/* on desktop, can have two children per row */
 @media only screen and (min-width: 1000px) {
+  /* on desktop, can have two items per row */
   main {
     width: calc(2 * var(--item-width) + var(--gap));
   }
@@ -84,9 +88,10 @@ main > * {
 }
 
 main > * {
-  height: fit-content;
+  height: fit-content; /* every flex item takes up the height it needs but not more */
   padding: 1rem;
 
+  /* every flex item is also a flexbox */
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -102,6 +107,8 @@ main > * {
 }
 
 #showcase {
+  /* this is the tallest item and it is always in the last row of the flexbox
+     -> if need scrollbar, let's do it here */
   overflow-y: auto;
 }
 
@@ -119,6 +126,10 @@ main > * {
   align-items: center;
 }
 
+#showcase #video-container img {
+  width: 100%; /* image should fit into the space it has */
+}
+
 #showcase #pagination {
   display: flex;
   flex-direction: row;
@@ -128,8 +139,9 @@ main > * {
   justify-content: center;
 }
 
-#showcase img {
-  width: 100%;
+#showcase #pagination img {
+  height: 0.5rem;
+  width: 0.5rem;
 }
 
 /***********************************************
@@ -175,9 +187,6 @@ a {
 }
 
 #showcase #pagination img {
-  height: 0.5rem;
-  width: 0.5rem;
-
   filter: var(--filter-dark);
 }
 
@@ -193,10 +202,9 @@ button {
   background-color: #289929;
   color: var(--color-light);
 
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-
-  border-radius: 5px;
   border: 0;
+  border-radius: 5px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 button:hover {
