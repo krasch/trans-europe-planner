@@ -55,38 +55,63 @@ export class MapWrapper {
       style: "style/planner/components/map/outdoors-modified.json",
       center: center,
       zoom: zoom,
+      // we always start out with making the map non-interactive
+      interactive: false,
     });
+
+    // visual indication that map is non-interactive
+    this.map._container.style.opacity = 0.6;
+
+    // turn on-load event into promise
+    const onLoadReceived = new Promise((fulfilled, rejected) => {
+      this.map.on("load", fulfilled(this.map));
+    });
+
+    // additional post-loading instructions
+    const configureMap = async function (map) {
+      // load additional assets
+      const image = await map.loadImage("/images/markers/circle.sdf.png");
+      map.addImage("circle", image.data, { sdf: true });
+
+      // configure map details
+      map.getCanvas().style.cursor = "default";
+    };
+
+    // after load event has been received, trigger any additional map config that needs to get done
+    // store promise in a variable that user of this class has to await before doing anything with the map
+    this.loaded = onLoadReceived.then(configureMap);
   }
 
-  async load(cities, legs) {
-    return new Promise((fulfilled, rejected) => {
-      this.map.on("load", async () => {
-        try {
-          const image = await this.map.loadImage(
-            "/images/markers/circle.sdf.png",
-          );
-          this.map.addImage("circle", image.data, { sdf: true });
+  enableMapInteraction() {
+    // reset opacity
+    this.map._container.style.opacity = 1.0;
 
-          this.init(cities, legs);
-          fulfilled();
-        } catch (error) {
-          rejected(error);
-        }
-      });
-    });
+    // show +/- zoom buttons
+    this.map.addControl(
+      new maplibregl.NavigationControl({
+        showCompass: false,
+        showZoom: true,
+      }),
+    );
+
+    this.map.boxZoom.enable();
+    this.map.scrollZoom.enable();
+    this.map.dragPan.enable();
+    this.map.keyboard.enable();
+    this.map.doubleClickZoom.enable();
+    this.map.touchZoomRotate.enable();
+
+    // disable map rotation
+    // this.map.dragRotate.enable(); // simply never enable this one
+    this.map.touchZoomRotate.disableRotation();
+    this.map.keyboard.disableRotation();
+  }
+
+  on(eventName, callback) {
+    this.#callbacks[eventName] = callback;
   }
 
   init(data) {
-    this.map.getCanvas().style.cursor = "default";
-    this.map.addControl(
-      new maplibregl.NavigationControl({ showCompass: false, showZoom: true }),
-    );
-
-    // disable map rotation
-    this.map.dragRotate.disable();
-    this.map.touchZoomRotate.disableRotation();
-    this.map.keyboard.disableRotation();
-
     const [cities, edges] = data;
 
     // add cities and legs sources
@@ -148,10 +173,6 @@ export class MapWrapper {
         this.#callbacks["showCalendar"](journeyId);
       }
     });
-  }
-
-  on(eventName, callback) {
-    this.#callbacks[eventName] = callback;
   }
 
   updateView(data) {
