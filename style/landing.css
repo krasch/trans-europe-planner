@@ -113,10 +113,29 @@ main > * {
 }
 
 /***********************************************
+ Overall styling
+************************************************/
+
+main > * {
+  background-color: var(--color-dark);
+  color: var(--color-light);
+  border-radius: 20px;
+  opacity: 95%;
+}
+
+#logo > img {
+  filter: var(--filter-white);
+}
+
+a {
+  color: var(--color-light);
+}
+
+/***********************************************
  Layout the showcase (GIF preview etc)
 ************************************************/
 
-#showcase #video-container {
+#showcase #carousel {
   padding: 0.75rem;
 
   display: flex;
@@ -126,8 +145,12 @@ main > * {
   align-items: center;
 }
 
-#showcase #video-container img {
+#showcase .carousel-item img {
   width: 100%; /* image should fit into the space it has */
+}
+
+#showcase .carousel-item:not(.active) {
+  display: none;
 }
 
 #showcase #pagination {
@@ -139,9 +162,28 @@ main > * {
   justify-content: center;
 }
 
-#showcase #pagination img {
+#showcase .carousel-dot {
   height: 0.5rem;
   width: 0.5rem;
+}
+
+/***********************************************
+ Style the showcase
+************************************************/
+
+#showcase #carousel {
+  background-color: var(--color-light);
+  color: var(--color-dark);
+  border-radius: 10px;
+  opacity: 95%;
+}
+
+#showcase .carousel-dot {
+  filter: var(--filter-light-gray);
+}
+
+#showcase .carousel-dot.active {
+  filter: var(--filter-dark);
 }
 
 /***********************************************
@@ -161,34 +203,8 @@ button {
 }
 
 /***********************************************
-Styling
+ Style the form
 ************************************************/
-
-main > * {
-  background-color: var(--color-dark);
-  color: var(--color-light);
-  border-radius: 20px;
-  opacity: 95%;
-}
-
-#logo > img {
-  filter: var(--filter-white);
-}
-
-a {
-  color: var(--color-light);
-}
-
-#showcase #video-container {
-  background-color: var(--color-light);
-  color: var(--color-dark);
-  border-radius: 10px;
-  opacity: 95%;
-}
-
-#showcase #pagination img {
-  filter: var(--filter-dark);
-}
 
 select {
   background-color: var(--color-light);

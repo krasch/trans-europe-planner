@@ -29,6 +29,9 @@ body {
   /* #286099 */
   --filter-dark: invert(32%) sepia(12%) saturate(3883%) hue-rotate(173deg)
     brightness(95%) contrast(86%);
+  /* #D3D3D3 */
+  --filter-light-gray: invert(97%) sepia(0%) saturate(0%) hue-rotate(191deg)
+    brightness(87%) contrast(95%);
 }
 
 button {

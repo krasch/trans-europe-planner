@@ -39,26 +39,47 @@
             <option value="" disabled>Weitere Städte bald verfügbar</option>
         </select>
         <button type="submit">Ausprobieren!</button>
-        <em>Der Trans Europe Planner ist zur Zeit noch ein Prototyp. <a href="">Mehr erfahren.</a> </em>
+        <em>Der Trans Europe Planner ist zurzeit noch ein Prototyp. <a href="">Mehr erfahren.</a> </em>
     </form>
 
     <section id="showcase">
         <h2>Reiseplanung neu gedacht</h2>
-        <div id="video-container">
-            <h3>
-                <span lang="de">Reise per Drag&Drop anpassen</span>
-                <span lang="en">The simpler way to plan your train trip across Europe</span>
-            </h3>
-            <img id="calendar-video" src="images/videos/short-calendar-video.gif"
-                 alt="Short GIF showing how to move trains around in the calendar view"/>
+        <div id="carousel">
+            <div class="carousel-item">
+                <h3>
+                    <span lang="de">Reiseziel auf Karte auswählen</span>
+                    <span lang="en">Choose destination from the map</span>
+                </h3>
+                <img src="images/showcase/map.png"
+                     alt="Image showing a map with different cities"/>
+            </div>
+
+            <div class="carousel-item">
+                <h3>
+                    <span lang="de">Übersichtliche Kalenderansicht</span>
+                    <span lang="en">Calendar view</span>
+                </h3>
+                <img src="images/showcase/calendar.png"
+                     alt="Image showing how a journey/train connections are displayed in a calendar view"/>
+            </div>
+
+            <div class="carousel-item active">
+                <h3>
+                    <span lang="de">Reise per Drag&Drop anpassen</span>
+                    <span lang="en">Modify trip via Drag&Drop</span>
+                </h3>
+                <img src="images/showcase/calendar-edit.gif"
+                     alt="Image showing how train connections can be moved around in calendar"/>
+            </div>
+
             <div id="pagination">
-                <img src="images/icons/dot_empty.svg" alt="just a circle"/>
-                <img src="images/icons/dot_empty.svg" alt="just a circle"/>
-                <img src="images/icons/dot_filled.svg" alt="just a circle"/>
+                <img class="carousel-dot" data-item="1" src="images/icons/dot.svg" alt="just a circle"/>
+                <img class="carousel-dot" data-item="2" src="images/icons/dot.svg" alt="just a circle"/>
+                <img class="carousel-dot active" data-item="3" src="images/icons/dot.svg" alt="just a circle"/>
             </div>
 
         </div>
-        <a href="blog.html"><em>Blog: Warum denken wir Reiseplanung neu?</em></a>
+        <a href="blog.html"><em>Blog: Warum Reiseplanung neu denken?</em></a>
     </section>
 </main>
 
@@ -87,9 +108,20 @@
 
 <script type="module">
     import {MapWrapper} from "./script/components/map/map.js";
+    import {Carousel} from "./script/components/carousel.js";
 
     onload = async (event) => {
         const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3);
+        const carousel = new Carousel(document.querySelector("#carousel"));
+
+        /*document.querySelector("#pagination").addEventListener("click", e => {
+            const closest = e.target.closest("img");
+            if (!closest) return;
+
+            document.querySelector(".carousel-item.active").classList.remove("active");
+            document.querySelector("#pagination .active").classList.remove("active");
+            document.querySelector(closest.dataset.item).classList.add("active");
+        });*/
     };
 
 </script>
