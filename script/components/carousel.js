@@ -53,6 +53,10 @@ export class Carousel {
   }
 
   #scrollTo(newIdx) {
+    // after right-most item comes left-most and vice-versa
+    if (newIdx < 0) newIdx = 2;
+    else if (newIdx > 2) newIdx = 0;
+
     this.#slidesContainer.scrollTo(this.#slideWidth * newIdx, 0);
     this.#updateState(); // scrollTo does not trigger "scroll" event listener, need to call update explicitly
   }
@@ -67,14 +71,6 @@ export class Carousel {
 
     // show new dot
     this.#dots[newIdx].classList.add("active");
-
-    // if at first slide, hide the "previous" arrow
-    if (newIdx === 0) this.#arrows[0].classList.remove("clickable");
-    else this.#arrows[0].classList.add("clickable");
-
-    // if at last slide, hide the "next" arrow
-    if (newIdx === 2) this.#arrows[1].classList.remove("clickable");
-    else this.#arrows[1].classList.add("clickable");
 
     this.#current = newIdx;
   }

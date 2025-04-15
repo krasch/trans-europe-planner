@@ -235,10 +235,6 @@ a {
     filter: var(--filter-light-gray);
 }
 
-#pagination > .arrow:not(.clickable) {
-    opacity: 30%;
-}
-
 /***********************************************
  Layout the form
 ************************************************/
