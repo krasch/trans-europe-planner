@@ -29,18 +29,8 @@
         <img src="images/logo2.svg" alt="logo for the trans-europe-planner">
     </a>
 
-    <form method="get" action="/planner.html">
-        <h2><label for="select-start">Wo soll deine Zugreise starten?</label></h2>
-        <select name="start" id="select-start">
-            <option value="Berlin">Berlin</option>
-            <option value="Hamburg">Hamburg</option>
-            <option value="Köln">Köln</option>
-            <option value="München">München</option>
-            <option value="" disabled>Weitere Städte bald verfügbar</option>
-        </select>
-        <button type="submit">Ausprobieren!</button>
-        <em>Der Trans Europe Planner ist zurzeit noch ein Prototyp. <a href="">Mehr erfahren.</a> </em>
-    </form>
+    <!-- utility div to make an empty cell on desktop -->
+    <div class="only-desktop">&nbsp;</div>
 
     <section id="showcase">
         <h2>Reiseplanung neu gedacht</h2>
@@ -80,6 +70,19 @@
         </div>
         <a href="blog.html"><em>Blog: Warum Reiseplanung neu denken?</em></a>
     </section>
+
+    <form method="get" action="/planner.html">
+        <h2><label for="select-start">Wo soll deine Zugreise starten?</label></h2>
+        <select name="start" id="select-start">
+            <option value="Berlin">Berlin</option>
+            <option value="Hamburg">Hamburg</option>
+            <option value="Köln">Köln</option>
+            <option value="München">München</option>
+            <option value="" disabled>Weitere Städte bald verfügbar</option>
+        </select>
+        <button type="submit">Ausprobieren!</button>
+        <em>Der Trans Europe Planner ist zurzeit noch ein Prototyp. <a href="">Mehr erfahren.</a> </em>
+    </form>
 </main>
 
 <footer>

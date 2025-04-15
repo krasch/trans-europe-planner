@@ -56,9 +56,8 @@ main {
     justify-self: center;
 
     display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
-    /* CSS magic to get us a different ordering on desktop and mobile */
-    flex-direction: row-reverse;
 
     /* horizontal centering of the items */
     justify-content: center;
@@ -78,12 +77,12 @@ main > * {
     /* on desktop, can have two items per row */
     main {
         width: calc(2 * var(--item-width) + var(--gap));
+        justify-content: start;
     }
 
-    /* add a pseudo-child to create a blank space in the first row */
-    main::before {
-        content: "";
-        width: var(--item-width);
+    /* on desktop, there is a utility div to keep an empty space but we want it to not be visible */
+    main > .only-desktop {
+        visibility: collapse;
     }
 }
 
@@ -107,8 +106,7 @@ main > * {
 }
 
 #showcase {
-    /* this is the tallest item and it is always in the last row of the flexbox
-       -> if need scrollbar, let's do it here */
+    /* this is the tallest item -> if need scrollbar, let's do it here */
     overflow-y: auto;
 }
 
