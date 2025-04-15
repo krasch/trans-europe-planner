@@ -74,6 +74,11 @@ dialog {
     gap: var(--gap);
 }
 
+dialog:not([open]){
+  display:none;
+}
+
+
 dialog > * {
     /* every flex item has the same width */
     box-sizing: border-box;
@@ -120,6 +125,10 @@ dialog > * {
 /***********************************************
  Overall styling
 ************************************************/
+
+dialog {
+    background: transparent;
+}
 
 dialog > * {
     background-color: var(--color-dark);

@@ -24,7 +24,7 @@
 
 <div id="map"></div>
 
-<dialog>
+<dialog open>
     <a id="logo" href="/">
         <img src="images/logo2.svg" alt="logo for the trans-europe-planner">
     </a>
@@ -71,7 +71,7 @@
         <a href="blog.html"><em>Blog: Warum Reiseplanung neu denken?</em></a>
     </section>
 
-    <form method="get" action="/planner.html">
+    <form method="dialog">
         <h2><label for="select-start">Wo soll deine Zugreise starten?</label></h2>
         <select name="start" id="select-start">
             <option value="Berlin">Berlin</option>
@@ -114,7 +114,12 @@
 
     onload = async (event) => {
         const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3);
-        const carousel = new Carousel(document.querySelector("#carousel"));
+        /*const carousel = new Carousel(document.querySelector("#carousel"));*/
+
+        document.querySelector("dialog").addEventListener("close", e => {
+            const select = e.target.querySelector("form select");
+            console.log(select.value);
+        })
     };
 
 </script>
