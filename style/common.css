@@ -4,7 +4,7 @@
 
 body.de *:lang(en),
 body.en *:lang(de) {
-  display: none;
+    display: none;
 }
 
 /***********************************************
@@ -12,35 +12,35 @@ body.en *:lang(de) {
 ************************************************/
 
 body {
-  font-family: helvetica, arial, sans-serif;
+    font-family: helvetica, arial, sans-serif;
 
-  /* colors for connections */
-  --color1: 27, 158, 119;
-  --color2: 217, 95, 2;
-  --color3: 117, 112, 179;
-  --color4: 231, 41, 138;
-  --color5: 102, 166, 30;
+    /* colors for connections */
+    --color1: 27, 158, 119;
+    --color2: 217, 95, 2;
+    --color3: 117, 112, 179;
+    --color4: 231, 41, 138;
+    --color5: 102, 166, 30;
 
-  --color-light: white;
-  --color-dark: #286099;
+    --color-light: white;
+    --color-dark: #286099;
 
-  /* https://codepen.io/sosuke/pen/Pjoqqp */
-  --filter-white: invert(100%);
-  /* #286099 */
-  --filter-dark: invert(32%) sepia(12%) saturate(3883%) hue-rotate(173deg)
-    brightness(95%) contrast(86%);
-  /* #D3D3D3 */
-  --filter-light-gray: invert(97%) sepia(0%) saturate(0%) hue-rotate(191deg)
-    brightness(87%) contrast(95%);
+    /* https://codepen.io/sosuke/pen/Pjoqqp */
+    --filter-white: invert(100%);
+    /* #286099 */
+    --filter-dark: invert(32%) sepia(12%) saturate(3883%) hue-rotate(173deg) brightness(95%) contrast(86%);
+    /* #D3D3D3 */
+    --filter-light-gray: invert(97%) sepia(0%) saturate(0%) hue-rotate(191deg) brightness(87%) contrast(95%);
+    /* #A9A9A9 */
+    --filter-dark-gray: invert(67%) sepia(32%) saturate(0%) hue-rotate(141deg) brightness(96%) contrast(89%);
 }
 
 button {
-  font-family: helvetica, arial, sans-serif;
+    font-family: helvetica, arial, sans-serif;
 }
 
 input {
-  font-size: 1rem;
-  font-family: helvetica, arial, sans-serif;
+    font-size: 1rem;
+    font-family: helvetica, arial, sans-serif;
 }
 
 /***********************************************
@@ -50,24 +50,24 @@ input {
 h1,
 h2,
 h3 {
-  margin: 0;
-  font-weight: normal;
+    margin: 0;
+    font-weight: normal;
 }
 
 .hidden {
-  visibility: hidden;
+    visibility: hidden;
 }
 
 /* some elements should only be visible on mobile layout */
 @media only screen and (min-width: 1000px) {
-  .only-mobile {
-    display: none;
-  }
+    .only-mobile {
+        display: none;
+    }
 }
 
 /* and some only on desktop layout */
 @media only screen and (max-width: 1000px) {
-  .only-desktop {
-    display: none;
-  }
+    .only-desktop {
+        display: none;
+    }
 }
