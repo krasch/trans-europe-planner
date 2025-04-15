@@ -10,6 +10,12 @@ body {
     padding: 0;
 }
 
+dialog {
+    /* dialog has a lot of annoying defaults, let's reset them */
+    all: inherit;
+}
+
+
 /***********************************************
 Overall layout
 ************************************************/
@@ -30,7 +36,7 @@ body {
     grid-area: main;
 }
 
-main {
+dialog {
     grid-area: main;
     z-index: 2;
 }
@@ -44,12 +50,13 @@ footer {
 Layout details
 ************************************************/
 
-main {
+dialog {
     --item-width: min(95%, 400px);
     --gap: 1rem;
 
     /* by default (=on mobile), we want only one item to fit per row */
     width: var(--item-width);
+    height: fit-content;
 
     /* location of this container in its grid cell */
     align-self: center;
@@ -67,7 +74,7 @@ main {
     gap: var(--gap);
 }
 
-main > * {
+dialog > * {
     /* every flex item has the same width */
     box-sizing: border-box;
     width: var(--item-width);
@@ -75,18 +82,18 @@ main > * {
 
 @media only screen and (min-width: 1000px) {
     /* on desktop, can have two items per row */
-    main {
+    dialog {
         width: calc(2 * var(--item-width) + var(--gap));
         justify-content: start;
     }
 
     /* on desktop, there is a utility div to keep an empty space but we want it to not be visible */
-    main > .only-desktop {
+    dialog > .only-desktop {
         visibility: collapse;
     }
 }
 
-main > * {
+dialog > * {
     height: fit-content; /* every flex item takes up the height it needs but not more */
     padding: 1rem;
 
@@ -114,7 +121,7 @@ main > * {
  Overall styling
 ************************************************/
 
-main > * {
+dialog > * {
     background-color: var(--color-dark);
     color: var(--color-light);
     border-radius: 20px;
