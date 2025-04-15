@@ -57,10 +57,17 @@ export class MapWrapper {
       zoom: zoom,
       // we always start out with making the map non-interactive
       interactive: false,
+      // will set this manually later
+      attributionControl: false,
     });
 
     // visual indication that map is non-interactive
-    this.map._container.style.opacity = 0.6;
+    this.map._container.style.opacity = 0.2;
+
+    // add attribution control (only the little (i) info button)
+    this.attribution = new maplibregl.AttributionControl();
+    this.map.addControl(this.attribution);
+    this.attribution._toggleAttribution();
 
     // turn on-load event into promise
     const onLoadReceived = new Promise((fulfilled, rejected) => {
@@ -85,6 +92,9 @@ export class MapWrapper {
   enableMapInteraction() {
     // reset opacity
     this.map._container.style.opacity = 1.0;
+
+    // show full attribution
+    this.attribution._toggleAttribution();
 
     // show +/- zoom buttons
     this.map.addControl(
