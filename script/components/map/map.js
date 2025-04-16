@@ -40,6 +40,8 @@ function asGeojsonFeatureCollection(features) {
 }
 
 export class MapWrapper {
+  #attribution;
+
   #callbacks = {
     selectJourney: () => {},
     showCityRoutes: () => {},
@@ -64,10 +66,14 @@ export class MapWrapper {
     // visual indication that map is non-interactive
     this.map._container.style.opacity = 0.2;
 
-    // add attribution control (only the little (i) info button)
-    this.attribution = new maplibregl.AttributionControl();
-    this.map.addControl(this.attribution);
-    this.attribution._toggleAttribution();
+    // add attribution control
+    this.#attribution = new maplibregl.AttributionControl();
+    this.map.addControl(this.#attribution);
+
+    // in non-interactive map, only show the little (i), not the full attribution
+    // (because on mobile it is in the way and very little is visible of the map anyway
+    // todo do this only on mobile?
+    this.#attribution._container.classList.remove("maplibregl-compact-show");
 
     // turn on-load event into promise
     const onLoadReceived = new Promise((fulfilled, rejected) => {
@@ -94,7 +100,7 @@ export class MapWrapper {
     this.map._container.style.opacity = 1.0;
 
     // show full attribution
-    this.attribution._toggleAttribution();
+    this.#attribution._container.classList.add("maplibregl-compact-show");
 
     // show +/- zoom buttons
     this.map.addControl(
