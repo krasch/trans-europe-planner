@@ -15,7 +15,7 @@ class Carousel {
     this.#slidesContainer = container.querySelector("#slides");
     this.#slides = this.#slidesContainer.querySelectorAll(".slide");
 
-    this.#controlContainer = container.querySelector("#pagination");
+    this.#controlContainer = container.querySelector("#slide-controls");
     this.#dots = this.#controlContainer.querySelectorAll(".dot");
     this.#arrows = this.#controlContainer.querySelectorAll(".arrow");
 
@@ -78,7 +78,7 @@ class Carousel {
 
 export async function showLandingPage(modal) {
   const select = modal.querySelector("form select");
-  const carousel = modal.querySelector("#carousel");
+  const carousel = modal.querySelector("#slide-carousel");
 
   const homeSelectedPromise = new Promise((resolve) =>
     modal.addEventListener("close", (e) => {

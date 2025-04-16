@@ -80,7 +80,7 @@ dialog:not([open]){
 
 
 dialog > * {
-    /* every flex item has the same width */
+    /* every item/box on landing page has the same width */
     box-sizing: border-box;
     width: var(--item-width);
 }
@@ -99,10 +99,11 @@ dialog > * {
 }
 
 dialog > * {
-    height: fit-content; /* every flex item takes up the height it needs but not more */
+    /* every item/box takes up the height it needs but not more */
+    height: fit-content;
     padding: 1rem;
 
-    /* every flex item is also a flexbox */
+    /* every item/box is also a flexbox */
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -112,12 +113,12 @@ dialog > * {
     text-align: center;
 }
 
-#logo img {
+dialog .logo > img {
     max-height: 6rem;
     padding: 1rem;
 }
 
-#showcase {
+dialog #showcase {
     /* this is the tallest item -> if need scrollbar, let's do it here */
     overflow-y: auto;
 }
@@ -137,19 +138,19 @@ dialog > * {
     opacity: 95%;
 }
 
-#logo > img {
+dialog .logo > img {
     filter: var(--filter-white);
 }
 
-a {
+dialog a {
     color: var(--color-light);
 }
 
 /***********************************************
- Layout the showcase (GIF preview etc)
+ Layout the slide carousel
 ************************************************/
 
-#carousel {
+dialog #slide-carousel {
     padding: 0.75rem;
 
     display: flex;
@@ -160,7 +161,7 @@ a {
 }
 
 
-#slides {
+dialog #slides {
     /* this makes the slides scrollable */
     width: 100%;
     overflow-y: auto;
@@ -171,23 +172,24 @@ a {
     flex-direction: row;
 }
 
-/* hide scrollbar */
-#slides {
-    scrollbar-width: none; /* for Firefox and latest Chromium */
+/* hide scrollbar for Firefox and latest Chromium */
+dialog #slides {
+    scrollbar-width: none;
 }
 
-#slides::-webkit-scrollbar {
-    display: none; /* for Safari and legacy Chromium */
+/* hide scrollbar for Safari and legacy Chromium*/
+dialog #slides::-webkit-scrollbar {
+    display: none;
 }
 
-#slides > .slide {
+dialog .slide {
     /* otherwise borders etc will mess up the width */
     box-sizing: border-box;
 
     /* each item takes up all space -> will need scrolling (which is what we want) */
     width: 100%;
 
-    /* items in carousel should not grow or shrink - otherwise flex will just place them 33% instead of 100% */
+    /* items in carousel should not grow or shrink - otherwise flex will just make them 33% instead of 100% */
     flex: none;
 
     /* when scrolling always scroll from center to center of item */
@@ -198,11 +200,11 @@ a {
     gap: 0.75rem;
 }
 
-#slides img {
+dialog .slide img {
     width: 100%; /* image should fit into the space it has */
 }
 
-#showcase #pagination {
+dialog #slide-controls {
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
@@ -211,43 +213,40 @@ a {
     justify-content: center;
 }
 
-#pagination > .dot {
+dialog #slide-controls .dot {
     cursor: pointer;
     height: 0.5rem;
     width: 0.5rem;
 }
 
-#pagination > .arrow {
+dialog #slide-controls .arrow {
+    cursor: pointer;
     height: 0.75rem;
     width: 0.75rem;
     padding-left: 1rem;
     padding-right: 1rem;
 }
 
-#pagination > .arrow {
-    cursor: pointer;
-}
-
 /***********************************************
- Style the showcase
+ Style the slide carousel
 ************************************************/
 
-#showcase #carousel {
+dialog #slide-carousel {
     background-color: var(--color-light);
     color: var(--color-dark);
     border-radius: 10px;
     opacity: 95%;
 }
 
-#pagination > .dot {
+dialog #slide-controls .dot {
     filter: var(--filter-light-gray);
 }
 
-#pagination > .dot.active {
+dialog #slide-controls .dot.active {
     filter: var(--filter-dark);
 }
 
-#pagination > .arrow {
+dialog #slide-controls .arrow {
     filter: var(--filter-light-gray);
 }
 
@@ -255,14 +254,14 @@ a {
  Layout the form
 ************************************************/
 
-form select,
-form button {
+dialog form select,
+dialog form button {
     height: 2rem;
     font-size: 1rem;
     max-width: 100%; /* otherwise select can become too wide on small displays */
 }
 
-form button {
+dialog form button {
     padding-left: 1rem;
     padding-right: 1rem;
 }
@@ -271,13 +270,13 @@ form button {
  Style the form
 ************************************************/
 
-form select {
+dialog form select {
     background-color: var(--color-light);
     color: var(--color-dark);
     border-radius: 5px;
 }
 
-form button {
+dialog form button {
     cursor: pointer;
 
     background-color: #289929;
@@ -288,6 +287,6 @@ form button {
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-form button:hover {
+dialog form button:hover {
     background-color: #2faf30;
 }
