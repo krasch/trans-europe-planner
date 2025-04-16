@@ -24,7 +24,7 @@
 
 <div id="map"></div>
 
-<dialog open>
+<dialog>
     <a id="logo" href="/">
         <img src="images/logo2.svg" alt="logo for the trans-europe-planner">
     </a>
@@ -36,14 +36,14 @@
         <h2>Reiseplanung neu gedacht</h2>
         <div id="carousel">
             <div id="slides">
-                <div id="slide1">
+                <div class="slide">
                     <h3>
                         <span lang="de">Reiseziel auf Karte auswählen</span>
                         <span lang="en">Choose destination from the map</span>
                     </h3>
                     <img src="images/showcase/map.png" alt="Image showing a map with different cities"/>
                 </div>
-                <div id="slide2">
+                <div class="slide">
                     <h3>
                         <span lang="de">Übersichtliche Kalenderansicht</span>
                         <span lang="en">Calendar view</span>
@@ -51,7 +51,7 @@
                     <img src="images/showcase/calendar.png"
                          alt="Image showing how a journey/train connections are displayed in a calendar view"/>
                 </div>
-                <div id="slide3">
+                <div class="slide">
                     <h3>
                         <span lang="de">Reise per Drag&Drop anpassen</span>
                         <span lang="en">Modify trip via Drag&Drop</span>
@@ -109,17 +109,10 @@
 </footer>
 
 <script type="module">
-    import {MapWrapper} from "./script/components/map/map.js";
-    import {Carousel} from "./script/components/carousel.js";
+    import {init} from "./script/init.js";
 
     onload = async (event) => {
-        const map = new MapWrapper('map', [10.0821932, 49.786322], 4.3);
-        /*const carousel = new Carousel(document.querySelector("#carousel"));*/
-
-        document.querySelector("dialog").addEventListener("close", e => {
-            const select = e.target.querySelector("form select");
-            console.log(select.value);
-        })
+        await init();
     };
 
 </script>

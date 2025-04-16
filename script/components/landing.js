@@ -1,7 +1,7 @@
 // todo read this article to add accessibility:
 // https://medium.com/web-dev-survey-from-kyoto/vanilla-js-carousel-that-is-accessible-swipeable-infinite-scrolling-and-autoplaying-5de5f281ef13
 
-export class Carousel {
+class Carousel {
   #slidesContainer;
   #controlContainer;
 
@@ -13,13 +13,13 @@ export class Carousel {
 
   constructor(container, initialPosition = 2) {
     this.#slidesContainer = container.querySelector("#slides");
-    this.#slides = this.#slidesContainer.querySelectorAll("*");
+    this.#slides = this.#slidesContainer.querySelectorAll(".slide");
 
     this.#controlContainer = container.querySelector("#pagination");
     this.#dots = this.#controlContainer.querySelectorAll(".dot");
     this.#arrows = this.#controlContainer.querySelectorAll(".arrow");
 
-    // hop quickly to initial position todo smooth on
+    // hop quickly to initial position
     this.#scrollTo(initialPosition);
 
     // when user uses the scrollbar (or swipes), we want to update the dots and arrows
@@ -74,4 +74,25 @@ export class Carousel {
 
     this.#current = newIdx;
   }
+}
+
+export async function showLandingPage(modal) {
+  const select = modal.querySelector("form select");
+  const carousel = modal.querySelector("#carousel");
+
+  const homeSelectedPromise = new Promise((resolve) =>
+    modal.addEventListener("close", (e) => {
+      resolve(select.value);
+    }),
+  );
+
+  // modal will be automagically closed when user clicks the submit button
+  modal.show();
+
+  // init carousel interactivity
+  // must happen after modal.show, otherwise slide.width is not yet defined and the calculations fail
+  // todo perhaps wait for a load event or something like that in carousel constructor?
+  new Carousel(carousel);
+
+  return homeSelectedPromise;
 }

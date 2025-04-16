@@ -180,7 +180,7 @@ a {
     display: none; /* for Safari and legacy Chromium */
 }
 
-#slides > * {
+#slides > .slide {
     /* otherwise borders etc will mess up the width */
     box-sizing: border-box;
 
