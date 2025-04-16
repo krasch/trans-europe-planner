@@ -41,6 +41,7 @@ function asGeojsonFeatureCollection(features) {
 
 export class MapWrapper {
   #attribution;
+  #map;
 
   #callbacks = {
     selectJourney: () => {},
@@ -52,7 +53,7 @@ export class MapWrapper {
   #mapping;
 
   constructor(containerId, center, zoom) {
-    this.map = new maplibregl.Map({
+    this.#map = new maplibregl.Map({
       container: containerId,
       style: "style/planner/components/map/outdoors-modified.json",
       center: center,
@@ -64,11 +65,11 @@ export class MapWrapper {
     });
 
     // visual indication that map is non-interactive
-    this.map._container.style.opacity = 0.2;
+    this.#map._container.style.opacity = 0.2;
 
     // add attribution control
     this.#attribution = new maplibregl.AttributionControl();
-    this.map.addControl(this.#attribution);
+    this.#map.addControl(this.#attribution);
 
     // in non-interactive map, only show the little (i), not the full attribution
     // (because on mobile it is in the way and very little is visible of the map anyway
@@ -77,7 +78,7 @@ export class MapWrapper {
 
     // turn on-load event into promise
     const onLoadReceived = new Promise((fulfilled, rejected) => {
-      this.map.on("load", fulfilled(this.map));
+      this.#map.on("load", fulfilled(this.#map));
     });
 
     // additional post-loading instructions
@@ -97,30 +98,30 @@ export class MapWrapper {
 
   enableMapInteraction() {
     // reset opacity
-    this.map._container.style.opacity = 1.0;
+    this.#map._container.style.opacity = 1.0;
 
     // show full attribution
     this.#attribution._container.classList.add("maplibregl-compact-show");
 
     // show +/- zoom buttons
-    this.map.addControl(
+    this.#map.addControl(
       new maplibregl.NavigationControl({
         showCompass: false,
         showZoom: true,
       }),
     );
 
-    this.map.boxZoom.enable();
-    this.map.scrollZoom.enable();
-    this.map.dragPan.enable();
-    this.map.keyboard.enable();
-    this.map.doubleClickZoom.enable();
-    this.map.touchZoomRotate.enable();
+    this.#map.boxZoom.enable();
+    this.#map.scrollZoom.enable();
+    this.#map.dragPan.enable();
+    this.#map.keyboard.enable();
+    this.#map.doubleClickZoom.enable();
+    this.#map.touchZoomRotate.enable();
 
     // disable map rotation
-    // this.map.dragRotate.enable(); // simply never enable this one
-    this.map.touchZoomRotate.disableRotation();
-    this.map.keyboard.disableRotation();
+    // this.#map.dragRotate.enable(); // simply never enable this one
+    this.#map.touchZoomRotate.disableRotation();
+    this.#map.keyboard.disableRotation();
   }
 
   on(eventName, callback) {
@@ -131,14 +132,14 @@ export class MapWrapper {
     const [cities, edges] = data;
 
     // add cities and legs sources
-    this.map.addSource("cities", {
+    this.#map.addSource("cities", {
       type: "geojson",
       data: asGeojsonFeatureCollection(
         Object.entries(cities.geo).map(cityToGeojson),
       ),
       promoteId: "id", // otherwise can not use non-numeric ids
     });
-    this.map.addSource("edges", {
+    this.#map.addSource("edges", {
       type: "geojson",
       data: asGeojsonFeatureCollection(
         Object.entries(edges.geo).map(edgeToGeojson),
@@ -147,10 +148,10 @@ export class MapWrapper {
     });
 
     // add all layers
-    for (let layer of mapStyles) this.map.addLayer(layer);
+    for (let layer of mapStyles) this.#map.addLayer(layer);
 
-    this.cities = new Cities(this.map, cities.geo, cities.defaults);
-    this.edges = new Edges(this.map, edges.geo, edges.defaults);
+    this.cities = new Cities(this.#map, cities.geo, cities.defaults);
+    this.edges = new Edges(this.#map, edges.geo, edges.defaults);
 
     this.cities.on("menuClick", (id, entry) => {
       if (entry === "showRoutes")
