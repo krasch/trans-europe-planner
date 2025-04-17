@@ -1,0 +1,76 @@
+/***********************************************
+ Resetting some defaults
+************************************************/
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+
+    margin: 0;
+    padding: 0;
+}
+
+h1,
+h2,
+h3 {
+    margin: 0;
+    font-weight: normal;
+}
+
+dialog {
+    /* too many annoying defaults, let's reset all of them */
+    all: inherit;
+}
+
+/***********************************************
+Overall layout
+************************************************/
+
+body {
+    /* grid is the simplest way to place the map under other elements */
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows:
+    1fr   /* main content */
+    2rem; /* footer */
+    grid-template-areas:
+    "content"
+    "footer";
+}
+
+/* main page, landing page dialog and map are all placed in the same grid cell */
+main, dialog, #map {
+    grid-area: content;
+}
+
+/* main page and landing page dialog lie above the map */
+main, dialog {
+    z-index: 2;
+}
+
+#footer {
+    grid-area: footer;
+}
+
+/* when displaying the landing page, will need to not show the main page */
+main.closed {
+    display: none;
+}
+
+/* should usually not be necessary, but somehow is when dialog is placed in a grid */
+dialog:not([open]) {
+    display: none;
+}
+
+
+/***********************************************
+ Utility stuff
+************************************************/
+
+.hidden {
+    visibility: hidden;
+}

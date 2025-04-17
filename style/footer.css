@@ -11,6 +11,8 @@ footer {
   justify-content: flex-end;
 
   padding-right: 2rem;
+  overflow-x: hidden;
+
 }
 
 footer img {

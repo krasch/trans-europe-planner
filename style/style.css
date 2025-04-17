@@ -1,13 +1,4 @@
 /***********************************************
- Choosing which language texts to display
-************************************************/
-
-body.de *:lang(en),
-body.en *:lang(de) {
-    display: none;
-}
-
-/***********************************************
  Colors and other common stylings
 ************************************************/
 
@@ -41,33 +32,4 @@ button {
 input {
     font-size: 1rem;
     font-family: helvetica, arial, sans-serif;
-}
-
-/***********************************************
- Common layouts
-************************************************/
-
-h1,
-h2,
-h3 {
-    margin: 0;
-    font-weight: normal;
-}
-
-.hidden {
-    visibility: hidden;
-}
-
-/* some elements should only be visible on mobile layout */
-@media only screen and (min-width: 1000px) {
-    .only-mobile {
-        display: none;
-    }
-}
-
-/* and some only on desktop layout */
-@media only screen and (max-width: 1000px) {
-    .only-desktop {
-        display: none;
-    }
 }

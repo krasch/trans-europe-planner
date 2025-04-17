@@ -1,97 +1,117 @@
 /***********************************************
- Style backgrounds
+ Style mobile nav bar
 ************************************************/
 
-/* on desktop, need to put a background for all sidebar elements because are above map */
-@media only screen and (min-width: 1000px) {
-  nav,
-  #journey,
-  #pad {
+main #nav-mobile > * {
+    cursor: pointer;
+    background-color: var(--color-dark);
+    color: var(--color-light);
+}
+
+main #nav-mobile img {
+    filter: var(--filter-white);
+}
+
+/* tabs are greyed out when there is not yet any user journey */
+main.no-journey #nav-mobile > * {
+    cursor: default;
+    color: darkgray;
+}
+
+main.no-journey #nav-mobile img {
+    filter: var(--filter-dark-gray);
+}
+
+/* inverted style for the tab that user has selected (=last clicked on) */
+main #nav-mobile > *.selected {
+    color: var(--color-dark);
     background-color: var(--color-light);
-    opacity: 95%;
-  }
+}
+
+main #nav-mobile > *.selected img {
+    filter: var(--filter-dark);
 }
 
 /***********************************************
- Style navigation tabs
+ Style desktop nav bar
 ************************************************/
 
-nav > * {
-  color: var(--color-light);
-  background-color: var(--color-dark);
-
-  text-decoration: none;
-  text-align: center;
-}
-
-nav > * > img {
-  filter: var(--filter-white);
-}
-
-/* on mobile, active tab element is inverted */
-@media only screen and (max-width: 1000px) {
-  nav > *.active {
+main #nav-desktop {
     color: var(--color-dark);
     background-color: var(--color-light);
-  }
-
-  nav > *.active > img {
-    filter: var(--filter-dark);
-  }
 }
 
-/* on desktop, tabs look like folders */
-@media only screen and (min-width: 1000px) {
-  nav > * {
-    color: var(--color-dark);
-    background-color: var(--color-light);
+/* on desktop nav tabs look like folders */
+main #nav-desktop > * {
+    cursor: pointer;
 
-    border-color: var(--color-dark);
-    border-style: solid;
-    border-width: 1px 1px 1px 0; /* border at top/right/bottom */
+    border: 1px solid var(--color-dark);
+    border-left-width: 0;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-  }
+}
 
-  nav > #tab-calendar {
-    /* todo assumes calendar is left-most tab */
-    border-left-width: 1px;
-  }
+main #nav-desktop > *:first-child {
+    border-left-width: 0;
+}
 
-  nav > *.active {
+main #nav-desktop > *.selected {
     border-bottom-width: 0;
-  }
 }
 
 /***********************************************
  Style logo
 ************************************************/
 
-#logo {
-  background-color: var(--color-dark);
+main .logo {
+    background-color: var(--color-dark);
+    color: var(--color-light);
 }
 
-#logo img {
-  filter: var(--filter-white);
+main .logo img {
+    filter: var(--filter-white);
 }
 
-@media only screen and (min-width: 1000px) {
-  /* on desktop, logo should have a bottom right radius */
-  #logo {
-    border-bottom-right-radius: 1rem;
-  }
+/***********************************************
+ Style config
+************************************************/
+
+main #config {
+    color: var(--color-light);
+    background-color: var(--color-dark);
+}
+
+main #config a {
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+main #config a:hover {
+    text-shadow: 2px 2px 3px lightgrey;
+}
+
+main #config input {
+    border: 1px solid var(--color-dark);
+    border-radius: 5px;
+
+    color: var(--color-dark);
 }
 
 /*********************************************************
-Style journey container (containing calendar and summary)
+Style journey container
 *********************************************************/
+
+main #journey {
+    color: var(--color-dark);
+    background-color: var(--color-light);
+}
 
 /* additional border on desktop to help with tabbing-folder look */
 @media only screen and (min-width: 1000px) {
-  #journey {
-    border: 1px solid var(--color-dark);
-    border-top: 0; /* tabs */
-  }
+    main #journey {
+        border: 1px solid var(--color-dark);
+        border-top: 0; /* 0 because of tabs above that have their own border */
+    }
 }
 
 /***********************************************
@@ -99,16 +119,16 @@ Style calendar
 ************************************************/
 
 travel-calendar {
-  border: 1px solid lightgrey;
-  border-radius: 5px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
 }
 
 /***********************************************
-Summary
+Style journey summary
 ************************************************/
 
 #summary {
-  color: var(--color-dark);
+    color: var(--color-dark);
 }
 
 /***********************************************
@@ -116,11 +136,11 @@ Style warning and booking buttons
 ************************************************/
 
 #warning {
-  color: darkgray;
-  font-style: italic;
+    color: darkgray;
+    font-style: italic;
 }
 
 #warning a {
-  text-decoration: underline;
-  cursor: pointer;
+    text-decoration: underline;
+    cursor: pointer;
 }
