@@ -12,6 +12,21 @@ function parseURLParams() {
   return null;
 }
 
+async function loadData() {
+  const paths = {
+    stations: "data/stations.json",
+    cities: "data/cities.json",
+    routes: "data/routes.json",
+    connections: "data/connections.json",
+  };
+
+  const data = {};
+  for (let key in paths) {
+    const response = await fetch(paths[key]);
+    data[key] = await response.json();
+  }
+}
+
 function _setSelected(elements, selectedNames) {
   /* for all elements, set exactly the ones in selectedNames to ".selected" */
   for (let name in elements) {
@@ -95,7 +110,10 @@ export async function init() {
   };
 
   // map is initially in non-interactive mode with reduced opacity (to be a nice background image basically)
+  // this already starts loading the map while we do other stuff
   const map = new MapWrapper("map", [10.0821932, 49.786322], 4.3);
+
+  const bla = loadData();
 
   // home can be passed as URL parameter, e.g. ?start=Berlin
   let home = parseURLParams();
