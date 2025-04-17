@@ -21,13 +21,10 @@ function _setSelected(elements, selectedNames) {
 }
 
 function initMobileNavigation(tabs, content) {
-  console.log(content);
-
   // on initial load, map tab is selected and all other content is hidden
   // -> map shines through from the background
   _setSelected(tabs, ["map"]);
   _setSelected(content, []);
-  console.log(content);
 
   // clicking on map tab -> no content is selected because map is in background
   tabs.map.addEventListener("click", (e) => {
