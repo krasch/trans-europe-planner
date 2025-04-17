@@ -1,5 +1,14 @@
-import { MapWrapper } from "./components/map/map.js";
 import { showLandingPage } from "./components/landing.js";
+import { initColors } from "./util.js";
+import { initCityNameToId } from "./util.js";
+import { enrichConnection } from "./data/database.js";
+
+import { MapWrapper } from "./components/map/map.js";
+import { Perlschnur } from "./components/perlschnur.js";
+import { Datepicker } from "./components/datepicker.js";
+import { CalendarWrapper } from "./components/calendar.js";
+
+import { main } from "./main.js";
 
 const HOMES = ["Berlin", "Hamburg", "Köln", "München", "Stockholm"];
 
@@ -12,7 +21,7 @@ function parseURLParams() {
   return null;
 }
 
-async function loadData() {
+async function loadAndPrepareData(placeholderDate) {
   const paths = {
     stations: "data/stations.json",
     cities: "data/cities.json",
@@ -25,6 +34,23 @@ async function loadData() {
     const response = await fetch(paths[key]);
     data[key] = await response.json();
   }
+
+  // todo this creates stupid global variables, we can do better
+  initColors();
+  initCityNameToId(data.cities);
+
+  // add station and city info and turn each raw connection into 3 dated connections (3 calendar dates)
+  // todo move this into web-worker?
+  data.connections = data.connections.flatMap((c) =>
+    enrichConnection(
+      c,
+      data.stations,
+      data.cities,
+      placeholderDate.toISODate(),
+    ),
+  );
+
+  return data;
 }
 
 function _setSelected(elements, selectedNames) {
@@ -91,12 +117,8 @@ export async function init() {
   const elements = {
     landing: document.querySelector("dialog"),
     main: document.querySelector("main"),
-    content: {
-      journey: document.querySelector("#journey"),
-      calendar: document.querySelector("#calendar"),
-      summary: document.querySelector("#summary"),
-      config: document.querySelector("#config"),
-    },
+    travelCalendar: document.querySelector("travel-calendar"),
+
     navTabsMobile: {
       map: document.querySelector("#nav-mobile-tab-map"),
       calendar: document.querySelector("#nav-mobile-tab-calendar"),
@@ -107,13 +129,34 @@ export async function init() {
       calendar: document.querySelector("#nav-desktop-tab-calendar"),
       summary: document.querySelector("#nav-desktop-tab-summary"),
     },
+
+    // items we can control using tabs
+    tabContents: {
+      journey: document.querySelector("#journey"),
+      calendar: document.querySelector("#calendar"),
+      summary: document.querySelector("#summary"),
+      config: document.querySelector("#config"),
+    },
   };
+
+  const isMobile = window.matchMedia("(max-width: 1000px)");
+  let defaultZoom = 4.3;
+  if (isMobile.matches) defaultZoom = 3.3;
 
   // map is initially in non-interactive mode with reduced opacity (to be a nice background image basically)
   // this already starts loading the map while we do other stuff
-  const map = new MapWrapper("map", [10.0821932, 49.786322], 4.3);
+  const map = new MapWrapper("map", [10.0821932, 49.786322], defaultZoom);
 
-  const bla = loadData();
+  // also create all the other views (less to do for them)
+  const views = {
+    map: map,
+    calendar: new CalendarWrapper(elements.travelCalendar),
+    perlschnur: new Perlschnur(elements.tabContents.summary),
+    datepicker: new Datepicker(elements.tabContents.config),
+  };
+
+  // also start loading the data
+  const dataPromise = loadAndPrepareData(views.datepicker.currentDate);
 
   // home can be passed as URL parameter, e.g. ?start=Berlin
   let home = parseURLParams();
@@ -123,17 +166,21 @@ export async function init() {
   if (!home) home = await showLandingPage(elements.landing);
 
   // init both navigations, CSS will pick which navigation is being shown
-  initMobileNavigation(elements.navTabsMobile, elements.content);
-  initDesktopNavigation(elements.navTabsDesktop, elements.content);
+  initMobileNavigation(elements.navTabsMobile, elements.tabContents);
+  initDesktopNavigation(elements.navTabsDesktop, elements.tabContents);
 
-  // show the main page
+  // show the <main> element
   elements.main.classList.remove("closed");
 
   // now we actually need the map, so wait until the load event has been fired
-  await map.loaded;
+  await views.map.loaded;
 
   // increases map opacity and enables the usual map controls
   map.enableMapInteraction();
 
-  console.log(home);
+  // wait until data lading and preparing is finished
+  const data = await dataPromise;
+
+  // set up all interactions between views
+  main(home, views, data);
 }

@@ -2,13 +2,15 @@ import { Database } from "./data/database.js";
 import { diffDays, RouteDatabase } from "./data/routing.js";
 import { Journey, JourneyCollection } from "./data/types/journey.js";
 
-import { enrichConnection } from "./data/database.js";
 import {
   prepareInitialDataForMap,
   prepareDataForMap,
   prepareDataForCalendar,
   prepareDataForPerlschnur,
 } from "./data/componentData.js";
+
+// todo not nice that this is here
+const mainContainer = document.querySelector("main");
 
 function initUpdateViews(views, database) {
   function updateViews(state) {
@@ -20,15 +22,15 @@ function initUpdateViews(views, database) {
       prepareDataForPerlschnur(state.journeys, database),
     );
 
-    views.layout.updateView(
-      views.datepicker.currentDate !== null,
-      state.journeys.hasActiveJourney,
-    );
+    // this controls which content is currently visible
+    if (state.journeys.hasActiveJourney)
+      mainContainer.classList.remove("no-journey");
+    else mainContainer.classList.add("no-journey");
   }
   return updateViews;
 }
 
-export async function main(home, views, data) {
+export function main(home, views, data) {
   // init state
   const state = {
     home: home,
@@ -37,6 +39,7 @@ export async function main(home, views, data) {
   };
 
   // prepare databases
+  // todo move into init and into worker?
   const database = new Database(data.connections);
   const routeDatabase = new RouteDatabase(data.routes);
 
@@ -47,9 +50,11 @@ export async function main(home, views, data) {
     data.connections,
     routeDatabase,
   );
-  const mapLoadedPromise = views.map.load(initialMapData);
 
-  // init update views
+  // and add that data to the map
+  views.map.initMapData(initialMapData);
+
+  // closure magic
   const updateViews = initUpdateViews(views, database);
 
   // moving things around in the calendar
@@ -100,9 +105,6 @@ export async function main(home, views, data) {
 
     updateViews(state);
   });
-
-  // now have done all we can do without having the map ready
-  await mapLoadedPromise;
 
   updateViews(state);
 }

@@ -18,8 +18,8 @@
     <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="style/planner/layout.css">
     <link rel="stylesheet" href="style/planner/style.css">
-    <!--link rel="stylesheet" href="style/planner/components/perlschnur.css">
-    <link rel="stylesheet" href="style/planner/components/map/map.css">-->
+    <link rel="stylesheet" href="style/planner/components/perlschnur.css">
+    <link rel="stylesheet" href="style/planner/components/map/map.css">
     <link rel="stylesheet" href="style/landing.css">
     <link rel="stylesheet" href="style/footer.css">
 
@@ -31,6 +31,7 @@
     <script type="module">
         // register TravelCalendar (must be placed before <body>)
         import {TravelCalendar} from "./script/customElements/travelCalendar/travelCalendar.js"
+
         customElements.define("travel-calendar", TravelCalendar);
     </script>
 
@@ -341,123 +342,13 @@
     import {init} from "./script/init.js";
 
     onload = async (event) => {
-        await init();
-    };
-
-    /*import {Layout} from "./script/components/layout.js";
-    import {Perlschnur} from "./script/components/perlschnur.js";
-    import {Datepicker} from "./script/components/datepicker.js";
-    import {MapWrapper} from "./script/components/map/map.js";
-    import {CalendarWrapper} from "./script/components/calendar.js";
-
-    import {main} from "./script/main.js";
-    import {initColors} from "./script/util.js";
-    import {initCityNameToId} from "./script/util.js";
-
-    import {CITIES} from "./data/cities.json";
-    import {STATIONS} from "./data/stations.json";
-    import {CONNECTIONS} from "./data/connections.json";
-    import {ROUTES} from "./data/routes.json";
-    import {enrichConnection} from "./script/data/database.js";
-
-    const isMobile = window.matchMedia("(max-width: 1000px)");
-
-    function getHome() {
-        const params = new URLSearchParams(window.location.search);
-        const home = params.get("start");
-
-        if (home && ["Berlin", "Hamburg", "Köln", "München", "Stockholm"].includes(home))
-            return home;
-
-        return null;
-    }
-
-    function initNavigation() {
-        const tabs = Array.from(document.querySelectorAll("nav > a"));
-        const contents = tabs.map(t => document.querySelector(t.dataset.content));
-
-        const warning = document.querySelector("#warning");
-        const shareBook = document.querySelector("#share-book");
-
-        const defaultMobile = document.querySelector("#tab-map"); // is one of nav > a
-        const defaultDesktop = document.querySelector("#tab-calendar"); // same
-
-        function setActive(tab) {
-            for (let i in tabs) {
-                if (tabs[i] === tab) {
-                    tabs[i].classList.add("active");
-                    contents[i].classList.add("active");
-                } else {
-                    tabs[i].classList.remove("active");
-                    contents[i].classList.remove("active");
-                }
-
-                // todo did not manage to do this via CSS selectors
-                if (tab.id === "tab-calendar" || tab.id === "tab-summary") {
-                    warning.classList.add("active");
-                    shareBook.classList.add("active");
-                } else {
-                    warning.classList.remove("active");
-                    shareBook.classList.remove("active");
-                }
-            }
-        }
-
-        document.querySelector("nav").addEventListener("click", e => {
-            setActive(e.target.closest("a"));
-        });
-
-        isMobile.matches ? setActive(defaultMobile) : setActive(defaultDesktop);
-
-        isMobile.addEventListener("change", e => {
-            const current = document.querySelector("nav > a.active");
-            if (!isMobile.matches && current.classList.contains("only-mobile"))
-                setActive(defaultDesktop);
-        });
-    }
-
-    onload = async (event) => {
-        const home = getHome();
-
-        // redirect to landing page to ask for user's home
-        if (!home) window.location.href = "/";
-
-        initNavigation();
-        initColors();
-        initCityNameToId(CITIES);
-
-        let defaultZoom = 4.3
-        if (isMobile.matches) defaultZoom = 3.3;
-
-        const views = {
-            map: new MapWrapper('map', [10.0821932, 49.786322], defaultZoom), // starts async loading map
-            calendar: new CalendarWrapper(document.querySelector("travel-calendar")),
-            perlschnur: new Perlschnur(document.querySelector("#summary")),
-            datepicker: new Datepicker(document.querySelector("#config")),
-            layout: new Layout(document.body, isMobile)
-        }
-
-        // add station and city info and turn each raw connection into 3 dated connections (3 calendar dates)
-        const connections = CONNECTIONS.flatMap((c) => enrichConnection(
-            c,
-            STATIONS,
-            CITIES,
-            views.datepicker.currentDate.toISODate())
-        );
-
-        const data = {
-            connections: connections,
-            cities: CITIES,
-            stations: STATIONS,
-            routes: ROUTES
-        }
-
         try {
-            main(home, views, data);
+            await init();
         } catch (error) {
             console.error(error);
         }
-    };*/
+    };
+
 </script>
 
 </body>

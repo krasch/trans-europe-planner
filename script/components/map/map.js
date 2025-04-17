@@ -128,7 +128,7 @@ export class MapWrapper {
     this.#callbacks[eventName] = callback;
   }
 
-  init(data) {
+  initMapData(data) {
     const [cities, edges] = data;
 
     // add cities and legs sources
