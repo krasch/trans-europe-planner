@@ -9,10 +9,10 @@ import {
   prepareDataForPerlschnur,
 } from "./data/componentData.js";
 
-// todo not nice that this is here
-const mainContainer = document.querySelector("main");
-
 function initUpdateViews(views, database) {
+  // todo pass this in?
+  const mainContainer = document.querySelector("main");
+
   function updateViews(state) {
     views.map.updateView(prepareDataForMap(state.journeys, database));
     views.calendar.updateView(

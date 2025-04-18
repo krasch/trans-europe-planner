@@ -18,7 +18,7 @@ import { initDOMFromFile, timeout } from "tests/_domUtils.js";
 import { main } from "/script/main.js";
 
 beforeEach(() => {
-  initDOMFromFile("planner.html");
+  initDOMFromFile("index.html");
 });
 
 async function initWithMockViews(home, data) {
@@ -37,6 +37,7 @@ async function initWithMockViews(home, data) {
       load: jest.fn(),
       on: (name, fn) => (callbacks.map[name] = fn),
       updateView: jest.fn(),
+      initMapData: jest.fn(),
     },
     perlschnur: { updateView: jest.fn() },
     layout: { updateView: jest.fn() },
