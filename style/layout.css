@@ -74,3 +74,17 @@ dialog:not([open]) {
 .hidden {
     visibility: hidden;
 }
+
+/* some elements should only be visible on mobile layout */
+@media only screen and (min-width: 1000px) {
+    .only-mobile {
+        display: none;
+    }
+}
+
+/* and some only on desktop layout */
+@media only screen and (max-width: 1000px) {
+    .only-desktop {
+        display: none;
+    }
+}
