@@ -65,7 +65,7 @@ export class MapWrapper {
     });
 
     // visual indication that map is non-interactive
-    this.#map._container.style.opacity = 0.2;
+    this.#map._container.style.opacity = 0.4;
 
     // add attribution control
     this.#attribution = new maplibregl.AttributionControl();
