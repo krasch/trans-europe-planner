@@ -268,7 +268,7 @@ main travel-calendar {
 Layout for journey summary
 ************************************************/
 
-#summary {
+main #summary {
     min-width: min(350px, 90%);
     max-width: 650px;
 
@@ -278,10 +278,19 @@ Layout for journey summary
     gap: 1rem;
 }
 
-#summary #perlschnur {
+/* on mobile there should be a scrollbar if necessary */
+@media only screen and (max-width: 1000px) {
+    main #summary {
+        overflow-y: auto;
+    }
+}
+
+main #summary #perlschnur {
+    box-sizing: border-box;
     padding: 0.5rem;
     width: 100%;
 }
+
 
 /*******************************************************
  the card/menu with title, used in map, perlschnur
