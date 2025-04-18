@@ -21,6 +21,10 @@ h3 {
     font-weight: normal;
 }
 
+body * {
+    box-sizing: border-box;
+}
+
 dialog {
     /* too many annoying defaults, let's reset all of them */
     all: inherit;
@@ -38,7 +42,7 @@ body {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows:
-      var(--main-height)
+      1fr
       var(--footer-height);
     grid-template-areas:
     "content"

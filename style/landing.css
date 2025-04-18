@@ -4,12 +4,10 @@
 
 #landing-page {
     --item-width: min(95%, 400px);
-    --gap: 1rem;
+    --gap: 2rem;
 
-    box-sizing: border-box;
     /* by default (=on mobile), we want only one item to fit per row */
     width: var(--item-width);
-    overflow-y: auto;
 
     /* location of this container in its grid cell */
     align-self: center;
@@ -21,6 +19,7 @@
 
     /* horizontal centering of the items */
     justify-content: center;
+    align-content: center;
 
     padding-top: 2rem;
     padding-bottom: 2rem;
@@ -28,8 +27,7 @@
 }
 
 #landing-page > * {
-    /* every item/box on landing page has the same width */
-    box-sizing: border-box;
+    /* every item on landing page has the same width */
     width: var(--item-width);
 }
 
@@ -47,11 +45,11 @@
 }
 
 #landing-page > * {
-    /* every item/box takes up the height it needs but not more */
+    /* every item takes up the height it needs but not more */
     height: fit-content;
     padding: 1rem;
 
-    /* every item/box is also a flexbox */
+    /* every item is also a flexbox */
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -62,7 +60,7 @@
 }
 
 #landing-page .logo > img {
-    max-height: 6rem;
+    max-height: 8rem;
     padding: 1rem;
 }
 
@@ -100,7 +98,6 @@
 
 #slide-carousel {
     /* if not putting 100%, the slide carousel can be too wide on mobile */
-    box-sizing: border-box;
     width: 100%;
     padding: 0.75rem;
 
@@ -134,9 +131,6 @@
 }
 
 #slides .slide {
-    /* otherwise borders etc will mess up the width */
-    box-sizing: border-box;
-
     /* each item takes up all space -> will need scrolling (which is what we want) */
     width: 100%;
 
