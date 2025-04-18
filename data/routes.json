@@ -23,18 +23,6 @@
     [
       "Berlin->Köln",
       "Köln->Bruxelles"
-    ],
-    "//Berlin (06:44) -> Dortmund (10:25, 8563-0) -> Köln (11:50, ICE29-0) -> Bruxelles (15:26, ICE314-0)",
-    "//Berlin (08:44) -> Dortmund (12:25, 445-0) -> Köln (13:49, 5578-0) -> Bruxelles (17:26, ICE14-0)",
-    [
-      "Berlin->Dortmund",
-      "Dortmund->Köln",
-      "Köln->Bruxelles"
-    ],
-    "//Berlin (12:55) -> Aachen (19:13, 3590-0) -> Bruxelles (21:26, ICE10-0)",
-    [
-      "Berlin->Aachen",
-      "Aachen->Bruxelles"
     ]
   ],
   "Berlin->Budapest": [
