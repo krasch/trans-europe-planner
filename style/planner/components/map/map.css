@@ -1,35 +1,43 @@
 .maplibregl-popup-content {
-  padding: 0;
+    padding: 0;
 }
 
 .maplibregl-popup-tip {
-  visibility: hidden;
+    visibility: hidden;
 }
 
 .maplibregl-popup-close-button {
-  color: white;
-  top: 3px;
-  right: 3px;
-  border-radius: 5px;
+    color: white;
+    top: 3px;
+    right: 3px;
+    border-radius: 5px;
 }
 
 .maplibregl-popup-close-button:hover {
-  border: 1px solid white;
+    border: 1px solid white;
 }
+
+/* on mobile, move +/- zoom so it does not lie under navigation header, todo this is hacky */
+@media only screen and (max-width: 1000px) {
+    .maplibregl-ctrl-top-right {
+        padding-top: 5rem;
+    }
+}
+
 
 /***********************************************
  home marker
 ************************************************/
 
 .city-marker-home {
-  cursor: pointer;
+    cursor: pointer;
 
-  background-image: url("/images/markers/marker_home.svg");
-  background-size: contain;
-  filter: var(--filter-dark);
+    background-image: url("/images/markers/marker_home.svg");
+    background-size: contain;
+    filter: var(--filter-dark);
 
-  height: 2.5rem;
-  width: calc(2.5rem * 0.64);
+    height: 2.5rem;
+    width: calc(2.5rem * 0.64);
 }
 
 /***********************************************************************
@@ -37,56 +45,56 @@
 ***********************************************************************/
 
 .city-marker-destination {
-  cursor: pointer;
+    cursor: pointer;
 
-  --circle-radius: 9px;
-  --circle-offset: -5px;
-  --pulse-radius: 17px;
-  --pulse-offset: -9px;
+    --circle-radius: 9px;
+    --circle-offset: -5px;
+    --pulse-radius: 17px;
+    --pulse-offset: -9px;
 }
 
 .city-marker-destination .inner-circle {
-  position: absolute;
-  left: var(--circle-offset);
-  bottom: var(--circle-offset);
+    position: absolute;
+    left: var(--circle-offset);
+    bottom: var(--circle-offset);
 
-  height: var(--circle-radius);
-  width: var(--circle-radius);
+    height: var(--circle-radius);
+    width: var(--circle-radius);
 
-  border-radius: 50%;
-  border: 1px solid #aaa;
+    border-radius: 50%;
+    border: 1px solid #aaa;
 
-  background-color: white;
+    background-color: white;
 }
 
 .city-marker-destination .outer-circle {
-  position: absolute;
-  left: var(--pulse-offset);
-  bottom: var(--pulse-offset);
+    position: absolute;
+    left: var(--pulse-offset);
+    bottom: var(--pulse-offset);
 
-  height: var(--pulse-radius);
-  width: var(--pulse-radius);
+    height: var(--pulse-radius);
+    width: var(--pulse-radius);
 
-  border: 1px solid #aaa;
-  border-radius: 50%;
+    border: 1px solid #aaa;
+    border-radius: 50%;
 
-  opacity: 0;
-  background-color: white;
-  animation: pulsate 1s ease-out infinite;
+    opacity: 0;
+    background-color: white;
+    animation: pulsate 1s ease-out infinite;
 }
 
 @keyframes pulsate {
-  0% {
-    transform: scale(0.1, 0.1);
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.2, 1.2);
-    opacity: 0;
-  }
+    0% {
+        transform: scale(0.1, 0.1);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.2, 1.2);
+        opacity: 0;
+    }
 }
 
 /***********************************************
@@ -95,53 +103,53 @@
 
 .city-menu,
 .edge-menu {
-  width: 12rem;
+    width: 12rem;
 
-  --color: var(--color-dark);
+    --color: var(--color-dark);
 
-  --color-menu-light: white;
-  --filter-menu-light: var(--filter-white);
+    --color-menu-light: white;
+    --filter-menu-light: var(--filter-white);
 
-  --color-menu-dark: var(--color-dark);
-  --filter-menu-dark: var(--filter-dark);
+    --color-menu-dark: var(--color-dark);
+    --filter-menu-dark: var(--filter-dark);
 
-  border-color: var(--color-menu-dark);
+    border-color: var(--color-menu-dark);
 }
 
 .city-menu h3,
 .edge-menu h3 {
-  letter-spacing: 0.02rem;
-  height: 1.8rem;
+    letter-spacing: 0.02rem;
+    height: 1.8rem;
 
-  color: var(--color-menu-light);
-  background-color: var(--color-menu-dark);
+    color: var(--color-menu-light);
+    background-color: var(--color-menu-dark);
 }
 
 .city-menu li,
 .edge-menu li {
-  height: 1.5rem;
+    height: 1.5rem;
 }
 
 .city-menu button,
 .edge-menu button {
-  color: var(--color-menu-dark);
-  background: var(--color-menu-light);
+    color: var(--color-menu-dark);
+    background: var(--color-menu-light);
 }
 
 .city-menu button img,
 .edge-menu button img {
-  filter: var(--filter-menu-dark);
+    filter: var(--filter-menu-dark);
 }
 
 .city-menu button:hover,
 .edge-menu button:hover {
-  color: var(--color-menu-light);
-  background-color: var(--color-menu-dark);
+    color: var(--color-menu-light);
+    background-color: var(--color-menu-dark);
 }
 
 .city-menu button:hover img,
 .edge-menu button:hover img {
-  filter: var(--filter-menu-light);
+    filter: var(--filter-menu-light);
 }
 
 .city-menu em.num-transfers.transfers0 > span.transfers1,
@@ -149,6 +157,6 @@
 .city-menu em.num-transfers.transfers1 > span.transfers0,
 .city-menu em.num-transfers.transfers1 > span.transfersX,
 .city-menu em.num-transfers.transfersX > span.transfers0,
-.city-menu em.num-transfers.transfersX > span.transfers1{
-  display: none;
+.city-menu em.num-transfers.transfersX > span.transfers1 {
+    display: none;
 }
