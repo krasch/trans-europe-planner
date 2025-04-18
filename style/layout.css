@@ -31,12 +31,15 @@ Overall layout
 ************************************************/
 
 body {
-    /* grid is the simplest way to place the map under other elements */
+    --footer-height: 2rem;
+    /* need this in planner css to set the height of the journey container */
+    --main-height: calc(100vh - var(--footer-height));
+
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows:
-    1fr   /* main content */
-    2rem; /* footer */
+      var(--main-height)
+      var(--footer-height);
     grid-template-areas:
     "content"
     "footer";

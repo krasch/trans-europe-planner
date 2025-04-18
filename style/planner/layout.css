@@ -6,19 +6,19 @@ main {
     --logo-size: 3rem;
     --logo-size-with-padding: 4rem;
 
-    /* calendar needs absolute height todo */
-    --calendar-height: calc(100vh - var(--logo-size-with-padding) - 10rem);
+    /* when #journey is not shown, main is only header-height, i.e. user can interact with the map below */
+    height: fit-content;
 
-    /* when #journey is not shown, main is only header-height, i.e. can interact with the map below */
-    height: min-content;
+    /* but when #journey is shown, it should fill the screen (this variable will be used later)*/
+    --journey-height: calc(var(--main-height) - var(--logo-size-with-padding));
 
     display: grid;
     grid-template-columns:
         var(--logo-size-with-padding)
-        1fr; /* nav */
+        1fr;
     grid-template-rows:
         var(--logo-size-with-padding)
-        1fr; /* main content */
+        1fr;
 
     grid-template-areas:
         "logo        nav"
@@ -85,8 +85,9 @@ main #nav-mobile img {
         --navbar-height: 2.5rem;
         --navbar-padding-top: 2rem;
 
-        --calendar-height: 700px;
+        --journey-height: 100%;
 
+        height: 100%;
         width: calc(var(--logo-size-with-padding) + var(--config-width));
 
         display: grid;
@@ -228,7 +229,10 @@ Layout journey container (containing calendar and summary)
 *********************************************************/
 
 main #journey {
-    width: calc(100% - 1);
+    box-sizing: border-box;
+    width: 100%;
+    /* for desktop this is just 100%, for mobile it is exactly calculated to fill the viewport */
+    height: var(--journey-height);
 
     display: flex;
     flex-direction: column;
@@ -253,10 +257,11 @@ Layout for calendar
 
 main #calendar {
     width: min(95%, 450px);
+    height: min(100%, 700px);
 }
 
 main travel-calendar {
-    height: var(--calendar-height);
+    height: 100%;
 }
 
 /***********************************************
