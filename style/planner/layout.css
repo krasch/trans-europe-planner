@@ -202,6 +202,9 @@ Layout for config
 ************************************************/
 
 #config {
+    /* for desktop this is just 100%, for mobile it is exactly calculated to fill the viewport */
+    height: var(--journey-height);
+
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -229,10 +232,9 @@ Layout journey container (containing calendar and summary)
 *********************************************************/
 
 #journey {
-    box-sizing: border-box;
-    width: 100%;
     /* for desktop this is just 100%, for mobile it is exactly calculated to fill the viewport */
     height: var(--journey-height);
+    width: 100%;
 
     display: flex;
     flex-direction: column;
