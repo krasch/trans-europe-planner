@@ -44,7 +44,7 @@
     }
 }
 
-#landing-page > * {
+#landing-page > *:not(.only-desktop) {
     /* every item takes up the height it needs but not more */
     height: fit-content;
     padding: 1rem;
