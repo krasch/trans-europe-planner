@@ -15,11 +15,11 @@ main #nav-mobile img {
 /* tabs are greyed out when there is not yet any user journey */
 main.no-journey #nav-mobile > * {
     cursor: default;
-    color: darkgray;
+    color: var(--color-dark-desaturated);
 }
 
 main.no-journey #nav-mobile img {
-    filter: var(--filter-dark-gray);
+    filter: var(--filter-dark-desaturated);
 }
 
 /* inverted style for the tab that user has selected (=last clicked on) */

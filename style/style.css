@@ -14,11 +14,14 @@ body {
 
     --color-light: white;
     --color-dark: #286099;
+    --color-dark-desaturated: #477099;
 
     /* https://codepen.io/sosuke/pen/Pjoqqp */
     --filter-white: invert(100%);
     /* #286099 */
     --filter-dark: invert(32%) sepia(12%) saturate(3883%) hue-rotate(173deg) brightness(95%) contrast(86%);
+    /* 477099 */
+    --filter-dark-desaturated: invert(44%) sepia(13%) saturate(1760%) hue-rotate(169deg) brightness(88%) contrast(84%);
     /* #D3D3D3 */
     --filter-light-gray: invert(97%) sepia(0%) saturate(0%) hue-rotate(191deg) brightness(87%) contrast(95%);
     /* #A9A9A9 */
