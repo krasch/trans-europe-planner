@@ -82,10 +82,11 @@ main .logo {
         --logo-size: 7rem;
         --logo-size-with-padding: 9rem;
         --config-width: 20rem;
-        --navbar-height: 2.5rem;
         --navbar-padding-top: 2rem;
+        --navbar-height-with-padding: 4.5rem;
 
-        --journey-height: 100%;
+        /* again, calculate exactly how much height remains, makes calendar behave better */
+        --journey-height: calc(var(--main-height) - var(--logo-size-with-padding) - var(--navbar-height-with-padding));
 
         height: 100%;
         width: calc(var(--logo-size-with-padding) + var(--config-width));
@@ -96,7 +97,7 @@ main .logo {
           var(--config-width);
         grid-template-rows:
           var(--logo-size-with-padding)
-          calc(var(--navbar-height) + var(--navbar-padding-top))
+          calc(var(--navbar-height-with-padding))
           1fr;
 
         grid-template-areas:
@@ -202,9 +203,6 @@ Layout for config
 ************************************************/
 
 #config {
-    /* for desktop this is just 100%, for mobile it is exactly calculated to fill the viewport */
-    height: var(--journey-height);
-
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -212,6 +210,14 @@ Layout for config
     align-items: center;
     justify-content: flex-start;
 }
+
+/* on mobile config should cover full available height */
+@media only screen and (max-width: 1000px) {
+    #config {
+        height: var(--journey-height);
+    }
+}
+
 
 @media only screen and (min-width: 1000px) {
     #config {
@@ -232,9 +238,11 @@ Layout journey container (containing calendar and summary)
 *********************************************************/
 
 #journey {
-    /* for desktop this is just 100%, for mobile it is exactly calculated to fill the viewport */
-    height: var(--journey-height);
+    --calendar-height: min(700px, calc(var(--journey-height)) - 7rem);
+
     width: 100%;
+    height: var(--journey-height);
+    overflow-y: auto;
 
     display: flex;
     flex-direction: column;
@@ -246,20 +254,13 @@ Layout journey container (containing calendar and summary)
     gap: 1rem;
 }
 
-/* on desktop there should be a scrollbar if necessary */
-@media only screen and (min-width: 1000px) {
-    #journey {
-        overflow-y: auto;
-    }
-}
-
 /***********************************************
 Layout for calendar
 ************************************************/
 
 #calendar {
     width: min(95%, 450px);
-    height: min(100%, 700px);
+    height: var(--calendar-height);
 }
 
 #planner travel-calendar {
@@ -278,13 +279,6 @@ Layout for journey summary
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
-}
-
-/* on mobile there should be a scrollbar if necessary */
-@media only screen and (max-width: 1000px) {
-    #summary {
-        overflow-y: auto;
-    }
 }
 
 #summary #perlschnur {

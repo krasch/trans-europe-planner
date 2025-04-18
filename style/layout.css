@@ -36,7 +36,10 @@ Overall layout
 
 body {
     --footer-height: 2rem;
-    /* need this in planner css to set the height of the journey container */
+    /* two reasons why we will later need this in planner
+       1. to be able to calculate exactly how much space we must take, in particular on mobile, to cover map
+       2. to deal with the calendar, which behaves best when it gets an absolute height
+     */
     --main-height: calc(100vh - var(--footer-height));
 
     display: grid;
