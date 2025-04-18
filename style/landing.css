@@ -98,6 +98,9 @@ dialog a {
 ************************************************/
 
 dialog #slide-carousel {
+    /* if not putting 100%, the slide carousel can be too wide on mobile */
+    box-sizing: border-box;
+    width: 100%;
     padding: 0.75rem;
 
     display: flex;
