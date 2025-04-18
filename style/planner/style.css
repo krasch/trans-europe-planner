@@ -118,7 +118,7 @@ main #journey {
 Style calendar
 ************************************************/
 
-travel-calendar {
+main travel-calendar {
     border: 1px solid lightgrey;
     border-radius: 5px;
 }
@@ -127,7 +127,7 @@ travel-calendar {
 Style journey summary
 ************************************************/
 
-#summary {
+main #summary {
     color: var(--color-dark);
 }
 
@@ -135,12 +135,12 @@ Style journey summary
 Style warning and booking buttons
 ************************************************/
 
-#warning {
+main #warning {
     color: darkgray;
     font-style: italic;
 }
 
-#warning a {
+main #warning a {
     text-decoration: underline;
     cursor: pointer;
 }
