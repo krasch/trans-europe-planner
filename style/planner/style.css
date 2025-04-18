@@ -2,33 +2,33 @@
  Style mobile nav bar
 ************************************************/
 
-main #nav-mobile > * {
+#nav-mobile > * {
     cursor: pointer;
     background-color: var(--color-dark);
     color: var(--color-light);
 }
 
-main #nav-mobile img {
+#nav-mobile img {
     filter: var(--filter-white);
 }
 
 /* tabs are greyed out when there is not yet any user journey */
-main.no-journey #nav-mobile > * {
+#planner.no-journey #nav-mobile > * {
     cursor: default;
     color: var(--color-dark-desaturated);
 }
 
-main.no-journey #nav-mobile img {
+#planner.no-journey #nav-mobile img {
     filter: var(--filter-dark-desaturated);
 }
 
 /* inverted style for the tab that user has selected (=last clicked on) */
-main #nav-mobile > *.selected {
+#nav-mobile > *.selected {
     color: var(--color-dark);
     background-color: var(--color-light);
 }
 
-main #nav-mobile > *.selected img {
+#nav-mobile > *.selected img {
     filter: var(--filter-dark);
 }
 
@@ -36,13 +36,13 @@ main #nav-mobile > *.selected img {
  Style desktop nav bar
 ************************************************/
 
-main #nav-desktop {
+#nav-desktop {
     color: var(--color-dark);
     background-color: var(--color-light);
 }
 
 /* on desktop nav tabs look like folders */
-main #nav-desktop > * {
+#nav-desktop > * {
     cursor: pointer;
 
     border: 1px solid var(--color-dark);
@@ -51,11 +51,11 @@ main #nav-desktop > * {
     border-top-right-radius: 5px;
 }
 
-main #nav-desktop > *:first-child {
+#nav-desktop > *:first-child {
     border-left-width: 1px;
 }
 
-main #nav-desktop > *.selected {
+#nav-desktop > *.selected {
     border-bottom-width: 0;
 }
 
@@ -63,12 +63,12 @@ main #nav-desktop > *.selected {
  Style logo
 ************************************************/
 
-main .logo {
+#planner .logo {
     background-color: var(--color-dark);
     color: var(--color-light);
 }
 
-main .logo img {
+#planner .logo img {
     filter: var(--filter-white);
 }
 
@@ -76,21 +76,21 @@ main .logo img {
  Style config
 ************************************************/
 
-main #config {
+#config {
     color: var(--color-light);
     background-color: var(--color-dark);
 }
 
-main #config a {
+#config a {
     font-size: 1.2rem;
     cursor: pointer;
 }
 
-main #config a:hover {
+#config a:hover {
     text-shadow: 2px 2px 3px lightgrey;
 }
 
-main #config input {
+#config input {
     border: 1px solid var(--color-dark);
     border-radius: 5px;
 
@@ -101,14 +101,14 @@ main #config input {
 Style journey container
 *********************************************************/
 
-main #journey {
+#journey {
     color: var(--color-dark);
     background-color: var(--color-light);
 }
 
 /* additional border on desktop to help with tabbing-folder look */
 @media only screen and (min-width: 1000px) {
-    main #journey {
+   #journey {
         border: 1px solid var(--color-dark);
         border-top: 0; /* 0 because of tabs above that have their own border */
     }
@@ -118,7 +118,7 @@ main #journey {
 Style calendar
 ************************************************/
 
-main travel-calendar {
+travel-calendar {
     border: 1px solid lightgrey;
     border-radius: 5px;
 }
@@ -127,7 +127,7 @@ main travel-calendar {
 Style journey summary
 ************************************************/
 
-main #summary {
+#summary {
     color: var(--color-dark);
 }
 
@@ -135,12 +135,12 @@ main #summary {
 Style warning and booking buttons
 ************************************************/
 
-main #warning {
+#journey aside {
     color: darkgray;
     font-style: italic;
 }
 
-main #warning a {
+#journey aside a {
     text-decoration: underline;
     cursor: pointer;
 }

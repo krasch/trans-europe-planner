@@ -2,13 +2,14 @@
  Overall layout of the landing page
 ************************************************/
 
-dialog {
+#landing-page {
     --item-width: min(95%, 400px);
     --gap: 1rem;
 
+    box-sizing: border-box;
     /* by default (=on mobile), we want only one item to fit per row */
     width: var(--item-width);
-    height: fit-content;
+    overflow-y: auto;
 
     /* location of this container in its grid cell */
     align-self: center;
@@ -26,7 +27,7 @@ dialog {
     gap: var(--gap);
 }
 
-dialog > * {
+#landing-page > * {
     /* every item/box on landing page has the same width */
     box-sizing: border-box;
     width: var(--item-width);
@@ -34,18 +35,18 @@ dialog > * {
 
 @media only screen and (min-width: 1000px) {
     /* on desktop, can have two items per row */
-    dialog {
+    #landing-page {
         width: calc(2 * var(--item-width) + var(--gap));
         justify-content: start;
     }
 
     /* on desktop, there is a utility div to keep an empty space but we want it to not be visible */
-    dialog > .only-desktop {
+    #landing-page > .only-desktop {
         visibility: collapse;
     }
 }
 
-dialog > * {
+#landing-page > * {
     /* every item/box takes up the height it needs but not more */
     height: fit-content;
     padding: 1rem;
@@ -60,12 +61,12 @@ dialog > * {
     text-align: center;
 }
 
-dialog .logo > img {
+#landing-page .logo > img {
     max-height: 6rem;
     padding: 1rem;
 }
 
-dialog #showcase {
+#landing-page #showcase {
     /* this is the tallest item -> if need scrollbar, let's do it here */
     overflow-y: auto;
 }
@@ -74,22 +75,22 @@ dialog #showcase {
  Overall styling
 ************************************************/
 
-dialog {
+#landing-page {
     background: transparent;
 }
 
-dialog > * {
+#landing-page > * {
     background-color: var(--color-dark);
     color: var(--color-light);
     border-radius: 20px;
     opacity: 95%;
 }
 
-dialog .logo > img {
+#landing-page .logo > img {
     filter: var(--filter-white);
 }
 
-dialog a {
+#landing-page a {
     color: var(--color-light);
 }
 
@@ -97,7 +98,7 @@ dialog a {
  Layout the slide carousel
 ************************************************/
 
-dialog #slide-carousel {
+#slide-carousel {
     /* if not putting 100%, the slide carousel can be too wide on mobile */
     box-sizing: border-box;
     width: 100%;
@@ -111,7 +112,7 @@ dialog #slide-carousel {
 }
 
 
-dialog #slides {
+#slides {
     /* this makes the slides scrollable */
     width: 100%;
     overflow-y: auto;
@@ -123,16 +124,16 @@ dialog #slides {
 }
 
 /* hide scrollbar for Firefox and latest Chromium */
-dialog #slides {
+#slides {
     scrollbar-width: none;
 }
 
 /* hide scrollbar for Safari and legacy Chromium*/
-dialog #slides::-webkit-scrollbar {
+#slides::-webkit-scrollbar {
     display: none;
 }
 
-dialog .slide {
+#slides .slide {
     /* otherwise borders etc will mess up the width */
     box-sizing: border-box;
 
@@ -150,11 +151,11 @@ dialog .slide {
     gap: 0.75rem;
 }
 
-dialog .slide img {
+#slides .slide img {
     width: 100%; /* image should fit into the space it has */
 }
 
-dialog #slide-controls {
+#slide-controls {
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
@@ -163,13 +164,13 @@ dialog #slide-controls {
     justify-content: center;
 }
 
-dialog #slide-controls .dot {
+#slide-controls .dot {
     cursor: pointer;
     height: 0.5rem;
     width: 0.5rem;
 }
 
-dialog #slide-controls .arrow {
+#slide-controls .arrow {
     cursor: pointer;
     height: 0.75rem;
     width: 0.75rem;
@@ -181,22 +182,22 @@ dialog #slide-controls .arrow {
  Style the slide carousel
 ************************************************/
 
-dialog #slide-carousel {
+#slide-carousel {
     background-color: var(--color-light);
     color: var(--color-dark);
     border-radius: 10px;
     opacity: 95%;
 }
 
-dialog #slide-controls .dot {
+#slide-controls .dot {
     filter: var(--filter-light-gray);
 }
 
-dialog #slide-controls .dot.active {
+#slide-controls .dot.active {
     filter: var(--filter-dark);
 }
 
-dialog #slide-controls .arrow {
+#slide-controls .arrow {
     filter: var(--filter-light-gray);
 }
 
@@ -204,14 +205,14 @@ dialog #slide-controls .arrow {
  Layout the form
 ************************************************/
 
-dialog form select,
-dialog form button {
+#landing-page form select,
+#landing-page form button {
     height: 2rem;
     font-size: 1rem;
     max-width: 100%; /* otherwise select can become too wide on small displays */
 }
 
-dialog form button {
+#landing-page form button {
     padding-left: 1rem;
     padding-right: 1rem;
 }
@@ -220,13 +221,13 @@ dialog form button {
  Style the form
 ************************************************/
 
-dialog form select {
+#landing-page form select {
     background-color: var(--color-light);
     color: var(--color-dark);
     border-radius: 5px;
 }
 
-dialog form button {
+#landing-page form button {
     cursor: pointer;
 
     background-color: #289929;
@@ -237,6 +238,6 @@ dialog form button {
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-dialog form button:hover {
+#landing-page form button:hover {
     background-color: #2faf30;
 }

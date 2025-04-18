@@ -29,15 +29,15 @@ main .logo {
     grid-area: logo;
 }
 
-main #nav-mobile {
+#nav-mobile {
     grid-area: nav;
 }
 
-main #config {
+#config {
     grid-area: journey;
 }
 
-main #journey {
+#journey {
     grid-area: journey;
 }
 
@@ -45,14 +45,14 @@ main #journey {
  Mobile nav bar
 ************************************************/
 
-main #nav-mobile {
+#nav-mobile {
     display: grid;
     /* last column is smaller because only showing icon */
     grid-template-columns: repeat(3, minmax(0, 1fr)) 3rem;
 }
 
 /* tabs */
-main #nav-mobile > * {
+#nav-mobile > * {
     width: 100%;
     height: 100%;
 
@@ -62,7 +62,7 @@ main #nav-mobile > * {
     justify-content: center;
 }
 
-main #nav-mobile img {
+#nav-mobile img {
     height: 2rem;
 }
 
@@ -78,7 +78,7 @@ main #nav-mobile img {
 ***********************************************************/
 
 @media only screen and (min-width: 1000px) {
-    main {
+    #planner {
         --logo-size: 7rem;
         --logo-size-with-padding: 9rem;
         --config-width: 20rem;
@@ -105,19 +105,19 @@ main #nav-mobile img {
           "journey          journey ";
     }
 
-    main .logo {
+    #planner .logo {
         grid-area: logo;
     }
 
-    main #config {
+    #config {
         grid-area: config;
     }
 
-    main #nav-desktop {
+    #nav-desktop {
         grid-area: nav;
     }
 
-    main #journey {
+    #journey {
         grid-area: journey;
     }
 }
@@ -126,7 +126,7 @@ main #nav-mobile img {
  Desktop nav bar
 ************************************************/
 
-main #nav-desktop {
+#nav-desktop {
     padding-top: var(--navbar-padding-top);
 
     display: grid;
@@ -135,7 +135,7 @@ main #nav-desktop {
 }
 
 /* tabs */
-main #nav-desktop > * {
+#nav-desktop > * {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -144,7 +144,7 @@ main #nav-desktop > * {
 
 /* desktop nav bar is only visible on desktop devices */
 @media only screen and (max-width: 1000px) {
-    main #nav-desktop {
+    #nav-desktop {
         display: none;
     }
 }
@@ -155,29 +155,29 @@ main #nav-desktop > * {
 ************************************************/
 
 /* both in desktop and in mobile we can choose between showing calendar and summary */
-main #calendar:not(.selected),
-main #summary:not(.selected) {
+#calendar:not(.selected),
+#summary:not(.selected) {
     display: none;
 }
 
 /* on desktop config and journey are always visible, on mobile they might be hidden in a different tab */
 @media only screen and (max-width: 1000px) {
-    main #config:not(.selected),
-    main #journey:not(.selected) {
+    #config:not(.selected),
+    #journey:not(.selected) {
         display: none;
     }
 }
 
 /* no user journey yet -> a bunch of elements are not visible */
-main.no-journey #config,
-main.no-journey #journey,
-main.no-journey #nav-desktop {
+#planner.no-journey #config,
+#planner.no-journey #journey,
+#planner.no-journey #nav-desktop {
     display: none;
 }
 
 /* on desktop if there is no user journey (i.e. only logo is shown), the logo should have nice round corner */
 @media only screen and (min-width: 1000px) {
-    main.no-journey .logo {
+    #planner.no-journey .logo {
         border-bottom-right-radius: 10px;
     }
 }
@@ -186,14 +186,14 @@ main.no-journey #nav-desktop {
  Layout logo
 ************************************************/
 
-main .logo {
+#planner .logo {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-main .logo img {
+#planner .logo img {
     height: var(--logo-size);
 }
 
@@ -201,7 +201,7 @@ main .logo img {
 Layout for config
 ************************************************/
 
-main #config {
+#config {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -211,12 +211,12 @@ main #config {
 }
 
 @media only screen and (min-width: 1000px) {
-    main #config {
+    #config {
         justify-content: center;
     }
 }
 
-main #config input {
+#config input {
     width: 9rem;
     padding: 0.5rem;
 
@@ -228,7 +228,7 @@ main #config input {
 Layout journey container (containing calendar and summary)
 *********************************************************/
 
-main #journey {
+#journey {
     box-sizing: border-box;
     width: 100%;
     /* for desktop this is just 100%, for mobile it is exactly calculated to fill the viewport */
@@ -246,7 +246,7 @@ main #journey {
 
 /* on desktop there should be a scrollbar if necessary */
 @media only screen and (min-width: 1000px) {
-    main #journey {
+    #journey {
         overflow-y: auto;
     }
 }
@@ -255,12 +255,12 @@ main #journey {
 Layout for calendar
 ************************************************/
 
-main #calendar {
+#calendar {
     width: min(95%, 450px);
     height: min(100%, 700px);
 }
 
-main travel-calendar {
+#planner travel-calendar {
     height: 100%;
 }
 
@@ -268,7 +268,7 @@ main travel-calendar {
 Layout for journey summary
 ************************************************/
 
-main #summary {
+#summary {
     min-width: min(350px, 90%);
     max-width: 650px;
 
@@ -280,12 +280,12 @@ main #summary {
 
 /* on mobile there should be a scrollbar if necessary */
 @media only screen and (max-width: 1000px) {
-    main #summary {
+    #summary {
         overflow-y: auto;
     }
 }
 
-main #summary #perlschnur {
+#summary #perlschnur {
     box-sizing: border-box;
     padding: 0.5rem;
     width: 100%;

@@ -149,7 +149,7 @@
 <!-- map is placed outside of <main> because also used in <dialog> -->
 <div id="map"></div>
 
-<main class="closed no-journey"> <!-- todo these classes are very brittle -->
+<main id="planner" class="closed no-journey"> <!-- todo these classes are very brittle -->
     <a class="logo" href="/">
         <img src="images/logo.svg" alt="logo for the trans-europe-planner">
     </a>
@@ -199,7 +199,7 @@
     </div>
 
     <div id="journey">
-        <aside id="warning">
+        <aside>
             <span lang="de">Prototyp, Datenfehler sind wahrscheinlich. </span>
             <span lang="en">Prototype, data issues are very likely. </span>
 
@@ -255,12 +255,12 @@
 
 <!-- landing "page" (or rather landing modal) -->
 <!-- does not have open attribute -> by default closed -->
-<dialog>
+<dialog id="landing-page">
     <a class="logo" href="/">
         <img src="images/logo2.svg" alt="logo for the trans-europe-planner">
     </a>
 
-    <!-- utility div to make an empty cell on desktop todo onlydesktop is dead-->
+    <!-- utility div to make an empty cell on desktop -->
     <div class="only-desktop">&nbsp</div>
 
     <section id="showcase">

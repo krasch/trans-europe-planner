@@ -45,13 +45,13 @@ body {
     "footer";
 }
 
-/* main page, landing page dialog and map are all placed in the same grid cell */
-main, dialog, #map {
+/* planner, landing page dialog and map are all placed in the same grid cell */
+#planner, #landing-page, #map {
     grid-area: content;
 }
 
-/* main page and landing page dialog lie above the map */
-main, dialog {
+/* planner and landing page dialog lie above the map */
+#planner, #landing-page {
     z-index: 2;
 }
 
@@ -59,13 +59,12 @@ main, dialog {
     grid-area: footer;
 }
 
-/* when displaying the landing page, will need to not show the main page */
-main.closed {
+#planner.closed {
     display: none;
 }
 
-/* should usually not be necessary, but somehow is when dialog is placed in a grid */
-dialog:not([open]) {
+/* should usually not be necessary, but somehow is when dialog (landing page) is placed in a grid */
+#landing-page:not([open]) {
     display: none;
 }
 
