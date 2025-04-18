@@ -9,6 +9,9 @@ main {
     /* calendar needs absolute height todo */
     --calendar-height: calc(100vh - var(--logo-size-with-padding) - 10rem);
 
+    /* when #journey is not shown, main is only header-height, i.e. can interact with the map below */
+    height: min-content;
+
     display: grid;
     grid-template-columns:
         var(--logo-size-with-padding)
@@ -171,8 +174,8 @@ main.no-journey #nav-desktop {
     display: none;
 }
 
+/* on desktop if there is no user journey (i.e. only logo is shown), the logo should have nice round corner */
 @media only screen and (min-width: 1000px) {
-    /* no user journey -> on desktop logo should have a nice radius */
     main.no-journey .logo {
         border-bottom-right-radius: 10px;
     }

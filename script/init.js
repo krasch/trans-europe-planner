@@ -181,6 +181,5 @@ export async function init() {
   // wait until data lading and preparing is finished
   const data = await dataPromise;
 
-  // set up all interactions between views
   main(home, views, data);
 }
