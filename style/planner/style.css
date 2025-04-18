@@ -52,7 +52,7 @@ main #nav-desktop > * {
 }
 
 main #nav-desktop > *:first-child {
-    border-left-width: 0;
+    border-left-width: 1px;
 }
 
 main #nav-desktop > *.selected {
