@@ -61,7 +61,7 @@ function _setSelected(elements, selectedNames) {
   }
 }
 
-function initMobileNavigation(tabs, content) {
+function initMobileNavigation(tabs, content, mainContainer) {
   // on initial load, map tab is selected and all other content is hidden
   // -> map shines through from the background
   _setSelected(tabs, ["map"]);
@@ -75,18 +75,21 @@ function initMobileNavigation(tabs, content) {
 
   // clicking on calendar tab -> show container journey element and its child calendar element
   tabs.calendar.addEventListener("click", (e) => {
+    if (mainContainer.classList.contains("no-journey")) return;
     _setSelected(tabs, ["calendar"]);
     _setSelected(content, ["journey", "calendar"]);
   });
 
   // clicking on summary tab -> show container journey element and its child summary element
   tabs.summary.addEventListener("click", (e) => {
+    if (mainContainer.classList.contains("no-journey")) return;
     _setSelected(tabs, ["summary"]);
     _setSelected(content, ["journey", "summary"]);
   });
 
   // clicking on config tab -> just show config
   tabs.config.addEventListener("click", (e) => {
+    if (mainContainer.classList.contains("no-journey")) return;
     _setSelected(tabs, ["config"]);
     _setSelected(content, ["config"]);
   });
@@ -119,13 +122,13 @@ export async function init() {
     main: document.querySelector("main"),
     travelCalendar: document.querySelector("travel-calendar"),
 
-    navTabsMobile: {
+    navMobile: {
       map: document.querySelector("#nav-mobile-tab-map"),
       calendar: document.querySelector("#nav-mobile-tab-calendar"),
       summary: document.querySelector("#nav-mobile-tab-summary"),
       config: document.querySelector("#nav-mobile-tab-config"),
     },
-    navTabsDesktop: {
+    navDesktop: {
       calendar: document.querySelector("#nav-desktop-tab-calendar"),
       summary: document.querySelector("#nav-desktop-tab-summary"),
     },
@@ -166,8 +169,8 @@ export async function init() {
   if (!home) home = await showLandingPage(elements.landing);
 
   // init both navigations, CSS will pick which navigation is being shown
-  initMobileNavigation(elements.navTabsMobile, elements.tabContents);
-  initDesktopNavigation(elements.navTabsDesktop, elements.tabContents);
+  initMobileNavigation(elements.navMobile, elements.tabContents, elements.main);
+  initDesktopNavigation(elements.navDesktop, elements.tabContents);
 
   // show the <main> element
   elements.main.classList.remove("closed");
