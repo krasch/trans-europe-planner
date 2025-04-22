@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="description" content="Trans Europe Planner blog"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script defer data-domain="trans-europe-planner.eu" src="https://plausible.io/js/script.js"></script>
+
+    <!-- styles -->
+    <link rel="stylesheet" href="style/language.css">
+    <link rel="stylesheet" href="style/layout.css">
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/blog.css">
+    <link rel="stylesheet" href="style/footer.css">
+
+    <title>Trans Europe Planner Blog</title>
+</head>
+
+<body class="en">
+
+<main id="blog">
+    <a class="logo" href="/">
+        <img src="images/logo2.svg" alt="logo for the trans-europe-planner">
+    </a>
+
+    <details>
+        <summary>
+            <h2>Warum Reiseplanung neu denken?</h2>
+            <span class="date">20. Oct 2023</span>
+            <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore
+                et
+                dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+                Stet
+                clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit
+                amet,
+                consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+                erat.</p>
+        </summary>
+        <article>
+            <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore
+                et
+                dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+                Stet <a href="">LLLLL</a>
+                clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit
+                amet,
+                consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+                erat,
+                sed
+                diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no
+                sea
+                takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing
+                elitr,
+                sed
+                diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero
+                eos
+                et
+                accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
+                ipsum
+                dolor sit amet.</p>
+
+            <p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore
+                eu
+                feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum
+                zzril
+                delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing
+                elit,
+                sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+
+            <p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex
+                ea
+                commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie
+                consequat,
+                vel
+                illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit
+                praesent
+                luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>
+
+            <div class="gallery">
+                <div>
+                    <h3>Heading 1</h3>
+                    <img src="images/showcase/calendar.png"/>
+                </div>
+                <div>
+                    <h3>Heading 2</h3>
+                    <img src="images/showcase/calendar.png"/>
+                </div>
+                <div>
+                    <h3>Heading 3</h3>
+                    <img src="images/showcase/calendar.png"/>
+                </div>
+            </div>
+
+            <p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat
+                facer
+                possim assum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
+                tincidunt
+                ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation
+                ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
+        </article>
+    </details>
+</main>
+
+<footer>
+    <span class="only-desktop">
+        Trans Europe Planner -
+        <em lang="de">Einfacher mit dem Zug quer durch Europa</em>
+        <em lang="en">The simpler way to plan your train trip across Europe</em>
+    </span>
+    <a href="https://github.com/krasch/trans-europe-planner">
+        <img src="images/logos/github.svg" alt="logo for github">
+    </a>
+    <a href="https://fosstodon.org/@trans_europe_planner">
+        <img src="images/logos/mastodon.svg" alt="logo for mastodon">
+    </a>
+    <a href="about-impressum.html#about">About</a>
+    <a href="about-impressum.html#impressum">
+        <span lang="de">Impressum</span>
+        <span lang="en">Imprint</span>
+    </a>
+    <a href="about-impressum.html#data-protection">
+        <span lang="de">Datenschutz</span>
+        <span lang="en">Data protection</span>
+    </a>
+</footer>
+
+
+<script>
+    document.querySelector("main").addEventListener("click", e => {
+        // todo links are now broken
+        const closest = e.target.closest("article");
+        if (!closest) return;
+
+        closest.parentElement.open = false;
+    })
+</script>
+</body>
+</html>

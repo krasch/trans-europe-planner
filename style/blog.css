@@ -1,0 +1,122 @@
+#blog {
+    --padding: 2rem 1rem 2rem 1rem;
+    --gap: 2rem;
+}
+
+@media only screen and (min-width: 1000px) {
+    --padding: 3rem;
+    --gap: 3rem;
+}
+
+/***********************************************
+ Layout
+************************************************/
+
+#blog {
+    justify-self: center;
+
+    height: 100%;
+    width: min(60rem, 100%);
+    padding: var(--padding);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+
+    align-items: center;
+    justify-content: flex-start;
+}
+
+#blog p {
+    text-align: justify;
+}
+
+#blog .logo {
+    width: 100%;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+
+    display: flex;
+    justify-content: center;
+}
+
+#blog .logo > img {
+    height: 8rem;
+}
+
+#blog details {
+    width: 100%;
+    padding: 1rem;
+}
+
+#blog details summary::after {
+    content: "Read more ...";
+    border: 1px solid var(--color-dark);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
+#blog details[open] summary::after {
+  display: none;
+}
+
+#blog .gallery {
+    display: flex;
+    flex-direction: row;
+
+    padding: 1rem;
+    gap: 1rem;
+}
+
+#blog .gallery > * {
+    flex: 1 1 0; /* grow / shrink / basis */
+    width: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end; /* if headings are different height, images still aligned */
+    gap: 0.5rem;
+}
+
+#blog .gallery h3 {
+    font-size: 1rem;
+}
+
+#blog .gallery img {
+    max-width: 100%;
+}
+
+/***********************************************
+ Style
+************************************************/
+
+#blog {
+    color: var(--color-dark)
+}
+
+#blog .logo {
+    background-color: var(--color-dark);
+    border-radius: 1rem;
+}
+
+#blog .logo > img {
+    filter: var(--filter-white);
+}
+
+#blog details {
+    border: 1px solid var(--color-dark);
+    border-radius: 1rem;
+}
+
+#blog summary {
+  list-style: none;
+}
+#blog summary::-webkit-details-marker {
+  display: none;
+}
+
+
+#blog details .date {
+    font-style: italic;
+}

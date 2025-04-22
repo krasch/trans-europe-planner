@@ -16,7 +16,8 @@ body {
 
 h1,
 h2,
-h3 {
+h3,
+h4 {
     margin: 0;
     font-weight: normal;
 }
@@ -53,7 +54,7 @@ body {
 }
 
 /* planner, landing page dialog and map are all placed in the same grid cell */
-#planner, #landing-page, #map {
+#planner, #landing-page, #map, #blog {
     grid-area: content;
 }
 
