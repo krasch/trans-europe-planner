@@ -353,6 +353,16 @@
 
 <script>
 
+    function openAnchorArticle(){
+        const anchor = window.location.hash.substring(1);
+        if (anchor.length === 0) return; // no anchor
+
+        const article = document.querySelector("#" + anchor);
+        if (!article) return // invalid anchor
+
+        article.open = true;
+    }
+
     onload = (event) => {
         // clicking on collapse icon collapses the respective article
         const collapseIcons = document.querySelectorAll("main .icon-collapse");
@@ -360,12 +370,11 @@
             icon.addEventListener("click", e => e.target.closest("details").open = false);
         }
 
-        // anchor link? -> directly open the respective article - only works on page load, not internal links
-        const anchor = window.location.hash.substring(1);
-        if (anchor.length > 0) {
-            const article = document.querySelector("#" + anchor);
-            if (article) article.open = true;
-        }
+        // anchor link? -> directly open the respective article
+        openAnchorArticle();
+
+        // anchor link changed (because user followed an internal link)
+        window.addEventListener("hashchange", openAnchorArticle);
     };
 
 </script>
