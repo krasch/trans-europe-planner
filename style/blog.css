@@ -2,11 +2,14 @@
   --content-width: min(90%, 60rem);
   --padding-top-bottom: 2rem;
   --gap-between-articles: 2rem;
+  --font-size: 1.2rem;
+  --font-size-gallery-header: 0.8rem;
 }
 
 @media only screen and (min-width: 1000px) {
   --padding-top-bottom: 3rem;
   --gap-between-articles: 3rem;
+  --font-size-gallery-header: var(--font-size);
 }
 
 /* resetting some defaults */
@@ -71,6 +74,12 @@
   flex-direction: column;
   gap: 1rem;
   text-align: justify;
+}
+
+@media only screen and (max-width: 1000px) {
+  #blog summary h2 {
+    text-align: left;
+  }
 }
 
 #blog article {
@@ -164,7 +173,7 @@
 
 #blog {
   color: var(--color-dark);
-  font-size: 1.2rem;
+  font-size: var(--font-size);
 }
 
 #blog .logo {
@@ -181,16 +190,10 @@
 }
 
 #blog .gallery h4 {
-  font-size: 1.2rem;
+  font-size: var(--font-size-gallery-header);
   font-style: italic;
   text-align: center;
   text-wrap: balance; /* new in 2024 but does not matter too much if not available */
-}
-
-@media only screen and (max-width: 1000px) {
-  #blog .gallery h4 {
-    font-size: 0.8rem;
-  }
 }
 
 #blog details {
