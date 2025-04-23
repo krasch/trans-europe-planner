@@ -264,7 +264,8 @@
     <div class="only-desktop">&nbsp</div>
 
     <section id="showcase">
-        <h2>Reiseplanung neu gedacht</h2>
+        <h2 lang="de">Reiseplanung neu gedacht</h2>
+        <h2 lang="en">Reimagining travel planning</h2>
         <div id="slide-carousel">
             <div id="slides">
                 <div class="slide">
@@ -291,20 +292,31 @@
                 <img class="arrow" data-slide="next" src="images/icons/arrow_right.svg" alt="arrow to the right">
             </div>
         </div>
-        <a href="blog.html"><em>Blog: Warum Reiseplanung neu denken?</em></a>
+        <a href="blog.html#warum" lang="de"><em>Blog: Warum Reiseplanung neu denken?</em></a>
+        <a href="blog.html#why" lang="en"><em>Blog: Why reimagine travel planning?</em></a>
     </section>
 
     <form method="dialog">
-        <h2><label for="select-start">Wo soll deine Zugreise starten?</label></h2>
+        <h2>
+            <label for="select-start">
+                <span lang="de">Wo soll deine Zugreise starten?</span>
+                <span lang="en">Where should your train trip start?</span>
+            </label>
+        </h2>
         <select name="start" id="select-start">
             <option value="Berlin">Berlin</option>
             <option value="Hamburg">Hamburg</option>
             <option value="Köln">Köln</option>
             <option value="München">München</option>
-            <option value="" disabled>Weitere Städte bald verfügbar</option>
+            <option value="" disabled lang="de">Weitere Städte bald verfügbar</option>
+            <option value="" disabled lang="en">Additional cities soon available</option>
         </select>
-        <button type="submit">Ausprobieren!</button>
-        <em>Der Trans Europe Planner ist zurzeit noch ein Prototyp. <a href="">Mehr erfahren.</a> </em>
+        <button type="submit">
+            <span lang="de">Ausprobieren!</span>
+            <span lang="en">Try it out!</span>
+        </button>
+        <em lang="de">Der Trans Europa Planer ist zurzeit noch ein Prototyp. <a href="blog.html#status">Mehr erfahren.</a> </em>
+        <em lang="en">The Trans Europe Planner is still just a prototype. <a href="blog.html#status">Learn more.</a> </em>
     </form>
 </dialog>
 
