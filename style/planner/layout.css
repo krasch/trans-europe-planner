@@ -1,0 +1,351 @@
+/***********************************************
+ Mobile layout (default)
+************************************************/
+
+main {
+    --logo-size: 3rem;
+    --logo-size-with-padding: 4rem;
+
+    /* when #journey is not shown, main is only header-height, i.e. user can interact with the map below */
+    height: fit-content;
+
+    /* but when #journey is shown, it should fill the screen (this variable will be used later)*/
+    --journey-height: calc(var(--main-height) - var(--logo-size-with-padding));
+
+    display: grid;
+    grid-template-columns:
+        var(--logo-size-with-padding)
+        1fr;
+    grid-template-rows:
+        var(--logo-size-with-padding)
+        1fr;
+
+    grid-template-areas:
+        "logo        nav"
+        "journey     journey";
+}
+
+main .logo {
+    grid-area: logo;
+}
+
+#nav-mobile {
+    grid-area: nav;
+}
+
+#config {
+    grid-area: journey;
+}
+
+#journey {
+    grid-area: journey;
+}
+
+/***********************************************
+ Mobile nav bar
+************************************************/
+
+#nav-mobile {
+    display: grid;
+    /* last column is smaller because only showing icon */
+    grid-template-columns: repeat(3, minmax(0, 1fr)) 3rem;
+}
+
+/* tabs */
+#nav-mobile > * {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#nav-mobile img {
+    height: 2rem;
+}
+
+/* mobile nav bar is only visible on mobile devices */
+@media only screen and (min-width: 1000px) {
+    main #nav-mobile {
+        display: none;
+    }
+}
+
+/**********************************************************
+ Desktop layout -> more things are visible at the same time
+***********************************************************/
+
+@media only screen and (min-width: 1000px) {
+    #planner {
+        --logo-size: 7rem;
+        --logo-size-with-padding: 9rem;
+        --config-width: 20rem;
+        --navbar-padding-top: 2rem;
+        --navbar-height-with-padding: 4.5rem;
+
+        /* again, calculate exactly how much height remains, makes calendar behave better */
+        --journey-height: calc(var(--main-height) - var(--logo-size-with-padding) - var(--navbar-height-with-padding));
+
+        height: 100%;
+        width: calc(var(--logo-size-with-padding) + var(--config-width));
+
+        display: grid;
+        grid-template-columns:
+          var(--logo-size-with-padding)
+          var(--config-width);
+        grid-template-rows:
+          var(--logo-size-with-padding)
+          calc(var(--navbar-height-with-padding))
+          1fr;
+
+        grid-template-areas:
+          "logo             config  "
+          "nav              nav     "
+          "journey          journey ";
+    }
+
+    #planner .logo {
+        grid-area: logo;
+    }
+
+    #config {
+        grid-area: config;
+    }
+
+    #nav-desktop {
+        grid-area: nav;
+    }
+
+    #journey {
+        grid-area: journey;
+    }
+}
+
+/***********************************************
+ Desktop nav bar
+************************************************/
+
+#nav-desktop {
+    padding-top: var(--navbar-padding-top);
+
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+}
+
+/* tabs */
+#nav-desktop > * {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+/* desktop nav bar is only visible on desktop devices */
+@media only screen and (max-width: 1000px) {
+    #nav-desktop {
+        display: none;
+    }
+}
+
+
+/***********************************************
+ Selecting which content to show
+************************************************/
+
+/* both in desktop and in mobile we can choose between showing calendar and summary */
+#calendar:not(.selected),
+#summary:not(.selected) {
+    display: none;
+}
+
+/* on desktop config and journey are always visible, on mobile they might be hidden in a different tab */
+@media only screen and (max-width: 1000px) {
+    #config:not(.selected),
+    #journey:not(.selected) {
+        display: none;
+    }
+}
+
+/* no user journey yet -> a bunch of elements are not visible */
+#planner.no-journey #config,
+#planner.no-journey #journey,
+#planner.no-journey #nav-desktop {
+    display: none;
+}
+
+/* on desktop if there is no user journey (i.e. only logo is shown), the logo should have nice round corner */
+@media only screen and (min-width: 1000px) {
+    #planner.no-journey .logo {
+        border-bottom-right-radius: 10px;
+    }
+}
+
+/***********************************************
+ Layout logo
+************************************************/
+
+#planner .logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#planner .logo img {
+    height: var(--logo-size);
+}
+
+/***********************************************
+Layout for config
+************************************************/
+
+#config {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* on mobile config should cover full available height */
+@media only screen and (max-width: 1000px) {
+    #config {
+        height: var(--journey-height);
+    }
+}
+
+
+@media only screen and (min-width: 1000px) {
+    #config {
+        justify-content: center;
+    }
+}
+
+#config input {
+    width: 9rem;
+    padding: 0.5rem;
+
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+/*********************************************************
+Layout journey container (containing calendar and summary)
+*********************************************************/
+
+#journey {
+    --calendar-height: min(700px, calc(var(--journey-height)) - 7rem);
+
+    width: 100%;
+    height: var(--journey-height);
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    gap: 1rem;
+}
+
+/***********************************************
+Layout for calendar
+************************************************/
+
+#calendar {
+    width: min(95%, 450px);
+    height: var(--calendar-height);
+}
+
+#planner travel-calendar {
+    height: 100%;
+}
+
+/***********************************************
+Layout for journey summary
+************************************************/
+
+#summary {
+    min-width: min(350px, 90%);
+    max-width: 650px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+#summary #perlschnur {
+    padding: 0.5rem;
+    width: 100%;
+}
+
+
+/*******************************************************
+ the card/menu with title, used in map, perlschnur
+*******************************************************/
+
+.card {
+    --padding: 5px;
+
+    list-style-type: none;
+
+    border-radius: var(--padding);
+    overflow: hidden; /* this is necessary to really get the round corners */
+}
+
+.card h3,
+.card li {
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.card menu,
+.card ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.card h3,
+.card li > *:first-child {
+    padding-left: var(--padding);
+}
+
+.card li.hidden {
+    display: none;
+}
+
+.card button {
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    gap: 0.5rem;
+
+    text-align: left;
+    cursor: pointer;
+
+    border: 0;
+}
+
+.card img {
+    height: 1rem;
+    padding: 0;
+    margin: 0;
+}
+
+

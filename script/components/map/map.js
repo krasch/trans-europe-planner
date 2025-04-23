@@ -40,6 +40,9 @@ function asGeojsonFeatureCollection(features) {
 }
 
 export class MapWrapper {
+  #attribution;
+  #map;
+
   #callbacks = {
     selectJourney: () => {},
     showCityRoutes: () => {},
@@ -50,54 +53,93 @@ export class MapWrapper {
   #mapping;
 
   constructor(containerId, center, zoom) {
-    this.map = new maplibregl.Map({
+    this.#map = new maplibregl.Map({
       container: containerId,
-      style: "style/components/map/outdoors-modified.json",
+      style: "style/planner/components/map/outdoors-modified.json",
       center: center,
       zoom: zoom,
+      // we always start out with making the map non-interactive
+      interactive: false,
+      // will set this manually later
+      attributionControl: false,
     });
+
+    // visual indication that map is non-interactive
+    this.#map._container.style.opacity = 0.4;
+
+    // add attribution control
+    this.#attribution = new maplibregl.AttributionControl();
+    this.#map.addControl(this.#attribution);
+
+    // in non-interactive map, only show the little (i), not the full attribution
+    // (because on mobile it is in the way and very little is visible of the map anyway
+    // todo do this only on mobile?
+    this.#attribution._container.classList.remove("maplibregl-compact-show");
+
+    // turn on-load event into promise
+    const onLoadReceived = new Promise((fulfilled, rejected) => {
+      this.#map.on("load", fulfilled(this.#map));
+    });
+
+    // additional post-loading instructions
+    const configureMap = async function (map) {
+      // load additional assets
+      const image = await map.loadImage("/images/markers/circle.sdf.png");
+      map.addImage("circle", image.data, { sdf: true });
+
+      // configure map details
+      map.getCanvas().style.cursor = "default";
+    };
+
+    // after load event has been received, trigger any additional map config that needs to get done
+    // store promise in a variable that user of this class has to await before doing anything with the map
+    this.loaded = onLoadReceived.then(configureMap);
   }
 
-  async load(cities, legs) {
-    return new Promise((fulfilled, rejected) => {
-      this.map.on("load", async () => {
-        try {
-          const image = await this.map.loadImage(
-            "/images/markers/circle.sdf.png",
-          );
-          this.map.addImage("circle", image.data, { sdf: true });
+  enableMapInteraction() {
+    // reset opacity
+    this.#map._container.style.opacity = 1.0;
 
-          this.init(cities, legs);
-          fulfilled();
-        } catch (error) {
-          rejected(error);
-        }
-      });
-    });
-  }
+    // show full attribution
+    this.#attribution._container.classList.add("maplibregl-compact-show");
 
-  init(data) {
-    this.map.getCanvas().style.cursor = "default";
-    this.map.addControl(
-      new maplibregl.NavigationControl({ showCompass: false, showZoom: true }),
+    // show +/- zoom buttons
+    this.#map.addControl(
+      new maplibregl.NavigationControl({
+        showCompass: false,
+        showZoom: true,
+      }),
     );
 
-    // disable map rotation
-    this.map.dragRotate.disable();
-    this.map.touchZoomRotate.disableRotation();
-    this.map.keyboard.disableRotation();
+    this.#map.boxZoom.enable();
+    this.#map.scrollZoom.enable();
+    this.#map.dragPan.enable();
+    this.#map.keyboard.enable();
+    this.#map.doubleClickZoom.enable();
+    this.#map.touchZoomRotate.enable();
 
+    // disable map rotation
+    // this.#map.dragRotate.enable(); // simply never enable this one
+    this.#map.touchZoomRotate.disableRotation();
+    this.#map.keyboard.disableRotation();
+  }
+
+  on(eventName, callback) {
+    this.#callbacks[eventName] = callback;
+  }
+
+  initMapData(data) {
     const [cities, edges] = data;
 
     // add cities and legs sources
-    this.map.addSource("cities", {
+    this.#map.addSource("cities", {
       type: "geojson",
       data: asGeojsonFeatureCollection(
         Object.entries(cities.geo).map(cityToGeojson),
       ),
       promoteId: "id", // otherwise can not use non-numeric ids
     });
-    this.map.addSource("edges", {
+    this.#map.addSource("edges", {
       type: "geojson",
       data: asGeojsonFeatureCollection(
         Object.entries(edges.geo).map(edgeToGeojson),
@@ -106,10 +148,10 @@ export class MapWrapper {
     });
 
     // add all layers
-    for (let layer of mapStyles) this.map.addLayer(layer);
+    for (let layer of mapStyles) this.#map.addLayer(layer);
 
-    this.cities = new Cities(this.map, cities.geo, cities.defaults);
-    this.edges = new Edges(this.map, edges.geo, edges.defaults);
+    this.cities = new Cities(this.#map, cities.geo, cities.defaults);
+    this.edges = new Edges(this.#map, edges.geo, edges.defaults);
 
     this.cities.on("menuClick", (id, entry) => {
       if (entry === "showRoutes")
@@ -148,10 +190,6 @@ export class MapWrapper {
         this.#callbacks["showCalendar"](journeyId);
       }
     });
-  }
-
-  on(eventName, callback) {
-    this.#callbacks[eventName] = callback;
   }
 
   updateView(data) {

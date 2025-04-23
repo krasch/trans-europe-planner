@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="description" content="Trans Europe Planner blog"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script defer data-domain="trans-europe-planner.eu" src="https://plausible.io/js/script.js"></script>
+
+    <link rel="stylesheet" href="style/layout.css">
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/blog.css">
+    <link rel="stylesheet" href="style/footer.css">
+
+    <title>Trans Europe Planner Blog</title>
+</head>
+
+<body>
+
+<main id="blog">
+    <a class="logo" href="/">
+        <img src="images/logo2.svg" alt="logo for the trans-europe-planner">
+    </a>
+
+    <h1>Blog</h1>
+
+    <details id="why">
+        <summary>
+            <div>
+                <h2>Why are we building the Trans Europe Planner?</h2>
+                <span class="date">22 April 2024</span>
+            </div>
+            <div>
+                Yes, I want to travel more by train! Yes, I want to take train trips that lead me far and away! From
+                Hamburg to Sicily, for example, or from Warsaw to Barcelona. But why does train travel always have to be
+                so complicated...?
+            </div>
+            <div class="icon-expand">&raquo;</div>
+        </summary>
+        <article>
+            <p>I mean, it already starts when planning such a trip. For a long train trip I have loads of other criteria
+                beyond just pure travel time and number of transfers. I want to travel comfortably (whatever that means
+                for me personally). I want enough breaks, and I want buffers before important connections that I don’t
+                want to miss. I want an interesting route, perhaps nearby some places I haven’t visited before. And it
+                would be nice to have some time to stop at some of them and spend some hours there. Because, of course,
+                with such trips, the journey itself is part of the reward.
+            </p>
+            <p>Let’s have a look at some examples, three different itineraries for getting from Berlin to Naples: </p>
+
+            <div class="gallery gallery-two-col">
+                <div>
+                    <h4>Stressful, but done in a day</h4>
+                    <img src="materials/blog/2025_04_22_why/Berlin-Napoli_option1.png"
+                         alt="An itinerary showing a trip from Berlin to Napoli with transfers in Munich, Verona, Rome, all done in one day"/>
+                </div>
+                <div>
+                    <h4>More relaxed and time to explore Verona</h4>
+                    <img src="materials/blog/2025_04_22_why/Berlin-Napoli_option2.png"
+                         alt="An itinerary showing a trip from Berlin to Napoli with transfers in Munich, Verona, Rome, spread over two days"/>
+                </div>
+                <div>
+                    <h4>Visiting a friend in Zurich</h4>
+                    <img src="materials/blog/2025_04_22_why/Berlin-Napoli_option3.png"
+                         alt="An itinerary showing a trip from Berlin to Napoli with transfers in Zurich, Milano, spread over two days"/>
+                </div>
+            </div>
+
+            <p>
+                The first itinerary is pretty tight, with transfers in Munich, Verona and Rome; stressful day, yes,
+                but also all done in a day. The second one takes the same route but is more relaxed, leaving some time
+                to explore Verona. The third itinerary takes a different route, through Zurich and Milan, not doable in
+                one day, so it's less “optimal”. But it might be just the right one for me, giving me the chance to
+                visit a friend in Zurich along the way. All three are valid itineraries, suitable for different people
+                with different needs.
+            </p>
+
+            <p>
+                Problem is, now I am sitting in front of any one of those online train trip planners with one of those
+                classic from/to/when forms and want it to give me the itinerary that suits <em>me</em>. But
+                how? I can barely change anything. Only thing I can do is play around with the departure time and the
+                time spent at transfer stops. And then press the search button and hope that the trip I want has not
+                been optimised away by the routing algorithm. And so I end up where I have been so many times before,
+                with a dozen open browser tabs in front of me, manually piecing together my trip. So frustrating.
+            </p>
+
+            <p>
+                With the Trans Europe Planner we want to try out a new way of planning train trips. An explorative user
+                interface, that invites the user to try out different options, to move things around, to get a feeling
+                for how the best itinerary for them could look like.
+            </p>
+
+            <h3>Geographic exploration</h3>
+
+            <p>First up is geographic exploration – where exactly do I want to go? Because of course oftentimes we
+                don’t have an exact destination in mind, but rather a vague-ish idea like “I want to go to the French
+                Riviera” or “I want to visit the alps”. When clicking on one of the possible destinations on the map,
+                I am shown the number of transfers necessary to reach this destination and can choose to see the
+                different travel routes that are possible.
+            </p>
+
+            <img class="gif" src="materials/blog/2025_04_22_why/map.gif"
+                 alt="GIF video of map of Europe, with travel starting point set on Hamburg, user clicking on Rome and getting shown different routes">
+
+            <h3>Time exploration</h3>
+
+            <p>When clicking on one of those routes, a calendar view opens, containing an automatically generated
+                itinerary along the selected route. This itinerary can now be changed using a simple drag & drop
+                mechanism. Simply grab one of the connections (for example the train from Milan to Rome) and start
+                dragging. Horizontal lines appear that indicate alternative connections from Milan to Rome. Then drag
+                the current connection to one of those alternatives, drop it and voilá, the itinerary has been updated.
+                This can now be repeated as necessary, dragging and dropping connections around, trying things out,
+                changing the itinerary until it feels <em>just right</em>.
+            </p>
+
+            <img class="gif" src="materials/blog/2025_04_22_why/calendar.gif"
+                 alt="GIF video of calendar view for trip from Hamburg to Roma via Zürich and Milano, showing user moving connections (=calendar events) around">
+
+            <h3>Trying it out</h3>
+            <p> Try it out yourself at <a href="https://trans-europe-planner.eu">https://trans-europe-planner.eu</a>.
+                But caution, the Trans Europe Planner is still a prototype and the train connection data is kind of
+                outdated. More details regarding the current state of development can always be found
+                <a href="#status">here in the blog</a>.
+            </p>
+            <div class="icon-collapse">&laquo;</div>
+        </article>
+    </details>
+
+    <details lang="de" id="warum">
+        <summary>
+            <div>
+                <h2>Warum bauen wir den Trans Europa Planer?</h2>
+                <span class="date">22 April 2024</span>
+            </div>
+            <div>
+                Ja, ich will mehr mit dem Zug fahren! Ja, gerne auch weiter weg, z.B. von Hamburg nach Sizilien, oder
+                von Warschau nach Barcelona. Aber warum muss das alles immer so kompliziert sein...?
+            </div>
+            <div class="icon-expand">&raquo;</div>
+        </summary>
+        <article>
+            <p>Es fängt ja schon bei der Planung an. Wenn ich so eine lange Reise plane, habe ich ja noch viele andere
+                Kriterien außer der reinen Reisezeit und der Anzahl der Umstiege. Ich will Reisekomfort (was auch immer
+                das für mich heisst). Ich will genug Pausen und Puffer vor wichtigen Verbindungen. Ich will einen
+                interessanten Reiseweg, vielleicht irgendwo lang, wo ich noch nie war. Und Zeit, dort unterwegs auch was
+                zu erleben. Denn bei solchen Reisen ist ja immer auch ein bisschen der Weg das Ziel.
+            </p>
+            <p>Hier, zum Beispiel, mal drei verschiedene Varianten um von Berlin nach Neapel zu kommen:</p>
+
+            <div class="gallery gallery-two-col">
+                <div>
+                    <h4>Stressig, aber an einem Tag geschafft</h4>
+                    <img src="materials/blog/2025_04_22_why/Berlin-Napoli_option1.png"
+                         alt="An itinerary showing a trip from Berlin to Napoli with transfers in Munich, Verona, Rome, all done in one day"/>
+                </div>
+                <div>
+                    <h4>Entspannter und Zeit Verona zu erkunden</h4>
+                    <img src="materials/blog/2025_04_22_why/Berlin-Napoli_option2.png"
+                         alt="An itinerary showing a trip from Berlin to Napoli with transfers in Munich, Verona, Rome, spread over two days"/>
+                </div>
+                <div>
+                    <h4>Unterwegs Freundin in Zürich besuchen</h4>
+                    <img src="materials/blog/2025_04_22_why/Berlin-Napoli_option3.png"
+                         alt="An itinerary showing a trip from Berlin to Napoli with transfers in Zurich, Milano, spread over two days"/>
+                </div>
+            </div>
+
+            <p>Bei der allerersten Variante geht es wirklich Zack, Zack, Zack. Umstieg in München, Verona, Rom;
+                stressiger Tag, ja, aber eben auch an einem Tag geschafft. Die zweite Variante ist entspannter und lässt
+                Zeit, auch noch Verona zu entdecken. Variante 3 nimmt eine andere Route über Zürich und Mailand, nicht
+                an einem Tag zu schaffen und deswegen eigentlich weniger optimal. Aber wenn ich unterwegs eine Freundin
+                in Zürich besuchen kann, dann für mich vielleicht doch genau richtig. Alle drei Varianten sind
+                echte, existierende Reisemöglichkeiten, passend für unterschiedliche Menschen mit unterschiedlichen
+                Bedürfnissen.
+            </p>
+
+            <p>
+                Aber das Problem ist doch, jetzt sitze ich da vor so einem klassischen Von/Nach/Wann-Formular bei
+                irgendeinem dieser Online-Reiseplaner und will dem genau die Reise entlocken, die für <em>mich</em>
+                passt. Aber wie? Ich kann ja fast nix anpassen, höchstens ein bisschen an der Abfahrtszeit oder den
+                Zwischenhalten rumschrauben, nochmal auf "Suchen" klicken und hoffen, dass es diesmal passt und dass
+                mein Reiseplan nicht wegoptimiert wurde vom Routingalgorithmus. Und so sitze ich am Ende dann doch
+                wieder da, mit einem Dutzend offener Tabs, und stückle mir meine Reise selber zusammen, nach meinen
+                Bedürfnissen. Frustrierend.
+            </p>
+
+            <p>Mit dem Trans Europa Planer wollen wir mal was Neues ausprobieren. Ein exploratives User Interface, zum
+                Ausprobieren, zum Hin- und Herschieben, zum Schauen, ob die Reise sich gut anfühlt oder vielleicht doch
+                zu stressig wäre.
+            </p>
+
+            <h3>Geografische Exploration</h3>
+
+            <p>Zunächst kann geografisch exploriert werden – wo soll es eigentlich genau hingehen? Oft hat man ja gar
+                nicht ein exaktes Reiseziel im Kopf, sondern eher sowas wie „Ich will in die Bretagne“ oder „Ich will in
+                die Alpen“. Klickt man auf eines der Reiseziele auf der Karte, wird angezeigt, mit wie vielen Umstiegen
+                dieses Ziel erreichbar ist, und man kann sich die verschiedenen Reiserouten anzeigen lassen.
+            </p>
+
+            <img class="gif" src="materials/blog/2025_04_22_why/map.gif"
+                 alt="GIF video of map of Europe, with travel starting point set on Hamburg, user clicking on Rome and getting shown different routes">
+
+            <h3>Zeitliche Exploration</h3>
+
+            <p>Klickt man auf eine der Reiserouten, öffnet sich eine Kalenderansicht mit einem automatisch generierten
+                Reisevorschlag. Diesen kann man jetzt durch Drag&Drop selbst anpassen. Dazu einfach eine der
+                Verbindungen (bspw. den Zug von Mailand nach Rom) schnappen und anfangen zu ziehen. Es erscheinen
+                horizontale Linien, die anzeigen, wann es alternative Verbindungen von Mailand nach Rom gibt. Dann
+                einfach die aktuelle Verbindung zu einer dieser Alternativen ziehen und loslassen – und schon ist der
+                Reiseplan angepasst. Dies kann man jetzt mit den anderen Verbindungen wiederholen, hin- und herschieben,
+                ausprobieren, anpassen, bis sich der Reiseplan gut anfühlt.
+            </p>
+
+            <img class="gif" src="materials/blog/2025_04_22_why/calendar.gif"
+                 alt="GIF video of calendar view for trip from Hamburg to Roma via Zürich and Milano, showing user moving connections (=calendar events) around">
+
+            <h3>Ausprobieren</h3>
+            <p>Probiert’s doch gern mal selber aus unter <a href="https://trans-europe-planner.eu">https://trans-europe-planner.eu</a>.
+                Aber Achtung, aktuell ist der Trans Europe Planner noch ein Prototyp und die Fahrplandaten sind nicht
+                die allerneuesten. Details zum aktuellen Entwicklungsstand gibt es immer
+                <a href="#status">hier im Blog</a>.
+            </p>
+            <div class="icon-collapse">&laquo;</div>
+        </article>
+    </details>
+
+    <details id="status">
+        <summary>
+            <div>
+                <h2>Current development status</h2>
+                <span class="date">last updated on 30 March 2025</span>
+            </div>
+            <em>
+                This post will now and then get updated with new information about the development status of this
+                project.
+            </em>
+            <div class="icon-expand">&raquo;</div>
+        </summary>
+        <article>
+            <h3>Data</h3>
+            <p>
+                So far, we have put a lot of focus on developing the user interface, and very little focus on working on
+                the data. Specifically that means:
+            </p>
+            <ul>
+                <li>There is only support for 4 start cities and circa 20 destination cities.</li>
+                <li>Outside of Germany, only connections relevant for reaching the destination cities are included.</li>
+                <li>Train connection data for Germany has last been updated in March 2025, connection data outside of
+                    Germany is from November 2024.
+                </li>
+                <li>A simplification has been made to simply pretend that every train runs the same on every day. That
+                    is, of course, quite absurd.
+                </li>
+            </ul>
+            <p>Improving the data situation is currently the main focus in the project.</p>
+
+            <h3>User Interface</h3>
+            <p>The user interface is in pretty good shape already. Well, at least good enough to get a feel for what
+                could be possible with this type of interactive trip planning :-). Still, there are some important
+                things that are still missing or are not all that nice today:</p>
+            <ul>
+                <li>The layout and flow on mobile devices is pretty terrible. This is currently being worked on.</li>
+                <li>It would be nice to be able to drag around routes on the map.</li>
+                <li>Sometimes train connections are so short that not all info fits into the calendar event. It should
+                    be possible to just click on the event to reveal all the relevant info.
+                </li>
+                <li>Accessibility is severely lacking at the moment.</li>
+            </ul>
+
+            <p>Plus a bunch of smaller bits and bobs and refinements, of course.</p>
+
+            <p>Do you have any other feature requests or bug reports? Please create an issue in our
+                <a href="https://github.com/krasch/trans-europe-planner/issues">github repository</a> or
+                email info@trains-europe-planner.eu
+            </p>
+
+            <div class="icon-collapse">&laquo;</div>
+        </article>
+    </details>
+
+    <details id="FOSDEM2025">
+        <summary>
+            <div>
+                <h2>Video of FOSDEM 2025 talk</h2>
+                <span class="date">12 February 2025</span>
+            </div>
+            <div>
+                We went to FOSDEM 2025 conference to talk about the Trans Europe Planner. Lovely audience, loads of interesting
+                questions, recording can be watched here:
+            </div>
+            <div class="icon-expand">&raquo;</div>
+        </summary>
+        <article>
+            <aside>(FOSDEM releases webm videos -> might not work on Apple devices)</aside>
+            <video controls>
+                <source src="https://video.fosdem.org/2025/k4601/fosdem-2025-6205-explorative-routing.av1.webm"/>
+            </video>
+            <div class="icon-collapse">&laquo;</div>
+        </article>
+    </details>
+
+    <details id="demo">
+        <summary>
+            <div>
+                <h2>Demo video showcasing the Trans Europe Planner</h2>
+                <span class="date">30 January 2025</span>
+            </div>
+            <div>
+                Just a little gif-like video, 51 seconds long, that explains what we are doing and shows the calendar
+                drag&drop feature in action. Great to get a first sense of the project.
+            </div>
+            <div class="icon-expand">&raquo;</div>
+        </summary>
+        <article>
+            <video controls>
+                <source src="materials/blog/2025_01_30_demo/trans-europe-planner.mp4"/>
+            </video>
+            <div class="icon-collapse">&laquo;</div>
+        </article>
+    </details>
+
+    <h1>Supported by</h1>
+    <div class="support">
+        <a href="https://prototypefund.de/">
+            <img class="logo-other" src="images/logos/PrototypeFund-P-Logo.png" alt="Logo des prototpyefunds"/>
+        </a>
+        <a href="https://www.bmbf.en/">
+            <img src="images/logos/bmbf_en.jpg" alt="Logo of the German federal ministry of education and research"/>
+        </a>
+    </div>
+</main>
+
+<footer>
+    <span class="only-desktop">
+        Trans Europe Planner - <em>The simpler way to plan your train trip across Europe</em>
+    </span>
+    <a href="https://github.com/krasch/trans-europe-planner">
+        <img src="images/logos/github.svg" alt="logo for github">
+    </a>
+    <a href="https://fosstodon.org/@trans_europe_planner">
+        <img src="images/logos/mastodon.svg" alt="logo for mastodon">
+    </a>
+    <a href="blog.html">
+        <span>Blog</span>
+    </a>
+    <a href="imprint.html#impressum">
+        <span>Imprint</span>
+    </a>
+    <a href="imprint.html#data-protection">
+        <span>Data protection</span>
+    </a>
+</footer>
+
+
+<script>
+
+    function openAnchorArticle(){
+        const anchor = window.location.hash.substring(1);
+        if (anchor.length === 0) return; // no anchor
+
+        const article = document.querySelector("#" + anchor);
+        if (!article) return // invalid anchor
+
+        article.open = true;
+    }
+
+    onload = (event) => {
+        // clicking on collapse icon collapses the respective article
+        const collapseIcons = document.querySelectorAll("main .icon-collapse");
+        for (let icon of collapseIcons) {
+            icon.addEventListener("click", e => e.target.closest("details").open = false);
+        }
+
+        // anchor link? -> directly open the respective article
+        openAnchorArticle();
+
+        // anchor link changed (because user followed an internal link)
+        window.addEventListener("hashchange", openAnchorArticle);
+    };
+
+</script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+/***********************************************
+ Style mobile nav bar
+************************************************/
+
+#nav-mobile > * {
+    cursor: pointer;
+    background-color: var(--color-dark);
+    color: var(--color-light);
+}
+
+#nav-mobile img {
+    filter: var(--filter-white);
+}
+
+/* tabs are greyed out when there is not yet any user journey */
+#planner.no-journey #nav-mobile > * {
+    cursor: default;
+    color: var(--color-dark-desaturated);
+}
+
+#planner.no-journey #nav-mobile img {
+    filter: var(--filter-dark-desaturated);
+}
+
+/* inverted style for the tab that user has selected (=last clicked on) */
+#nav-mobile > *.selected {
+    color: var(--color-dark);
+    background-color: var(--color-light);
+}
+
+#nav-mobile > *.selected img {
+    filter: var(--filter-dark);
+}
+
+/***********************************************
+ Style desktop nav bar
+************************************************/
+
+#nav-desktop {
+    color: var(--color-dark);
+    background-color: var(--color-light);
+}
+
+/* on desktop nav tabs look like folders */
+#nav-desktop > * {
+    cursor: pointer;
+
+    border: 1px solid var(--color-dark);
+    border-left-width: 0;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+#nav-desktop > *:first-child {
+    border-left-width: 1px;
+}
+
+#nav-desktop > *.selected {
+    border-bottom-width: 0;
+}
+
+/***********************************************
+ Style logo
+************************************************/
+
+#planner .logo {
+    background-color: var(--color-dark);
+    color: var(--color-light);
+}
+
+#planner .logo img {
+    filter: var(--filter-white);
+}
+
+/***********************************************
+ Style config
+************************************************/
+
+#config {
+    color: var(--color-light);
+    background-color: var(--color-dark);
+}
+
+#config a {
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+#config a:hover {
+    text-shadow: 2px 2px 3px lightgrey;
+}
+
+#config input {
+    border: 1px solid var(--color-dark);
+    border-radius: 5px;
+
+    color: var(--color-dark);
+}
+
+/*********************************************************
+Style journey container
+*********************************************************/
+
+#journey {
+    color: var(--color-dark);
+    background-color: var(--color-light);
+}
+
+/* additional border on desktop to help with tabbing-folder look */
+@media only screen and (min-width: 1000px) {
+   #journey {
+        border: 1px solid var(--color-dark);
+        border-top: 0; /* 0 because of tabs above that have their own border */
+    }
+}
+
+/***********************************************
+Style calendar
+************************************************/
+
+travel-calendar {
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+}
+
+/***********************************************
+Style journey summary
+************************************************/
+
+#summary {
+    color: var(--color-dark);
+}
+
+/***********************************************
+Style warning and booking buttons
+************************************************/
+
+#journey aside {
+    color: darkgray;
+    font-style: italic;
+}
+
+#journey aside a {
+    text-decoration: underline;
+    cursor: pointer;
+}

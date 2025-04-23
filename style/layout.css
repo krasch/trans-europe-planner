@@ -1,394 +1,101 @@
-h1,
-h2,
-h3 {
-    margin: 0;
-    font-weight: normal;
-}
-
-.hidden {
-    visibility: hidden;
-}
+/***********************************************
+ Resetting some defaults
+************************************************/
 
 html {
-    height: 100%;
+  height: 100%;
 }
 
 body {
-    height: 100%;
-    width: 100%;
+  height: 100%;
+  width: 100%;
 
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: normal;
+}
+
+body * {
+  box-sizing: border-box;
+}
+
+dialog {
+  /* too many annoying defaults, let's reset all of them */
+  all: inherit;
+}
+
+/***********************************************
+Overall layout
+************************************************/
+
+body {
+  --footer-height: 2.5rem;
+  /* two reasons why we will later need this in planner
+       1. to be able to calculate exactly how much space we must take, in particular on mobile, to cover map
+       2. to deal with the calendar, which behaves best when it gets an absolute height
+     */
+  --main-height: calc(100vh - var(--footer-height));
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows:
+    1fr
+    var(--footer-height);
+  grid-template-areas:
+    "content"
+    "footer";
+}
+
+#map {
+  grid-area: content;
+}
+
+/* planner blog imprint all have a <main> element that is placed
+   in the same grid cell as map but above it */
+main,
+#landing-page {
+  grid-area: content;
+  z-index: 2;
+}
+
+#footer {
+  grid-area: footer;
+}
+
+#planner.closed {
+  display: none;
+}
+
+/* should usually not be necessary, but somehow is when dialog (landing page) is placed in a grid */
+#landing-page:not([open]) {
+  display: none;
+}
+
+/***********************************************
+ Utility stuff
+************************************************/
+
+.hidden {
+  visibility: hidden;
 }
 
 /* some elements should only be visible on mobile layout */
 @media only screen and (min-width: 1000px) {
-    .only-mobile {
-        display: none;
-    }
+  .only-mobile {
+    display: none;
+  }
 }
 
 /* and some only on desktop layout */
 @media only screen and (max-width: 1000px) {
-    .only-desktop {
-        display: none;
-    }
-}
-
-/***********************************************
- Mobile layout is default (and much simpler)
-************************************************/
-
-body {
-    --logo-size: 3rem;
-    --logo-size-with-padding: 4rem;
-
-    /* calendar needs absolute height todo */
-    --calendar-height: calc(100vh - var(--logo-size-with-padding) - 10rem);
-
-    display: grid;
-    grid-template-columns:
-                var(--logo-size-with-padding)
-                1fr; /* nav */
-    grid-template-rows:
-                var(--logo-size-with-padding)
-                1fr     /* main content */
-                2rem; /* footer */
-
-    grid-template-areas:
-        "logo        nav"
-        "content     content"
-        "footer      footer"
-}
-
-#logo {
-    grid-area: logo;
-}
-
-nav {
-    grid-area: nav
-}
-
-#warning {
-    grid-area: warning;
-}
-
-#share-book {
-    grid-area: share-book;
-}
-
-/* they all share this space and will be selected by tabs */
-#journey, #map, #config {
-    grid-area: content;
-}
-
-footer {
-    grid-area: footer;
-}
-
-#pad {
+  .only-desktop {
     display: none;
-}
-
-
-/*****************************************************************************
- Desktop layout: map and config get their proper space, are no longer in tabs
-*****************************************************************************/
-
-@media only screen and (min-width: 1000px) {
-    body {
-
-        --logo-size: 7rem;
-        --logo-size-with-padding: 9rem;
-
-        display: grid;
-        grid-template-columns:
-          var(--logo-size-with-padding)
-          20rem                /* date picker*/
-          1fr; /* map */
-        grid-template-rows:
-          var(--logo-size-with-padding)
-          2rem                 /* padding before nav */
-          2.5rem               /* nav */
-          1fr                  /* journey calendar / summary */
-          2rem; /* footer */
-
-        grid-template-areas:
-    "logo             config           map"
-    "pad              pad              map"
-    "nav              nav              map"
-    "journey          journey          map"
-    "footer           footer           footer";
-    }
-
-    #map {
-        grid-row: 1/5;
-        grid-column: 1/4;
-    }
-
-    #config {
-        grid-area: config;
-    }
-
-    #pad {
-        grid-area: pad;
-        display: block;
-    }
-
-    nav {
-        grid-area: nav;
-    }
-
-    #journey {
-        grid-area: journey;
-    }
-
-    /* are placed on top of map */
-    #logo, #config, nav, nav::before, #journey {
-        z-index: 2;
-    }
-}
-
-/***********************************************
- Choosing content that should be shown
-************************************************/
-
-/* on mobile, only the content for the respective tab is visible */
-@media only screen and (max-width: 1000px) {
-    #map:not(.active),
-    #config:not(.active),
-    #summary:not(.active),
-    #calendar:not(.active),
-    #warning:not(.active),
-    #share-book:not(.active) {
-        display: none;
-    }
-}
-
-
-/* on desktop, map and config are always visible */
-@media only screen and (min-width: 1000px) {
-    #summary:not(.active),
-    #calendar:not(.active),
-    #warning:not(.active),
-    #share-book:not(.active) {
-        display: none;
-    }
-}
-
-/***********************************************
- Navigation tab layout
-************************************************/
-
-nav {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(0, 1fr);
-
-    cursor: pointer;
-}
-
-/* on mobile last column (config icon) can be smaller */
-@media only screen and (max-width: 1000px) {
-    nav {
-        grid-template-columns: repeat(3, minmax(0, 1fr)) 3rem;
-    }
-}
-
-/* on mobile tabs can be hidden */
-@media only screen and (max-width: 1000px) {
-    nav > *.tab-hidden > * {
-        display: none;
-    }
-}
-
-/* horizontally and vertically center text/images in tab */
-nav > * {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-nav img {
-    height: 2rem;
-}
-
-/***********************************************
- Layout logo
-************************************************/
-
-#logo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-#logo img {
-    height: var(--logo-size);
-}
-
-/*********************************************************
-Layout journey container (containing calendar and summary)
-*********************************************************/
-
-#journey {
-    width: calc(100% - 1);
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    align-content: center;
-
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    gap: 1rem;
-}
-
-/* on desktop there should be a scrollbar if necessary */
-@media only screen and (min-width: 1000px) {
-    #journey {
-        overflow-y: scroll;
-    }
-}
-
-/***********************************************
-Layout for calendar
-************************************************/
-
-#calendar {
-    max-width: min(95%, 450px);
-}
-
-/* on mobile, calendar should take up the full height, without scrollbar */
-travel-calendar {
-    height: var(--calendar-height);
-}
-
-/* on desktop it should not be too tall and we already have a scrollbar on the container */
-@media only screen and (min-width: 1000px) {
-    travel-calendar {
-        height: 700px;
-    }
-}
-
-/***********************************************
-Layout for journey summary
-************************************************/
-
-#summary {
-    min-width: min(350px, 90%);
-    max-width: 650px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-}
-
-#summary #perlschnur {
-    padding: 0.5rem;
-    width: 100%;
-}
-
-/***********************************************
-Layout for config
-************************************************/
-
-#config {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-
-    align-items: center;
-    justify-content: flex-start;
-}
-
-@media only screen and (min-width: 1000px) {
-    #config {
-        justify-content: center;
-    }
-}
-
-
-/***********************************************
-Layout for footer
-************************************************/
-
-footer {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-
-    align-items: center;
-    justify-content: flex-end;
-
-    padding-right: 2rem;
-}
-
-footer img {
-    max-height: 1.3rem;
-}
-
-
-/*******************************************************
- the card/menu with title, used in map, perlschnur
-*******************************************************/
-
-.card {
-    --padding: 5px;
-
-    list-style-type: none;
-
-    border-radius: var(--padding);
-    overflow: hidden; /* this is necessary to really get the round corners */
-}
-
-.card h3,
-.card li {
-    width: 100%;
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.card menu,
-.card ul {
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-}
-
-.card h3,
-.card li > *:first-child {
-    padding-left: var(--padding);
-}
-
-.card li.hidden {
-    display: none;
-}
-
-.card button {
-    height: 100%;
-    width: 100%;
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    gap: 0.5rem;
-
-    text-align: left;
-    cursor: pointer;
-
-    border: 0;
-}
-
-.card img {
-    height: 1rem;
-    padding: 0;
-    margin: 0;
+  }
 }

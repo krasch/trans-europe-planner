@@ -1,0 +1,43 @@
+/***********************************************
+Layout footer
+************************************************/
+
+footer {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+
+  align-items: center;
+  justify-content: center;
+
+  padding-right: 2rem;
+  overflow-x: hidden;
+}
+
+/* vertically center images */
+footer a {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+footer img {
+  max-height: 1.3rem;
+}
+
+/***********************************************
+  Style footer
+************************************************/
+
+footer {
+  background-color: var(--color-dark);
+  color: var(--color-light);
+}
+
+footer a {
+  color: var(--color-light);
+}
+
+footer img {
+  filter: var(--filter-white);
+}

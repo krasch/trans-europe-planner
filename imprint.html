@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="description" content="Trans Europe Planner Imprint"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title content="Trans Europe Planner Imprint / Impressum"></title>
+
+    <link rel="stylesheet" href="style/layout.css">
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/footer.css">
+
+    <!--style>
+        body {
+            font-family: helvetica, arial, sans-serif;
+            width: 50rem;
+            margin-left: auto;
+            margin-right: auto;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+        }
+
+        h1, h3 {
+            text-align: center;
+        }
+        p {
+            text-align: justify;
+        }
+
+        .logo {
+            align-self: center;
+        }
+
+        .logo img {
+            filter: invert(32%) sepia(12%) saturate(3883%) hue-rotate(173deg) brightness(95%) contrast(86%);
+            height: 6rem;
+        }
+
+        .support {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .support img {
+            max-height: 8rem;
+        }
+    </style-->
+    <style>
+
+        main {
+            --content-width: min(90%, 30rem);
+
+            width: 100%;
+            height: 100%;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+
+            color: var(--color-dark);
+        }
+
+        @media only screen and (min-width: 1000px) {
+            main {
+                overflow-y: auto;
+            }
+        }
+
+        main > * {
+            width: var(--content-width);
+            text-align: center;
+        }
+
+        section {
+            padding: 1rem;
+            border: 1px solid var(--color-dark);
+            border-radius: 1rem;
+        }
+
+
+        main .logo {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+
+            display: flex;
+            justify-content: center;
+
+            background-color: var(--color-dark);
+            border-radius: 1rem;
+        }
+
+        main .logo > img {
+            height: 8rem;
+            filter: var(--filter-white);
+        }
+
+        .support {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        main .support img {
+            max-height: 8rem;
+        }
+
+    </style>
+</head>
+<body>
+
+<main>
+
+    <a class="logo" href="/">
+        <img src="images/logo2.svg" alt="logo for the trans-europe-planner">
+    </a>
+
+    <section>
+        <h1 id="impressum">Impressum / Imprint</h1>
+
+        <p>Angaben gemäß § 5 DDG </p>
+
+        <p>Katharina Rasch <br/>
+            c/o Weserland <br/>
+            Weserstraße 21<br/>
+            12045 Berlin<br/></p>
+
+        <p>Vertreten durch: <br/>
+            Katharina Rasch</p>
+
+        <p>
+            Kontakt: <br/>
+            Telefon: +493099196284 <br/>
+            E-Mail: kat@krasch.io
+        </p>
+    </section>
+
+    <section lang="de">
+        <h1 id="data-protection">Datenschutz</h1>
+
+        <p>Die Reiseplanung findet komplett im Browser statt. Keinerlei Reisedaten oder persönliche Daten
+            von Nutzer*innen werden an einen Server gesendet, es werden auch nirgendwo solche Daten gespeichert.</p>
+
+        <p>
+            Anonyme Nutzungsstatistiken werden gesammelt durch <a href="https://plausible.io/">https://plausible.io/</a>,
+            dies sind: Browser, Gerätetyp (Desktop oder Mobile), Betriebssystem, Land, HTTP Referrer. Mehr Details gibt
+            es
+            unter
+            <a href="https://plausible.io/data-policy#first-thing-first-what-we-collect-and-what-we-use-it-for">
+                https://plausible.io/data-policy#first-thing-first-what-we-collect-and-what-we-use-it-for
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h1>Data protection</h1>
+
+        <p>Travel planning happens completely in the browser. Neither trip info nor any personal user data are being
+            sent to a server, such data is also not stored anywhere. </p>
+
+        <p>
+            Anonymous usage statistics are being collected through <a
+                href="https://plausible.io/">https://plausible.io/</a>,
+            these are: browser, device type (desktop or mobile), operating system, country, HTTP Referrer. A full list
+            can be found at <a
+                href="https://plausible.io/data-policy#first-thing-first-what-we-collect-and-what-we-use-it-for">
+            https://plausible.io/data-policy#first-thing-first-what-we-collect-and-what-we-use-it-for
+        </a>
+        </p>
+
+    </section>
+    <section>
+        <h1>Supported by / unterstützt vom</h1>
+        <p class="support">
+            <a href="https://prototypefund.de/">
+                <img class="logo-other" src="images/logos/PrototypeFund-P-Logo.png" alt="Logo des prototpyefunds"/>
+            </a>
+            <a href="https://www.bmbf.en/">
+                <img src="images/logos/bmbf_en.jpg"
+                     alt="Logo of the German federal ministry of education and research"/>
+            </a>
+        </p>
+    </section>
+</main>
+
+<footer>
+    <span class="only-desktop">
+        Trans Europe Planner - <em>The simpler way to plan your train trip across Europe</em>
+    </span>
+    <a href="https://github.com/krasch/trans-europe-planner">
+        <img src="images/logos/github.svg" alt="logo for github">
+    </a>
+    <a href="https://fosstodon.org/@trans_europe_planner">
+        <img src="images/logos/mastodon.svg" alt="logo for mastodon">
+    </a>
+    <a href="blog.html">
+        <span>Blog</span>
+    </a>
+    <a href="imprint.html#impressum">
+        <span>Imprint</span>
+    </a>
+    <a href="imprint.html#data-protection">
+        <span>Data protection</span>
+    </a>
+</footer>
+
+</body>
+</html>

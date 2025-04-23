@@ -1,3 +1,7 @@
+/***********************************************
+ Colors and other common stylings
+************************************************/
+
 body {
     font-family: helvetica, arial, sans-serif;
 
@@ -10,11 +14,18 @@ body {
 
     --color-light: white;
     --color-dark: #286099;
+    --color-dark-desaturated: #477099;
 
     /* https://codepen.io/sosuke/pen/Pjoqqp */
     --filter-white: invert(100%);
     /* #286099 */
     --filter-dark: invert(32%) sepia(12%) saturate(3883%) hue-rotate(173deg) brightness(95%) contrast(86%);
+    /* 477099 */
+    --filter-dark-desaturated: invert(44%) sepia(13%) saturate(1760%) hue-rotate(169deg) brightness(88%) contrast(84%);
+    /* #D3D3D3 */
+    --filter-light-gray: invert(97%) sepia(0%) saturate(0%) hue-rotate(191deg) brightness(87%) contrast(95%);
+    /* #A9A9A9 */
+    --filter-dark-gray: invert(67%) sepia(32%) saturate(0%) hue-rotate(141deg) brightness(96%) contrast(89%);
 }
 
 button {
@@ -24,149 +35,4 @@ button {
 input {
     font-size: 1rem;
     font-family: helvetica, arial, sans-serif;
-}
-
-/***********************************************
- Style backgrounds
-************************************************/
-
-/* on desktop, need to put a background for all sidebar elements because are above map */
-@media only screen and (min-width: 1000px) {
-    nav, #journey, #pad {
-        background-color: white;
-        opacity: 95%;
-    }
-
-}
-
-/***********************************************
- Style navigation tabs
-************************************************/
-
-nav > * {
-    color: var(--color-light);
-    background-color: var(--color-dark);
-
-    text-decoration: none;
-    text-align: center;
-}
-
-nav > * > img {
-    filter: var(--filter-white);
-}
-
-/* on mobile, active tab element is inverted */
-@media only screen and (max-width: 1000px) {
-    nav > *.active {
-        color: var(--color-dark);
-        background-color: var(--color-light);
-    }
-
-    nav > *.active > img {
-        filter: var(--filter-dark);
-    }
-}
-
-/* on desktop, tabs look like folders */
-@media only screen and (min-width: 1000px) {
-    nav > * {
-        color: var(--color-dark);
-        background-color: var(--color-light);
-
-        border-color: var(--color-dark);
-        border-style: solid;
-        border-width: 1px 1px 1px 0; /* border at top/right/bottom */
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-    }
-
-    nav > #tab-calendar { /* todo assumes calendar is left-most tab */
-        border-left-width: 1px;
-    }
-
-    nav > *.active {
-        border-bottom-width: 0;
-    }
-}
-
-/***********************************************
- Style logo
-************************************************/
-
-#logo {
-    background-color: var(--color-dark);
-}
-
-#logo img {
-    filter: var(--filter-white);
-}
-
-@media only screen and (min-width: 1000px) {
-    /* on desktop, logo should have a bottom right radius */
-    #logo {
-        border-bottom-right-radius: 1rem;
-    }
-}
-
-/*********************************************************
-Style journey container (containing calendar and summary)
-*********************************************************/
-
-/* additional border on desktop to help with tabbing-folder look */
-@media only screen and (min-width: 1000px) {
-    #journey {
-        border: 1px solid var(--color-dark);
-        border-top: 0; /* tabs */
-    }
-}
-
-
-
-/***********************************************
-Style calendar
-************************************************/
-
-travel-calendar {
-    border: 1px solid lightgrey;
-    border-radius: 5px;
-}
-
-
-/***********************************************
-Summary
-************************************************/
-
-#summary {
-  color: var(--color-dark);
-}
-
-/***********************************************
-Style warning and booking buttons
-************************************************/
-
-#warning {
-    color: darkgray;
-    font-style: italic;
-}
-
-#warning a {
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-/***********************************************
-  Style footer
-************************************************/
-
-footer {
-    background-color: var(--color-dark);
-    color: var(--color-light);
-}
-
-footer a {
-    color: var(--color-light);
-}
-
-footer img {
-    filter: var(--filter-white);
 }

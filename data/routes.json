@@ -1,4 +1,4 @@
-export const ROUTES = {
+{
   "Berlin->Amsterdam": [
     "//Berlin (05:54) -> Amsterdam (12:03, IC240-0)",
     "//Berlin (07:53) -> Amsterdam (14:03, IC148-0)",
@@ -6,26 +6,30 @@ export const ROUTES = {
     "//Berlin (11:53) -> Amsterdam (18:03, IC144-0)",
     "//Berlin (13:53) -> Amsterdam (20:00, IC142-0)",
     "//Berlin (15:53) -> Amsterdam (22:00, IC140-0)",
-    ["Berlin->Amsterdam"],
+    [
+      "Berlin->Amsterdam"
+    ]
   ],
   "Berlin->Bratislava": [
     "//Berlin (09:16) -> Bratislava (18:02, EC173-0)",
-    ["Berlin->Bratislava"],
+    [
+      "Berlin->Bratislava"
+    ]
   ],
   "Berlin->Bruxelles": [
     "//Berlin (00:11) -> Köln (06:49, 3871-0) -> Bruxelles (09:26, ICE18-0)",
     "//Berlin (08:54) -> Köln (14:21, 8177-0) -> Bruxelles (17:26, ICE14-0)",
     "//Berlin (16:45) -> Köln (21:41, 9220-0) -> Bruxelles (09:26 (Day 2), ICE18-1)",
-    ["Berlin->Köln", "Köln->Bruxelles"],
-    "//Berlin (06:44) -> Dortmund (10:25, 8563-0) -> Köln (11:50, ICE29-0) -> Bruxelles (15:26, ICE314-0)",
-    "//Berlin (08:44) -> Dortmund (12:25, 445-0) -> Köln (13:49, 5578-0) -> Bruxelles (17:26, ICE14-0)",
-    ["Berlin->Dortmund", "Dortmund->Köln", "Köln->Bruxelles"],
-    "//Berlin (12:55) -> Aachen (19:13, 3590-0) -> Bruxelles (21:26, ICE10-0)",
-    ["Berlin->Aachen", "Aachen->Bruxelles"],
+    [
+      "Berlin->Köln",
+      "Köln->Bruxelles"
+    ]
   ],
   "Berlin->Budapest": [
     "//Berlin (09:16) -> Budapest (20:28, EC173-0)",
-    ["Berlin->Budapest"],
+    [
+      "Berlin->Budapest"
+    ]
   ],
   "Berlin->Firenze": [
     "//Berlin (00:11) -> Stuttgart (09:52, 3871-0) -> Zürich (13:26, IC185-0) -> Milano (16:53, EC319-0) -> Bologna (18:04, FR9649-0) -> Firenze (19:24, FR8527-0)",
@@ -35,19 +39,33 @@ export const ROUTES = {
       "Stuttgart->Zürich",
       "Zürich->Milano",
       "Milano->Bologna",
-      "Bologna->Firenze",
+      "Bologna->Firenze"
     ],
     "//Berlin (07:04) -> München (11:11, 3565-0) -> Verona (16:58, RJ85-0) -> Firenze (19:24, FR8527-0)",
     "//Berlin (10:51) -> München (15:08, 1535-0) -> Verona (21:00, RJ89-0) -> Firenze (08:24 (Day 2), FR8505-1)",
-    ["Berlin->München", "München->Verona", "Verona->Firenze"],
+    [
+      "Berlin->München",
+      "München->Verona",
+      "Verona->Firenze"
+    ],
     "//Berlin (09:04) -> München (13:09, 1775-0) -> Bologna (20:16, RJ87-0) -> Firenze (08:24 (Day 2), FR8505-1)",
-    ["Berlin->München", "München->Bologna", "Bologna->Firenze"],
+    [
+      "Berlin->München",
+      "München->Bologna",
+      "Bologna->Firenze"
+    ],
     "//Berlin (13:15) -> Zürich (22:00, ICE79-0) -> Milano (10:09 (Day 2), EC307-1) -> Firenze (12:04 (Day 2), FR9527-1)",
-    ["Berlin->Zürich", "Zürich->Milano", "Milano->Firenze"],
+    [
+      "Berlin->Zürich",
+      "Zürich->Milano",
+      "Milano->Firenze"
+    ]
   ],
   "Berlin->Gdańsk": [
     "//Berlin (12:52) -> Gdańsk (18:36, EC59-0)",
-    ["Berlin->Gdańsk"],
+    [
+      "Berlin->Gdańsk"
+    ]
   ],
   "Berlin->Göteborg": [
     "//Berlin (07:24) -> Hamburg (10:10, 2196-0) -> København (16:16, EC396-0) -> Malmö (16:58, R21372-0) -> Göteborg (19:35, X2492-0)",
@@ -55,30 +73,45 @@ export const ROUTES = {
       "Berlin->Hamburg",
       "Hamburg->København",
       "København->Malmö",
-      "Malmö->Göteborg",
-    ],
+      "Malmö->Göteborg"
+    ]
   ],
   "Berlin->Kraków": [
     "//Berlin (10:52) -> Kraków (18:12, EC57-0)",
-    ["Berlin->Kraków"],
+    [
+      "Berlin->Kraków"
+    ]
   ],
   "Berlin->London": [
     "//Berlin (00:11) -> Köln (06:49, 3871-0) -> Bruxelles (09:26, ICE18-0) -> London (12:00, EST9125-0)",
     "//Berlin (08:54) -> Köln (14:21, 8177-0) -> Bruxelles (17:26, ICE14-0) -> London (19:00, EST9153-0)",
     "//Berlin (16:45) -> Köln (21:41, 9220-0) -> Bruxelles (09:26 (Day 2), ICE18-1) -> London (12:00 (Day 2), EST9125-1)",
-    ["Berlin->Köln", "Köln->Bruxelles", "Bruxelles->London"],
+    [
+      "Berlin->Köln",
+      "Köln->Bruxelles",
+      "Bruxelles->London"
+    ],
     "//Berlin (00:11) -> Köln (06:49, 3871-0) -> Mannheim (09:23, 2460-0) -> Paris (12:52, ICE9556-0) -> London (14:30, EST9031-0)",
-    ["Berlin->Köln", "Köln->Mannheim", "Mannheim->Paris", "Paris->London"],
+    [
+      "Berlin->Köln",
+      "Köln->Mannheim",
+      "Mannheim->Paris",
+      "Paris->London"
+    ],
     "//Berlin (05:42) -> Karlsruhe (11:09, ICE71-0) -> Paris (14:13, ICE9574-0) -> London (16:30, EST9039-0)",
     "//Berlin (07:09) -> Karlsruhe (13:09, ICE73-0) -> Paris (18:19, ICE9572-0) -> London (20:57, EST9055-0)",
-    ["Berlin->Karlsruhe", "Karlsruhe->Paris", "Paris->London"],
+    [
+      "Berlin->Karlsruhe",
+      "Karlsruhe->Paris",
+      "Paris->London"
+    ],
     "//Berlin (06:44) -> Dortmund (10:25, 8563-0) -> Köln (11:50, ICE29-0) -> Bruxelles (15:26, ICE314-0) -> London (17:47, EST9149-0)",
     "//Berlin (08:44) -> Dortmund (12:25, 445-0) -> Köln (13:49, 5578-0) -> Bruxelles (17:26, ICE14-0) -> London (19:00, EST9153-0)",
     [
       "Berlin->Dortmund",
       "Dortmund->Köln",
       "Köln->Bruxelles",
-      "Bruxelles->London",
+      "Bruxelles->London"
     ],
     "//Berlin (07:44) -> Frankfurt am Main (11:56, 6578-0) -> Karlsruhe (13:57, ICE279-0) -> Paris (18:19, ICE9572-0) -> London (20:57, EST9055-0)",
     "//Berlin (11:43) -> Frankfurt am Main (15:57, 6748-0) -> Karlsruhe (17:57, ICE373-0) -> Paris (22:13, TGV9570-0) -> London (08:30 (Day 2), EST9007-1)",
@@ -86,48 +119,91 @@ export const ROUTES = {
       "Berlin->Frankfurt am Main",
       "Frankfurt am Main->Karlsruhe",
       "Karlsruhe->Paris",
-      "Paris->London",
-    ],
+      "Paris->London"
+    ]
   ],
   "Berlin->Marseille": [
     "//Berlin (07:09) -> Baden-Baden (13:26, ICE73-0) -> Marseille (21:46, TGV9580-0)",
-    ["Berlin->Baden-Baden", "Baden-Baden->Marseille"],
+    [
+      "Berlin->Baden-Baden",
+      "Baden-Baden->Marseille"
+    ]
   ],
   "Berlin->Milano": [
     "//Berlin (00:11) -> Stuttgart (09:52, 3871-0) -> Zürich (13:26, IC185-0) -> Milano (16:53, EC319-0)",
     "//Berlin (04:15) -> Stuttgart (10:38, 1834-0) -> Zürich (14:26, IC485-0) -> Milano (18:53, EC321-0)",
     "//Berlin (08:17) -> Stuttgart (14:38, 2305-0) -> Zürich (18:26, IC489-0) -> Milano (22:53, EC325-0)",
-    ["Berlin->Stuttgart", "Stuttgart->Zürich", "Zürich->Milano"],
+    [
+      "Berlin->Stuttgart",
+      "Stuttgart->Zürich",
+      "Zürich->Milano"
+    ],
     "//Berlin (07:09) -> Zürich (16:00, ICE73-0) -> Milano (20:53, EC323-0)",
     "//Berlin (13:15) -> Zürich (22:00, ICE79-0) -> Milano (10:09 (Day 2), EC307-1)",
-    ["Berlin->Zürich", "Zürich->Milano"],
+    [
+      "Berlin->Zürich",
+      "Zürich->Milano"
+    ]
   ],
   "Berlin->Palermo": [
-    ["Berlin->Zürich", "Zürich->Milano", "Milano->Palermo"],
-    ["Berlin->München", "München->Verona", "Verona->Roma", "Roma->Palermo"],
+    [
+      "Berlin->Zürich",
+      "Zürich->Milano",
+      "Milano->Palermo"
+    ],
+    [
+      "Berlin->München",
+      "München->Verona",
+      "Verona->Roma",
+      "Roma->Palermo"
+    ]
   ],
-
   "Berlin->Napoli": [
     "//Berlin (07:04) -> München (11:11, 3565-0) -> Verona (16:58, RJ85-0) -> Roma (20:59, FR8527-0) -> Napoli (22:33, FR9653-0)",
     "//Berlin (10:51) -> München (15:08, 1535-0) -> Verona (21:00, RJ89-0) -> Roma (10:00 (Day 2), FR8505-1) -> Napoli (11:41 (Day 2), FR9607-1)",
-    ["Berlin->München", "München->Verona", "Verona->Roma", "Roma->Napoli"],
+    [
+      "Berlin->München",
+      "München->Verona",
+      "Verona->Roma",
+      "Roma->Napoli"
+    ],
     "//Berlin (07:09) -> Zürich (16:00, ICE73-0) -> Milano (20:53, EC323-0) -> Napoli (10:51 (Day 2), FR9605-1)",
     "//Berlin (13:15) -> Zürich (22:00, ICE79-0) -> Milano (10:09 (Day 2), EC307-1) -> Napoli (14:56 (Day 2), FR9527-1)",
-    ["Berlin->Zürich", "Zürich->Milano", "Milano->Napoli"],
+    [
+      "Berlin->Zürich",
+      "Zürich->Milano",
+      "Milano->Napoli"
+    ]
   ],
   "Berlin->Paris": [
-    ["Berlin->Paris"],
+    [
+      "Berlin->Paris"
+    ],
     "//Berlin (00:11) -> Köln (06:49, 3871-0) -> Mannheim (09:23, 2460-0) -> Paris (12:52, ICE9556-0)",
-    ["Berlin->Köln", "Köln->Mannheim", "Mannheim->Paris"],
+    [
+      "Berlin->Köln",
+      "Köln->Mannheim",
+      "Mannheim->Paris"
+    ],
     "//Berlin (04:15) -> Mannheim (09:53, 1834-0) -> Karlsruhe (10:58, ICE103-0) -> Paris (14:13, ICE9574-0)",
     "//Berlin (12:17) -> Mannheim (17:53, 8246-0) -> Karlsruhe (18:58, ICE201-0) -> Paris (22:13, TGV9570-0)",
-    ["Berlin->Mannheim", "Mannheim->Karlsruhe", "Karlsruhe->Paris"],
+    [
+      "Berlin->Mannheim",
+      "Mannheim->Karlsruhe",
+      "Karlsruhe->Paris"
+    ],
     "//Berlin (05:42) -> Karlsruhe (11:09, ICE71-0) -> Paris (14:13, ICE9574-0)",
     "//Berlin (07:09) -> Karlsruhe (13:09, ICE73-0) -> Paris (18:19, ICE9572-0)",
     "//Berlin (13:15) -> Karlsruhe (19:09, ICE79-0) -> Paris (22:13, TGV9570-0)",
-    ["Berlin->Karlsruhe", "Karlsruhe->Paris"],
+    [
+      "Berlin->Karlsruhe",
+      "Karlsruhe->Paris"
+    ],
     "//Berlin (12:17) -> Mannheim (17:53, 8246-0) -> Paris (22:52, ICE9550-0)",
-    ["Berlin->Mannheim", "Mannheim->Paris"],
+    [
+      "Berlin->Mannheim",
+      "Mannheim->Paris"
+    ]
   ],
   "Berlin->Praha": [
     "//Berlin (06:15) -> Praha (10:27, RJ257-0)",
@@ -137,15 +213,25 @@ export const ROUTES = {
     "//Berlin (13:16) -> Praha (17:24, EC175-0)",
     "//Berlin (15:16) -> Praha (19:24, EC177-0)",
     "//Berlin (17:16) -> Praha (21:24, EC179-0)",
-    ["Berlin->Praha"],
+    [
+      "Berlin->Praha"
+    ]
   ],
   "Berlin->Roma": [
     "//Berlin (07:04) -> München (11:11, 3565-0) -> Verona (16:58, RJ85-0) -> Roma (20:59, FR8527-0)",
     "//Berlin (10:51) -> München (15:08, 1535-0) -> Verona (21:00, RJ89-0) -> Roma (10:00 (Day 2), FR8505-1)",
-    ["Berlin->München", "München->Verona", "Verona->Roma"],
+    [
+      "Berlin->München",
+      "München->Verona",
+      "Verona->Roma"
+    ],
     "//Berlin (07:09) -> Zürich (16:00, ICE73-0) -> Milano (20:53, EC323-0) -> Roma (09:34 (Day 2), FR9605-1)",
     "//Berlin (13:15) -> Zürich (22:00, ICE79-0) -> Milano (10:09 (Day 2), EC307-1) -> Roma (13:40 (Day 2), FR9527-1)",
-    ["Berlin->Zürich", "Zürich->Milano", "Milano->Roma"],
+    [
+      "Berlin->Zürich",
+      "Zürich->Milano",
+      "Milano->Roma"
+    ]
   ],
   "Berlin->Salzburg": [
     "//Berlin (05:51) -> München (10:02, 9063-0) -> Salzburg (11:59, EC217-0)",
@@ -159,7 +245,10 @@ export const ROUTES = {
     "//Berlin (14:52) -> München (19:11, 1713-0) -> Salzburg (21:00, RJ1299-0)",
     "//Berlin (15:51) -> München (20:02, 3783-0) -> Salzburg (22:02, IC1291-0)",
     "//Berlin (16:52) -> München (21:12, 9019-0) -> Salzburg (22:59, RJ1295-0)",
-    ["Berlin->München", "München->Salzburg"],
+    [
+      "Berlin->München",
+      "München->Salzburg"
+    ]
   ],
   "Berlin->Stockholm": [
     "//Berlin (05:37) -> Hamburg (08:21, 6985-0) -> København (14:16, EC398-0) -> Malmö (15:06, R1082-0) -> Stockholm (19:37, X2542-0)",
@@ -168,13 +257,18 @@ export const ROUTES = {
       "Berlin->Hamburg",
       "Hamburg->København",
       "København->Malmö",
-      "Malmö->Stockholm",
+      "Malmö->Stockholm"
     ],
-    ["Berlin->Stockholm"],
+    [
+      "Berlin->Stockholm"
+    ]
   ],
   "Berlin->Venezia": [
     "//Berlin (07:04) -> München (11:11, 3565-0) -> Venezia (18:12, RJ85-0)",
-    ["Berlin->München", "München->Venezia"],
+    [
+      "Berlin->München",
+      "München->Venezia"
+    ]
   ],
   "Berlin->Warszawa": [
     "//Berlin (05:51) -> Warszawa (10:53, EC41-0)",
@@ -183,18 +277,27 @@ export const ROUTES = {
     "//Berlin (13:52) -> Warszawa (18:53, EC49-0)",
     "//Berlin (15:52) -> Warszawa (20:53, EC247-0)",
     "//Berlin (17:52) -> Warszawa (22:53, EC249-0)",
-    ["Berlin->Warszawa"],
+    [
+      "Berlin->Warszawa"
+    ]
   ],
   "Berlin->Wien": [
     "//Berlin (06:15) -> Wien (14:49, RJ257-0)",
-    ["Berlin->Wien"],
+    [
+      "Berlin->Wien"
+    ],
     "//Berlin (10:51) -> München (15:08, 1535-0) -> Wien (19:52, RJX69-0)",
     "//Berlin (12:52) -> München (17:10, 2844-0) -> Wien (21:52, RJX261-0)",
-    ["Berlin->München", "München->Wien"],
+    [
+      "Berlin->München",
+      "München->Wien"
+    ]
   ],
   "Berlin->Wrocław": [
     "//Berlin (10:52) -> Wrocław (14:58, EC57-0)",
-    ["Berlin->Wrocław"],
+    [
+      "Berlin->Wrocław"
+    ]
   ],
   "Köln->Amsterdam": [
     "//Köln (07:39) -> Amsterdam (10:53, ICE250-0)",
@@ -203,11 +306,16 @@ export const ROUTES = {
     "//Köln (14:43) -> Amsterdam (17:53, ICE154-0)",
     "//Köln (17:47) -> Amsterdam (20:44, ICE152-0)",
     "//Köln (19:14) -> Amsterdam (22:29, ICE254-0)",
-    ["Köln->Amsterdam"],
+    [
+      "Köln->Amsterdam"
+    ]
   ],
   "Köln->Bratislava": [
     "//Köln (04:11) -> Berlin (08:58, 7252-0) -> Bratislava (18:02, EC173-0)",
-    ["Köln->Berlin", "Berlin->Bratislava"],
+    [
+      "Köln->Berlin",
+      "Berlin->Bratislava"
+    ]
   ],
   "Köln->Bruxelles": [
     "//Köln (07:42) -> Bruxelles (09:26, ICE18-0)",
@@ -217,11 +325,16 @@ export const ROUTES = {
     "//Köln (15:47) -> Bruxelles (17:26, ICE14-0)",
     "//Köln (17:41) -> Bruxelles (19:26, ICE12-0)",
     "//Köln (19:40) -> Bruxelles (21:26, ICE10-0)",
-    ["Köln->Bruxelles"],
+    [
+      "Köln->Bruxelles"
+    ]
   ],
   "Köln->Budapest": [
     "//Köln (04:11) -> Berlin (08:58, 7252-0) -> Budapest (20:28, EC173-0)",
-    ["Köln->Berlin", "Berlin->Budapest"],
+    [
+      "Köln->Berlin",
+      "Berlin->Budapest"
+    ]
   ],
   "Köln->Firenze": [
     "//Köln (03:21) -> Frankfurt am Main (04:48, 4513-0) -> Zürich (10:00, ICE271-0) -> Milano (14:09, EC327-0) -> Bologna (15:34, FR9639-0) -> Firenze (16:24, FR8519-0)",
@@ -231,7 +344,7 @@ export const ROUTES = {
       "Frankfurt am Main->Zürich",
       "Zürich->Milano",
       "Milano->Bologna",
-      "Bologna->Firenze",
+      "Bologna->Firenze"
     ],
     "//Köln (05:21) -> Stuttgart (08:08, 2216-0) -> Zürich (11:26, IC183-0) -> Milano (14:53, EC317-0) -> Bologna (16:04, FR9641-0) -> Firenze (18:24, FR8525-0)",
     "//Köln (07:18) -> Stuttgart (10:08, 2460-0) -> Zürich (13:26, IC185-0) -> Milano (16:53, EC319-0) -> Bologna (18:04, FR9649-0) -> Firenze (19:24, FR8527-0)",
@@ -241,21 +354,28 @@ export const ROUTES = {
       "Stuttgart->Zürich",
       "Zürich->Milano",
       "Milano->Bologna",
-      "Bologna->Firenze",
+      "Bologna->Firenze"
     ],
     "//Köln (05:21) -> München (10:17, 2216-0) -> Verona (16:58, RJ85-0) -> Firenze (19:24, FR8527-0)",
-    ["Köln->München", "München->Verona", "Verona->Firenze"],
+    [
+      "Köln->München",
+      "München->Verona",
+      "Verona->Firenze"
+    ],
     "//Köln (08:27) -> Mannheim (10:23, ICE103-0) -> München (13:04, 1608-0) -> Bologna (20:16, RJ87-0) -> Firenze (08:24 (Day 2), FR8505-1)",
     [
       "Köln->Mannheim",
       "Mannheim->München",
       "München->Bologna",
-      "Bologna->Firenze",
-    ],
+      "Bologna->Firenze"
+    ]
   ],
   "Köln->Gdańsk": [
     "//Köln (08:11) -> Berlin (12:47, 9432-0) -> Gdańsk (18:36, EC59-0)",
-    ["Köln->Berlin", "Berlin->Gdańsk"],
+    [
+      "Köln->Berlin",
+      "Berlin->Gdańsk"
+    ]
   ],
   "Köln->Göteborg": [
     "//Köln (06:14) -> Hamburg (09:51, 693-0) -> København (16:16, EC396-0) -> Malmö (16:58, R21372-0) -> Göteborg (19:35, X2492-0)",
@@ -263,12 +383,15 @@ export const ROUTES = {
       "Köln->Hamburg",
       "Hamburg->København",
       "København->Malmö",
-      "Malmö->Göteborg",
-    ],
+      "Malmö->Göteborg"
+    ]
   ],
   "Köln->Kraków": [
     "//Köln (06:16) -> Berlin (10:47, 8921-0) -> Kraków (18:12, EC57-0)",
-    ["Köln->Berlin", "Berlin->Kraków"],
+    [
+      "Köln->Berlin",
+      "Berlin->Kraków"
+    ]
   ],
   "Köln->London": [
     "//Köln (07:42) -> Bruxelles (09:26, ICE18-0) -> London (12:00, EST9125-0)",
@@ -277,20 +400,31 @@ export const ROUTES = {
     "//Köln (13:42) -> Bruxelles (15:26, ICE314-0) -> London (17:47, EST9149-0)",
     "//Köln (15:47) -> Bruxelles (17:26, ICE14-0) -> London (19:00, EST9153-0)",
     "//Köln (17:41) -> Bruxelles (19:26, ICE12-0) -> London (21:57, EST9165-0)",
-    ["Köln->Bruxelles", "Bruxelles->London"],
+    [
+      "Köln->Bruxelles",
+      "Bruxelles->London"
+    ]
   ],
   "Köln->Marseille": [
     "//Köln (11:36) -> Düsseldorf (12:05, 8048-0) -> Karlsruhe (14:58, ICE107-0) -> Marseille (21:46, TGV9580-0)",
-    ["Köln->Düsseldorf", "Düsseldorf->Karlsruhe", "Karlsruhe->Marseille"],
+    [
+      "Köln->Düsseldorf",
+      "Düsseldorf->Karlsruhe",
+      "Karlsruhe->Marseille"
+    ]
   ],
   "Köln->Milano": [
     "//Köln (03:21) -> Frankfurt am Main (04:48, 4513-0) -> Zürich (10:00, ICE271-0) -> Milano (14:09, EC327-0)",
     "//Köln (10:45) -> Frankfurt am Main (11:48, 1182-0) -> Zürich (16:00, ICE73-0) -> Milano (20:53, EC323-0)",
-    ["Köln->Frankfurt am Main", "Frankfurt am Main->Zürich", "Zürich->Milano"],
+    [
+      "Köln->Frankfurt am Main",
+      "Frankfurt am Main->Zürich",
+      "Zürich->Milano"
+    ],
     "//Köln (05:21) -> Stuttgart (08:08, 2216-0) -> Zürich (11:26, IC183-0) -> Milano (14:53, EC317-0)",
     "//Köln (07:18) -> Stuttgart (10:08, 2460-0) -> Zürich (13:26, IC185-0) -> Milano (16:53, EC319-0)",
     "//Köln (09:28) -> Stuttgart (12:08, 7761-0) -> Zürich (15:26, IC187-0) -> Milano (18:53, EC321-0)",
-    "//Köln (13:28) -> Stuttgart (16:08, 6893-0) -> Zürich (19:26, IC281-0) -> Milano (22:53, EC325-0)",
+    "//Köln (13:28) -> Stuttgart (16:08, 6893-0) -> Zürich (19:26, IC281-0) -> Milano (22:53, EC325-0)"
   ],
   "Köln->Napoli": [
     "//Köln (03:21) -> Frankfurt am Main (04:48, 4513-0) -> Zürich (10:00, ICE271-0) -> Milano (14:09, EC327-0) -> Napoli (18:48, FR9639-0)",
@@ -299,49 +433,79 @@ export const ROUTES = {
       "Köln->Frankfurt am Main",
       "Frankfurt am Main->Zürich",
       "Zürich->Milano",
-      "Milano->Napoli",
+      "Milano->Napoli"
     ],
     "//Köln (05:21) -> München (10:17, 2216-0) -> Verona (16:58, RJ85-0) -> Roma (20:59, FR8527-0) -> Napoli (22:33, FR9653-0)",
-    ["Köln->München", "München->Verona", "Verona->Roma", "Roma->Napoli"],
+    [
+      "Köln->München",
+      "München->Verona",
+      "Verona->Roma",
+      "Roma->Napoli"
+    ],
     "//Köln (06:00) -> Frankfurt am Main (07:23, 6471-0) -> Milano (15:50, ECE151-0) -> Roma (19:40, FR9647-0) -> Napoli (21:33, FR8525-0)",
     [
       "Köln->Frankfurt am Main",
       "Frankfurt am Main->Milano",
       "Milano->Roma",
-      "Roma->Napoli",
+      "Roma->Napoli"
     ],
     "//Köln (08:27) -> Basel (12:36, ICE103-0) -> Zürich (16:00, ICE73-0) -> Milano (20:53, EC323-0) -> Napoli (09:48 (Day 2), FR9601-1)",
-    ["Köln->Basel", "Basel->Zürich", "Zürich->Milano", "Milano->Napoli"],
+    [
+      "Köln->Basel",
+      "Basel->Zürich",
+      "Zürich->Milano",
+      "Milano->Napoli"
+    ],
     "//Köln (09:28) -> Stuttgart (12:08, 7761-0) -> Zürich (15:26, IC187-0) -> Milano (18:53, EC321-0) -> Napoli (23:31, FR9661-0)",
     "//Köln (13:28) -> Stuttgart (16:08, 6893-0) -> Zürich (19:26, IC281-0) -> Milano (22:53, EC325-0) -> Napoli (09:48 (Day 2), FR9601-1)",
     [
       "Köln->Stuttgart",
       "Stuttgart->Zürich",
       "Zürich->Milano",
-      "Milano->Napoli",
-    ],
+      "Milano->Napoli"
+    ]
   ],
   "Köln->Paris": [
     "//Köln (03:21) -> Frankfurt am Main (04:48, 4513-0) -> Paris (09:52, ICE9558-0)",
-    ["Köln->Frankfurt am Main", "Frankfurt am Main->Paris"],
+    [
+      "Köln->Frankfurt am Main",
+      "Frankfurt am Main->Paris"
+    ],
     "//Köln (05:21) -> Stuttgart (08:08, 2216-0) -> Paris (12:33, TGV9576-0)",
     "//Köln (11:28) -> Stuttgart (14:08, 1404-0) -> Paris (18:19, ICE9572-0)",
     "//Köln (15:28) -> Stuttgart (18:08, 4505-0) -> Paris (22:13, TGV9570-0)",
-    ["Köln->Stuttgart", "Stuttgart->Paris"],
+    [
+      "Köln->Stuttgart",
+      "Stuttgart->Paris"
+    ],
     "//Köln (07:18) -> Mannheim (09:23, 2460-0) -> Paris (12:52, ICE9556-0)",
     "//Köln (17:28) -> Mannheim (19:23, 2704-0) -> Paris (22:52, ICE9550-0)",
-    ["Köln->Mannheim", "Mannheim->Paris"],
+    [
+      "Köln->Mannheim",
+      "Mannheim->Paris"
+    ]
   ],
   "Köln->Praha": [
     "//Köln (04:11) -> Berlin (08:58, 7252-0) -> Praha (13:24, EC173-0)",
     "//Köln (06:23) -> Berlin (10:58, 4445-0) -> Praha (15:24, EC379-0)",
     "//Köln (08:11) -> Berlin (12:47, 9432-0) -> Praha (17:24, EC175-0)",
     "//Köln (11:36) -> Berlin (16:30, 8048-0) -> Praha (21:24, EC179-0)",
-    ["Köln->Berlin", "Berlin->Praha"],
+    [
+      "Köln->Berlin",
+      "Berlin->Praha"
+    ],
     "//Köln (05:15) -> Hannover (08:28, 7792-0) -> Dresden-Neustadt (12:51, 5610-0) -> Praha (15:24, EC379-0)",
     "//Köln (07:23) -> Hannover (10:28, 10048-0) -> Dresden-Neustadt (14:31, 5490-0) -> Praha (17:24, EC175-0)",
-    ["Köln->Hannover", "Hannover->Dresden", "Dresden->Praha"],
-    ["Köln->Frankfurt am Main", "Frankfurt am Main->Dresden", "Dresden->Praha"],
+    [
+      "Köln->Hannover",
+      "Hannover->Dresden",
+      "Dresden->Praha"
+    ],
+    [
+      "Köln->Frankfurt am Main",
+      "Frankfurt am Main->Dresden",
+      "Dresden->Praha"
+    ]
   ],
   "Köln->Roma": [
     "//Köln (03:21) -> Frankfurt am Main (04:48, 4513-0) -> Zürich (10:00, ICE271-0) -> Milano (14:09, EC327-0) -> Roma (17:40, FR9639-0)",
@@ -350,16 +514,25 @@ export const ROUTES = {
       "Köln->Frankfurt am Main",
       "Frankfurt am Main->Zürich",
       "Zürich->Milano",
-      "Milano->Roma",
+      "Milano->Roma"
     ],
     "//Köln (05:21) -> Stuttgart (08:08, 2216-0) -> Zürich (11:26, IC183-0) -> Milano (14:53, EC317-0) -> Roma (18:10, FR9641-0)",
     "//Köln (07:18) -> Stuttgart (10:08, 2460-0) -> Zürich (13:26, IC185-0) -> Milano (16:53, EC319-0) -> Roma (20:10, FR9649-0)",
     "//Köln (09:28) -> Stuttgart (12:08, 7761-0) -> Zürich (15:26, IC187-0) -> Milano (18:53, EC321-0) -> Roma (22:10, FR9661-0)",
     "//Köln (13:28) -> Stuttgart (16:08, 6893-0) -> Zürich (19:26, IC281-0) -> Milano (22:53, EC325-0) -> Roma (08:40 (Day 2), FR9601-1)",
-    ["Köln->Stuttgart", "Stuttgart->Zürich", "Zürich->Milano", "Milano->Roma"],
+    [
+      "Köln->Stuttgart",
+      "Stuttgart->Zürich",
+      "Zürich->Milano",
+      "Milano->Roma"
+    ],
     "//Köln (05:21) -> München (10:17, 2216-0) -> Verona (16:58, RJ85-0) -> Roma (20:59, FR8527-0)",
-    ["Köln->München", "München->Verona", "Verona->Roma"],
-    "//Köln (06:00) -> Frankfurt am Main (07:23, 6471-0) -> Milano (15:50, ECE151-0) -> Roma (19:10, FR9645-0)",
+    [
+      "Köln->München",
+      "München->Verona",
+      "Verona->Roma"
+    ],
+    "//Köln (06:00) -> Frankfurt am Main (07:23, 6471-0) -> Milano (15:50, ECE151-0) -> Roma (19:10, FR9645-0)"
   ],
   "Köln->Salzburg": [
     "//Köln (03:21) -> München (08:06, 4513-0) -> Salzburg (09:59, EC111-0)",
@@ -368,42 +541,73 @@ export const ROUTES = {
     "//Köln (11:28) -> München (16:17, 1404-0) -> Salzburg (17:59, EC219-0)",
     "//Köln (13:28) -> München (18:17, 6893-0) -> Salzburg (19:59, EC117-0)",
     "//Köln (15:28) -> München (20:17, 4505-0) -> Salzburg (22:02, IC1291-0)",
-    ["Köln->München", "München->Salzburg"],
+    [
+      "Köln->München",
+      "München->Salzburg"
+    ]
   ],
   "Köln->Stockholm": [
-    ["Köln->Hamburg", "Hamburg->Stockholm"],
+    [
+      "Köln->Hamburg",
+      "Hamburg->Stockholm"
+    ],
     "//Köln (03:58) -> Hamburg (08:19, 9314-0) -> København (14:16, EC398-0) -> Malmö (15:06, R1082-0) -> Stockholm (19:37, X2542-0)",
     "//Köln (09:04) -> Hamburg (12:46, 6800-0) -> København (18:16, EC394-0) -> Malmö (19:06, R1114-0) -> Stockholm (23:38, X2550-0)",
     [
       "Köln->Hamburg",
       "Hamburg->København",
       "København->Malmö",
-      "Malmö->Stockholm",
-    ],
+      "Malmö->Stockholm"
+    ]
   ],
   "Köln->Venezia": [
     "//Köln (05:21) -> Mannheim (07:23, 2216-0) -> Basel (09:36, ICE5-0) -> Milano (15:50, ECE151-0) -> Venezia (14:30 (Day 2), EC311-1)",
-    ["Köln->Mannheim", "Mannheim->Basel", "Basel->Milano", "Milano->Venezia"],
+    [
+      "Köln->Mannheim",
+      "Mannheim->Basel",
+      "Basel->Milano",
+      "Milano->Venezia"
+    ],
     "//Köln (05:21) -> München (10:17, 2216-0) -> Venezia (18:12, RJ85-0)",
-    ["Köln->München", "München->Venezia"],
+    [
+      "Köln->München",
+      "München->Venezia"
+    ]
   ],
   "Köln->Warszawa": [
     "//Köln (04:11) -> Berlin (08:58, 7252-0) -> Warszawa (14:53, EC45-0)",
     "//Köln (06:23) -> Berlin (10:58, 4445-0) -> Warszawa (16:53, EC47-0)",
     "//Köln (11:36) -> Berlin (16:30, 8048-0) -> Warszawa (22:53, EC249-0)",
-    ["Köln->Berlin", "Berlin->Warszawa"],
+    [
+      "Köln->Berlin",
+      "Berlin->Warszawa"
+    ]
   ],
   "Köln->Wien": [
     "//Köln (03:21) -> Nürnberg (06:58, 4513-0) -> Linz (11:26, ICE21-0) -> Wien (13:52, RJX63-0)",
-    ["Köln->Nürnberg", "Nürnberg->Linz", "Linz->Wien"],
+    [
+      "Köln->Nürnberg",
+      "Nürnberg->Linz",
+      "Linz->Wien"
+    ],
     "//Köln (03:21) -> München (08:06, 4513-0) -> Salzburg (09:59, EC111-0) -> Wien (13:52, RJX63-0)",
-    ["Köln->München", "München->Salzburg", "Salzburg->Wien"],
+    [
+      "Köln->München",
+      "München->Salzburg",
+      "Salzburg->Wien"
+    ],
     "//Köln (13:59) -> Frankfurt am Main (15:23, 6887-0) -> Wien (23:25, ICE229-0)",
-    ["Köln->Frankfurt am Main", "Frankfurt am Main->Wien"],
+    [
+      "Köln->Frankfurt am Main",
+      "Frankfurt am Main->Wien"
+    ]
   ],
   "Köln->Wrocław": [
     "//Köln (06:16) -> Berlin (10:47, 8921-0) -> Wrocław (14:58, EC57-0)",
-    ["Köln->Berlin", "Berlin->Wrocław"],
+    [
+      "Köln->Berlin",
+      "Berlin->Wrocław"
+    ]
   ],
   "Hamburg->Amsterdam": [
     "//Hamburg (04:21) -> Osnabrück (06:35, 4555-0) -> Amsterdam (10:03, IC242-0)",
@@ -413,19 +617,32 @@ export const ROUTES = {
     "//Hamburg (12:29) -> Osnabrück (14:35, 2621-0) -> Amsterdam (18:03, IC144-0)",
     "//Hamburg (14:44) -> Osnabrück (16:35, 7726-0) -> Amsterdam (20:00, IC142-0)",
     "//Hamburg (16:50) -> Osnabrück (18:41, 6378-0) -> Amsterdam (22:00, IC140-0)",
-    ["Hamburg->Osnabrück", "Osnabrück->Amsterdam"],
+    [
+      "Hamburg->Osnabrück",
+      "Osnabrück->Amsterdam"
+    ],
     "//Hamburg (04:21) -> Köln (08:49, 4555-0) -> Amsterdam (12:53, ICE158-0)",
     "//Hamburg (07:29) -> Köln (11:47, 6591-0) -> Amsterdam (15:53, ICE156-0)",
     "//Hamburg (09:29) -> Köln (13:49, 5578-0) -> Amsterdam (17:53, ICE154-0)",
     "//Hamburg (13:45) -> Köln (17:46, 4299-0) -> Amsterdam (20:44, ICE152-0)",
     "//Hamburg (14:44) -> Köln (18:49, 7726-0) -> Amsterdam (22:29, ICE254-0)",
-    ["Hamburg->Köln", "Köln->Amsterdam"],
+    [
+      "Hamburg->Köln",
+      "Köln->Amsterdam"
+    ]
   ],
   "Hamburg->Bratislava": [
     "//Hamburg (04:47) -> Hannover (06:23, 836-0) -> Dresden (10:58, 9801-0) -> Bratislava (18:02, EC173-0)",
-    ["Hamburg->Hannover", "Hannover->Dresden", "Dresden->Bratislava"],
+    [
+      "Hamburg->Hannover",
+      "Hannover->Dresden",
+      "Dresden->Bratislava"
+    ],
     "//Hamburg (06:35) -> Berlin (09:10, 181-0) -> Bratislava (18:02, EC173-0)",
-    ["Hamburg->Berlin", "Berlin->Bratislava"],
+    [
+      "Hamburg->Berlin",
+      "Berlin->Bratislava"
+    ]
   ],
   "Hamburg->Bruxelles": [
     "//Hamburg (04:21) -> Köln (08:49, 4555-0) -> Bruxelles (11:26, ICE316-0)",
@@ -434,82 +651,134 @@ export const ROUTES = {
     "//Hamburg (10:29) -> Köln (14:49, 6146-0) -> Bruxelles (17:26, ICE14-0)",
     "//Hamburg (12:50) -> Köln (16:57, 1900-0) -> Bruxelles (19:26, ICE12-0)",
     "//Hamburg (14:44) -> Köln (18:49, 7726-0) -> Bruxelles (21:26, ICE10-0)",
-    ["Hamburg->Köln", "Köln->Bruxelles"],
+    [
+      "Hamburg->Köln",
+      "Köln->Bruxelles"
+    ]
   ],
   "Hamburg->Budapest": [
     "//Hamburg (04:32) -> Leipzig (08:42, 5786-0) -> Dresden (10:58, 9801-0) -> Budapest (20:28, EC173-0)",
-    ["Hamburg->Leipzig", "Leipzig->Dresden", "Dresden->Budapest"],
+    [
+      "Hamburg->Leipzig",
+      "Leipzig->Dresden",
+      "Dresden->Budapest"
+    ],
     "//Hamburg (06:35) -> Berlin (09:10, 181-0) -> Budapest (20:28, EC173-0)",
-    ["Hamburg->Berlin", "Berlin->Budapest"],
+    [
+      "Hamburg->Berlin",
+      "Berlin->Budapest"
+    ]
   ],
   "Hamburg->Firenze": [
     "//Hamburg (04:47) -> München (10:45, 836-0) -> Verona (16:58, RJ85-0) -> Firenze (19:24, FR8527-0)",
     "//Hamburg (09:01) -> München (14:41, 1823-0) -> Verona (21:00, RJ89-0) -> Firenze (08:24 (Day 2), FR8505-1)",
-    ["Hamburg->München", "München->Verona", "Verona->Firenze"],
+    [
+      "Hamburg->München",
+      "München->Verona",
+      "Verona->Firenze"
+    ],
     "//Hamburg (13:15) -> Frankfurt am Main (17:00, ICE1211-0) -> Zürich (22:00, ICE79-0) -> Milano (10:09 (Day 2), EC307-1) -> Firenze (12:04 (Day 2), FR9527-1)",
     [
       "Hamburg->Frankfurt am Main",
       "Frankfurt am Main->Zürich",
       "Zürich->Milano",
-      "Milano->Firenze",
+      "Milano->Firenze"
     ],
     "//Hamburg (13:15) -> Stuttgart (19:08, ICE1211-0) -> Zürich (22:26, IC389-0) -> Milano (10:09 (Day 2), EC307-1) -> Firenze (12:04 (Day 2), FR9527-1)",
     [
       "Hamburg->Stuttgart",
       "Stuttgart->Zürich",
       "Zürich->Milano",
-      "Milano->Firenze",
-    ],
+      "Milano->Firenze"
+    ]
   ],
   "Hamburg->Gdańsk": [
     "//Hamburg (09:22) -> Berlin (12:08, 6544-0) -> Gdańsk (18:36, EC59-0)",
-    ["Hamburg->Berlin", "Berlin->Gdańsk"],
+    [
+      "Hamburg->Berlin",
+      "Berlin->Gdańsk"
+    ]
   ],
   "Hamburg->Göteborg": [
     "//Hamburg (10:53) -> København (16:16, EC396-0) -> Malmö (16:58, R21372-0) -> Göteborg (19:35, X2492-0)",
-    ["Hamburg->København", "København->Malmö", "Malmö->Göteborg"],
+    [
+      "Hamburg->København",
+      "København->Malmö",
+      "Malmö->Göteborg"
+    ]
   ],
   "Hamburg->Kraków": [
     "//Hamburg (07:19) -> Berlin (10:08, 642-0) -> Kraków (18:12, EC57-0)",
-    ["Hamburg->Berlin", "Berlin->Kraków"],
+    [
+      "Hamburg->Berlin",
+      "Berlin->Kraków"
+    ]
   ],
   "Hamburg->London": [
     "//Hamburg (04:16) -> Karlsruhe (09:57, ICE275-0) -> Paris (14:13, ICE9574-0) -> London (16:30, EST9039-0)",
     "//Hamburg (08:14) -> Karlsruhe (13:57, ICE279-0) -> Paris (18:19, ICE9572-0) -> London (20:57, EST9055-0)",
-    ["Hamburg->Karlsruhe", "Karlsruhe->Paris", "Paris->London"],
+    [
+      "Hamburg->Karlsruhe",
+      "Karlsruhe->Paris",
+      "Paris->London"
+    ],
     "//Hamburg (04:16) -> Mannheim (09:27, ICE275-0) -> Paris (12:52, ICE9556-0) -> London (14:30, EST9031-0)",
     "//Hamburg (14:15) -> Mannheim (19:27, ICE375-0) -> Paris (22:52, ICE9550-0) -> London (08:30 (Day 2), EST9007-1)",
-    ["Hamburg->Mannheim", "Mannheim->Paris", "Paris->London"],
+    [
+      "Hamburg->Mannheim",
+      "Mannheim->Paris",
+      "Paris->London"
+    ],
     "//Hamburg (04:21) -> Köln (08:49, 4555-0) -> Bruxelles (11:26, ICE316-0) -> London (13:57, EST9135-0)",
     "//Hamburg (06:29) -> Köln (10:49, 8524-0) -> Bruxelles (13:26, ICE16-0) -> London (15:57, EST9141-0)",
     "//Hamburg (08:29) -> Köln (12:49, 2722-0) -> Bruxelles (15:26, ICE314-0) -> London (17:47, EST9149-0)",
     "//Hamburg (10:29) -> Köln (14:49, 6146-0) -> Bruxelles (17:26, ICE14-0) -> London (19:00, EST9153-0)",
     "//Hamburg (12:50) -> Köln (16:57, 1900-0) -> Bruxelles (19:26, ICE12-0) -> London (21:57, EST9165-0)",
-    ["Hamburg->Köln", "Köln->Bruxelles", "Bruxelles->London"],
+    [
+      "Hamburg->Köln",
+      "Köln->Bruxelles",
+      "Bruxelles->London"
+    ],
     "//Hamburg (05:07) -> Mannheim (10:27, 1608-0) -> Karlsruhe (10:58, ICE103-0) -> Paris (14:13, ICE9574-0) -> London (16:30, EST9039-0)",
-    "//Hamburg (13:15) -> Mannheim (18:27, ICE1211-0) -> Karlsruhe (18:58, ICE201-0) -> Paris (22:13, TGV9570-0) -> London (08:30 (Day 2), EST9007-1)",
+    "//Hamburg (13:15) -> Mannheim (18:27, ICE1211-0) -> Karlsruhe (18:58, ICE201-0) -> Paris (22:13, TGV9570-0) -> London (08:30 (Day 2), EST9007-1)"
   ],
   "Hamburg->Marseille": [
     "//Hamburg (08:14) -> Karlsruhe (13:57, ICE279-0) -> Marseille (21:46, TGV9580-0)",
-    ["Hamburg->Karlsruhe", "Karlsruhe->Marseille"],
+    [
+      "Hamburg->Karlsruhe",
+      "Karlsruhe->Marseille"
+    ]
   ],
   "Hamburg->Milano": [
     "//Hamburg (05:07) -> Stuttgart (11:08, 1608-0) -> Zürich (14:26, IC485-0) -> Milano (18:53, EC321-0)",
     "//Hamburg (07:15) -> Stuttgart (13:08, 6864-0) -> Zürich (16:26, IC487-0) -> Milano (20:53, EC323-0)",
     "//Hamburg (09:15) -> Stuttgart (15:08, 5871-0) -> Zürich (18:26, IC489-0) -> Milano (22:53, EC325-0)",
     "//Hamburg (13:15) -> Stuttgart (19:08, ICE1211-0) -> Zürich (22:26, IC389-0) -> Milano (10:09 (Day 2), EC307-1)",
-    ["Hamburg->Stuttgart", "Stuttgart->Zürich", "Zürich->Milano"],
+    [
+      "Hamburg->Stuttgart",
+      "Stuttgart->Zürich",
+      "Zürich->Milano"
+    ],
     "//Hamburg (06:12) -> Basel (13:37, ICE277-0) -> Zürich (16:00, ICE73-0) -> Milano (20:53, EC323-0)",
     "//Hamburg (12:16) -> Basel (19:36, ICE373-0) -> Zürich (22:00, ICE79-0) -> Milano (10:09 (Day 2), EC307-1)",
     "//Hamburg (16:15) -> Basel (23:46, ICE377-0) -> Zürich (09:00 (Day 2), ICE3-1) -> Milano (12:53 (Day 2), EC315-1)",
-    ["Hamburg->Basel", "Basel->Zürich", "Zürich->Milano"],
+    [
+      "Hamburg->Basel",
+      "Basel->Zürich",
+      "Zürich->Milano"
+    ],
     "//Hamburg (07:15) -> Frankfurt am Main (11:00, 6864-0) -> Zürich (16:00, ICE73-0) -> Milano (20:53, EC323-0)",
-    "//Hamburg (13:15) -> Frankfurt am Main (17:00, ICE1211-0) -> Zürich (22:00, ICE79-0) -> Milano (10:09 (Day 2), EC307-1)",
+    "//Hamburg (13:15) -> Frankfurt am Main (17:00, ICE1211-0) -> Zürich (22:00, ICE79-0) -> Milano (10:09 (Day 2), EC307-1)"
   ],
   "Hamburg->Napoli": [
     "//Hamburg (04:47) -> München (10:45, 836-0) -> Verona (16:58, RJ85-0) -> Roma (20:59, FR8527-0) -> Napoli (22:33, FR9653-0)",
     "//Hamburg (09:01) -> München (14:41, 1823-0) -> Verona (21:00, RJ89-0) -> Roma (10:00 (Day 2), FR8505-1) -> Napoli (11:41 (Day 2), FR9607-1)",
-    ["Hamburg->München", "München->Verona", "Verona->Roma", "Roma->Napoli"],
+    [
+      "Hamburg->München",
+      "München->Verona",
+      "Verona->Roma",
+      "Roma->Napoli"
+    ],
     "//Hamburg (05:07) -> Stuttgart (11:08, 1608-0) -> Zürich (14:26, IC485-0) -> Milano (18:53, EC321-0) -> Napoli (23:31, FR9661-0)",
     "//Hamburg (09:15) -> Stuttgart (15:08, 5871-0) -> Zürich (18:26, IC489-0) -> Milano (22:53, EC325-0) -> Napoli (09:48 (Day 2), FR9601-1)",
     "//Hamburg (13:15) -> Stuttgart (19:08, ICE1211-0) -> Zürich (22:26, IC389-0) -> Milano (10:09 (Day 2), EC307-1) -> Napoli (14:56 (Day 2), FR9527-1)",
@@ -517,19 +786,25 @@ export const ROUTES = {
       "Hamburg->Stuttgart",
       "Stuttgart->Zürich",
       "Zürich->Milano",
-      "Milano->Napoli",
-    ],
+      "Milano->Napoli"
+    ]
   ],
   "Hamburg->Paris": [
     "//Hamburg (04:16) -> Karlsruhe (09:57, ICE275-0) -> Paris (14:13, ICE9574-0)",
     "//Hamburg (08:14) -> Karlsruhe (13:57, ICE279-0) -> Paris (18:19, ICE9572-0)",
     "//Hamburg (12:16) -> Karlsruhe (17:57, ICE373-0) -> Paris (22:13, TGV9570-0)",
-    ["Hamburg->Karlsruhe", "Karlsruhe->Paris"],
+    [
+      "Hamburg->Karlsruhe",
+      "Karlsruhe->Paris"
+    ],
     "//Hamburg (04:16) -> Mannheim (09:27, ICE275-0) -> Paris (12:52, ICE9556-0)",
     "//Hamburg (14:15) -> Mannheim (19:27, ICE375-0) -> Paris (22:52, ICE9550-0)",
-    ["Hamburg->Mannheim", "Mannheim->Paris"],
+    [
+      "Hamburg->Mannheim",
+      "Mannheim->Paris"
+    ],
     "//Hamburg (05:07) -> Mannheim (10:27, 1608-0) -> Karlsruhe (10:58, ICE103-0) -> Paris (14:13, ICE9574-0)",
-    "//Hamburg (13:15) -> Mannheim (18:27, ICE1211-0) -> Karlsruhe (18:58, ICE201-0) -> Paris (22:13, TGV9570-0)",
+    "//Hamburg (13:15) -> Mannheim (18:27, ICE1211-0) -> Karlsruhe (18:58, ICE201-0) -> Paris (22:13, TGV9570-0)"
   ],
   "Hamburg->Praha": [
     "//Hamburg (04:32) -> Berlin (07:12, 5786-0) -> Praha (11:24, EC171-0)",
@@ -538,18 +813,29 @@ export const ROUTES = {
     "//Hamburg (10:36) -> Berlin (13:11, 2319-0) -> Praha (17:24, EC175-0)",
     "//Hamburg (12:19) -> Berlin (15:11, 2749-0) -> Praha (19:24, EC177-0)",
     "//Hamburg (13:38) -> Berlin (16:09, 416-0) -> Praha (21:24, EC179-0)",
-    ["Hamburg->Berlin", "Berlin->Praha"],
+    [
+      "Hamburg->Berlin",
+      "Berlin->Praha"
+    ],
     "//Hamburg (04:32) -> Leipzig (08:42, 5786-0) -> Dresden (10:58, 9801-0) -> Praha (13:24, EC173-0)",
     "//Hamburg (05:34) -> Leipzig (09:42, 3848-0) -> Dresden (11:39, 7357-0) -> Praha (15:24, EC379-0)",
     "//Hamburg (07:19) -> Leipzig (11:42, 642-0) -> Dresden (13:39, 7527-0) -> Praha (17:24, EC175-0)",
     "//Hamburg (09:22) -> Leipzig (13:42, 6544-0) -> Dresden (15:39, 8594-0) -> Praha (19:24, EC177-0)",
     "//Hamburg (12:19) -> Leipzig (16:42, 2749-0) -> Dresden (18:40, 2077-0) -> Praha (21:24, EC179-0)",
-    ["Hamburg->Leipzig", "Leipzig->Dresden", "Dresden->Praha"],
+    [
+      "Hamburg->Leipzig",
+      "Leipzig->Dresden",
+      "Dresden->Praha"
+    ]
   ],
   "Hamburg->Roma": [
     "//Hamburg (04:47) -> München (10:45, 836-0) -> Verona (16:58, RJ85-0) -> Roma (20:59, FR8527-0)",
     "//Hamburg (09:01) -> München (14:41, 1823-0) -> Verona (21:00, RJ89-0) -> Roma (10:00 (Day 2), FR8505-1)",
-    ["Hamburg->München", "München->Verona", "Verona->Roma"],
+    [
+      "Hamburg->München",
+      "München->Verona",
+      "Verona->Roma"
+    ],
     "//Hamburg (05:07) -> Stuttgart (11:08, 1608-0) -> Zürich (14:26, IC485-0) -> Milano (18:53, EC321-0) -> Roma (22:10, FR9661-0)",
     "//Hamburg (09:15) -> Stuttgart (15:08, 5871-0) -> Zürich (18:26, IC489-0) -> Milano (22:53, EC325-0) -> Roma (08:40 (Day 2), FR9601-1)",
     "//Hamburg (13:15) -> Stuttgart (19:08, ICE1211-0) -> Zürich (22:26, IC389-0) -> Milano (10:09 (Day 2), EC307-1) -> Roma (13:40 (Day 2), FR9527-1)",
@@ -557,8 +843,8 @@ export const ROUTES = {
       "Hamburg->Stuttgart",
       "Stuttgart->Zürich",
       "Zürich->Milano",
-      "Milano->Roma",
-    ],
+      "Milano->Roma"
+    ]
   ],
   "Hamburg->Salzburg": [
     "//Hamburg (05:47) -> München (11:42, 9293-0) -> Salzburg (13:21, WB965-0)",
@@ -570,19 +856,35 @@ export const ROUTES = {
     "//Hamburg (12:54) -> München (18:40, 10062-0) -> Salzburg (21:00, RJ1299-0)",
     "//Hamburg (13:54) -> München (19:45, 4717-0) -> Salzburg (22:02, IC1291-0)",
     "//Hamburg (15:01) -> München (20:45, 4494-0) -> Salzburg (22:59, RJ1295-0)",
-    ["Hamburg->München", "München->Salzburg"],
+    [
+      "Hamburg->München",
+      "München->Salzburg"
+    ]
   ],
   "Hamburg->Stockholm": [
-    ["Hamburg->Stockholm"],
+    [
+      "Hamburg->Stockholm"
+    ],
     "//Hamburg (08:50) -> København (14:16, EC398-0) -> Malmö (15:06, R1082-0) -> Stockholm (19:37, X2542-0)",
     "//Hamburg (12:53) -> København (18:16, EC394-0) -> Malmö (19:06, R1114-0) -> Stockholm (23:38, X2550-0)",
-    ["Hamburg->København", "København->Malmö", "Malmö->Stockholm"],
+    [
+      "Hamburg->København",
+      "København->Malmö",
+      "Malmö->Stockholm"
+    ]
   ],
   "Hamburg->Venezia": [
     "//Hamburg (04:47) -> München (10:45, 836-0) -> Venezia (18:12, RJ85-0)",
-    ["Hamburg->München", "München->Venezia"],
+    [
+      "Hamburg->München",
+      "München->Venezia"
+    ],
     "//Hamburg (09:01) -> München (14:41, 1823-0) -> Verona (21:00, RJ89-0) -> Venezia (14:30 (Day 2), EC311-1)",
-    ["Hamburg->München", "München->Verona", "Verona->Venezia"],
+    [
+      "Hamburg->München",
+      "München->Verona",
+      "Verona->Venezia"
+    ]
   ],
   "Hamburg->Warszawa": [
     "//Hamburg (06:35) -> Berlin (09:10, 181-0) -> Warszawa (14:53, EC45-0)",
@@ -590,25 +892,41 @@ export const ROUTES = {
     "//Hamburg (10:36) -> Berlin (13:11, 2319-0) -> Warszawa (18:53, EC49-0)",
     "//Hamburg (12:19) -> Berlin (15:11, 2749-0) -> Warszawa (20:53, EC247-0)",
     "//Hamburg (13:38) -> Berlin (16:09, 416-0) -> Warszawa (22:53, EC249-0)",
-    ["Hamburg->Berlin", "Berlin->Warszawa"],
+    [
+      "Hamburg->Berlin",
+      "Berlin->Warszawa"
+    ]
   ],
   "Hamburg->Wien": [
     "//Hamburg (05:47) -> Nürnberg (10:23, 9293-0) -> Linz (13:26, ICE23-0) -> Wien (15:52, RJX65-0)",
     "//Hamburg (11:54) -> Nürnberg (16:24, 781-0) -> Linz (19:26, ICE29-0) -> Wien (21:52, RJX261-0)",
-    ["Hamburg->Nürnberg", "Nürnberg->Linz", "Linz->Wien"],
+    [
+      "Hamburg->Nürnberg",
+      "Nürnberg->Linz",
+      "Linz->Wien"
+    ],
     "//Hamburg (05:47) -> München (11:42, 9293-0) -> Wien (16:07, WB965-0)",
     "//Hamburg (09:01) -> München (14:41, 1823-0) -> Wien (19:52, RJX69-0)",
     "//Hamburg (10:01) -> München (15:44, 4753-0) -> Wien (20:07, WB971-0)",
     "//Hamburg (10:45) -> München (16:41, 3913-0) -> Wien (21:52, RJX261-0)",
     "//Hamburg (11:54) -> München (17:44, 781-0) -> Wien (22:07, WB983-0)",
-    ["Hamburg->München", "München->Wien"],
+    [
+      "Hamburg->München",
+      "München->Wien"
+    ],
     "//Hamburg (10:01) -> Nürnberg (14:23, 4753-0) -> Wien (19:25, ICE27-0)",
     "//Hamburg (13:54) -> Nürnberg (18:23, 4717-0) -> Wien (23:25, ICE229-0)",
-    ["Hamburg->Nürnberg", "Nürnberg->Wien"],
+    [
+      "Hamburg->Nürnberg",
+      "Nürnberg->Wien"
+    ]
   ],
   "Hamburg->Wrocław": [
     "//Hamburg (07:19) -> Berlin (10:08, 642-0) -> Wrocław (14:58, EC57-0)",
-    ["Hamburg->Berlin", "Berlin->Wrocław"],
+    [
+      "Hamburg->Berlin",
+      "Berlin->Wrocław"
+    ]
   ],
   "München->Amsterdam": [
     "//München (00:01) -> Köln (06:33, 94-0) -> Amsterdam (10:53, ICE250-0)",
@@ -617,10 +935,17 @@ export const ROUTES = {
     "//München (09:27) -> Köln (14:32, 1551-0) -> Amsterdam (17:53, ICE154-0)",
     "//München (11:48) -> Köln (17:04, 7825-0) -> Amsterdam (20:44, ICE152-0)",
     "//München (13:47) -> Köln (19:04, 6829-0) -> Amsterdam (22:29, ICE254-0)",
-    ["München->Köln", "Köln->Amsterdam"],
+    [
+      "München->Köln",
+      "Köln->Amsterdam"
+    ]
   ],
   "München->Bratislava": [
-    ["München->Leipzig", "Leipzig->Dresden", "Dresden->Bratislava"],
+    [
+      "München->Leipzig",
+      "Leipzig->Dresden",
+      "Dresden->Bratislava"
+    ]
   ],
   "München->Bruxelles": [
     "//München (00:01) -> Köln (06:33, 94-0) -> Bruxelles (09:26, ICE18-0)",
@@ -630,22 +955,35 @@ export const ROUTES = {
     "//München (09:47) -> Köln (15:04, 43-0) -> Bruxelles (17:26, ICE14-0)",
     "//München (11:48) -> Köln (17:04, 7825-0) -> Bruxelles (19:26, ICE12-0)",
     "//München (13:47) -> Köln (19:04, 6829-0) -> Bruxelles (21:26, ICE10-0)",
-    ["München->Köln", "Köln->Bruxelles"],
+    [
+      "München->Köln",
+      "Köln->Bruxelles"
+    ],
     "//München (06:47) -> Frankfurt (M) Flughafen (10:20, 2450-0) -> Bruxelles (13:26, ICE16-0)",
     "//München (08:47) -> Frankfurt (M) Flughafen (12:22, 6568-0) -> Bruxelles (15:26, ICE314-0)",
     "//München (12:47) -> Frankfurt (M) Flughafen (16:20, 3107-0) -> Bruxelles (19:26, ICE12-0)",
-    "//München (14:47) -> Frankfurt (M) Flughafen (18:20, 2824-0) -> Bruxelles (21:26, ICE10-0)",
+    "//München (14:47) -> Frankfurt (M) Flughafen (18:20, 2824-0) -> Bruxelles (21:26, ICE10-0)"
   ],
   "München->Budapest": [
-    ["München->Leipzig", "Leipzig->Dresden", "Dresden->Budapest"],
+    [
+      "München->Leipzig",
+      "Leipzig->Dresden",
+      "Dresden->Budapest"
+    ]
   ],
   "München->Firenze": [
     "//München (11:33) -> Verona (16:58, RJ85-0) -> Firenze (19:24, FR8527-0)",
-    ["München->Verona", "Verona->Firenze"],
+    [
+      "München->Verona",
+      "Verona->Firenze"
+    ]
   ],
   "München->Gdańsk": [
     "//München (08:52) -> Berlin (12:50, 7519-0) -> Gdańsk (18:36, EC59-0)",
-    ["München->Berlin", "Berlin->Gdańsk"],
+    [
+      "München->Berlin",
+      "Berlin->Gdańsk"
+    ]
   ],
   "München->Göteborg": [
     "//München (05:14) -> Hamburg (10:41, 9005-0) -> København (16:16, EC396-0) -> Malmö (16:58, R21372-0) -> Göteborg (19:35, X2492-0)",
@@ -653,12 +991,15 @@ export const ROUTES = {
       "München->Hamburg",
       "Hamburg->København",
       "København->Malmö",
-      "Malmö->Göteborg",
-    ],
+      "Malmö->Göteborg"
+    ]
   ],
   "München->Kraków": [
     "//München (06:52) -> Berlin (10:50, 699-0) -> Kraków (18:12, EC57-0)",
-    ["München->Berlin", "Berlin->Kraków"],
+    [
+      "München->Berlin",
+      "Berlin->Kraków"
+    ]
   ],
   "München->London": [
     "//München (00:01) -> Köln (06:33, 94-0) -> Bruxelles (09:26, ICE18-0) -> London (12:00, EST9125-0)",
@@ -667,19 +1008,34 @@ export const ROUTES = {
     "//München (07:46) -> Köln (13:04, 4526-0) -> Bruxelles (15:26, ICE314-0) -> London (17:47, EST9149-0)",
     "//München (09:47) -> Köln (15:04, 43-0) -> Bruxelles (17:26, ICE14-0) -> London (19:00, EST9153-0)",
     "//München (11:48) -> Köln (17:04, 7825-0) -> Bruxelles (19:26, ICE12-0) -> London (21:57, EST9165-0)",
-    ["München->Köln", "Köln->Bruxelles", "Bruxelles->London"],
+    [
+      "München->Köln",
+      "Köln->Bruxelles",
+      "Bruxelles->London"
+    ],
     "//München (03:32) -> Stuttgart (05:45, 873-0) -> Paris (10:13, TGV9578-0) -> London (12:30, EST9023-0)",
     "//München (08:46) -> Stuttgart (10:43, 2992-0) -> Paris (14:13, ICE9574-0) -> London (16:30, EST9039-0)",
     "//München (12:47) -> Stuttgart (14:43, 1240-0) -> Paris (18:19, ICE9572-0) -> London (20:57, EST9055-0)",
-    ["München->Stuttgart", "Stuttgart->Paris", "Paris->London"],
+    [
+      "München->Stuttgart",
+      "Stuttgart->Paris",
+      "Paris->London"
+    ],
     "//München (03:32) -> Mannheim (06:28, 873-0) -> Paris (09:52, ICE9558-0) -> London (11:30, EST9019-0)",
-    ["München->Mannheim", "Mannheim->Paris", "Paris->London"],
+    [
+      "München->Mannheim",
+      "Mannheim->Paris",
+      "Paris->London"
+    ],
     "//München (04:13) -> Nürnberg (05:22, 2942-0) -> Köln (10:05, 3965-0) -> Bruxelles (13:26, ICE16-0) -> London (15:57, EST9141-0)",
-    "//München (10:21) -> Nürnberg (11:30, 3980-0) -> Köln (16:05, 9229-0) -> Bruxelles (19:26, ICE12-0) -> London (21:57, EST9165-0)",
+    "//München (10:21) -> Nürnberg (11:30, 3980-0) -> Köln (16:05, 9229-0) -> Bruxelles (19:26, ICE12-0) -> London (21:57, EST9165-0)"
   ],
   "München->Marseille": [
     "//München (11:03) -> Karlsruhe (13:52, 5435-0) -> Marseille (21:46, TGV9580-0)",
-    ["München->Karlsruhe", "Karlsruhe->Marseille"],
+    [
+      "München->Karlsruhe",
+      "Karlsruhe->Marseille"
+    ]
   ],
   "München->Milano": [
     "//München (03:32) -> Stuttgart (05:45, 873-0) -> Zürich (09:26, IC181-0) -> Milano (12:53, EC315-0)",
@@ -689,43 +1045,77 @@ export const ROUTES = {
     "//München (09:47) -> Stuttgart (11:59, 43-0) -> Zürich (15:26, IC187-0) -> Milano (18:53, EC321-0)",
     "//München (11:03) -> Stuttgart (13:02, 5435-0) -> Zürich (16:26, IC487-0) -> Milano (20:53, EC323-0)",
     "//München (13:47) -> Stuttgart (15:59, 6829-0) -> Zürich (19:26, IC281-0) -> Milano (22:53, EC325-0)",
-    ["München->Stuttgart", "Stuttgart->Zürich", "Zürich->Milano"],
+    [
+      "München->Stuttgart",
+      "Stuttgart->Zürich",
+      "Zürich->Milano"
+    ]
   ],
   "München->Napoli": [
     "//München (05:00) -> Karlsruhe (07:53, 9138-0) -> Milano (15:50, ECE151-0) -> Roma (19:40, FR9647-0) -> Napoli (21:33, FR8525-0)",
-    ["München->Karlsruhe", "Karlsruhe->Milano", "Milano->Roma", "Roma->Napoli"],
+    [
+      "München->Karlsruhe",
+      "Karlsruhe->Milano",
+      "Milano->Roma",
+      "Roma->Napoli"
+    ],
     "//München (07:34) -> Bologna (14:10, RJ81-0) -> Napoli (18:36, FR9637-0)",
     "//München (09:34) -> Bologna (16:19, RJ83-0) -> Napoli (19:48, FR9643-0)",
-    ["München->Bologna", "Bologna->Napoli"],
+    [
+      "München->Bologna",
+      "Bologna->Napoli"
+    ],
     "//München (11:33) -> Verona (16:58, RJ85-0) -> Roma (20:59, FR8527-0) -> Napoli (22:33, FR9653-0)",
-    ["München->Verona", "Verona->Roma", "Roma->Napoli"],
+    [
+      "München->Verona",
+      "Verona->Roma",
+      "Roma->Napoli"
+    ]
   ],
   "München->Paris": [
     "//München (03:32) -> Stuttgart (05:45, 873-0) -> Paris (10:13, TGV9578-0)",
     "//München (08:46) -> Stuttgart (10:43, 2992-0) -> Paris (14:13, ICE9574-0)",
     "//München (12:47) -> Stuttgart (14:43, 1240-0) -> Paris (18:19, ICE9572-0)",
     "//München (16:46) -> Stuttgart (18:43, 345-0) -> Paris (22:13, TGV9570-0)",
-    ["München->Stuttgart", "Stuttgart->Paris"],
+    [
+      "München->Stuttgart",
+      "Stuttgart->Paris"
+    ],
     "//München (03:32) -> Mannheim (06:28, 873-0) -> Paris (09:52, ICE9558-0)",
     "//München (16:46) -> Mannheim (19:28, 345-0) -> Paris (22:52, ICE9550-0)",
-    ["München->Mannheim", "Mannheim->Paris"],
+    [
+      "München->Mannheim",
+      "Mannheim->Paris"
+    ],
     "//München (05:00) -> Karlsruhe (07:53, 9138-0) -> Paris (10:38, ICE9568-0)",
     "//München (11:03) -> Karlsruhe (13:52, 5435-0) -> Paris (18:19, ICE9572-0)",
-    ["München->Karlsruhe", "Karlsruhe->Paris"],
+    [
+      "München->Karlsruhe",
+      "Karlsruhe->Paris"
+    ],
     "//München (06:49) -> Paris (12:33, TGV9576-0)",
-    ["München->Paris"],
+    [
+      "München->Paris"
+    ]
   ],
   "München->Praha": [
-    ["München->Leipzig", "Leipzig->Dresden", "Dresden->Praha"],
+    [
+      "München->Leipzig",
+      "Leipzig->Dresden",
+      "Dresden->Praha"
+    ],
     "//München (06:52) -> Berlin (10:50, 699-0) -> Praha (15:24, EC379-0)",
     "//München (08:52) -> Berlin (12:50, 7519-0) -> Praha (17:24, EC175-0)",
     "//München (10:52) -> Berlin (14:50, 8629-0) -> Praha (19:24, EC177-0)",
     "//München (12:52) -> Berlin (16:50, 9424-0) -> Praha (21:24, EC179-0)",
-    ["München->Berlin", "Berlin->Praha"],
+    [
+      "München->Berlin",
+      "Berlin->Praha"
+    ],
     "//München (06:57) -> Leipzig (10:10, 8933-0) -> Dresden (11:39, 7357-0) -> Praha (15:24, EC379-0)",
     "//München (08:50) -> Leipzig (12:10, 4-0) -> Dresden (13:39, 7527-0) -> Praha (17:24, EC175-0)",
     "//München (10:57) -> Leipzig (14:10, 6252-0) -> Dresden (15:39, 8594-0) -> Praha (19:24, EC177-0)",
-    "//München (12:56) -> Leipzig (16:10, 1143-0) -> Dresden (17:39, 9245-0) -> Praha (21:24, EC179-0)",
+    "//München (12:56) -> Leipzig (16:10, 1143-0) -> Dresden (17:39, 9245-0) -> Praha (21:24, EC179-0)"
   ],
   "München->Roma": [
     "//München (03:32) -> Stuttgart (05:45, 873-0) -> Zürich (09:26, IC181-0) -> Milano (12:53, EC315-0) -> Roma (16:40, FR9633-0)",
@@ -736,10 +1126,13 @@ export const ROUTES = {
       "München->Stuttgart",
       "Stuttgart->Zürich",
       "Zürich->Milano",
-      "Milano->Roma",
+      "Milano->Roma"
     ],
     "//München (11:33) -> Verona (16:58, RJ85-0) -> Roma (20:59, FR8527-0)",
-    ["München->Verona", "Verona->Roma"],
+    [
+      "München->Verona",
+      "Verona->Roma"
+    ]
   ],
   "München->Salzburg": [
     "//München (06:22) -> Salzburg (07:58, RJX265-0)",
@@ -760,22 +1153,32 @@ export const ROUTES = {
     "//München (19:17) -> Salzburg (21:00, RJ1299-0)",
     "//München (20:17) -> Salzburg (22:02, IC1291-0)",
     "//München (21:16) -> Salzburg (22:59, RJ1295-0)",
-    ["München->Salzburg"],
+    [
+      "München->Salzburg"
+    ]
   ],
   "München->Stockholm": [
-    ["München->Hamburg", "Hamburg->Stockholm"],
+    [
+      "München->Hamburg",
+      "Hamburg->Stockholm"
+    ],
     [
       "München->Hamburg",
       "Hamburg->København",
       "København->Malmö",
-      "Malmö->Stockholm",
-    ],
+      "Malmö->Stockholm"
+    ]
   ],
   "München->Venezia": [
     "//München (07:34) -> Verona (12:56, RJ81-0) -> Venezia (14:30, EC311-0)",
-    ["München->Verona", "Verona->Venezia"],
+    [
+      "München->Verona",
+      "Verona->Venezia"
+    ],
     "//München (11:33) -> Venezia (18:12, RJ85-0)",
-    ["München->Venezia"],
+    [
+      "München->Venezia"
+    ]
   ],
   "München->Warszawa": [
     "//München (05:53) -> Berlin (09:46, 5484-0) -> Warszawa (14:53, EC45-0)",
@@ -783,7 +1186,10 @@ export const ROUTES = {
     "//München (08:50) -> Berlin (13:22, 4-0) -> Warszawa (18:53, EC49-0)",
     "//München (11:56) -> Berlin (15:33, 4295-0) -> Warszawa (20:53, EC247-0)",
     "//München (12:56) -> Berlin (17:22, 1143-0) -> Warszawa (22:53, EC249-0)",
-    ["München->Berlin", "Berlin->Warszawa"],
+    [
+      "München->Berlin",
+      "Berlin->Warszawa"
+    ]
   ],
   "München->Wien": [
     "//München (06:22) -> Wien (10:52, RJX265-0)",
@@ -794,10 +1200,15 @@ export const ROUTES = {
     "//München (15:58) -> Wien (20:07, WB971-0)",
     "//München (17:30) -> Wien (21:52, RJX261-0)",
     "//München (17:59) -> Wien (22:07, WB983-0)",
-    ["München->Wien"],
+    [
+      "München->Wien"
+    ]
   ],
   "München->Wrocław": [
     "//München (06:52) -> Berlin (10:50, 699-0) -> Wrocław (14:58, EC57-0)",
-    ["München->Berlin", "Berlin->Wrocław"],
-  ],
-};
+    [
+      "München->Berlin",
+      "Berlin->Wrocław"
+    ]
+  ]
+}

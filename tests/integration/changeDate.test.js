@@ -37,6 +37,7 @@ async function initWithMockViews(home, data) {
       load: jest.fn(),
       on: (name, fn) => (callbacks.map[name] = fn),
       updateView: jest.fn(),
+      initMapData: jest.fn(),
     },
     perlschnur: { updateView: jest.fn() },
     layout: { updateView: jest.fn() },
