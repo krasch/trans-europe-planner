@@ -50,10 +50,6 @@
   width: var(--content-width);
 }
 
-#blog > .logo {
-  width: 30rem;
-}
-
 #blog > h1 {
   text-align: center;
 }
