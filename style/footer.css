@@ -8,11 +8,10 @@ footer {
   gap: 1rem;
 
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
 
   padding-right: 2rem;
   overflow-x: hidden;
-
 }
 
 footer img {
