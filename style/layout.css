@@ -53,17 +53,15 @@ body {
     "footer";
 }
 
-/* planner blog etc all have a <main> element that is placed in this grid cell */
-/* the map (where available) and landing page is placed in the same grid cell */
-main,
-#landing-page,
 #map {
   grid-area: content;
 }
 
-/* planner and landing page dialog lie above the map */
-#planner,
+/* planner blog imprint all have a <main> element that is placed
+   in the same grid cell as map but above it */
+main,
 #landing-page {
+  grid-area: content;
   z-index: 2;
 }
 
