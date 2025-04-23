@@ -5,6 +5,7 @@
 #landing-page {
   --item-width: min(95%, 400px);
   --gap: 2rem;
+  --padding-top-bottom: 2rem;
 
   /* by default (=on mobile), we want only one item to fit per row */
   width: var(--item-width);
@@ -21,8 +22,7 @@
   justify-content: center;
   align-content: center;
 
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding: var(--padding-top-bottom) 0 var(--padding-top-bottom) 0;
   gap: var(--gap);
 }
 
@@ -32,10 +32,16 @@
 }
 
 @media only screen and (min-width: 1000px) {
-  /* on desktop, can have two items per row */
   #landing-page {
+    /* on desktop, can have two items per row */
     width: calc(2 * var(--item-width) + var(--gap));
     justify-content: start;
+
+    /* on desktop, we want the footer to always be visible */
+    height: calc(var(--main-height) - 2 * var(--padding-top-bottom));
+
+    /* somehow it does not like me calculating with --main-height here :-( */
+    --slide-max-image-height: min(40vh, 512px);
   }
 
   /* on desktop, there is a utility div to keep an empty space but we want it to not be visible */
@@ -145,7 +151,9 @@
 }
 
 #slides .slide img {
-  width: 100%; /* image should fit into the space it has */
+  max-height: var(--slide-max-image-height);
+  max-width: 100%;
+  object-fit: contain;
 }
 
 #slide-controls {
