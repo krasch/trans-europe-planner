@@ -9,11 +9,13 @@ class Carousel {
   #dots;
   #arrows;
 
+  #numSlides;
   #current;
 
-  constructor(container, initialPosition = 2) {
+  constructor(container, initialPosition = 1) {
     this.#slidesContainer = container.querySelector("#slides");
     this.#slides = this.#slidesContainer.querySelectorAll(".slide");
+    this.#numSlides = this.#slides.length;
 
     this.#controlContainer = container.querySelector("#slide-controls");
     this.#dots = this.#controlContainer.querySelectorAll(".dot");
@@ -54,8 +56,8 @@ class Carousel {
 
   #scrollTo(newIdx) {
     // after right-most item comes left-most and vice-versa
-    if (newIdx < 0) newIdx = 2;
-    else if (newIdx > 2) newIdx = 0;
+    if (newIdx < 0) newIdx = this.#numSlides - 1;
+    else if (newIdx > this.#numSlides - 1) newIdx = 0;
 
     this.#slidesContainer.scrollTo(this.#slideWidth * newIdx, 0);
     this.#updateState(); // scrollTo does not trigger "scroll" event listener, need to call update explicitly
