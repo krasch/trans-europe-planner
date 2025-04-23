@@ -1,61 +1,60 @@
 #blog {
-    --content-width: min(90%, 60rem);
-    --padding-top-bottom: 2rem;
-    --gap-between-articles: 2rem;
+  --content-width: min(90%, 60rem);
+  --padding-top-bottom: 2rem;
+  --gap-between-articles: 2rem;
 }
 
 @media only screen and (min-width: 1000px) {
-    --padding-top-bottom: 3rem;
-    --gap-between-articles: 3rem;
+  --padding-top-bottom: 3rem;
+  --gap-between-articles: 3rem;
 }
 
 /* resetting some defaults */
 #blog p,
 #blog ul {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
-
 
 /***********************************************
  Layout
 ************************************************/
 
 #blog {
-    justify-self: center;
+  justify-self: center;
 
-    width: 100%;
-    height: 100%;
-    padding: var(--padding-top-bottom) 0 var(--padding-top-bottom) 0;
-    overflow-y: auto;
+  width: 100%;
+  height: 100%;
+  padding: var(--padding-top-bottom) 0 var(--padding-top-bottom) 0;
+  overflow-y: auto;
 
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-between-articles);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-between-articles);
 
-    align-items: center;
-    justify-content: flex-start;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 #blog > * {
-    /* setting this here rather than on #blog to have scrollbar at the right of page */
-    width: var(--content-width);
+  /* setting this here rather than on #blog to have scrollbar at the right of page */
+  width: var(--content-width);
 }
 
-#blog > h3 {
-    text-align: center;
+#blog > h1 {
+  text-align: center;
 }
 
 #blog .logo {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 #blog .logo > img {
-    height: 8rem;
+  height: 8rem;
 }
 
 /***********************************************
@@ -63,23 +62,23 @@
 ************************************************/
 
 #blog details {
-    padding: 1rem;
+  padding: 1rem;
 }
 
 #blog summary,
 #blog article {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    text-align: justify;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: justify;
 }
 
 #blog article {
-    padding-top: 1rem;
+  padding-top: 1rem;
 }
 
 #blog ul {
-    padding-left: 2rem;
+  padding-left: 2rem;
 }
 
 /***********************************************
@@ -87,14 +86,13 @@
 ************************************************/
 
 #demo video {
-   max-width: 400px;
+  max-width: 400px;
 }
 
 #blog .gif {
-   max-width: 300px;
-   border-radius: 1rem;
+  max-width: 300px;
+  border-radius: 1rem;
 }
-
 
 /***********************************************
  Collapsing / expanding of articles
@@ -103,19 +101,19 @@
 /* icons for expanding and collapsing */
 #blog .icon-expand,
 #blog .icon-collapse {
-    cursor: pointer;
+  cursor: pointer;
 
-    transform: rotate(90deg);
-    width: fit-content;
-    padding-left: 0.5rem;
+  transform: rotate(90deg);
+  width: fit-content;
+  padding-left: 0.5rem;
 
-    font-size: 1.5rem;
-    text-align: center;
+  font-size: 1.5rem;
+  text-align: center;
 }
 
 /* expand not visible when already expanded */
 #blog details[open] .icon-expand {
-    display: none;
+  display: none;
 }
 
 /***********************************************
@@ -123,27 +121,26 @@
 ************************************************/
 
 #blog .gallery {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 
-    padding: 1rem;
-    gap: 1rem;
+  padding: 1rem;
+  gap: 1rem;
 }
 
 #blog .gallery > * {
-    flex: 1 1 0; /* grow / shrink / basis */
-    width: 0;
+  flex: 1 1 0; /* grow / shrink / basis */
+  width: 0;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end; /* if headings are different height, images still aligned */
-    gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end; /* if headings are different height, images still aligned */
+  gap: 0.5rem;
 }
 
-
 #blog .gallery img {
-    max-width: 100%;
+  max-width: 100%;
 }
 
 /***********************************************
@@ -151,14 +148,14 @@
 ************************************************/
 
 #blog .support {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 2rem;
 }
 
 #blog .support img {
-    max-height: 8rem;
+  max-height: 8rem;
 }
 
 /***********************************************
@@ -166,53 +163,51 @@
 ************************************************/
 
 #blog {
-    color: var(--color-dark);
-    font-size: 1.2rem;
+  color: var(--color-dark);
+  font-size: 1.2rem;
 }
 
 #blog .logo {
-    background-color: var(--color-dark);
-    border-radius: 1rem;
+  background-color: var(--color-dark);
+  border-radius: 1rem;
 }
 
 #blog .logo > img {
-    filter: var(--filter-white);
+  filter: var(--filter-white);
 }
 
 #blog details .date {
-    font-style: italic;
+  font-style: italic;
 }
 
 #blog .gallery h4 {
-    font-size: 1.2rem;
-    font-style: italic;
-    text-align: center;
-    text-wrap: balance; /* new in 2024 but does not matter too much if not available */
+  font-size: 1.2rem;
+  font-style: italic;
+  text-align: center;
+  text-wrap: balance; /* new in 2024 but does not matter too much if not available */
 }
 
 @media only screen and (max-width: 1000px) {
-    #blog .gallery h4 {
-        font-size: 0.8rem;
-    }
+  #blog .gallery h4 {
+    font-size: 0.8rem;
+  }
 }
 
-
 #blog details {
-    border: 1px solid var(--color-dark);
-    border-radius: 1rem;
+  border: 1px solid var(--color-dark);
+  border-radius: 1rem;
 }
 
 /* remove standard <summary> triangle icon */
 #blog summary {
-    list-style: none;
+  list-style: none;
 }
 
 #blog summary::-webkit-details-marker {
-    display: none;
+  display: none;
 }
 
 #blog aside {
-    font-style: italic;
-    color: darkgrey;
+  font-style: italic;
+  color: darkgrey;
 }
-
