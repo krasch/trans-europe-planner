@@ -3,7 +3,7 @@ Following along with this answer https://askubuntu.com/a/837574 (section on gifs
 
 ```
 mkdir -p frames
-ffmpeg -i inpute.mp4  -r 15 -vf scale=-1:512  frames/%04d.png
+ffmpeg -i final.mp4  -r 15 -vf scale=-1:512  frames/%04d.png
 
 sudo snap install gifski
 gifski -o output.gif frames/*.png
