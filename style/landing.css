@@ -3,70 +3,70 @@
 ************************************************/
 
 #landing-page {
-    --item-width: min(95%, 400px);
-    --gap: 2rem;
+  --item-width: min(95%, 400px);
+  --gap: 2rem;
 
-    /* by default (=on mobile), we want only one item to fit per row */
-    width: var(--item-width);
+  /* by default (=on mobile), we want only one item to fit per row */
+  width: var(--item-width);
 
-    /* location of this container in its grid cell */
-    align-self: center;
-    justify-self: center;
+  /* location of this container in its grid cell */
+  align-self: center;
+  justify-self: center;
 
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 
-    /* horizontal centering of the items */
-    justify-content: center;
-    align-content: center;
+  /* horizontal centering of the items */
+  justify-content: center;
+  align-content: center;
 
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    gap: var(--gap);
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  gap: var(--gap);
 }
 
 #landing-page > * {
-    /* every item on landing page has the same width */
-    width: var(--item-width);
+  /* every item on landing page has the same width */
+  width: var(--item-width);
 }
 
 @media only screen and (min-width: 1000px) {
-    /* on desktop, can have two items per row */
-    #landing-page {
-        width: calc(2 * var(--item-width) + var(--gap));
-        justify-content: start;
-    }
+  /* on desktop, can have two items per row */
+  #landing-page {
+    width: calc(2 * var(--item-width) + var(--gap));
+    justify-content: start;
+  }
 
-    /* on desktop, there is a utility div to keep an empty space but we want it to not be visible */
-    #landing-page > .only-desktop {
-        visibility: collapse;
-    }
+  /* on desktop, there is a utility div to keep an empty space but we want it to not be visible */
+  #landing-page > .only-desktop {
+    visibility: collapse;
+  }
 }
 
 #landing-page > *:not(.only-desktop) {
-    /* every item takes up the height it needs but not more */
-    height: fit-content;
-    padding: 1rem;
+  /* every item takes up the height it needs but not more */
+  height: fit-content;
+  padding: 1rem;
 
-    /* every item is also a flexbox */
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+  /* every item is also a flexbox */
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 #landing-page .logo > img {
-    max-height: 8rem;
-    padding: 1rem;
+  max-height: 8rem;
+  padding: 1rem;
 }
 
 #landing-page #showcase {
-    /* this is the tallest item -> if need scrollbar, let's do it here */
-    overflow-y: auto;
+  /* this is the tallest item -> if need scrollbar, let's do it here */
+  overflow-y: auto;
 }
 
 /***********************************************
@@ -74,22 +74,22 @@
 ************************************************/
 
 #landing-page {
-    background: transparent;
+  background: transparent;
 }
 
 #landing-page > * {
-    background-color: var(--color-dark);
-    color: var(--color-light);
-    border-radius: 20px;
-    opacity: 95%;
+  background-color: var(--color-dark);
+  color: var(--color-light);
+  border-radius: 1rem;
+  opacity: 95%;
 }
 
 #landing-page .logo > img {
-    filter: var(--filter-white);
+  filter: var(--filter-white);
 }
 
 #landing-page a {
-    color: var(--color-light);
+  color: var(--color-light);
 }
 
 /***********************************************
@@ -97,79 +97,78 @@
 ************************************************/
 
 #slide-carousel {
-    /* if not putting 100%, the slide carousel can be too wide on mobile */
-    width: 100%;
-    padding: 0.75rem;
+  /* if not putting 100%, the slide carousel can be too wide on mobile */
+  width: 100%;
+  padding: 0.75rem;
 
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 
-    align-items: center;
+  align-items: center;
 }
 
-
 #slides {
-    /* this makes the slides scrollable */
-    width: 100%;
-    overflow-y: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth; /* when scrolling programmatically, don't just jump there but make it nice */
+  /* this makes the slides scrollable */
+  width: 100%;
+  overflow-y: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth; /* when scrolling programmatically, don't just jump there but make it nice */
 
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 /* hide scrollbar for Firefox and latest Chromium */
 #slides {
-    scrollbar-width: none;
+  scrollbar-width: none;
 }
 
 /* hide scrollbar for Safari and legacy Chromium*/
 #slides::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 #slides .slide {
-    /* each item takes up all space -> will need scrolling (which is what we want) */
-    width: 100%;
+  /* each item takes up all space -> will need scrolling (which is what we want) */
+  width: 100%;
 
-    /* items in carousel should not grow or shrink - otherwise flex will just make them 33% instead of 100% */
-    flex: none;
+  /* items in carousel should not grow or shrink - otherwise flex will just make them 33% instead of 100% */
+  flex: none;
 
-    /* when scrolling always scroll from center to center of item */
-    scroll-snap-align: center;
+  /* when scrolling always scroll from center to center of item */
+  scroll-snap-align: center;
 
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 #slides .slide img {
-    width: 100%; /* image should fit into the space it has */
+  width: 100%; /* image should fit into the space it has */
 }
 
 #slide-controls {
-    display: flex;
-    flex-direction: row;
-    gap: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
 
-    align-items: center;
-    justify-content: center;
+  align-items: center;
+  justify-content: center;
 }
 
 #slide-controls .dot {
-    cursor: pointer;
-    height: 0.5rem;
-    width: 0.5rem;
+  cursor: pointer;
+  height: 0.5rem;
+  width: 0.5rem;
 }
 
 #slide-controls .arrow {
-    cursor: pointer;
-    height: 0.75rem;
-    width: 0.75rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
+  cursor: pointer;
+  height: 0.75rem;
+  width: 0.75rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 /***********************************************
@@ -177,22 +176,22 @@
 ************************************************/
 
 #slide-carousel {
-    background-color: var(--color-light);
-    color: var(--color-dark);
-    border-radius: 10px;
-    opacity: 95%;
+  background-color: var(--color-light);
+  color: var(--color-dark);
+  border-radius: 10px;
+  opacity: 95%;
 }
 
 #slide-controls .dot {
-    filter: var(--filter-light-gray);
+  filter: var(--filter-light-gray);
 }
 
 #slide-controls .dot.active {
-    filter: var(--filter-dark);
+  filter: var(--filter-dark);
 }
 
 #slide-controls .arrow {
-    filter: var(--filter-light-gray);
+  filter: var(--filter-light-gray);
 }
 
 /***********************************************
@@ -201,14 +200,14 @@
 
 #landing-page form select,
 #landing-page form button {
-    height: 2rem;
-    font-size: 1rem;
-    max-width: 100%; /* otherwise select can become too wide on small displays */
+  height: 2rem;
+  font-size: 1rem;
+  max-width: 100%; /* otherwise select can become too wide on small displays */
 }
 
 #landing-page form button {
-    padding-left: 1rem;
-    padding-right: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 /***********************************************
@@ -216,22 +215,22 @@
 ************************************************/
 
 #landing-page form select {
-    background-color: var(--color-light);
-    color: var(--color-dark);
-    border-radius: 5px;
+  background-color: var(--color-light);
+  color: var(--color-dark);
+  border-radius: 5px;
 }
 
 #landing-page form button {
-    cursor: pointer;
+  cursor: pointer;
 
-    background-color: #289929;
-    color: var(--color-light);
+  background-color: #289929;
+  color: var(--color-light);
 
-    border: 0;
-    border-radius: 5px;
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  border: 0;
+  border-radius: 5px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 #landing-page form button:hover {
-    background-color: #2faf30;
+  background-color: #2faf30;
 }
