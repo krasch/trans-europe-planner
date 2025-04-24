@@ -6,9 +6,11 @@
   --item-width: min(95%, 400px);
   --gap: 2rem;
   --padding-top-bottom: 2rem;
+  --slide-max-image-height: 100%;
 
   /* by default (=on mobile), we want only one item to fit per row */
   width: var(--item-width);
+  height: calc(100% - 2*var(--padding-top-bottom));
 
   /* location of this container in its grid cell */
   align-self: center;
