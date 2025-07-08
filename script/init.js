@@ -1,16 +1,21 @@
-import { showLandingPage } from "./components/landing.js";
-import { initColors } from "./util.js";
-import { initCityNameToId } from "./util.js";
-import { enrichConnection } from "./data/database.js";
-
 import { MapWrapper } from "./components/map/map.js";
 import { Perlschnur } from "./components/perlschnur.js";
 import { Datepicker } from "./components/datepicker.js";
 import { CalendarWrapper } from "./components/calendar.js";
 
+import { MotisClient } from "./data/sources/motis.js";
+import { GeoDatabase } from "./data/geoDatabase.js";
+import { TravelDatabase } from "./data/travelDatabase.js";
+
+import { showLandingPage } from "./components/landing.js";
 import { main } from "./main.js";
 
-const HOMES = ["Berlin", "Hamburg", "Köln", "München", "Stockholm"];
+const HOMES = ["Schwerin"];
+
+const PATHS = {
+  stops: "data/mv/stops.json",
+  cities: "data/mv/cities.json",
+};
 
 function parseURLParams() {
   const params = new URLSearchParams(window.location.search);
@@ -21,36 +26,16 @@ function parseURLParams() {
   return null;
 }
 
-async function loadAndPrepareData(placeholderDate) {
-  const paths = {
-    stations: "data/stations.json",
-    cities: "data/cities.json",
-    routes: "data/routes.json",
-    connections: "data/connections.json",
-  };
+async function loadDataFile(path) {
+  const response = await fetch(path);
+  return await response.json();
+}
 
-  const data = {};
-  for (let key in paths) {
-    const response = await fetch(paths[key]);
-    data[key] = await response.json();
-  }
+async function loadAndPrepareData() {
+  const stops = await loadDataFile(PATHS.stops);
+  const cities = await loadDataFile(PATHS.cities);
 
-  // todo this creates stupid global variables, we can do better
-  initColors();
-  initCityNameToId(data.cities);
-
-  // add station and city info and turn each raw connection into 3 dated connections (3 calendar dates)
-  // todo move this into web-worker?
-  data.connections = data.connections.flatMap((c) =>
-    enrichConnection(
-      c,
-      data.stations,
-      data.cities,
-      placeholderDate.toISODate(),
-    ),
-  );
-
-  return data;
+  return new GeoDatabase(cities, stops);
 }
 
 function _setSelected(elements, selectedNames) {
@@ -143,15 +128,16 @@ export async function init() {
   };
 
   const isMobile = window.matchMedia("(max-width: 1000px)");
-  let defaultZoom = 4.3;
+  let defaultZoom = 6.3;
   if (isMobile.matches) defaultZoom = 3.3;
 
   // map is initially in non-interactive mode with reduced opacity (to be a nice background image basically)
   // this already starts loading the map while we do other stuff
-  const map = new MapWrapper("map", [10.0821932, 49.786322], defaultZoom);
+  const map = new MapWrapper("map", [12.82862, 53.7299], defaultZoom);
 
-  // also create all the other views (less to do for them)
-  const views = {
+  // also create all the other components (less to do for them)
+  const components = {
+    mainContainer: elements.main, // todo a component, just an HTML element
     map: map,
     calendar: new CalendarWrapper(elements.travelCalendar),
     perlschnur: new Perlschnur(elements.tabContents.summary),
@@ -159,7 +145,7 @@ export async function init() {
   };
 
   // also start loading the data
-  const dataPromise = loadAndPrepareData(views.datepicker.currentDate);
+  const dataPromise = loadAndPrepareData();
 
   // home can be passed as URL parameter, e.g. ?start=Berlin
   let home = parseURLParams();
@@ -176,13 +162,17 @@ export async function init() {
   elements.main.classList.remove("closed");
 
   // now we actually need the map, so wait until the load event has been fired
-  await views.map.loaded;
+  await components.map.loaded;
 
   // increases map opacity and enables the usual map controls
   map.enableMapInteraction();
 
-  // wait until data lading and preparing is finished
-  const data = await dataPromise;
+  // wait until data loading finished
+  const geoDatabase = await dataPromise;
 
-  main(home, views, data);
+  // currently hard-code using motis
+  const motis = new MotisClient();
+  const travelDatabase = new TravelDatabase(motis, geoDatabase);
+
+  await main(geoDatabase.cityNameToId(home), components, travelDatabase);
 }

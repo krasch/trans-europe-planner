@@ -1,5 +1,9 @@
 import { createElementFromTemplate, updateElement } from "../util.js";
 
+// todo streamline icons with calendar
+
+// todo rename whole thing to Summary or SummaryWithPerlschnur or Overview or something
+// the perlschnur is just one part of this, so naming is very confusing
 export class Perlschnur {
   #container;
 
@@ -38,33 +42,33 @@ export class Perlschnur {
     const element = createElementFromTemplate(
       "template-perlschnur-connection",
       {
-        ".connection-icon": { src: `images/icons/${connection.type}.svg` },
+        ".connection-icon": { src: connection.icon },
         ".connection-number": { innerText: connection.name },
         ".connection-travel-time": { innerText: connection.travelTime },
       },
     );
     element.style.setProperty("--color", connection.color);
 
-    const collapsed = connection.stops.length - 2;
+    const intermediateSteps = connection.stops.length - 2;
 
     const ul = element.querySelector("ul");
     for (let i in connection.stops) {
-      if (i === "1" && collapsed > 1) {
+      if (i === "1" && intermediateSteps > 1) {
         const li = createElementFromTemplate("template-perlschnur-collapse", {
-          ".count": { innerText: collapsed },
+          ".count": { innerText: intermediateSteps },
         });
         ul.appendChild(li);
       }
 
       const li = createElementFromTemplate("template-perlschnur-stop", {
         ".time": { innerText: connection.stops[i].time },
-        ".date": { innerText: connection.stops[i].date || "" },
+        ".date": { innerText: connection.stops[i].date ?? "" },
         ".station": { innerText: connection.stops[i].station },
       });
       ul.appendChild(li);
     }
 
-    if (collapsed > 1) this.#collapse(element);
+    if (intermediateSteps > 1) this.#collapse(element);
 
     return element;
   }

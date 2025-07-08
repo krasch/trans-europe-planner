@@ -1,22 +1,29 @@
-import { createConnection } from "tests/_data.js";
-import { sortConnectionsByDepartureTime } from "/script/util.js";
+import { groupBy } from "/script/util.js";
 
-test("sortByDepartureTime", function () {
-  const c1 = createConnection([
-    ["2024-10-15", "16:00", "city1MainStationId"],
-    ["2024-10-15", "17:00", "city2MainStationId"],
-  ]);
-  const c2 = createConnection([
-    ["2024-10-13", "18:00", "city1MainStationId"],
-    ["2024-10-13", "19:00", "city2MainStationId"],
-  ]);
-  const c3 = createConnection([
-    ["2024-10-15", "07:00", "city1MainStationId"],
-    ["2024-10-15", "08:00", "city2MainStationId"],
-  ]);
+test("groupBy", function () {
+  const items = [
+    { key: 1, val: 10 },
+    { key: 2, val: 11 },
+    { key: 2, val: 12 },
+    { key: "xyz", val: 13 },
+    { key: 1, val: 14 },
+  ];
 
-  const connections = [c1, c2, c3];
-  sortConnectionsByDepartureTime(connections);
+  const exp = {
+    1: [items[0], items[4]],
+    2: [items[1], items[2]],
+    xyz: [items[3]],
+  };
 
-  expect(connections).toStrictEqual([c2, c3, c1]);
+  const got = groupBy(items, (i) => i.key);
+  expect(got).toStrictEqual(exp);
+});
+
+test("groupByNoItems", function () {
+  const items = [];
+
+  const exp = {};
+
+  const got = groupBy(items, (i) => i.key);
+  expect(got).toStrictEqual(exp);
 });

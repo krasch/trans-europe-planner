@@ -273,7 +273,7 @@ Layout for journey summary
 
 #summary {
     min-width: min(350px, 90%);
-    max-width: 650px;
+    max-width: min(650px, 90%);
 
     display: flex;
     flex-direction: column;

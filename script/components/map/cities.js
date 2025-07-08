@@ -35,7 +35,7 @@ function initCityMenu(id, name, numTransfer, lngLat) {
   const data = {
     $root$: { "data-city-id": id },
     h3: { innerText: name },
-    ".count": { innerText: numTransfer },
+    // ".count": { innerText: numTransfer },
   };
 
   const element = createElementFromTemplate("template-city-menu", data);
@@ -45,9 +45,9 @@ function initCityMenu(id, name, numTransfer, lngLat) {
   const buttonMakeCut = element.querySelector("button[value='makeCut']");
 
   // choose which text will be shown
-  if (numTransfer === 0) textNumTransfers.classList.add("transfers0");
-  else if (numTransfer === 1) textNumTransfers.classList.add("transfers1");
-  else textNumTransfers.classList.add("transfersX");
+  //if (numTransfer === 0) textNumTransfers.classList.add("transfers0");
+  //else if (numTransfer === 1) textNumTransfers.classList.add("transfers1");
+  //else textNumTransfers.classList.add("transfersX");
 
   const popup = new maplibregl.Popup({
     anchor: "left",
@@ -59,7 +59,7 @@ function initCityMenu(id, name, numTransfer, lngLat) {
   popup.updateElement = (state) => {
     if (state.isDestination !== undefined) {
       updateVisibility(buttonShowRoutes.parentElement, state.isDestination);
-      updateVisibility(textNumTransfers.parentElement, state.isDestination);
+      //updateVisibility(textNumTransfers.parentElement, state.isDestination);
     }
     if (state.isTransfer !== undefined && state.isStop !== undefined) {
       //updateVisibility(buttonMakeCut, state.isStop && !state.isTransfer);
@@ -100,8 +100,6 @@ function showStartAnimation(map, geo, initialState, animationDoneCallback) {
   );
 }
 
-const ANIMATION = true;
-
 export class Cities {
   #callbacks = {
     mouseOver: () => {},
@@ -138,7 +136,7 @@ export class Cities {
 
   #pulsars = null;
 
-  constructor(map, geo, initialState) {
+  constructor(map, geo, initialState, showAnimation) {
     this.#map = map;
     this.#geo = geo;
 
@@ -176,6 +174,7 @@ export class Cities {
       this.#callbacks["menuClick"](id, closest.value);
     });
 
+    // todo why do we have this?
     this.#map._container.addEventListener("click", (e) => {
       if (!e.target.classList.contains("city-marker-home")) return;
 
@@ -185,7 +184,7 @@ export class Cities {
     });
 
     // initial drawing
-    if (ANIMATION) {
+    if (showAnimation) {
       showStartAnimation(this.#map, geo, initialState, (pulsars) => {
         this.#pulsars = pulsars;
         this.update(initialState);

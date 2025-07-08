@@ -1,0 +1,91 @@
+{
+  "Q156119": {
+    "name": "Ludwigslust",
+    "geo": {
+      "latitude": 53.33325,
+      "longitude": 11.50235
+    }
+  },
+  "Q1709": {
+    "name": "Schwerin",
+    "geo": {
+      "latitude": 53.628889,
+      "longitude": 11.415
+    }
+  },
+  "Q552679": {
+    "name": "Bad Kleinen",
+    "geo": {
+      "latitude": 53.766667,
+      "longitude": 11.466667
+    }
+  },
+  "Q2861": {
+    "name": "Rostock",
+    "geo": {
+      "latitude": 54.083333,
+      "longitude": 12.133333
+    }
+  },
+  "Q4065": {
+    "name": "Stralsund",
+    "geo": {
+      "latitude": 54.309167,
+      "longitude": 13.081944
+    },
+    "isDestination": true
+  },
+  "Q492538": {
+    "name": "Bergen auf Rügen",
+    "geo": {
+      "latitude": 54.416667,
+      "longitude": 13.433333
+    }
+  },
+  "Q339009": {
+    "name": "Lietzow",
+    "geo": {
+      "latitude": 54.481111,
+      "longitude": 13.511111
+    }
+  },
+  "Q523490": {
+    "name": "Ostseebad Binz",
+    "geo": {
+      "latitude": 54.399842,
+      "longitude": 13.609981
+    }
+  },
+
+  "Q3958": {
+    "name": "Neubrandenburg",
+    "geo": {
+      "latitude": 53.556944,
+      "longitude": 13.260833
+    }
+  },
+
+  "Q14808": {
+    "name": "Oranienburg",
+    "geo": {
+      "latitude": 52.754444,
+      "longitude": 13.236944
+    }
+  },
+
+  "Q16147": {
+    "name": "Güstrow",
+    "geo": {
+      "latitude": 53.793889,
+      "longitude": 12.176389
+    }
+  },
+
+  "Q64": {
+    "name": "Berlin",
+    "geo": {
+      "latitude": 52.516667,
+      "longitude": 13.383333
+    }
+  }
+}

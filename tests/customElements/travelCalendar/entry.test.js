@@ -2,271 +2,223 @@
  * @jest-environment jsdom
  */
 
-import { DOM, initDOMFromFile, timeout } from "tests/_domUtils.js";
+import { initTestDOM, TEST_DOM, timeout } from "tests/_helpers/domUtils.js";
+import { DAY1 } from "/tests/_helpers/data.js";
 import {
-  CALENDAR_GRID,
-  DAY1,
-  DAY2,
-  DAY3,
-  createConnection,
-  connectionToCalendarEntry,
-} from "tests/_data.js";
+  COLUMN_FIRST_DAY,
+  ROW_MIDNIGHT,
+  addEntryToCalendar,
+} from "/tests/_helpers/calendarUtils.js";
 
 beforeEach(async () => {
-  initDOMFromFile("index.html");
-  await DOM.calendar.setAttribute("start-date", DAY1);
+  initTestDOM();
+  await TEST_DOM.calendar.setAttribute("start-date", DAY1);
 });
 
-async function addEntryToCalendar(connection, kwargs) {
-  const entry = connectionToCalendarEntry(createConnection(connection), kwargs);
-  await DOM.calendar.appendChild(entry);
-  return entry;
-}
-
 test("one day entry should create one entry part that contains all connection info", async function () {
-  await addEntryToCalendar([
-    [DAY1, "14:00", "city1MainStationId"],
-    [DAY1, "15:00", "city2MainStationId"],
-  ]);
+  await addEntryToCalendar("T1: S1@D1T10->S2@D1T11");
 
-  expect(DOM.calendarEntryParts).toMatchDOMObject([
-    {
-      dataset: {
-        group: "City1->City2",
-        status: "inactive",
-      },
-      style: {
-        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY,
-        "grid-row-start": CALENDAR_GRID.ROW_MIDNIGHT + 14 * 4,
-        "grid-row-end": CALENDAR_GRID.ROW_MIDNIGHT + 15 * 4,
-        "--color": "test-color",
-      },
-      // contains start and end info
-      selectors: {
-        ".start .time": { innerHTML: "14:00" },
-        ".destination .time": { innerHTML: "15:00" },
-      },
+  expect(TEST_DOM.calendarEntryParts.length).toBe(1);
+  expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
+    dataset: {
+      group: "S1->S2",
+      status: "inactive",
     },
-  ]);
+    style: {
+      "grid-column": COLUMN_FIRST_DAY,
+      "grid-row-start": ROW_MIDNIGHT + 10 * 4,
+      "grid-row-end": ROW_MIDNIGHT + 11 * 4,
+      "--color": "test-color",
+    },
+    // contains start and end info
+    selectors: {
+      ".start .time": { innerHTML: "10:00" },
+      ".destination .time": { innerHTML: "11:00" },
+    },
+  });
 });
 
 test("one day entry ranging from midnight to just before midnight", async function () {
-  await addEntryToCalendar([
-    [DAY1, "00:00", "city1MainStationId"],
-    [DAY1, "23:59", "city2MainStationId"],
-  ]);
+  await addEntryToCalendar("T1: S1@D1T00->S2@D1T23");
 
-  expect(DOM.calendarEntryParts).toMatchDOMObject([
-    {
-      style: {
-        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY,
-        "grid-row-start": CALENDAR_GRID.ROW_MIDNIGHT,
-        "grid-row-end": CALENDAR_GRID.ROW_MIDNIGHT + 24 * 4,
-      },
+  expect(TEST_DOM.calendarEntryParts.length).toBe(1);
+  expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
+    style: {
+      "grid-column": COLUMN_FIRST_DAY,
+      "grid-row-start": ROW_MIDNIGHT,
+      "grid-row-end": ROW_MIDNIGHT + 23 * 4,
     },
-  ]);
+  });
 });
 
 test("entry that spans two columns/days", async function () {
-  await addEntryToCalendar([
-    [DAY1, "16:29", "city1MainStationId"],
-    [DAY2, "18:04", "city2MainStationId"],
-  ]);
+  await addEntryToCalendar("T1: S1@D1T16->S2@D2T14");
 
-  expect(DOM.calendarEntryParts).toMatchDOMObject([
-    {
-      dataset: {
-        group: "City1->City2",
-        status: "inactive",
-      },
-      style: {
-        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY,
-        "grid-row-start": CALENDAR_GRID.ROW_MIDNIGHT + 16.5 * 4,
-        "grid-row-end": CALENDAR_GRID.ROW_MIDNIGHT + 24 * 4,
-        "--color": "test-color",
-      },
-      // first part contains start info
-      selectors: {
-        ".start .time": { innerHTML: "16:29" },
-        ".destination .time": null,
-      },
+  expect(TEST_DOM.calendarEntryParts.length).toBe(2);
+  expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
+    dataset: {
+      group: "S1->S2",
+      status: "inactive",
     },
-    {
-      dataset: {
-        group: "City1->City2",
-        status: "inactive",
-      },
-      style: {
-        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY + 1,
-        "grid-row-start": CALENDAR_GRID.ROW_MIDNIGHT,
-        "grid-row-end": CALENDAR_GRID.ROW_MIDNIGHT + 18 * 4,
-        "--color": "test-color",
-      },
-      // second part contains end info
-      selectors: {
-        ".start .time": null,
-        ".destination .time": { innerHTML: "18:04" },
-      },
+    style: {
+      "grid-column": COLUMN_FIRST_DAY,
+      "grid-row-start": ROW_MIDNIGHT + 16 * 4,
+      "grid-row-end": ROW_MIDNIGHT + 24 * 4,
+      "--color": "test-color",
     },
-  ]);
+    // first part contains start info
+    selectors: {
+      ".start .time": { innerHTML: "16:00" },
+      ".destination .time": null,
+    },
+  });
+  expect(TEST_DOM.calendarEntryParts[1]).toMatchDOMObject({
+    dataset: {
+      group: "S1->S2",
+      status: "inactive",
+    },
+    style: {
+      "grid-column": COLUMN_FIRST_DAY + 1,
+      "grid-row-start": ROW_MIDNIGHT,
+      "grid-row-end": ROW_MIDNIGHT + 14 * 4,
+      "--color": "test-color",
+    },
+    // second part contains end info
+    selectors: {
+      ".start .time": null,
+      ".destination .time": { innerHTML: "14:00" },
+    },
+  });
 });
 
 test("entry that spans three columns/days", async function () {
-  await addEntryToCalendar([
-    [DAY1, "16:29", "city1MainStationId"],
-    [DAY3, "18:04", "city2MainStationId"],
-  ]);
+  await addEntryToCalendar("T1: S1@D1T16->S2@D3T02");
 
-  expect(DOM.calendarEntryParts).toMatchDOMObject([
-    {
-      dataset: {
-        group: "City1->City2",
-        status: "inactive",
-      },
-      style: {
-        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY,
-        "grid-row-start": CALENDAR_GRID.ROW_MIDNIGHT + 16.5 * 4,
-        "grid-row-end": CALENDAR_GRID.ROW_MIDNIGHT + 24 * 4,
-        "--color": "test-color",
-      },
-      // first part contains start info
-      selectors: {
-        ".start .time": { innerHTML: "16:29" },
-        ".destination .time": null,
-      },
+  expect(TEST_DOM.calendarEntryParts.length).toBe(3);
+  expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
+    dataset: {
+      group: "S1->S2",
+      status: "inactive",
     },
-    {
-      dataset: {
-        group: "City1->City2",
-        status: "inactive",
-      },
-      style: {
-        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY + 1,
-        "grid-row-start": CALENDAR_GRID.ROW_MIDNIGHT,
-        "grid-row-end": CALENDAR_GRID.ROW_MIDNIGHT + 24 * 4,
-        "--color": "test-color",
-      },
-      // second part contains neither
-      selectors: {
-        ".start .time": null,
-        ".destination .time": null,
-      },
+    style: {
+      "grid-column": COLUMN_FIRST_DAY,
+      "grid-row-start": ROW_MIDNIGHT + 16 * 4,
+      "grid-row-end": ROW_MIDNIGHT + 24 * 4,
+      "--color": "test-color",
     },
-    {
-      dataset: {
-        group: "City1->City2",
-        status: "inactive",
-      },
-      style: {
-        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY + 2,
-        "grid-row-start": CALENDAR_GRID.ROW_MIDNIGHT,
-        "grid-row-end": CALENDAR_GRID.ROW_MIDNIGHT + 18 * 4,
-        "--color": "test-color",
-      },
-      // third part contains end info
-      selectors: {
-        ".start .time": null,
-        ".destination .time": { innerHTML: "18:04" },
-      },
+    // first part contains start info
+    selectors: {
+      ".start .time": { innerHTML: "16:00" },
+      ".destination .time": null,
     },
-  ]);
+  });
+  expect(TEST_DOM.calendarEntryParts[1]).toMatchDOMObject({
+    dataset: {
+      group: "S1->S2",
+      status: "inactive",
+    },
+    style: {
+      "grid-column": COLUMN_FIRST_DAY + 1,
+      "grid-row-start": ROW_MIDNIGHT,
+      "grid-row-end": ROW_MIDNIGHT + 24 * 4,
+      "--color": "test-color",
+    },
+    // second part contains neither
+    selectors: {
+      ".start .time": null,
+      ".destination .time": null,
+    },
+  });
+  expect(TEST_DOM.calendarEntryParts[2]).toMatchDOMObject({
+    dataset: {
+      group: "S1->S2",
+      status: "inactive",
+    },
+    style: {
+      "grid-column": COLUMN_FIRST_DAY + 2,
+      "grid-row-start": ROW_MIDNIGHT,
+      "grid-row-end": ROW_MIDNIGHT + 2 * 4,
+      "--color": "test-color",
+    },
+    // third part contains end info
+    selectors: {
+      ".start .time": null,
+      ".destination .time": { innerHTML: "02:00" },
+    },
+  });
 });
 
 test("delete entry that spans three columns/days", async function () {
-  const entry1 = await addEntryToCalendar([
-    [DAY1, "16:29", "city1MainStationId"],
-    [DAY3, "18:04", "city2MainStationId"],
-  ]);
-  const entry2 = await addEntryToCalendar([
-    [DAY3, "14:29", "city1MainStationId"],
-    [DAY3, "14:44", "city2MainStationId"],
-  ]);
+  const entry1 = await addEntryToCalendar("T1: S1@D1T16->S2@D3T02");
+  const entry2 = await addEntryToCalendar("T2: S2@D2T07->S3@D2T08");
+  expect(TEST_DOM.calendarEntryParts.length).toBe(4); // first entry has 3, second has 1
 
-  await DOM.calendar.removeChild(entry1);
+  // remove three-day entry
+  await TEST_DOM.calendar.removeChild(entry1);
 
-  expect(DOM.calendarEntryParts).toMatchDOMObject([
-    {
-      style: {
-        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY + 2,
-        "grid-row-start": CALENDAR_GRID.ROW_MIDNIGHT + 14.5 * 4,
-        "grid-row-end": CALENDAR_GRID.ROW_MIDNIGHT + 14.75 * 4,
-      },
+  expect(TEST_DOM.calendarEntryParts.length).toBe(1);
+  expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
+    style: {
+      "grid-column": COLUMN_FIRST_DAY + 1,
+      "grid-row-start": ROW_MIDNIGHT + 7 * 4,
+      "grid-row-end": ROW_MIDNIGHT + 8 * 4,
     },
-  ]);
+  });
 });
 
 test("entry locations should be updated when calendar start date changes", async function () {
   const entryColumns = () =>
-    DOM.calendarEntryParts.map((e) => e.style._values["grid-column"]);
+    TEST_DOM.calendarEntryParts.map((e) => e.style._values["grid-column"]);
 
-  await addEntryToCalendar([
-    [DAY2, "14:00", "city1MainStationId"],
-    [DAY3, "15:00", "city2MainStationId"],
-  ]);
-  await addEntryToCalendar([
-    [DAY3, "17:00", "city1MainStationId"],
-    [DAY3, "18:00", "city2MainStationId"],
-  ]);
+  await addEntryToCalendar("T1: S1@D2T16->S2@D3T02");
+  await addEntryToCalendar("T2: S2@D3T07->S3@D3T08");
 
   expect(entryColumns()).toStrictEqual([
-    CALENDAR_GRID.COLUMN_FIRST_DAY + 1,
-    CALENDAR_GRID.COLUMN_FIRST_DAY + 2,
-    CALENDAR_GRID.COLUMN_FIRST_DAY + 2,
+    COLUMN_FIRST_DAY + 1,
+    COLUMN_FIRST_DAY + 2,
+    COLUMN_FIRST_DAY + 2,
   ]);
 
   // move date forward
-  await DOM.calendar.setAttribute("start-date", DAY2);
+  await TEST_DOM.calendar.setAttribute("start-date", DAY1.plus({ days: 1 }));
   expect(entryColumns()).toStrictEqual([
-    CALENDAR_GRID.COLUMN_FIRST_DAY,
-    CALENDAR_GRID.COLUMN_FIRST_DAY + 1,
-    CALENDAR_GRID.COLUMN_FIRST_DAY + 1,
+    COLUMN_FIRST_DAY,
+    COLUMN_FIRST_DAY + 1,
+    COLUMN_FIRST_DAY + 1,
   ]);
 
   // move date backward
-  await DOM.calendar.setAttribute("start-date", DAY1);
+  await TEST_DOM.calendar.setAttribute("start-date", DAY1);
   expect(entryColumns()).toStrictEqual([
-    CALENDAR_GRID.COLUMN_FIRST_DAY + 1,
-    CALENDAR_GRID.COLUMN_FIRST_DAY + 2,
-    CALENDAR_GRID.COLUMN_FIRST_DAY + 2,
+    COLUMN_FIRST_DAY + 1,
+    COLUMN_FIRST_DAY + 2,
+    COLUMN_FIRST_DAY + 2,
   ]);
 });
 
 test("entry parts should be moved when entry start/end change", async function () {
-  const entry = await addEntryToCalendar([
-    [DAY2, "14:00", "city1MainStationId"],
-    [DAY3, "15:59", "city2MainStationId"],
-  ]);
+  const entry = await addEntryToCalendar("T1: S1@D2T16->S2@D3T02");
 
-  entry.dataset.departureDatetime = `${DAY1}T10:00`;
-  entry.dataset.arrivalDatetime = `${DAY2}T14:00`;
+  // no longer a two-day entry
+  entry.dataset.departureDatetime = DAY1.plus({ hours: 13 }).toISO();
+  entry.dataset.arrivalDatetime = DAY1.plus({ hours: 17 }).toISO();
   await timeout(10); // give calendar time to update
 
-  expect(DOM.calendarEntryParts).toMatchDOMObject([
-    {
-      style: {
-        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY,
-        "grid-row-start": CALENDAR_GRID.ROW_MIDNIGHT + 10 * 4,
-        "grid-row-end": CALENDAR_GRID.ROW_MIDNIGHT + 24 * 4,
-      },
+  expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
+    style: {
+      "grid-column": COLUMN_FIRST_DAY,
+      "grid-row-start": ROW_MIDNIGHT + 13 * 4,
+      "grid-row-end": ROW_MIDNIGHT + 17 * 4,
     },
-    {
-      style: {
-        "grid-column": CALENDAR_GRID.COLUMN_FIRST_DAY + 1,
-        "grid-row-start": CALENDAR_GRID.ROW_MIDNIGHT,
-        "grid-row-end": CALENDAR_GRID.ROW_MIDNIGHT + 14 * 4,
-      },
-    },
-  ]);
+  });
 });
 
 test("entry parts group should be updated when entry group changes", async function () {
-  const groups = () => DOM.calendarEntryParts.map((e) => e.dataset.group);
+  const groups = () => TEST_DOM.calendarEntryParts.map((e) => e.dataset.group);
 
-  const entry = await addEntryToCalendar([
-    [DAY2, "14:00", "city1MainStationId"],
-    [DAY3, "15:00", "city2MainStationId"],
-  ]);
+  const entry = await addEntryToCalendar("T1: S1@D2T14->S2@D3T15");
 
+  // update group
   entry.dataset.group = "OTHER-GROUP-VERY-RANDOM";
   await timeout(10); // give calendar time to update
 
@@ -277,12 +229,9 @@ test("entry parts group should be updated when entry group changes", async funct
 });
 
 test("entry parts active should be updated when external active status changes", async function () {
-  const status = () => DOM.calendarEntryParts.map((e) => e.dataset.status);
+  const status = () => TEST_DOM.calendarEntryParts.map((e) => e.dataset.status);
 
-  const entry = await addEntryToCalendar([
-    [DAY2, "14:00", "city1MainStationId"],
-    [DAY3, "15:00", "city2MainStationId"],
-  ]);
+  const entry = await addEntryToCalendar("T1: S1@D2T14->S2@D3T15");
 
   // set active
   entry.dataset.active = "active";
@@ -297,12 +246,9 @@ test("entry parts active should be updated when external active status changes",
 
 test("entry parts color should be updated when external color changes", async function () {
   const color = () =>
-    DOM.calendarEntryParts.map((e) => e.style._values["--color"]);
+    TEST_DOM.calendarEntryParts.map((e) => e.style._values["--color"]);
 
-  const entry = await addEntryToCalendar([
-    [DAY2, "14:00", "city1MainStationId"],
-    [DAY3, "15:00", "city2MainStationId"],
-  ]);
+  const entry = await addEntryToCalendar("T1: S1@D2T14->S2@D3T15");
 
   // change color
   entry.dataset.color = "new color";

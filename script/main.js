@@ -1,110 +1,106 @@
-import { Database } from "./data/database.js";
-import { diffDays, RouteDatabase } from "./data/routing.js";
-import { Journey, JourneyCollection } from "./data/types/journey.js";
-
 import {
   prepareInitialDataForMap,
   prepareDataForMap,
-  prepareDataForCalendar,
-  prepareDataForPerlschnur,
-} from "./data/componentData.js";
+} from "./data/components/map.js";
+import { ItineraryCollection } from "./types/itineraryCollection.js";
+import { prepareDataForCalendar } from "./data/components/calendar.js";
+import { prepareDataForPerlschnur } from "./data/components/perlschnur.js";
 
-function initUpdateViews(views, database) {
-  // todo pass this in?
-  const mainContainer = document.querySelector("main");
+async function updateAllComponents(components, travelDatabase, state) {
+  // alternatives for all the connections in current active itinerary - needed for calendar
+  const alternatives = await travelDatabase.getAlternatives(
+    state.itineraries.active,
+    state.date,
+  );
 
-  function updateViews(state) {
-    views.map.updateView(prepareDataForMap(state.journeys, database));
-    views.calendar.updateView(
-      prepareDataForCalendar(state.date, state.journeys, database),
-    );
-    views.perlschnur.updateView(
-      prepareDataForPerlschnur(state.journeys, database),
-    );
+  // update map
+  const mapData = prepareDataForMap(state.itineraries);
+  components.map.updateView(mapData);
 
-    // this controls which content is currently visible
-    if (state.journeys.hasActiveJourney)
-      mainContainer.classList.remove("no-journey");
-    else mainContainer.classList.add("no-journey");
-  }
-  return updateViews;
+  // update calendar
+  const calendarData = prepareDataForCalendar(
+    state.itineraries.active,
+    alternatives,
+  );
+  components.calendar.updateView(state.date, calendarData);
+
+  // update perlschnur
+  const perlschnurData = prepareDataForPerlschnur(state.itineraries.active);
+  components.perlschnur.updateView(perlschnurData);
+
+  // make calendar/perlschnur visible if there is an active journey
+  if (state.itineraries.hasActive)
+    components.mainContainer.classList.remove("no-journey");
+  else components.mainContainer.classList.add("no-journey");
 }
 
-export function main(home, views, data) {
+export async function main(home, components, travelDatabase) {
   // init state
   const state = {
     home: home,
-    date: views.datepicker.currentDate,
-    journeys: new JourneyCollection(),
+    date: components.datepicker.currentDate,
+    itineraries: new ItineraryCollection(),
   };
-
-  // prepare databases
-  // todo move into init and into worker?
-  const database = new Database(data.connections);
-  const routeDatabase = new RouteDatabase(data.routes);
 
   // prepare all geo etc data that map needs
   const initialMapData = prepareInitialDataForMap(
     state.home,
-    data.cities,
-    data.connections,
-    routeDatabase,
+    travelDatabase.geoDatabase.geoDataForAllCities,
   );
 
   // and add that data to the map
-  views.map.initMapData(initialMapData);
+  components.map.initMapData(initialMapData);
 
-  // closure magic
-  const updateViews = initUpdateViews(views, database);
-
-  // moving things around in the calendar
-  views.calendar.on("legChanged", (newConnectionId) => {
-    state.journeys.activeJourney.replaceLeg(newConnectionId);
-    updateViews(state);
-  });
-
-  views.map.on("selectJourney", (journeyId) => {
-    state.journeys.setActive(journeyId);
-    updateViews(state);
-  });
-
-  views.map.on("showCityRoutes", (cityName) => {
-    const itineraries = routeDatabase.getItineraries(
-      state.home,
-      cityName,
-      state.date,
-      database,
-    );
-    const journeys = itineraries.map((i) => new Journey(i));
-
-    state.journeys.reset();
-    for (let j of journeys) state.journeys.addJourney(j);
-    state.journeys.setActive(journeys[0].id); // first journey is the one with the fewest transfers
-
-    updateViews(state);
-  });
-
-  views.map.on("cutJourney", (cityName) => {
-    state.journeys.activeJourney.split(cityName); // todo option to split only for active journey? or pass journey id back here
-  });
-
-  views.calendar.on("legHoverStart", (leg) => {
-    views.map.setLegHoverState(leg, true);
-  });
-
-  views.calendar.on("legHoverStop", (leg) =>
-    views.map.setLegHoverState(leg, false),
+  // partial function for conveniently updating the components
+  const updateComponents = updateAllComponents.bind(
+    null, // sic
+    components,
+    travelDatabase,
   );
 
-  views.datepicker.on("dateChanged", (date) => {
-    const diff = diffDays(state.date, date);
-    if (diff === 0) return;
+  // moving things around in the calendar
+  components.calendar.on("legChanged", async (leg, newConnectionId) => {
+    const connection = travelDatabase.getCachedConnection(newConnectionId);
 
-    state.journeys.shiftDate(diff, database);
-    state.date = date;
-
-    updateViews(state);
+    state.itineraries.active.replaceLeg(leg, connection);
+    await updateComponents(state);
   });
 
-  updateViews(state);
+  components.map.on("selectJourney", async (journeyId) => {
+    state.itineraries.setActive(journeyId);
+    await updateComponents(state);
+  });
+
+  components.map.on("showCityRoutes", async (cityId) => {
+    const itineraries = await travelDatabase.plan(
+      state.home,
+      cityId,
+      state.date,
+    );
+
+    state.itineraries.replaceAll(itineraries);
+    state.itineraries.setActive(itineraries[0].id); // todo which one to choose?
+    await updateComponents(state);
+  });
+
+  components.calendar.on("legHoverStart", (leg) => {
+    components.map.setLegHoverState(leg, true);
+  });
+
+  components.calendar.on("legHoverStop", (leg) =>
+    components.map.setLegHoverState(leg, false),
+  );
+
+  components.datepicker.on("dateChanged", async (date) => {
+    /*const diff = diffDays(state.date, date);
+    if (diff === 0) return;
+
+    state.itineraries.shiftDate(diff, geoDatabase);
+    state.date = date;
+
+    await updateComponents(state);*/
+  });
+
+  // trigger initial update
+  await updateComponents(state);
 }

@@ -1,5 +1,6 @@
 import { Cities } from "./cities.js";
 import { Edges } from "./edges.js";
+// todo import map styles instead of using global?
 
 function cityToGeojson(data) {
   const [id, city] = data;
@@ -128,7 +129,7 @@ export class MapWrapper {
     this.#callbacks[eventName] = callback;
   }
 
-  initMapData(data) {
+  initMapData(data, animation = false) {
     const [cities, edges] = data;
 
     // add cities and legs sources
@@ -150,15 +151,12 @@ export class MapWrapper {
     // add all layers
     for (let layer of mapStyles) this.#map.addLayer(layer);
 
-    this.cities = new Cities(this.#map, cities.geo, cities.defaults);
+    this.cities = new Cities(this.#map, cities.geo, cities.defaults, animation);
     this.edges = new Edges(this.#map, edges.geo, edges.defaults);
 
     this.cities.on("menuClick", (id, entry) => {
-      if (entry === "showRoutes")
-        this.#callbacks["showCityRoutes"](cities.geo[id].name);
-
-      if (entry === "makeCut")
-        this.#callbacks["cutJourney"](cities.geo[id].name);
+      if (entry === "showRoutes") this.#callbacks["showCityRoutes"](id);
+      if (entry === "makeCut") this.#callbacks["cutJourney"](id);
     });
 
     this.edges.on("mouseOver", (id, lngLat) => {
@@ -193,15 +191,20 @@ export class MapWrapper {
   }
 
   updateView(data) {
-    const [cities, edges, journeys] = data;
+    // todo clean this up
+    this.#mapping = { edges: {} };
+    for (let edgeId in data.edges) {
+      this.#mapping.edges[edgeId] = {
+        legs: data.edges[edgeId].legs,
+        itineraries: data.edges[edgeId].itineraries,
+      };
+      delete data.edges[edgeId].legs;
+      delete data.edges[edgeId].itineraries;
+    }
 
-    this.cities.update(cities);
-    this.edges.update(edges.state);
-
-    this.#journeys = journeys;
-    this.#mapping = {
-      edges: edges.mapping,
-    };
+    this.cities.update(data.geoDataForAllCities);
+    this.edges.update(data.edges);
+    this.#journeys = data.itineraries;
   }
 
   setLegHoverState(leg, state) {
@@ -213,7 +216,7 @@ export class MapWrapper {
 
   setJourneyHoverState(journey, state) {
     for (let id in this.#mapping.edges) {
-      if (this.#mapping.edges[id].journeys.includes(journey))
+      if (this.#mapping.edges[id].itineraries.includes(journey))
         this.edges.setHover(id, state);
     }
   }

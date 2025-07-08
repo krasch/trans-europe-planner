@@ -1,0 +1,133 @@
+{
+  "Q801130": {
+    "name": "Ludwigslust",
+    "geo": {
+      "latitude": 53.335278,
+      "longitude": 11.493056
+    },
+    "cityId": "Q156119",
+    "country": "DE",
+    "motisIds": ["de_de:13076:4782"]
+  },
+
+  "Q464303": {
+    "name": "Schwerin Hauptbahnhof",
+    "geo": {
+      "latitude": 53.6344,
+      "longitude": 11.4081
+    },
+    "cityId": "Q1709",
+    "country": "DE",
+    "motisIds": ["de_de:13004:9005"]
+  },
+
+  "Q324562": {
+    "name": "Bad Kleinen",
+    "geo": {
+      "latitude":  53.7667,
+      "longitude": 11.4667
+    },
+    "cityId": "Q552679",
+    "country": "DE",
+    "motisIds": ["de_de:13074:5118"]
+  },
+
+  "Q682569": {
+    "name": "Rostock Hauptbahnhof",
+    "geo": {
+      "latitude": 54.0781,
+      "longitude": 12.1308
+    },
+    "cityId": "Q2861",
+    "country": "DE",
+    "motisIds": ["de_de:13003:1489", "de_de:13003:1489_G"]
+  },
+
+  "Q320175": {
+    "name": "Stralsund Hauptbahnhof",
+    "geo": {
+      "latitude": 54.3086,
+      "longitude": 13.0772
+    },
+    "cityId": "Q4065",
+    "country": "DE",
+    "motisIds": ["de_de:13073:10401"]
+  },
+
+  "Q800466": {
+    "name": "Bergen (Rügen)",
+    "geo": {
+      "latitude": 54.420278,
+      "longitude": 13.418056
+    },
+    "cityId": "Q492538",
+    "country": "DE",
+    "motisIds": ["de_de:13073:11329"]
+  },
+
+  "Q6544368": {
+    "name": "Lietzow (Rügen)",
+    "geo": {
+      "latitude": 54.481111,
+      "longitude": 13.511111
+    },
+    "cityId": "Q339009",
+    "country": "DE",
+    "motisIds": ["de_de:13073:11056"]
+  },
+
+  "Q801302": {
+    "name": "Ostseebad Binz",
+    "geo": {
+      "latitude": 54.405,
+      "longitude": 13.600278
+    },
+    "cityId": "Q523490",
+    "country": "DE",
+    "motisIds": ["de_de:13073:11740"]
+  },
+
+  "Q11790757": {
+    "name": "Neubrandenburg",
+    "geo": {
+      "latitude": 53.562222,
+      "longitude": 13.261667
+    },
+    "cityId": "Q3958",
+    "country": "DE",
+    "motisIds": ["de_de:13071:6802", "de_de:13071:12353"]
+  },
+
+  "Q2341669": {
+    "name": "Oranienburg",
+    "geo": {
+      "latitude": 52.754611,
+      "longitude": 13.249222
+    },
+    "cityId": "Q14808",
+    "country": "DE",
+    "motisIds": ["de_de:12065:900200005"]
+  },
+
+  "Q9283974": {
+    "name": "Güstrow",
+    "geo": {
+      "latitude": 53.8006,
+      "longitude": 12.1722
+    },
+    "cityId": "Q16147",
+    "country": "DE",
+    "motisIds": ["de_de:13072:2295"]
+  },
+
+  "Q1097": {
+    "name": "Berlin Hauptbahnhof",
+    "geo": {
+      "latitude": 52.525083,
+      "longitude": 13.369389
+    },
+    "cityId": "Q64",
+    "country": "DE",
+    "motisIds": ["de_de:11000:900003200"]
+  }
+}

@@ -1,8 +1,3 @@
-const ICONS = {
-  train: "images/icons/train.svg",
-  ferry: "images/icons/ferry.svg",
-};
-
 export class CalendarWrapper {
   #callbacks = {
     legChanged: () => {},
@@ -25,7 +20,10 @@ export class CalendarWrapper {
       this.#callbacks.legHoverStop(entry.dataset.group);
     });
     this.#travelCalendar.on("drop", (entry) => {
-      this.#callbacks.legChanged(this.#entryToId.get(entry));
+      this.#callbacks.legChanged(
+        entry.dataset.group,
+        this.#entryToId.get(entry),
+      );
     });
   }
 
@@ -41,18 +39,18 @@ export class CalendarWrapper {
     this.#travelCalendar.setNoHoverGroup(leg);
   }
 
-  updateView(data) {
+  updateView(startDate, connections) {
     // change calendar start date if necessary
-    if (this.#travelCalendar.getAttribute("start-date") !== data.startDate)
-      this.#travelCalendar.setAttribute("start-date", data.startDate);
+    if (this.#travelCalendar.getAttribute("start-date") !== startDate)
+      this.#travelCalendar.setAttribute("start-date", startDate);
 
     // sort such that earliest will be first child etc
     // otherwise they might overlay each other and drag&drop won't work
     // warning: this only works because we are never adding new connections to existing legs
-    data.connections.sort((c1, c2) => c1.startDateTime - c2.startDateTime);
+    connections.sort((c1, c2) => c1.startDateTime - c2.startDateTime);
 
     // remove entries that are currently in calendar but no longer necessary
-    const ids = data.connections.map((c) => c.uniqueId);
+    const ids = connections.map((c) => c.uniqueId);
     for (let id_ of this.#idToEntry.keys()) {
       if (ids.includes(id_)) continue; // still necessary
 
@@ -64,7 +62,7 @@ export class CalendarWrapper {
     }
 
     // add new entries
-    for (let c of data.connections) {
+    for (let c of connections) {
       // already added before, just need to update
       if (this.#idToEntry.has(c.uniqueId)) {
         const entry = this.#idToEntry.get(c.uniqueId);
@@ -91,7 +89,7 @@ export class CalendarWrapper {
     e.dataset.active = c.selected ? "active" : "";
     e.dataset.group = c.leg ?? "";
 
-    e.querySelector(".connection-icon").src = ICONS[c.type];
+    e.querySelector(".connection-icon").src = c.icon;
     e.querySelector(".connection-number").innerHTML = c.name;
     e.querySelector(".start .time").innerHTML =
       c.startDateTime.toFormat("HH:mm");
