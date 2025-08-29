@@ -174,7 +174,6 @@ test("when user selects a destination, database should be queried for routes and
   });
 });
 
-// todo not implemented yet
 test("when user moves things around in the calendar, components should be updated", async function () {
   // set everything up
   const [components, travelDatabase, callbacks] = initMocks();
