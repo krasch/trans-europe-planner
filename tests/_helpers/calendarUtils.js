@@ -29,7 +29,3 @@ export async function addEntryToCalendar(connectionShorthand, kwargs = {}) {
   await TEST_DOM.calendar.appendChild(entry);
   return entry;
 }
-
-export const entryPartsSelectors = {
-  isHover: (entryParts) => entryParts.map((e) => e.classList.contains("hover")),
-};
