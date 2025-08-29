@@ -2,6 +2,7 @@ import { DateTime } from "/external/luxon@3.5.0/luxon.min.js";
 
 import { Stop } from "/script/types/stop.js";
 import { Connection } from "/script/types/connection.js";
+import { Itinerary } from "/script/types/itinerary.js";
 
 export const DAY1 = DateTime.fromISO("2024-10-15");
 
@@ -88,4 +89,8 @@ export function connectionFromShorthand(shorthand) {
     to: to,
     intermediate: intermediate,
   });
+}
+
+export function itineraryFromShortHand(connectionShorthands) {
+  return new Itinerary(connectionShorthands.map(connectionFromShorthand));
 }

@@ -67,22 +67,3 @@ test("Itinerary with multiple connections", function () {
     c3.to.city,
   ]);
 });
-
-test("Replace leg", function () {
-  const c1 = _c({
-    tripId: "T1",
-    from: _s({ stopId: "S1", cityId: "C1", departure: _ts("D1T10") }),
-    to: _s({ stopId: "S2", cityId: "C2", arrival: _ts("D1T11") }),
-  });
-  const c2 = _c({
-    tripId: "T2",
-    from: _s({ stopId: "S1", cityId: "C1", departure: _ts("D2T10") }),
-    to: _s({ stopId: "S2", cityId: "C2", arrival: _ts("D2T11") }),
-  });
-
-  const itinerary = new Itinerary([c1]);
-  itinerary.replaceLeg("S1->S2", c2);
-
-  expect(itinerary.from).toStrictEqual(c2.from);
-  expect(itinerary.to).toStrictEqual(c2.to);
-});

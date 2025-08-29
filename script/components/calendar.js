@@ -20,10 +20,7 @@ export class CalendarWrapper {
       this.#callbacks.legHoverStop(entry.dataset.group);
     });
     this.#travelCalendar.on("drop", (entry) => {
-      this.#callbacks.legChanged(
-        entry.dataset.group,
-        this.#entryToId.get(entry),
-      );
+      this.#callbacks.legChanged(this.#entryToId.get(entry));
     });
   }
 

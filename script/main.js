@@ -1,50 +1,48 @@
+import { State } from "./state.js";
 import {
   prepareInitialDataForMap,
   prepareDataForMap,
 } from "./data/components/map.js";
-import { ItineraryCollection } from "./types/itineraryCollection.js";
 import { prepareDataForCalendar } from "./data/components/calendar.js";
 import { prepareDataForPerlschnur } from "./data/components/perlschnur.js";
 
 async function updateAllComponents(components, travelDatabase, state) {
   // alternatives for all the connections in current active itinerary - needed for calendar
   const alternatives = await travelDatabase.getAlternatives(
-    state.itineraries.active,
-    state.date,
+    state.activeItinerary,
+    state.desiredStartDate,
   );
 
   // update map
-  const mapData = prepareDataForMap(state.itineraries);
+  const mapData = prepareDataForMap(
+    state.activeItinerary,
+    state.otherItineraries,
+  );
   components.map.updateView(mapData);
 
   // update calendar
   const calendarData = prepareDataForCalendar(
-    state.itineraries.active,
+    state.activeItinerary,
     alternatives,
   );
-  components.calendar.updateView(state.date, calendarData);
+  components.calendar.updateView(state.desiredStartDate, calendarData);
 
   // update perlschnur
-  const perlschnurData = prepareDataForPerlschnur(state.itineraries.active);
+  const perlschnurData = prepareDataForPerlschnur(state.activeItinerary);
   components.perlschnur.updateView(perlschnurData);
 
   // make calendar/perlschnur visible if there is an active journey
-  if (state.itineraries.hasActive)
+  if (state.activeItinerary)
     components.mainContainer.classList.remove("no-journey");
   else components.mainContainer.classList.add("no-journey");
 }
 
-export async function main(home, components, travelDatabase) {
-  // init state
-  const state = {
-    home: home,
-    date: components.datepicker.currentDate,
-    itineraries: new ItineraryCollection(),
-  };
+export async function main(homeCityId, components, travelDatabase) {
+  const state = new State(homeCityId, components.datepicker.currentDate);
 
   // prepare all geo etc data that map needs
   const initialMapData = prepareInitialDataForMap(
-    state.home,
+    state.homeCityId,
     travelDatabase.geoDatabase.geoDataForAllCities,
   );
 
@@ -59,27 +57,25 @@ export async function main(home, components, travelDatabase) {
   );
 
   // moving things around in the calendar
-  components.calendar.on("legChanged", async (leg, newConnectionId) => {
+  components.calendar.on("legChanged", async (newConnectionId) => {
     const connection = travelDatabase.getCachedConnection(newConnectionId);
-
-    state.itineraries.active.replaceLeg(leg, connection);
+    state.replaceLegInActiveItinerary(connection);
     await updateComponents(state);
   });
 
   components.map.on("selectJourney", async (journeyId) => {
-    state.itineraries.setActive(journeyId);
+    state.setActiveItinerary(journeyId);
     await updateComponents(state);
   });
 
-  components.map.on("showCityRoutes", async (cityId) => {
+  components.map.on("showCityRoutes", async (targetCityId) => {
     const itineraries = await travelDatabase.plan(
-      state.home,
-      cityId,
-      state.date,
+      state.homeCityId,
+      targetCityId,
+      state.desiredStartDate,
     );
 
-    state.itineraries.replaceAll(itineraries);
-    state.itineraries.setActive(itineraries[0].id); // todo which one to choose?
+    state.replaceItineraries(itineraries, true);
     await updateComponents(state);
   });
 
@@ -92,6 +88,7 @@ export async function main(home, components, travelDatabase) {
   );
 
   components.datepicker.on("dateChanged", async (date) => {
+    // todo
     /*const diff = diffDays(state.date, date);
     if (diff === 0) return;
 

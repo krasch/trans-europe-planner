@@ -86,15 +86,19 @@ function itinerarySummary(itinerary) {
   };
 }
 
-export function prepareDataForMap(itineraries) {
+export function prepareDataForMap(activeItinerary, otherItineraries) {
   const result = {
     cities: {},
     edges: {},
     itineraries: {},
   };
 
+  let allItineraries = otherItineraries;
+  if (activeItinerary)
+    allItineraries = allItineraries.concat([activeItinerary]);
+
   // initialize data for all itineraries
-  for (let itinerary of itineraries.all) {
+  for (let itinerary of allItineraries) {
     // itinerary summary
     const itineraryId = identifiers.itinerary(itinerary);
     result.itineraries[itineraryId] = itinerarySummary(itinerary);
@@ -120,12 +124,11 @@ export function prepareDataForMap(itineraries) {
   }
 
   // additional info for active itinerary
-  if (itineraries.hasActive) {
-    const active = itineraries.active;
-    const itineraryId = identifiers.itinerary(active);
+  if (activeItinerary) {
+    const itineraryId = identifiers.itinerary(activeItinerary);
 
-    for (let i in active.connections) {
-      const connection = active.connections[i];
+    for (let i in activeItinerary.connections) {
+      const connection = activeItinerary.connections[i];
       const legId = identifiers.leg(connection);
       const color = `rgb(${getColor(i)})`;
 
@@ -137,7 +140,7 @@ export function prepareDataForMap(itineraries) {
 
       // if there is more than one connection,
       // then all from stops except for the first connection are transfer stops
-      if (active.connections.length > 1 && i > 0) {
+      if (activeItinerary.connections.length > 1 && i > 0) {
         const cityId = identifiers.city(connection.from);
         result.cities[cityId].isTransfer = true;
       }

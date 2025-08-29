@@ -251,7 +251,7 @@ test("calendar wrapper should propagate callbacks/commands from/to calendar", as
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[0], "dragstart");
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[1], "dragenter");
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[1], "drop");
-  expect(dropCallback).toBeCalledWith("S1->S2", c1_alt1.id);
+  expect(dropCallback).toBeCalledWith(c1_alt1.id);
 
   // when sending a command to calendar wrapper it should be propagated to the calendar
   calendar.setHoverLeg("S1->S2");

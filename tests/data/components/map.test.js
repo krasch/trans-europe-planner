@@ -4,7 +4,6 @@
 
 import { prepareDataForMap } from "/script/data/components/map.js";
 import { Itinerary } from "/script/types/itinerary.js";
-import { ItineraryCollection } from "/script/types/itineraryCollection.js";
 
 import { initTestDOM } from "/tests/_helpers/domUtils.js";
 import { connectionFromShorthand as _c } from "/tests/_helpers/data.js";
@@ -19,9 +18,8 @@ function _color(idx) {
 }
 
 test("prepareDataForMapEmpty", function () {
-  const itineraries = new ItineraryCollection();
+  const got = prepareDataForMap(null, []);
 
-  const got = prepareDataForMap(itineraries);
   expect(got).toStrictEqual({ cities: {}, edges: {}, itineraries: {} });
 });
 
@@ -29,7 +27,7 @@ test("prepareDataForMapOneItineraryOneConnectionNotActive", function () {
   const c1 = _c("T1: S1@D1T10->S2@D1T11->S3@D1T12");
   const i1 = new Itinerary([c1]);
 
-  const itineraries = new ItineraryCollection([i1]);
+  const got = prepareDataForMap(null, [i1]);
 
   const expCities = {
     S1: { isVisible: true, isStop: true, circleColor: null, isTransfer: false },
@@ -68,7 +66,6 @@ test("prepareDataForMapOneItineraryOneConnectionNotActive", function () {
     },
   };
 
-  const got = prepareDataForMap(itineraries);
   expect(got).toEqual({
     cities: expCities,
     edges: expEdges,
@@ -80,8 +77,7 @@ test("prepareDataForMapOneItineraryOneConnectionActive", function () {
   const c1 = _c("T1: S1@D1T10->S2@D1T11->S3@D1T12");
   const i1 = new Itinerary([c1]);
 
-  const itineraries = new ItineraryCollection([i1]);
-  itineraries.setActive(i1.id);
+  const got = prepareDataForMap(i1, []);
 
   const expCities = {
     S1: {
@@ -135,7 +131,6 @@ test("prepareDataForMapOneItineraryOneConnectionActive", function () {
     },
   };
 
-  const got = prepareDataForMap(itineraries);
   expect(got).toEqual({
     cities: expCities,
     edges: expEdges,
@@ -148,8 +143,7 @@ test("prepareDataForMapOneItineraryMultipleConnectionsActive", function () {
   const c2 = _c("T2: S2@D1T14->S3@D1T15");
   const i1 = new Itinerary([c1, c2]);
 
-  const itineraries = new ItineraryCollection([i1]);
-  itineraries.setActive(i1.id);
+  const got = prepareDataForMap(i1, []);
 
   const expCities = {
     S1: {
@@ -203,7 +197,6 @@ test("prepareDataForMapOneItineraryMultipleConnectionsActive", function () {
     },
   };
 
-  const got = prepareDataForMap(itineraries);
   expect(got).toEqual({
     cities: expCities,
     edges: expEdges,
@@ -220,8 +213,7 @@ test("prepareDataForMapMultipleItineraryMultipleConnections", function () {
   const c4 = _c("T4: S4@D1T15->S5@D1T16");
   const i2 = new Itinerary([c2, c3, c4]);
 
-  const itineraries = new ItineraryCollection([i1, i2]);
-  itineraries.setActive(i2.id);
+  const got = prepareDataForMap(i2, [i1]);
 
   const expCities = {
     S1: {
@@ -306,7 +298,6 @@ test("prepareDataForMapMultipleItineraryMultipleConnections", function () {
     },
   };
 
-  const got = prepareDataForMap(itineraries);
   expect(got).toEqual({
     cities: expCities,
     edges: expEdges,
