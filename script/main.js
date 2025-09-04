@@ -5,7 +5,13 @@ import {
 } from "./data/components/map.js";
 import { prepareDataForCalendar } from "./data/components/calendar.js";
 import { prepareDataForPerlschnur } from "./data/components/perlschnur.js";
+import { TravelDatabase } from "./data/travelDatabase.js";
 
+/**
+ * @param {Object.<string,any>} components
+ * @param {TravelDatabase} travelDatabase
+ * @param {State} state
+ */
 async function updateAllComponents(components, travelDatabase, state) {
   // alternatives for all the connections in current active itinerary - needed for calendar
   const alternatives = await travelDatabase.getAlternatives(
@@ -37,6 +43,11 @@ async function updateAllComponents(components, travelDatabase, state) {
   else components.mainContainer.classList.add("no-journey");
 }
 
+/**
+ * @param {string} homeCityId
+ * @param {Object.<string,any>} components
+ * @param {TravelDatabase} travelDatabase
+ */
 export async function main(homeCityId, components, travelDatabase) {
   const state = new State(homeCityId, components.datepicker.currentDate);
 
@@ -79,11 +90,11 @@ export async function main(homeCityId, components, travelDatabase) {
     await updateComponents(state);
   });
 
-  components.calendar.on("legHoverStart", (leg) => {
+  components.calendar.on("legHoverStart", (/** @type {string} */ leg) => {
     components.map.setLegHoverState(leg, true);
   });
 
-  components.calendar.on("legHoverStop", (leg) =>
+  components.calendar.on("legHoverStop", (/** @type {string} */ leg) =>
     components.map.setLegHoverState(leg, false),
   );
 

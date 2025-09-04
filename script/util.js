@@ -1,3 +1,7 @@
+/**
+ * @param {string} templateId
+ * @param {Object} templateData
+ */
 export function createElementFromTemplate(templateId, templateData) {
   const template = document.getElementById(templateId);
 
@@ -11,6 +15,7 @@ export function createElementFromTemplate(templateId, templateData) {
   return element;
 }
 
+// todo clean up, test, add typehints
 export function updateElement(container, data) {
   for (let selector in data) {
     const matches =
@@ -29,6 +34,10 @@ export function updateElement(container, data) {
   }
 }
 
+/**
+ * @param {any[]} array
+ * @param {function} keyFn - the function by which to group
+ */
 export function groupBy(array, keyFn) {
   const grouped = {};
 

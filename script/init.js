@@ -26,6 +26,9 @@ function parseURLParams() {
   return null;
 }
 
+/**
+ * @param {string} path
+ */
 async function loadDataFile(path) {
   const response = await fetch(path);
   return await response.json();
@@ -38,14 +41,23 @@ async function loadAndPrepareData() {
   return new GeoDatabase(cities, stops);
 }
 
+/**
+ * for all elements, set exactly the ones in selectedNames to ".selected"
+ * @param {Object.<string, Element>} elements
+ * @param {string[]} selectedNames
+ */
 function _setSelected(elements, selectedNames) {
-  /* for all elements, set exactly the ones in selectedNames to ".selected" */
   for (let name in elements) {
     if (selectedNames.includes(name)) elements[name].classList.add("selected");
     else elements[name].classList.remove("selected");
   }
 }
 
+/**
+ * @param {Object.<string, Element>} tabs
+ * @param {Object.<string, Element>} content
+ * @param {HTMLElement} mainContainer
+ */
 function initMobileNavigation(tabs, content, mainContainer) {
   // on initial load, map tab is selected and all other content is hidden
   // -> map shines through from the background
@@ -80,6 +92,10 @@ function initMobileNavigation(tabs, content, mainContainer) {
   });
 }
 
+/**
+ * @param {Object.<string, Element>} tabs
+ * @param {Object.<string, Element>} content
+ */
 function initDesktopNavigation(tabs, content) {
   // on desktop we only need to pick between calendar and summary
   // the config and the journey container are always shown

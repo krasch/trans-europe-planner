@@ -1,6 +1,13 @@
+// @ts-expect-error TS2307
+import { DateTime } from "/external/luxon@3.5.0/luxon.min.js"; // todo just need types
+
 import { Itinerary } from "./types/itinerary.js";
+import { Connection } from "./types/connection.js";
 
 export class StateError extends Error {
+  /**
+   * @param {string} message
+   */
   constructor(message) {
     super(message);
     this.name = "StateError";
@@ -8,9 +15,16 @@ export class StateError extends Error {
 }
 
 export class State {
+  /** @type {Itinerary} */
   #activeItinerary;
+
+  /** @type {Object.<string,Itinerary>} */
   #otherItineraries;
 
+  /**
+   * @param {string} homeCityId
+   * @param {DateTime} desiredStartDate
+   */
   constructor(homeCityId, desiredStartDate) {
     this.homeCityId = homeCityId;
     this.desiredStartDate = desiredStartDate;
@@ -19,14 +33,23 @@ export class State {
     this.#otherItineraries = {};
   }
 
+  /**
+   * @return {Itinerary | null}
+   */
   get activeItinerary() {
     return this.#activeItinerary;
   }
 
+  /**
+   * @return {Itinerary[]}
+   */
   get otherItineraries() {
     return Object.values(this.#otherItineraries);
   }
 
+  /**
+   * @param {string} itineraryId
+   */
   setActiveItinerary(itineraryId) {
     // nothing to do, this itinerary is already the active one
     if (this.#activeItinerary && this.activeItinerary.id === itineraryId)
@@ -44,6 +67,10 @@ export class State {
     delete this.#otherItineraries[itineraryId];
   }
 
+  /**
+   * @param {Itinerary[]} itineraries
+   * @param {boolean} setFirstAsActive
+   */
   replaceItineraries(itineraries, setFirstAsActive = false) {
     if (itineraries.length === 0)
       throw new StateError("List of itineraries is empty");
@@ -62,6 +89,9 @@ export class State {
     if (setFirstAsActive) this.setActiveItinerary(itineraries[0].id);
   }
 
+  /**
+   * @param {Connection} newConnection
+   */
   replaceLegInActiveItinerary(newConnection) {
     // todo move whole thing into itinerary?
 
