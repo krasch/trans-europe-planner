@@ -1,3 +1,4 @@
+// @ts-expect-error TS2307
 import { DateTime } from "/external/luxon@3.5.0/luxon.min.js";
 
 import { Stop } from "../../types/stop.js";

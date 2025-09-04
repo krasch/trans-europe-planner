@@ -127,10 +127,9 @@ export function prepareDataForMap(activeItinerary, otherItineraries) {
   if (activeItinerary) {
     const itineraryId = identifiers.itinerary(activeItinerary);
 
-    for (let i in activeItinerary.connections) {
-      const connection = activeItinerary.connections[i];
+    activeItinerary.connections.forEach((connection, idx) => {
       const legId = identifiers.leg(connection);
-      const color = `rgb(${getColor(i)})`;
+      const color = `rgb(${getColor(idx)})`;
 
       // all active stops get a color
       for (let stop of connection.stops) {
@@ -140,7 +139,7 @@ export function prepareDataForMap(activeItinerary, otherItineraries) {
 
       // if there is more than one connection,
       // then all from stops except for the first connection are transfer stops
-      if (activeItinerary.connections.length > 1 && i > 0) {
+      if (activeItinerary.connections.length > 1 && idx > 0) {
         const cityId = identifiers.city(connection.from);
         result.cities[cityId].isTransfer = true;
       }
@@ -153,7 +152,7 @@ export function prepareDataForMap(activeItinerary, otherItineraries) {
         result.edges[edgeId].activeLeg = legId;
         result.edges[edgeId].activeItinerary = itineraryId;
       }
-    }
+    });
   }
 
   return result;

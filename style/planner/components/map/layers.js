@@ -1,4 +1,4 @@
-let mapStyles = [
+export const mapStyles = [
   // ################################
   //           edges (subLegs)
   // ################################

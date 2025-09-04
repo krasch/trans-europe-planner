@@ -14,6 +14,7 @@ function initHomeMarker(id, lngLat) {
     $root$: { "data-city-id": id },
   });
 
+  // @ts-expect-error TS2304 (todo not doing module import for maplibre)
   const marker = new maplibregl.Marker({
     element: element,
     anchor: "bottom",
@@ -23,6 +24,7 @@ function initHomeMarker(id, lngLat) {
 }
 
 function initDestinationMarker(lngLat) {
+  // @ts-expect-error TS2304 (todo not doing module import for maplibre)
   const marker = new maplibregl.Marker({
     element: createElementFromTemplate("template-city-marker-destination"),
     anchor: "bottom",
@@ -49,6 +51,7 @@ function initCityMenu(id, name, numTransfer, lngLat) {
   //else if (numTransfer === 1) textNumTransfers.classList.add("transfers1");
   //else textNumTransfers.classList.add("transfersX");
 
+  // @ts-expect-error TS2304 (todo not doing module import for maplibre)
   const popup = new maplibregl.Popup({
     anchor: "left",
     offset: [5, 0],
@@ -102,10 +105,10 @@ function showStartAnimation(map, geo, initialState, animationDoneCallback) {
 
 export class Cities {
   #callbacks = {
-    mouseOver: () => {},
-    mouseLeave: () => {},
-    click: () => {},
-    menuClick: () => {},
+    mouseOver: (cityId) => {},
+    mouseLeave: (cityId) => {},
+    click: (cityId) => {},
+    menuClick: (cityId, menuOption) => {},
   };
 
   #source = "cities";

@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "lib": ["es2015", "DOM"],
+    "target": "es2015",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+  },
+  "include": ["script/**/*.js"],
+  "exclude": ["node_modules"]
+}

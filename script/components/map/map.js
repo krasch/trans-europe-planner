@@ -1,6 +1,6 @@
 import { Cities } from "./cities.js";
 import { Edges } from "./edges.js";
-// todo import map styles instead of using global?
+import { mapStyles } from "../../../style/planner/components/map/layers.js";
 
 function cityToGeojson(data) {
   const [id, city] = data;
@@ -45,15 +45,24 @@ export class MapWrapper {
   #map;
 
   #callbacks = {
-    selectJourney: () => {},
-    showCityRoutes: () => {},
-    showCalendar: () => {},
+    /**
+     * @param {string} journeyId
+     */
+    selectJourney: (journeyId) => {},
+    showCityRoutes: (cityId) => {},
+    showCalendar: (journeyId) => {},
   };
 
   #journeys;
   #mapping;
 
+  /**
+   * @param {string} containerId
+   * @param {number[]} center
+   * @param {number} zoom
+   */
   constructor(containerId, center, zoom) {
+    // @ts-expect-error TS2304 (todo not doing module import for maplibre)
     this.#map = new maplibregl.Map({
       container: containerId,
       style: "style/planner/components/map/outdoors-modified.json",
@@ -69,6 +78,7 @@ export class MapWrapper {
     this.#map._container.style.opacity = 0.4;
 
     // add attribution control
+    // @ts-expect-error TS2304 (todo not doing module import for maplibre)
     this.#attribution = new maplibregl.AttributionControl();
     this.#map.addControl(this.#attribution);
 
@@ -106,6 +116,7 @@ export class MapWrapper {
 
     // show +/- zoom buttons
     this.#map.addControl(
+      // @ts-expect-error TS2304 (todo not doing module import for maplibre)
       new maplibregl.NavigationControl({
         showCompass: false,
         showZoom: true,
@@ -156,7 +167,6 @@ export class MapWrapper {
 
     this.cities.on("menuClick", (id, entry) => {
       if (entry === "showRoutes") this.#callbacks["showCityRoutes"](id);
-      if (entry === "makeCut") this.#callbacks["cutJourney"](id);
     });
 
     this.edges.on("mouseOver", (id, lngLat) => {

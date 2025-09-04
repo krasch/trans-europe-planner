@@ -1,3 +1,4 @@
+// @ts-expect-error TS2307
 import { DateTime } from "/external/luxon@3.5.0/luxon.min.js";
 
 export class Datepicker {
@@ -12,8 +13,7 @@ export class Datepicker {
   #default;
 
   #callbacks = {
-    dateChanged: () => {},
-    dateReset: () => {},
+    dateChanged: (date) => {},
   };
 
   constructor(container) {

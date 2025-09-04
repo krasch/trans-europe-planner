@@ -1,8 +1,10 @@
+import { createElementFromTemplate } from "../util.js";
+
 export class CalendarWrapper {
   #callbacks = {
-    legChanged: () => {},
-    legHoverStart: () => {},
-    legHoverStop: () => {},
+    legChanged: (newConnection) => {},
+    legHoverStart: (leg) => {},
+    legHoverStop: (leg) => {},
   };
 
   #travelCalendar;
@@ -77,23 +79,22 @@ export class CalendarWrapper {
   }
 
   #createEntryFromConnection(c) {
-    const template = document.getElementById("template-calendar-connection");
-    const e = template.content.firstElementChild.cloneNode(true);
+    const data = {
+      ".connection-icon": { src: c.icon },
+      ".connection-number": { innerHTML: c.name },
+      ".start .time": { innerHTML: c.startDateTime.toFormat("HH:mm") },
+      ".start .station": { innerHTML: c.startStation },
+      ".destination .time": { innerHTML: c.endDateTime.toFormat("HH:mm") },
+      ".destination .station": { innerHTML: c.endStation },
+    };
 
+    // try to move dataset into the above
+    const e = createElementFromTemplate("template-calendar-connection", data);
     e.dataset.departureDatetime = c.startDateTime.toISO();
     e.dataset.arrivalDatetime = c.endDateTime.toISO();
     e.dataset.color = c.color ?? "";
     e.dataset.active = c.selected ? "active" : "";
     e.dataset.group = c.leg ?? "";
-
-    e.querySelector(".connection-icon").src = c.icon;
-    e.querySelector(".connection-number").innerHTML = c.name;
-    e.querySelector(".start .time").innerHTML =
-      c.startDateTime.toFormat("HH:mm");
-    e.querySelector(".start .station").innerHTML = c.startStation;
-    e.querySelector(".destination .time").innerHTML =
-      c.endDateTime.toFormat("HH:mm");
-    e.querySelector(".destination .station").innerHTML = c.endStation;
 
     return e;
   }

@@ -1,3 +1,4 @@
+import { createElementFromTemplate } from "../../util.js";
 import {
   StateDict,
   MouseEventHelper,
@@ -15,6 +16,7 @@ function initJourneyMenu(id, journey, lngLat) {
     ".num-transfer": { innerText: journey.numTransfer },
   });
 
+  // @ts-expect-error TS2304 (todo not doing module import for maplibre)
   const popup = new maplibregl.Popup({
     anchor: "left",
     offset: [5, 0],
@@ -27,10 +29,10 @@ function initJourneyMenu(id, journey, lngLat) {
 
 export class Edges {
   #callbacks = {
-    mouseOver: () => {},
-    mouseLeave: () => {},
-    click: () => {},
-    menuClick: () => {},
+    mouseOver: (edgeId) => {},
+    mouseLeave: (edgeId) => {},
+    click: (edgeId, lngLat) => {},
+    menuClick: (edgeId, menuOption) => {},
   };
 
   #source = "edges";

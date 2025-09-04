@@ -1,56 +1,13 @@
+// @ts-expect-error TS2307
+import { DateTime } from "/external/luxon@3.5.0/luxon.min.js";
+
 const LOCALE = new Intl.NumberFormat().resolvedOptions().locale;
 
 const NUM_DAYS = 3;
-const RESOLUTION = 4; // "slices" per hour
+const RESOLUTION = 4; // "slices" per hour todo is also set in grid.css
 
 const entryStyle = `<style>@import url('/script/customElements/travelCalendar/entry.css')</style>`;
-
-const gridStyle = `<style>
-
-:host {
-  /* the following can be set in external css to style this custom element */
-  --calendar-lines: 1px dashed lightgrey;
-  --calendar-text-color: darkgrey;
-  
-  width: 100%;
-  display: grid;
-  font-size: 0.8rem;
-  
-  --num-rows: calc(24 * ${RESOLUTION});
-  
-  grid-auto-flow: column; 
-  grid-template-rows: 8fr repeat(var(--num-rows), 1fr);
-  grid-template-columns: 3rem repeat(${NUM_DAYS}, 1fr);
-  
-}
-
-:host([hidden]) { 
-  display: none 
-}
-
-/* styling the calendar grid */
-.hour-label {  
-  text-align: center; /* horizontally */
-  align-content: center; /* vertically*/  
-  
-  border-top: var(--calendar-lines);
-  color: var(--calendar-text-color);
-}
-.date-label {
-  text-align: center; /* horizontally */
-  align-content: center; /* vertically*/
-  
-  border-left: var(--calendar-lines);
-  color: var(--calendar-text-color);
-}
-.cell {
-  height: var(--row-height);
-  border-left: var(--calendar-lines);
-}
-.cell.full-hour {
-  border-top: var(--calendar-lines);
-}
-</style>`;
+const gridStyle = `<style>@import url('/script/customElements/travelCalendar/grid.css')</style>`;
 
 /** This custom element provides a calendar for travel events.
  *
@@ -102,9 +59,9 @@ export class TravelCalendar extends HTMLElement {
   static observedAttributes = ["start-date"];
 
   #callbacks = {
-    hoverOn: () => {},
-    hoverOff: () => {},
-    drop: () => {},
+    hoverOn: (externalEvent) => {},
+    hoverOff: (externalEvent) => {},
+    drop: (externalEvent) => {},
   };
 
   constructor() {
@@ -154,6 +111,11 @@ export class TravelCalendar extends HTMLElement {
     });
   }
 
+  /**
+   * @param {string} name
+   * @param {any} oldValue
+   * @param {any} newValue
+   */
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === "start-date" && oldValue !== newValue) {
       this.#changeCalendarStartDate(newValue);
@@ -193,21 +155,26 @@ export class TravelCalendar extends HTMLElement {
     };
 
     const partsToCreate = this.#splitIntoDays(
-      new Date(externalElement.dataset.departureDatetime),
-      new Date(externalElement.dataset.arrivalDatetime),
+      DateTime.fromISO(externalElement.dataset.departureDatetime),
+      DateTime.fromISO(externalElement.dataset.arrivalDatetime),
     ).filter((part) => part.column < 3); // todo HACK to not blow up grid with overnights
 
     const entry = new MultipartCalendarEntry(
-      partsToCreate.map((p) => {
-        const part = document.createElement("div");
-        part.draggable = true;
-        part.classList.add("entry-part");
+      partsToCreate.map((partLocation) => {
+        const partElement = document.createElement("div");
+        partElement.draggable = true;
+        partElement.classList.add("entry-part");
 
         // +1 for header row/index column
-        this.#setGridLocation(part, p.column + 1, p.startRow + 1, p.endRow + 1);
-        this.shadowRoot.appendChild(part);
+        this.#setGridLocationForElement(
+          partElement,
+          partLocation.column + 1,
+          partLocation.startRow + 1,
+          partLocation.endRow + 1,
+        );
+        this.shadowRoot.appendChild(partElement);
 
-        return part;
+        return partElement;
       }),
     );
 
@@ -258,43 +225,51 @@ export class TravelCalendar extends HTMLElement {
     }
   }
 
-  #getRow(datetime) {
-    // todo time zones, dst
-    const minute = datetime.getHours() * 60 + datetime.getMinutes();
-    return Math.round((minute / 60.0) * RESOLUTION);
+  /**
+   * @param {DateTime} datetime
+   */
+  #calculateGridLocation(datetime) {
+    // midnight of our datetime
+    const midnight = datetime.startOf("day");
+
+    // first day of the calendar
+    const startDate = DateTime.fromISO(this.getAttribute("start-date")); // todo centralize?
+
+    const hoursSinceMidnight = datetime.diff(midnight, ["hours"]); // float
+    const daysSinceCalendarStart = midnight.diff(startDate, ["days"]); // int
+
+    return {
+      row: Math.round(hoursSinceMidnight.toObject().hours * RESOLUTION),
+      column: daysSinceCalendarStart.toObject().days,
+    };
   }
 
-  #getColumn(datetime) {
-    // todo time zones, dst
-    const midnight = new Date(datetime.toDateString());
-    const diffMillis = midnight - new Date(this.getAttribute("start-date"));
-    return Math.round(diffMillis / (1000 * 60 * 60 * 24));
-  }
-
-  #setGridLocation(element, column, startRow, endRow) {
+  #setGridLocationForElement(element, column, startRow, endRow) {
     // +1 because grid is one-indexed (not zero-indexed)
     element.style.gridColumn = column + 1;
     element.style.gridRowStart = startRow + 1;
     element.style.gridRowEnd = endRow + 1;
   }
 
+  /**
+   * @param {DateTime} departureDatetime
+   * @param {DateTime} arrivalDatetime
+   * @returns {Object[]}
+   */
   #splitIntoDays(departureDatetime, arrivalDatetime) {
-    const departureColumn = this.#getColumn(departureDatetime);
-    let arrivalColumn = this.#getColumn(arrivalDatetime);
-
-    const departureRow = this.#getRow(departureDatetime);
-    const arrivalRow = this.#getRow(arrivalDatetime);
+    const departure = this.#calculateGridLocation(departureDatetime);
+    const arrival = this.#calculateGridLocation(arrivalDatetime);
 
     const startOfDayRow = 0;
     const endOfDayRow = 24 * RESOLUTION;
 
     const parts = [];
-    for (let column = departureColumn; column < arrivalColumn + 1; column++) {
-      let startRow = startOfDayRow;
-      if (column === departureColumn) startRow = departureRow;
+    for (let column = departure.column; column < arrival.column + 1; column++) {
+      let startRow = startOfDayRow; // multi-day entry default
+      if (column === departure.column) startRow = departure.row; // actually first-day entry
 
-      let endRow = endOfDayRow;
-      if (column === arrivalColumn) endRow = arrivalRow;
+      let endRow = endOfDayRow; // multi-day entry default
+      if (column === arrival.column) endRow = arrival.row; // actually last-day entry
 
       parts.push({
         column: column,
@@ -313,7 +288,7 @@ export class TravelCalendar extends HTMLElement {
       element.innerText = `${hour}`.padStart(2, "0");
       element.classList.add("hour-label");
 
-      this.#setGridLocation(
+      this.#setGridLocationForElement(
         element,
         0,
         hour * RESOLUTION + 1, // +1 for header row
@@ -329,7 +304,7 @@ export class TravelCalendar extends HTMLElement {
       element.innerHTML = this.#formatDateLabel(startDate, day);
       element.classList.add("date-label");
 
-      this.#setGridLocation(
+      this.#setGridLocationForElement(
         element,
         day + 1, //+1 for hour column
         0,
@@ -346,7 +321,7 @@ export class TravelCalendar extends HTMLElement {
 
         if (row % RESOLUTION === 0) element.classList.add("full-hour");
 
-        this.#setGridLocation(
+        this.#setGridLocationForElement(
           element,
           day + 1, // +1 for hour column
           row + 1, // +1 for header row
@@ -487,8 +462,10 @@ export class LookupUtil {
     this.#externalToMultipart.delete(externalHTMLElement);
     this.#multipartToExternal.delete(multipartEntry);
 
-    for (let part of multipartEntry.parts)
+    for (let part of multipartEntry.parts) {
+      // @ts-expect-error TS2703 todo investigate
       delete this.#partToParent.delete(part);
+    }
 
     this.#knownGroups.add(multipartEntry.group);
     this.#updateGroups();

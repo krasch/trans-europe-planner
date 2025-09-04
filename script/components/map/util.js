@@ -106,7 +106,7 @@ export function animateDropWithBounce(
 ) {
   const speedup = 2;
 
-  const animationStart = document.timeline.currentTime;
+  const animationStart = Number(document.timeline.currentTime);
   let previousHeight = 1000;
 
   function update(timestamp) {
@@ -142,9 +142,13 @@ export function animateDropWithBounce(
 // 3. We want to prefer city events to edge events
 export class MouseEventHelper {
   #callbacks = {
-    mouseOver: () => {},
-    mouseLeave: () => {},
-    click: () => {},
+    mouseOver: (newFeatureId, lngLat) => {},
+    mouseLeave: (
+      previousFeatureId,
+      lngLat,
+      hasHigherPriorityFeature = false,
+    ) => {},
+    click: (previousFeatureId, lngLat) => {},
   };
 
   constructor(map, layerNames, priorityLayers = null) {

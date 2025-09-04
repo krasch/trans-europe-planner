@@ -15,6 +15,7 @@ beforeEach(async () => {
   await TEST_DOM.calendar.setAttribute("start-date", DAY1);
 });
 
+// todo can not test non-hourly entries
 test("one day entry should create one entry part that contains all connection info", async function () {
   await addEntryToCalendar("T1: S1@D1T10->S2@D1T11");
 

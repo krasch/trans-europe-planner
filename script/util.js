@@ -2,6 +2,7 @@ export function createElementFromTemplate(templateId, templateData) {
   const template = document.getElementById(templateId);
 
   // create new element by cloning template
+  // @ts-expect-error TS2339
   const element = template.content.firstElementChild.cloneNode(true);
 
   // fill in data
@@ -17,6 +18,7 @@ export function updateElement(container, data) {
         ? [container]
         : container.querySelectorAll(selector);
 
+    // todo what about dataset, what does key data mean?
     for (let element of matches) {
       for (let key in data[selector]) {
         if (key.startsWith("data"))

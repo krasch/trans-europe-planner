@@ -1,5 +1,5 @@
 {
-  "comment": "only using this for running tests, not necessary for building the project",
+  "comment": "only using this for running tests&linting, not necessary for building the project",
   "name": "trans-europe-planner",
   "version": "0.1.",
   "description": "",
@@ -8,7 +8,8 @@
     "start": "serve -p 8000",
     "test": "node --experimental-vm-modules node_modules/.bin/jest tests",
     "check-pretty": "node node_modules/.bin/prettier script/ style/planner/components/map/layers.js --check",
-    "make-pretty": "node node_modules/.bin/prettier script/ style/planner/components/map/layers.js --write"
+    "make-pretty": "node node_modules/.bin/prettier script/ style/planner/components/map/layers.js --write",
+    "check-types": "npx tsc"
   },
   "devDependencies": {
     "@atlaskit/pragmatic-drag-and-drop-unit-testing": "^1.1.0",
@@ -16,13 +17,13 @@
     "jest-environment-jsdom": "^29.7.0",
     "luxon": "^3.5.0",
     "prettier": "3.3.3",
-    "serve": "^14.2.4"
+    "serve": "^14.2.4",
+    "typescript": "^5.9.2"
   },
   "jest": {
     "moduleNameMapper": {
       "/external/(.*)": "<rootDir>/external/$1",
       "luxon": "<rootDir>/external/luxon@3.5.0/luxon.min.js",
-
       "/script/(.*)": "<rootDir>/script/$1",
       "tests/(.*)": "<rootDir>/tests/$1"
     }
