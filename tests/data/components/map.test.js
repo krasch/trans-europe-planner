@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
-import { prepareDataForMap } from "/script/data/components/map.js";
-import { Itinerary } from "/script/types/itinerary.js";
+import { prepareDataForMap } from "script/data/components/map.js";
+import { Itinerary } from "script/types/itinerary.js";
 
-import { initTestDOM } from "/tests/_helpers/domUtils.js";
-import { connectionFromShorthand as _c } from "/tests/_helpers/data.js";
-import { getTestColor } from "/tests/_helpers/data.js";
+import { initTestDOM } from "tests/_helpers/domUtils.js";
+import { connectionFromShorthand as _c } from "tests/_helpers/data.js";
+import { getTestColor } from "tests/_helpers/data.js";
 
 beforeEach(async () => {
   initTestDOM(); // needed to get connection colors from css

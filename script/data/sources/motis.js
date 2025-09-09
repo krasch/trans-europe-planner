@@ -1,9 +1,9 @@
-// @ts-expect-error TS2307
-import { DateTime } from "/external/luxon@3.5.0/luxon.min.js";
+// @ts-expect-error TS2416 - deliberately not configured in tsconfig.json, otherwise lots of type errors
+import { DateTime } from "external/luxon.js";
 
-import { Stop } from "../../types/stop.js";
-import { Connection } from "../../types/connection.js";
-import { Itinerary } from "../../types/itinerary.js";
+import { Connection } from "script/types/connection.js";
+import { Itinerary } from "script/types/itinerary.js";
+import { Stop } from "script/types/stop.js";
 
 const BASE_URL = "http://localhost:8080";
 const TRANSIT_MODES = "REGIONAL_RAIL";

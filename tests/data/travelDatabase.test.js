@@ -1,8 +1,8 @@
 import { jest } from "@jest/globals";
 
-import { connectionFromShorthand as _c, DAY1 } from "/tests/_helpers/data.js";
-import { Itinerary } from "/script/types/itinerary.js";
-import { TravelDatabase } from "/script/data/travelDatabase.js";
+import { connectionFromShorthand as _c, DAY1 } from "tests/_helpers/data.js";
+import { Itinerary } from "script/types/itinerary.js";
+import { TravelDatabase } from "script/data/travelDatabase.js";
 
 function mockDatasource() {
   return { plan: jest.fn(), direct: jest.fn() };

@@ -2,21 +2,21 @@
  * @jest-environment jsdom
  */
 
-import { DateTime } from "/external/luxon@3.5.0/luxon.min.js";
+import { DateTime } from "external/luxon.js";
 
 import {
   prepareDataForPerlschnur,
   formatTimedelta,
-} from "/script/data/components/perlschnur.js";
-import { Itinerary } from "/script/types/itinerary.js";
+} from "script/data/components/perlschnur.js";
+import { Itinerary } from "script/types/itinerary.js";
 
-import { initTestDOM } from "/tests/_helpers/domUtils.js";
+import { initTestDOM } from "tests/_helpers/domUtils.js";
 import {
   getTestColor as _color,
   connectionFromShorthand as _c,
   DAY1,
-} from "/tests/_helpers/data.js";
-import { identifiers } from "/script/data/components/_common.js";
+} from "tests/_helpers/data.js";
+import { identifiers } from "script/data/components/_common.js";
 
 beforeEach(async () => {
   initTestDOM(); // needed to get connection colors from css

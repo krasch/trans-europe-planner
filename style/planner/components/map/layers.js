@@ -1,4 +1,4 @@
-export const mapStyles = [
+export const mapLayers = [
   // ################################
   //           edges (subLegs)
   // ################################

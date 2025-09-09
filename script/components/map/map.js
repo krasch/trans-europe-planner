@@ -1,6 +1,7 @@
+import { mapLayers } from "style/planner/components/map/layers.js";
+
 import { Cities } from "./cities.js";
 import { Edges } from "./edges.js";
-import { mapStyles } from "../../../style/planner/components/map/layers.js";
 
 function cityToGeojson(data) {
   const [id, city] = data;
@@ -160,7 +161,7 @@ export class MapWrapper {
     });
 
     // add all layers
-    for (let layer of mapStyles) this.#map.addLayer(layer);
+    for (let layer of mapLayers) this.#map.addLayer(layer);
 
     this.cities = new Cities(this.#map, cities.geo, cities.defaults, animation);
     this.edges = new Edges(this.#map, edges.geo, edges.defaults);

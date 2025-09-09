@@ -3,12 +3,12 @@
  */
 
 import { initTestDOM, TEST_DOM, timeout } from "tests/_helpers/domUtils.js";
-import { DAY1 } from "/tests/_helpers/data.js";
+import { DAY1 } from "tests/_helpers/data.js";
 import {
   COLUMN_FIRST_DAY,
   ROW_MIDNIGHT,
   addEntryToCalendar,
-} from "/tests/_helpers/calendarUtils.js";
+} from "tests/_helpers/calendarUtils.js";
 
 beforeEach(async () => {
   initTestDOM();

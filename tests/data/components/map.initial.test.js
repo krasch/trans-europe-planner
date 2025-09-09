@@ -1,4 +1,4 @@
-import { prepareInitialDataForMap } from "/script/data/components/map.js";
+import { prepareInitialDataForMap } from "script/data/components/map.js";
 
 test("prepareInitialDataForMap", function () {
   const cities = [

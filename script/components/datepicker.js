@@ -1,5 +1,5 @@
-// @ts-expect-error TS2307
-import { DateTime } from "/external/luxon@3.5.0/luxon.min.js";
+// @ts-expect-error TS2416 - deliberately not configured in tsconfig.json, otherwise lots of type errors
+import { DateTime } from "external/luxon.js";
 
 export class Datepicker {
   #container;

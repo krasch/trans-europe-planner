@@ -1,9 +1,9 @@
-import { DateTime } from "luxon";
+import { DateTime } from "external/luxon.js";
 
-import { MotisClient } from "/script/data/sources/motis.js";
-import { GeoDatabase } from "/script/data/geoDatabase.js";
+import { GeoDatabase } from "script/data/geoDatabase.js";
+import { MotisClient } from "script/data/sources/motis.js";
 
-import { DAY1 } from "/tests/_helpers/data.js";
+import { DAY1 } from "tests/_helpers/data.js";
 
 const CITIES = {
   fromCityId: { name: "fromCityName" },

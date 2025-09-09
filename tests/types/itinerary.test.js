@@ -2,8 +2,8 @@ import {
   stopFromData as _s,
   timestampFromShorthand as _ts,
   connectionFromData as _c,
-} from "/tests/_helpers/data.js";
-import { Itinerary } from "/script/types/itinerary.js";
+} from "tests/_helpers/data.js";
+import { Itinerary } from "script/types/itinerary.js";
 
 test("Itinerary with one connection", function () {
   const c1 = _c({

@@ -1,4 +1,4 @@
-import { groupBy } from "../util.js";
+import { groupBy } from "script/util.js";
 
 export class TravelDatabase {
   #client;

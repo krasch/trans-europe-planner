@@ -12,11 +12,10 @@
   grid-auto-flow: column;
   grid-template-rows: 8fr repeat(var(--num-rows), 1fr);
   grid-template-columns: 3rem repeat(3, 1fr); /* todo variable for numdays */
-
 }
 
 :host([hidden]) {
-  display: none
+  display: none;
 }
 
 /* styling the calendar grid */

@@ -1,4 +1,4 @@
-import { DataError, GeoDatabase } from "/script/data/geoDatabase.js";
+import { DataError, GeoDatabase } from "script/data/geoDatabase.js";
 
 function initDatabase(cityData, stopData) {
   const cities = {};

@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
-import { prepareDataForPerlschnur } from "/script/data/components/perlschnur.js";
-import { Itinerary } from "/script/types/itinerary.js";
-import { initTestDOM, TEST_DOM, timeout } from "/tests/_helpers/domUtils.js";
+import { prepareDataForPerlschnur } from "script/data/components/perlschnur.js";
+import { Itinerary } from "script/types/itinerary.js";
+import { initTestDOM, TEST_DOM, timeout } from "tests/_helpers/domUtils.js";
+import { Perlschnur } from "script/components/perlschnur.js";
 import {
   getTestColor as _color,
   connectionFromShorthand as _c,
-} from "/tests/_helpers/data.js";
-import { Perlschnur } from "/script/components/perlschnur.js";
+} from "tests/_helpers/data.js";
 
 beforeEach(async () => {
   initTestDOM();

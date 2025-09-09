@@ -1,7 +1,8 @@
-import { createElementFromTemplate } from "../../util.js";
+import { createElementFromTemplate } from "script/util.js";
+
 import {
-  StateDict,
   MouseEventHelper,
+  StateDict,
   filterChanges,
   groupChangesById,
 } from "./util.js";

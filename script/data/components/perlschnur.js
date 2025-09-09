@@ -1,4 +1,4 @@
-import { getColor, identifiers, ICONS } from "./_common.js";
+import { ICONS, getColor, identifiers } from "./_common.js";
 
 // todo localization
 // todo error if order wrong?

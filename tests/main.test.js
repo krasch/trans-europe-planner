@@ -3,11 +3,11 @@
  */
 
 import { jest } from "@jest/globals";
-import { main } from "/script/main.js";
+import { main } from "script/main.js";
 
-import { GeoDatabase } from "/script/data/geoDatabase.js";
-import { DAY1, connectionFromShorthand as _c } from "/tests/_helpers/data.js";
-import { Itinerary } from "../script/types/itinerary.js";
+import { GeoDatabase } from "script/data/geoDatabase.js";
+import { Itinerary } from "script/types/itinerary.js";
+import { DAY1, connectionFromShorthand as _c } from "tests/_helpers/data.js";
 
 const testCities = {
   C1: { name: "City1", geo: { latitude: 10, longitude: 10 } },

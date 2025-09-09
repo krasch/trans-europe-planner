@@ -1,14 +1,12 @@
-import { MapWrapper } from "./components/map/map.js";
-import { Perlschnur } from "./components/perlschnur.js";
-import { Datepicker } from "./components/datepicker.js";
-import { CalendarWrapper } from "./components/calendar.js";
-
-import { MotisClient } from "./data/sources/motis.js";
-import { GeoDatabase } from "./data/geoDatabase.js";
-import { TravelDatabase } from "./data/travelDatabase.js";
-
-import { showLandingPage } from "./components/landing.js";
-import { main } from "./main.js";
+import { CalendarWrapper } from "script/components/calendar.js";
+import { Datepicker } from "script/components/datepicker.js";
+import { showLandingPage } from "script/components/landing.js";
+import { MapWrapper } from "script/components/map/map.js";
+import { Perlschnur } from "script/components/perlschnur.js";
+import { GeoDatabase } from "script/data/geoDatabase.js";
+import { MotisClient } from "script/data/sources/motis.js";
+import { TravelDatabase } from "script/data/travelDatabase.js";
+import { main } from "script/main.js";
 
 const HOMES = ["Schwerin"];
 

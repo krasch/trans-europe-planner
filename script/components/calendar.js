@@ -1,4 +1,4 @@
-import { createElementFromTemplate } from "../util.js";
+import { createElementFromTemplate } from "script/util.js";
 
 export class CalendarWrapper {
   #callbacks = {

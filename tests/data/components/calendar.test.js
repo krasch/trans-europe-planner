@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
-import { prepareDataForCalendar } from "/script/data/components/calendar.js";
-import { initTestDOM } from "/tests/_helpers/domUtils.js";
+import { prepareDataForCalendar } from "script/data/components/calendar.js";
+import { initTestDOM } from "tests/_helpers/domUtils.js";
 import {
   getTestColor as _color,
   connectionFromShorthand as _c,
   timestampFromShorthand,
-} from "/tests/_helpers/data.js";
-import { Itinerary } from "/script/types/itinerary.js";
+} from "tests/_helpers/data.js";
+import { Itinerary } from "script/types/itinerary.js";
 
 beforeEach(async () => {
   initTestDOM(); // needed to get connection colors from css

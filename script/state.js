@@ -1,8 +1,9 @@
+// todo just need types
 // @ts-expect-error TS2307
-import { DateTime } from "/external/luxon@3.5.0/luxon.min.js"; // todo just need types
+import { DateTime } from "external/luxon.js";
 
-import { Itinerary } from "./types/itinerary.js";
-import { Connection } from "./types/connection.js";
+import { Connection } from "script/types/connection.js";
+import { Itinerary } from "script/types/itinerary.js";
 
 export class StateError extends Error {
   /**

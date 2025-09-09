@@ -12,6 +12,16 @@
 
     <script defer data-domain="trans-europe-planner.eu" src="https://plausible.io/js/script.js"></script>
 
+    <script type="importmap">
+        {
+          "imports": {
+            "script/": "./script/",
+            "style/planner/components/map/layers.js": "./style/planner/components/map/layers.js",
+            "external/luxon.js": "./external/luxon@3.5.0/luxon.min.js"
+          }
+        }
+    </script>
+
     <!-- styles -->
     <link rel="stylesheet" href="style/language.css">
     <link rel="stylesheet" href="style/layout.css">
@@ -313,8 +323,10 @@
             <span lang="de">Ausprobieren!</span>
             <span lang="en">Try it out!</span>
         </button>
-        <em lang="de">Der Trans Europa Planer ist zurzeit noch ein Prototyp. <a href="blog.html#status">Mehr erfahren.</a> </em>
-        <em lang="en">The Trans Europe Planner is still just a prototype. <a href="blog.html#status">Learn more.</a> </em>
+        <em lang="de">Der Trans Europa Planer ist zurzeit noch ein Prototyp. <a href="blog.html#status">Mehr
+            erfahren.</a> </em>
+        <em lang="en">The Trans Europe Planner is still just a prototype. <a href="blog.html#status">Learn more.</a>
+        </em>
     </form>
 </dialog>
 

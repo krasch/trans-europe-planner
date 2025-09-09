@@ -1,13 +1,14 @@
+import { createElementFromTemplate } from "script/util.js";
+
 import {
-  StateDict,
   MouseEventHelper,
+  StateDict,
   animateDropWithBounce,
   filterChanges,
   groupChangesById,
   updateSourceData,
   updateVisibility,
 } from "./util.js";
-import { createElementFromTemplate } from "../../util.js";
 
 function initHomeMarker(id, lngLat) {
   const element = createElementFromTemplate("template-city-marker-home", {

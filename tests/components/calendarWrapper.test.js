@@ -6,18 +6,18 @@ import { jest } from "@jest/globals";
 
 import("@atlaskit/pragmatic-drag-and-drop-unit-testing/drag-event-polyfill");
 
-import { CalendarWrapper } from "/script/components/calendar.js";
+import { CalendarWrapper } from "script/components/calendar.js";
 import {
   dispatchTestEvent,
   initTestDOM,
   TEST_DOM,
   timeout,
-} from "/tests/_helpers/domUtils.js";
+} from "tests/_helpers/domUtils.js";
 import {
   connectionFromShorthand as _c,
   getTestColor as _color,
   DAY1,
-} from "/tests/_helpers/data.js";
+} from "tests/_helpers/data.js";
 import { prepareDataForCalendar } from "../../script/data/components/calendar.js";
 import { Itinerary } from "../../script/types/itinerary.js";
 

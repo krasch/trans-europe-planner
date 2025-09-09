@@ -1,4 +1,4 @@
-import { groupBy } from "/script/util.js";
+import { groupBy } from "script/util.js";
 
 test("groupBy", function () {
   const items = [

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { initTestDOM, TEST_DOM } from "/tests/_helpers/domUtils.js";
+import { initTestDOM, TEST_DOM } from "tests/_helpers/domUtils.js";
 import { COLUMN_FIRST_DAY } from "../../_helpers/calendarUtils.js";
 
 beforeEach(async () => {

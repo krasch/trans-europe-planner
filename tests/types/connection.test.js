@@ -1,8 +1,8 @@
-import { Connection } from "/script/types/connection.js";
+import { Connection } from "script/types/connection.js";
 import {
   stopFromData as _s,
   timestampFromShorthand as _ts,
-} from "/tests/_helpers/data.js";
+} from "tests/_helpers/data.js";
 
 test("Connection without intermediate stops", function () {
   const from = _s({ stopId: "S1", departure: _ts("D1T10") });

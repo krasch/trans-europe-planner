@@ -1,4 +1,4 @@
-import { createElementFromTemplate, updateElement } from "../util.js";
+import { createElementFromTemplate, updateElement } from "script/util.js";
 
 // todo streamline icons with calendar
 

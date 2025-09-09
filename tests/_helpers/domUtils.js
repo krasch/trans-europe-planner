@@ -1,5 +1,5 @@
 import fs from "fs";
-import { TravelCalendar } from "/script/customElements/travelCalendar/travelCalendar.js";
+import { TravelCalendar } from "script/customElements/travelCalendar/travelCalendar.js";
 import { COLORS } from "./data.js";
 
 customElements.define("travel-calendar", TravelCalendar);

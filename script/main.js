@@ -1,11 +1,11 @@
-import { State } from "./state.js";
+import { prepareDataForCalendar } from "script/data/components/calendar.js";
 import {
-  prepareInitialDataForMap,
   prepareDataForMap,
-} from "./data/components/map.js";
-import { prepareDataForCalendar } from "./data/components/calendar.js";
-import { prepareDataForPerlschnur } from "./data/components/perlschnur.js";
-import { TravelDatabase } from "./data/travelDatabase.js";
+  prepareInitialDataForMap,
+} from "script/data/components/map.js";
+import { prepareDataForPerlschnur } from "script/data/components/perlschnur.js";
+import { TravelDatabase } from "script/data/travelDatabase.js";
+import { State } from "script/state.js";
 
 /**
  * @param {Object.<string,any>} components
