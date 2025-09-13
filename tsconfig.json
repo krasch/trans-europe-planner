@@ -12,11 +12,12 @@
     ],
     "paths": {
       "script/*": ["./script/*"],
+      "tests/*": ["./tests/*"],
       "style/*": ["./style/*"]
     }
   },
   "include": [
-    "script/**/*.js"
+    "script/**/*.js",
   ],
   "exclude": [
     "node_modules"

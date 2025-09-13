@@ -1,5 +1,13 @@
+import { Connection } from "script/types/connection.js";
+import { Itinerary } from "script/types/itinerary.js";
+
 import { ICONS, getColor, identifiers } from "./_common.js";
 
+/**
+ * @param {Connection} connection
+ * @param {string} color
+ * @param {boolean} isSelected
+ */
 function dataForConnection(connection, color, isSelected) {
   return {
     uniqueId: identifiers.connection(connection),
@@ -15,6 +23,10 @@ function dataForConnection(connection, color, isSelected) {
   };
 }
 
+/**
+ * @param {Itinerary} activeItinerary
+ * @param {Connection[][]} alternatives
+ */
 export function prepareDataForCalendar(activeItinerary, alternatives) {
   // active itinerary: list of connections
   // alternatives: array of same length, each entry list of alternatives for the respect connection
@@ -22,9 +34,7 @@ export function prepareDataForCalendar(activeItinerary, alternatives) {
   if (!activeItinerary) return [];
 
   const data = [];
-  for (let i in activeItinerary.connections) {
-    const connection = activeItinerary.connections[i];
-
+  activeItinerary.connections.forEach((connection, i) => {
     // this will add an event for the currently selected connection to the calendar
     data.push(dataForConnection(connection, getColor(i), true));
 
@@ -33,7 +43,7 @@ export function prepareDataForCalendar(activeItinerary, alternatives) {
       if (alternative.id === connection.id) continue;
       data.push(dataForConnection(alternative, getColor(i), false));
     }
-  }
+  });
 
   return data;
 }

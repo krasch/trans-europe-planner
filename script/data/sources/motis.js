@@ -1,6 +1,7 @@
 // @ts-expect-error TS2416 - deliberately not configured in tsconfig.json, otherwise lots of type errors
 import { DateTime } from "external/luxon.js";
 
+import { GeoDatabase } from "script/data/geoDatabase.js";
 import { Connection } from "script/types/connection.js";
 import { Itinerary } from "script/types/itinerary.js";
 import { Stop } from "script/types/stop.js";
@@ -16,10 +17,19 @@ export class MotisError extends Error {
   }
 }
 
+/**
+ * @param {string} stopId
+ * @returns {string}
+ */
 function fixMotisStopId(stopId) {
   return stopId.split(":").slice(0, 3).join(":"); // todo remove _G?
 }
 
+/**
+ * @param {Object} motisStop
+ * @param {GeoDatabase} geoDatabase
+ * @returns {Stop}
+ */
 function parseMotisStop(motisStop, geoDatabase) {
   const stop = geoDatabase.stopForMotisStopId(fixMotisStopId(motisStop.stopId));
 
@@ -39,6 +49,11 @@ function parseMotisStop(motisStop, geoDatabase) {
   return new Stop(stop.id, stop.name, city, arrival, departure);
 }
 
+/**
+ * @param {Object} motisLeg
+ * @param {GeoDatabase} geoDatabase
+ * @returns {Connection}
+ */
 function parseMotisConnection(motisLeg, geoDatabase) {
   const from = parseMotisStop(motisLeg.from, geoDatabase);
   const to = parseMotisStop(motisLeg.to, geoDatabase);
@@ -55,6 +70,11 @@ function parseMotisConnection(motisLeg, geoDatabase) {
   );
 }
 
+/**
+ * @param {Object} motisItinerary
+ * @param {GeoDatabase} geoDatabase
+ * @returns {Itinerary}
+ */
 function parseMotisItinerary(motisItinerary, geoDatabase) {
   // remove walk legs
   const legs = motisItinerary.legs.filter((l) => l.mode !== "WALK");
@@ -71,6 +91,13 @@ export class MotisClient {
     return url;
   }
 
+  /**
+   * @param {String} fromCityId
+   * @param {String} toCityId
+   * @param {import("script/types/stop.js").DateTime} startDate
+   * @param {GeoDatabase} geoDatabase
+   * @returns {Promise<Itinerary[]>}
+   */
   async plan(fromCityId, toCityId, startDate, geoDatabase) {
     const fromStationId = geoDatabase.motisStopIdForCityId(fromCityId);
     const toStationId = geoDatabase.motisStopIdForCityId(toCityId);
@@ -94,6 +121,13 @@ export class MotisClient {
     );
   }
 
+  /**
+   * @param {String} fromCityId
+   * @param {String} toCityId
+   * @param {import("script/types/stop.js").DateTime} startDate
+   * @param {GeoDatabase} geoDatabase
+   * @returns {Promise<Connection[]>}
+   */
   async direct(fromCityId, toCityId, startDate, geoDatabase) {
     const itineraries = await this.plan(
       fromCityId,

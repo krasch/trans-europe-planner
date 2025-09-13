@@ -1,3 +1,5 @@
+import { Itinerary } from "script/types/itinerary.js";
+
 import { ICONS, getColor, identifiers } from "./_common.js";
 
 // todo localization
@@ -16,6 +18,9 @@ export function formatTimedelta(earlierTimestamp, laterTimestamp) {
   return result.filter((e) => e.length > 0).join(" ");
 }
 
+/**
+ * @param {Itinerary} itinerary
+ */
 function itinerarySummary(itinerary) {
   const from = itinerary.connections[0].from;
   const to = itinerary.connections.at(-1).to;
@@ -29,6 +34,9 @@ function itinerarySummary(itinerary) {
   };
 }
 
+/**
+ * @param {Itinerary} activeItinerary
+ */
 export function prepareDataForPerlschnur(activeItinerary) {
   const result = {
     summary: {},

@@ -1,19 +1,31 @@
+import { GeoDatabase } from "script/data/geoDatabase.js";
+import { MotisClient } from "script/data/sources/motis.js";
+import { Connection } from "script/types/connection.js";
+import { Itinerary } from "script/types/itinerary.js";
 import { groupBy } from "script/util.js";
 
 export class TravelDatabase {
   #client;
   geoDatabase;
 
-  #planCache = {};
-  #directCache = {};
   #connectionCache = {};
 
+  /**
+   * @param {MotisClient} client
+   * @param {GeoDatabase} geoDatabase
+   */
   constructor(client, geoDatabase) {
     this.#client = client;
     this.geoDatabase = geoDatabase;
   }
 
-  // todo toDate
+  /**
+   * @param {string} fromCityId
+   * @param {string} toCityId
+   * @param {import("script/types/stop.js").DateTime} fromDate
+   * @returns {Promise<Itinerary[]>}
+   *   // todo toDate
+   */
   async plan(fromCityId, toCityId, fromDate) {
     const itineraries = await this.#client.plan(
       fromCityId,
@@ -39,6 +51,11 @@ export class TravelDatabase {
     return result;
   }
 
+  /**
+   * @param {Itinerary} itinerary
+   * @param {import("script/types/stop.js").DateTime} fromDate
+   * @returns {Promise<Connection[][]>}
+   */
   async getAlternatives(itinerary, fromDate) {
     if (!itinerary) return null;
 
@@ -61,6 +78,10 @@ export class TravelDatabase {
     return alternatives;
   }
 
+  /**
+   * @param {string} id
+   * @returns {Connection}
+   */
   getCachedConnection(id) {
     return this.#connectionCache[id];
   }

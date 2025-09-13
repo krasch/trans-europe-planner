@@ -15,6 +15,9 @@ const PATHS = {
   cities: "data/mv/cities.json",
 };
 
+/**
+ * @returns {string | null} The name of the home city
+ */
 function parseURLParams() {
   const params = new URLSearchParams(window.location.search);
   const home = params.get("start");

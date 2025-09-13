@@ -1,21 +1,65 @@
 export class DataError extends Error {
+  /**
+   * @param {string} message
+   */
   constructor(message) {
     super(message);
     this.name = "DataError";
   }
 }
 
+/*
+todo the three below describe the schema of the static dataset we are loading
+- can we make that clearer?
+- can we avoid some of the data transformations?
+ */
+
+/**
+ * @typedef Geo
+ * @type {object}
+ * @property {number} latitude
+ * @property {number} longitude
+ */
+
+/**
+ * @typedef CityData
+ * @type {object}
+ * @property {string} name
+ * @property {Geo} geo
+ * @property {boolean} isDestination
+ */
+
+/**
+ * @typedef StopData
+ * @type {object}
+ * @property {string} name
+ * @property {Geo} geo
+ * @property {string} cityId
+ * @property {string} country
+ * @property {string[]} motisIds
+ * @property {boolean} secondary
+ */
+
 export class GeoDatabase {
+  /** @type {Map<string,CityData>} */
   #cities;
+  /** @type {Map<string,StopData>} */
   #stops;
 
+  /** @type {Map<string,string>} */
   #cityNameToId;
+  /** @type {Map<string,Object<string,any>>} */ /* todo could have nicer type */
   #cityIdToStopIds;
+  /** @type {Map<string,string>} */
   #motisStopIdToStopId;
 
+  /**
+   * @param { Object.<String,CityData>} cities {id: cityData}
+   * @param { Object.<String,StopData>} stops {id: stopData}
+   */
   constructor(cities, stops) {
-    this.#cities = new Map(Object.entries(cities)); // {id: {cityData}}
-    this.#stops = new Map(Object.entries(stops)); // {id: {stopData}}
+    this.#cities = new Map(Object.entries(cities));
+    this.#stops = new Map(Object.entries(stops));
 
     this.#cityNameToId = new Map();
     this.#cityIdToStopIds = new Map();
@@ -64,6 +108,10 @@ export class GeoDatabase {
     return result;
   }
 
+  /**
+   * @param {string} name
+   * @returns {string} id
+   */
   cityNameToId(name) {
     if (!this.#cityNameToId.has(name))
       throw new DataError(`City with name ${name} unknown`);
@@ -71,6 +119,10 @@ export class GeoDatabase {
     return this.#cityNameToId.get(name);
   }
 
+  /**
+   * @param {string} cityId
+   * @returns {string} motisStopId
+   */
   motisStopIdForCityId(cityId) {
     if (!this.#cityIdToStopIds.has(cityId))
       throw new DataError(`City with id ${cityId} unknown`);
@@ -79,6 +131,16 @@ export class GeoDatabase {
     return this.#stops.get(mainStop).motisIds[0]; // todo very implicit
   }
 
+  /**
+   * todo yet another stop object
+   * @typedef StopInfo
+   * @type {object}
+   * @property {string} id
+   * @property {string} name
+   *
+   * @param {string} motisStopId
+   * @returns {StopInfo}
+   */
   stopForMotisStopId(motisStopId) {
     if (!this.#motisStopIdToStopId.has(motisStopId))
       throw new DataError(`Stop with motis stop id ${motisStopId} unknown`);
@@ -87,6 +149,16 @@ export class GeoDatabase {
     return { id: stopId, name: this.#stops.get(stopId).name };
   }
 
+  /**
+   * todo yet another city object
+   * @typedef CityInfo
+   * @type {object}
+   * @property {string} id
+   * @property {string} name
+   *
+   * @param {string} stopId
+   * @returns CityInfo
+   */
   cityForStopId(stopId) {
     if (!this.#stops.has(stopId))
       throw new DataError(`Stop with id ${stopId} unknown`);

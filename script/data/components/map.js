@@ -1,5 +1,11 @@
+import { Itinerary } from "script/types/itinerary.js";
+
 import { getColor, identifiers } from "./_common.js";
 
+/**
+ * @param {string} home
+ * @param {any[]} cities todo type
+ */
 export function prepareInitialDataForMap(home, cities) {
   const preparedCities = { geo: {}, defaults: {} };
   const preparedEdges = { geo: {}, defaults: {} };
@@ -74,6 +80,9 @@ function defaultEdgeData() {
   };
 }
 
+/**
+ * @param {Itinerary} itinerary
+ */
 function itinerarySummary(itinerary) {
   return {
     from: itinerary.from.city.name,
@@ -86,6 +95,10 @@ function itinerarySummary(itinerary) {
   };
 }
 
+/**
+ * @param {Itinerary} activeItinerary
+ * @param {Itinerary[]} otherItineraries
+ */
 export function prepareDataForMap(activeItinerary, otherItineraries) {
   const result = {
     cities: {},

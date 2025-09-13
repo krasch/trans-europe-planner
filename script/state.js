@@ -35,14 +35,14 @@ export class State {
   }
 
   /**
-   * @return {Itinerary | null}
+   * @returns {Itinerary | null}
    */
   get activeItinerary() {
     return this.#activeItinerary;
   }
 
   /**
-   * @return {Itinerary[]}
+   * @returns {Itinerary[]}
    */
   get otherItineraries() {
     return Object.values(this.#otherItineraries);

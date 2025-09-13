@@ -1,6 +1,10 @@
+import { Connection } from "./connection.js";
 import { Stop } from "./stop.js";
 
 export class Itinerary {
+  /**
+   * @param {Connection[]} connections
+   */
   constructor(connections) {
     this.connections = connections;
 

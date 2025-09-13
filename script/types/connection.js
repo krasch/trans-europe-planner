@@ -1,4 +1,14 @@
+import { Stop } from "script/types/stop.js";
+
 export class Connection {
+  /**
+   * @param {string} tripId
+   * @param {string} mode
+   * @param {string} name
+   * @param {Stop} from
+   * @param {Stop} to
+   * @param {Stop[]} intermediateStops
+   */
   constructor(tripId, mode, name, from, to, intermediateStops) {
     this.mode = mode;
     this.name = name;
