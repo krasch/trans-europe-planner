@@ -1,7 +1,5 @@
-// @ts-expect-error TS2307
-import { DateTime } from "external/luxon.js";
-
 import { Connection } from "script/types/connection.js";
+import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
 import { Stop } from "script/types/stop.js";
 

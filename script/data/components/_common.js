@@ -2,6 +2,9 @@ import { Connection } from "script/types/connection.js";
 import { Itinerary } from "script/types/itinerary.js";
 import { Stop } from "script/types/stop.js";
 
+/**
+ * @type {Object.<string,string>}
+ */
 export const ICONS = {
   train: "images/icons/train.svg",
   ferry: "images/icons/ferry.svg",
@@ -49,6 +52,12 @@ export const identifiers = {
   edge: (edge) => toAlphabeticEdgeString(edge.from.city.id, edge.to.city.id), // todo type annotation
   leg: (/** @type {Connection} */ connection) =>
     `${connection.from.city.id}->${connection.to.city.id}`,
-  connection: (/** @type {Connection} */ connection) => connection.id,
+
+  /**
+   * @param {Connection} connection
+   * @returns {string}
+   */
+  connection: (connection) => connection.id,
+
   itinerary: (/** @type {Itinerary} */ itinerary) => itinerary.id,
 };

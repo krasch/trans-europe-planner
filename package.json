@@ -35,7 +35,7 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "external/luxon.js": "<rootDir>/external/luxon@3.5.0/luxon.min.js",
+      "external/(.*)": "<rootDir>/external/$1",
       "script/(.*)": "<rootDir>/script/$1",
       "style/(.*)": "<rootDir>/style/$1",
       "tests/(.*)": "<rootDir>/tests/$1"

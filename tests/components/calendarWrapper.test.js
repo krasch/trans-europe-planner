@@ -179,17 +179,27 @@ test("update view should propagate connection changes to calendar entries", asyn
   const connections = [
     {
       uniqueId: "1",
+      name: "1",
+      icon: "1.jpg",
       color: "purple",
       leg: "leg1",
       startDateTime: DAY1.plus({ days: 0, hours: 9 }),
+      startStation: "S1",
       endDateTime: DAY1.plus({ days: 0, hours: 20 }),
+      endStation: "S2",
+      selected: false,
     },
     {
       uniqueId: "2",
+      name: "2",
+      icon: "2.jpg",
       color: "orange",
       leg: "leg2",
       startDateTime: DAY1.plus({ days: 1, hours: 9 }),
+      startStation: "S1",
       endDateTime: DAY1.plus({ days: 1, hours: 20 }),
+      endStation: "S2",
+      selected: false,
     },
   ];
 

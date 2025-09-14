@@ -1,5 +1,4 @@
-// @ts-expect-error TS2416 - deliberately not configured in tsconfig.json, otherwise lots of type errors
-import { DateTime } from "external/luxon.js";
+import { DateTime } from "script/types/dateTime.js";
 
 const LOCALE = new Intl.NumberFormat().resolvedOptions().locale;
 

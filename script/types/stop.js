@@ -1,25 +1,10 @@
-/**
- * @typedef City
- * @type {object}
- * @property {string} id
- * @property {string} name
- */
-
-/**
- * todo use luxon types package
- * @typedef DateTime
- * @type {object}
- * @property {any} startOf
- * @property {any} diff
- * @property {any} toISO
- * @property {any} toFormat
- */
+import { DateTime } from "./dateTime.js";
 
 export class Stop {
   /**
    * @param {string} stopId
    * @param {string} stopName
-   * @param {City} city
+   * @param {{id: string, name: string}} city
    * @param {DateTime} arrival
    * @param {DateTime} departure
    */

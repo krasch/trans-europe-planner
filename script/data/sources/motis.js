@@ -1,8 +1,6 @@
-// @ts-expect-error TS2416 - deliberately not configured in tsconfig.json, otherwise lots of type errors
-import { DateTime } from "external/luxon.js";
-
 import { GeoDatabase } from "script/data/geoDatabase.js";
 import { Connection } from "script/types/connection.js";
+import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
 import { Stop } from "script/types/stop.js";
 
@@ -94,7 +92,7 @@ export class MotisClient {
   /**
    * @param {String} fromCityId
    * @param {String} toCityId
-   * @param {import("script/types/stop.js").DateTime} startDate
+   * @param {DateTime} startDate
    * @param {GeoDatabase} geoDatabase
    * @returns {Promise<Itinerary[]>}
    */
@@ -124,7 +122,7 @@ export class MotisClient {
   /**
    * @param {String} fromCityId
    * @param {String} toCityId
-   * @param {import("script/types/stop.js").DateTime} startDate
+   * @param {DateTime} startDate
    * @param {GeoDatabase} geoDatabase
    * @returns {Promise<Connection[]>}
    */

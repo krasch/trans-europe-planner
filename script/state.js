@@ -1,9 +1,7 @@
-// todo just need types
-// @ts-expect-error TS2307
-import { DateTime } from "external/luxon.js";
-
 import { Connection } from "script/types/connection.js";
 import { Itinerary } from "script/types/itinerary.js";
+
+import { DateTime } from "./types/dateTime.js";
 
 export class StateError extends Error {
   /**

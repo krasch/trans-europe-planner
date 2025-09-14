@@ -201,6 +201,9 @@ export class MapWrapper {
     });
   }
 
+  /**
+   * @param {{ edges: any; cities: any; itineraries: any; }} data
+   */
   updateView(data) {
     // todo clean this up
     this.#mapping = { edges: {} };
@@ -213,7 +216,7 @@ export class MapWrapper {
       delete data.edges[edgeId].itineraries;
     }
 
-    this.cities.update(data.geoDataForAllCities);
+    this.cities.update(data.cities);
     this.edges.update(data.edges);
     this.#journeys = data.itineraries;
   }

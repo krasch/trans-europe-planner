@@ -1,14 +1,12 @@
 /**
  * @jest-environment jsdom
  */
-// @ts-expect-error TS2307
-import { DateTime } from "external/luxon.js";
-
 import { identifiers } from "script/data/components/_common.js";
 import {
   prepareDataForPerlschnur,
   formatTimedelta,
 } from "script/data/components/perlschnur.js";
+import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
 
 import {

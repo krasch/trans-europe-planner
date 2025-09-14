@@ -3,10 +3,13 @@ import { Itinerary } from "script/types/itinerary.js";
 
 import { ICONS, getColor, identifiers } from "./_common.js";
 
+/**@typedef {import("./_types.js").CalendarEvent} CalendarEvent */
+
 /**
  * @param {Connection} connection
  * @param {string} color
  * @param {boolean} isSelected
+ * @returns {CalendarEvent}
  */
 function dataForConnection(connection, color, isSelected) {
   return {
@@ -26,6 +29,7 @@ function dataForConnection(connection, color, isSelected) {
 /**
  * @param {Itinerary} activeItinerary
  * @param {Connection[][]} alternatives
+ * @returns {CalendarEvent[]}
  */
 export function prepareDataForCalendar(activeItinerary, alternatives) {
   // active itinerary: list of connections

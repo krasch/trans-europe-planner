@@ -1,8 +1,6 @@
-// @ts-expect-error TS2307
-import { DateTime } from "external/luxon.js";
-
 import { GeoDatabase } from "script/data/geoDatabase.js";
 import { MotisClient } from "script/data/sources/motis.js";
+import { DateTime } from "script/types/dateTime.js";
 
 import { DAY1 } from "tests/_helpers/data.js";
 

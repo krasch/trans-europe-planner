@@ -2,6 +2,8 @@ import { Itinerary } from "script/types/itinerary.js";
 
 import { getColor, identifiers } from "./_common.js";
 
+/**@typedef {import("./_types.js").MapItinerarySummary} MapItinerarySummary */
+
 /**
  * @param {string} home
  * @param {any[]} cities todo type
@@ -82,6 +84,7 @@ function defaultEdgeData() {
 
 /**
  * @param {Itinerary} itinerary
+ * @returns {MapItinerarySummary}
  */
 function itinerarySummary(itinerary) {
   return {
@@ -98,6 +101,7 @@ function itinerarySummary(itinerary) {
 /**
  * @param {Itinerary} activeItinerary
  * @param {Itinerary[]} otherItineraries
+ * @returns {{cities: any, edges: any, itineraries: Object.<string,MapItinerarySummary>}}
  */
 export function prepareDataForMap(activeItinerary, otherItineraries) {
   const result = {

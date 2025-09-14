@@ -1,6 +1,7 @@
 import { GeoDatabase } from "script/data/geoDatabase.js";
 import { MotisClient } from "script/data/sources/motis.js";
 import { Connection } from "script/types/connection.js";
+import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
 import { groupBy } from "script/util.js";
 
@@ -22,7 +23,7 @@ export class TravelDatabase {
   /**
    * @param {string} fromCityId
    * @param {string} toCityId
-   * @param {import("script/types/stop.js").DateTime} fromDate
+   * @param {DateTime} fromDate
    * @returns {Promise<Itinerary[]>}
    *   // todo toDate
    */
@@ -53,7 +54,7 @@ export class TravelDatabase {
 
   /**
    * @param {Itinerary} itinerary
-   * @param {import("script/types/stop.js").DateTime} fromDate
+   * @param {DateTime} fromDate
    * @returns {Promise<Connection[][]>}
    */
   async getAlternatives(itinerary, fromDate) {

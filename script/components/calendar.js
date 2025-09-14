@@ -38,6 +38,10 @@ export class CalendarWrapper {
     this.#travelCalendar.setNoHoverGroup(leg);
   }
 
+  /**
+   * @param startDate
+   * @param {import("script/data/components/_types.js").CalendarEvent[]} connections
+   */
   updateView(startDate, connections) {
     // change calendar start date if necessary
     if (this.#travelCalendar.getAttribute("start-date") !== startDate)
