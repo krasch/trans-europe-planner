@@ -1,5 +1,7 @@
 import fs from "fs";
+
 import { TravelCalendar } from "script/customElements/travelCalendar/travelCalendar.js";
+
 import { COLORS } from "./data.js";
 
 customElements.define("travel-calendar", TravelCalendar);
@@ -63,7 +65,7 @@ expect.extend({
     expect(actual).toMatchObject(expected);
 
     // this is only necessary to satisfy the API requirements of jest
-    return { pass: true };
+    return { pass: true, message: () => "" };
   },
 });
 
@@ -104,44 +106,68 @@ export async function dispatchTestEvent(
 
 // utility class to easily access items in the DOM
 // uses getter functions so that we always get the current DOM elements
+// need all those HTMLElement type annotations otherwise it infers that these are "Element"
 class DOMQueryHelper {
+  /**
+   * @returns {HTMLElement}
+   */
   get map() {
     return document.querySelector("#map");
   }
 
+  /**
+   * @returns {HTMLElement}
+   */
   get datePicker() {
     return document.querySelector("#config");
   }
 
+  /**
+   * @returns {TravelCalendar}
+   */
   get calendar() {
     return document.querySelector("travel-calendar");
   }
 
-  // these are the external calendar entries
+  /**
+   * @returns {HTMLElement[]} external calendar entries
+   */
   get calendarEntries() {
     return Array.from(this.calendar.querySelectorAll(".calendar-entry"));
   }
 
-  // these are the internal calendar entry parts in the shadow dome
-  // each external entry can be mapped to multiple internal entry parts
+  /**
+   * @returns {HTMLElement[]} internal calendar entry parts in shadow dom,
+   *   each external entry can be mapped to multiple internal entry parts
+   */
   get calendarEntryParts() {
     return Array.from(this.calendar.shadowRoot.querySelectorAll(".entry-part"));
   }
 
-  // these are the internal calendar labels in the grid
+  /**
+   * @returns {HTMLElement[]} internal calendar labels in the grid
+   */
   get calendarDateLabels() {
     return Array.from(this.calendar.shadowRoot.querySelectorAll(".date-label"));
   }
 
-  // the summary element which contains the perlschnur
+  /**
+   * @returns {HTMLElement}
+   */
   get summary() {
     return document.querySelector("#summary");
   }
 
+  /**
+   * @returns {HTMLElement[]}
+   */
   get perlschnurConnections() {
     return Array.from(this.summary.querySelectorAll(".perlschnur-connection"));
   }
 
+  /**
+   * @returns {HTMLElement[]}
+   */
   get perlschnurTransfers() {
     return Array.from(this.summary.querySelectorAll(".perlschnur-transfer"));
   }

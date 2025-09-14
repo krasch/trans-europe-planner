@@ -1,25 +1,26 @@
 /**
  * @jest-environment jsdom
  */
-
 import { jest } from "@jest/globals";
 
-import("@atlaskit/pragmatic-drag-and-drop-unit-testing/drag-event-polyfill");
-
 import { CalendarWrapper } from "script/components/calendar.js";
+import { prepareDataForCalendar } from "script/data/components/calendar.js";
+import { Itinerary } from "script/types/itinerary.js";
+
+import {
+  connectionFromShorthand as _c,
+  getTestColor as _color,
+  DAY1,
+} from "tests/_helpers/data.js";
 import {
   dispatchTestEvent,
   initTestDOM,
   TEST_DOM,
   timeout,
 } from "tests/_helpers/domUtils.js";
-import {
-  connectionFromShorthand as _c,
-  getTestColor as _color,
-  DAY1,
-} from "tests/_helpers/data.js";
-import { prepareDataForCalendar } from "../../script/data/components/calendar.js";
-import { Itinerary } from "../../script/types/itinerary.js";
+
+// @ts-expect-error TS2306
+import("@atlaskit/pragmatic-drag-and-drop-unit-testing/drag-event-polyfill");
 
 beforeEach(async () => {
   initTestDOM();
@@ -240,18 +241,18 @@ test("calendar wrapper should propagate callbacks/commands from/to calendar", as
   // run a bunch of callbacks on the calendar entries
   // -> these should be propagated to calendar wrapper and our callback mocks should be called
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[0], "mouseover");
-  expect(hoverOnCallback).toBeCalledWith("S1->S2");
+  expect(hoverOnCallback).toHaveBeenCalledWith("S1->S2");
 
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[1], "mouseout");
-  expect(hoverOffCallback).toBeCalledWith("S1->S2");
+  expect(hoverOffCallback).toHaveBeenCalledWith("S1->S2");
 
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[3], "mouseout");
-  expect(hoverOffCallback).toBeCalledWith("S2->S3");
+  expect(hoverOffCallback).toHaveBeenCalledWith("S2->S3");
 
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[0], "dragstart");
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[1], "dragenter");
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[1], "drop");
-  expect(dropCallback).toBeCalledWith(c1_alt1.id);
+  expect(dropCallback).toHaveBeenCalledWith(c1_alt1.id);
 
   // when sending a command to calendar wrapper it should be propagated to the calendar
   calendar.setHoverLeg("S1->S2");

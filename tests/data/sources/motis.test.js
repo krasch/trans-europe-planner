@@ -1,3 +1,4 @@
+// @ts-expect-error TS2307
 import { DateTime } from "external/luxon.js";
 
 import { GeoDatabase } from "script/data/geoDatabase.js";
@@ -123,6 +124,7 @@ const MOTIS_RESPONSE = {
 beforeEach(async () => {
   // mock fetch to always return the fake motis response defined above
   global.fetch = async () =>
+    // @ts-expect-error 2322
     Promise.resolve({ ok: true, json: () => Promise.resolve(MOTIS_RESPONSE) });
 });
 

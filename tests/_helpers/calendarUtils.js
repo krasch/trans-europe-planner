@@ -7,6 +7,8 @@ export const COLUMN_FIRST_DAY = 2; // 1 for header, 1 because indexes start at 1
 export async function addEntryToCalendar(connectionShorthand, kwargs = {}) {
   const connection = _c(connectionShorthand);
   const template = document.getElementById("template-calendar-connection");
+
+  // @ts-expect-error TS2339
   const entry = template.content.firstElementChild.cloneNode(true);
 
   entry.dataset.color = kwargs.color ?? "test-color";

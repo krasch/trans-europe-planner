@@ -1,12 +1,12 @@
 /**
  * @jest-environment jsdom
  */
-
 import { jest } from "@jest/globals";
-import { main } from "script/main.js";
 
 import { GeoDatabase } from "script/data/geoDatabase.js";
+import { main } from "script/main.js";
 import { Itinerary } from "script/types/itinerary.js";
+
 import { DAY1, connectionFromShorthand as _c } from "tests/_helpers/data.js";
 
 const testCities = {
@@ -77,6 +77,7 @@ function initMocks() {
 
 test("main should initialize map and update all components with empty data", async function () {
   const [components, travelDatabase, callbacks] = initMocks();
+  // @ts-expect-error TS2345
   await main("C1", components, travelDatabase);
 
   // initial map data
@@ -132,8 +133,9 @@ test("main should initialize map and update all components with empty data", asy
 test("when user selects a destination, database should be queried for routes and components updated", async function () {
   // set everything up
   const [components, travelDatabase, callbacks] = initMocks();
+  // @ts-expect-error TS2345
   await main("C1", components, travelDatabase);
-  jest.clearAllMocks();
+  jest.clearAllMocks(); // reset after first call to updateComponents
 
   // there is just one route, directly from S1->S3
   travelDatabase.plan.mockReturnValueOnce([
@@ -177,6 +179,7 @@ test("when user selects a destination, database should be queried for routes and
 test("when user moves things around in the calendar, components should be updated", async function () {
   // set everything up
   const [components, travelDatabase, callbacks] = initMocks();
+  // @ts-expect-error TS2345
   await main("C1", components, travelDatabase);
 
   const c1 = _c("T1: S1@D1T10->S3@D1T11");
@@ -221,6 +224,7 @@ test("when user moves things around in the calendar, components should be update
 test("when user picks a different journey as active, components should be updated", async function () {
   // set everything up
   const [components, travelDatabase, callbacks] = initMocks();
+  // @ts-expect-error TS2345
   await main("C1", components, travelDatabase);
 
   const itineraries = {

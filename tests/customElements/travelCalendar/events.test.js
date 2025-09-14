@@ -1,19 +1,19 @@
 /**
  * @jest-environment jsdom
  */
-
 import { jest } from "@jest/globals";
 
-import("@atlaskit/pragmatic-drag-and-drop-unit-testing/drag-event-polyfill");
-
+import { addEntryToCalendar } from "tests/_helpers/calendarUtils.js";
+import { DAY1 } from "tests/_helpers/data.js";
 import {
   dispatchTestEvent,
   initTestDOM,
   TEST_DOM,
   timeout,
 } from "tests/_helpers/domUtils.js";
-import { DAY1 } from "tests/_helpers/data.js";
-import { addEntryToCalendar } from "tests/_helpers/calendarUtils.js";
+
+// @ts-expect-error TS2306
+import("@atlaskit/pragmatic-drag-and-drop-unit-testing/drag-event-polyfill");
 
 beforeEach(async () => {
   initTestDOM();
@@ -89,11 +89,11 @@ test("hover on/off callback should be called when hovering over entry", async fu
 
   // send mouseover on first part of entry
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[0], "mouseover");
-  expect(hoverOnCallback).toBeCalledWith(entry);
+  expect(hoverOnCallback).toHaveBeenCalledWith(entry);
 
   // send mouseout on third part of entry
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[2], "mouseout");
-  expect(hoverOffCallback).toBeCalledWith(entry);
+  expect(hoverOffCallback).toHaveBeenCalledWith(entry);
 });
 
 test("drag and drop of multi-part entries", async function () {
@@ -190,7 +190,7 @@ test("drop callback should be called after drop occurs", async function () {
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[0], "dragstart");
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[1], "dragenter");
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[2], "drop");
-  expect(dropCallback).toBeCalledWith(entry);
+  expect(dropCallback).toHaveBeenCalledWith(entry);
 });
 
 test("can set group hover state from outside calendar", async function () {

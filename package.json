@@ -7,16 +7,16 @@
   "scripts": {
     "start": "serve -p 8000",
     "test": "node --experimental-vm-modules node_modules/.bin/jest tests",
-    "check-pretty": "node node_modules/.bin/prettier script/ style/planner/components/map/layers.js --check",
-    "make-pretty": "node node_modules/.bin/prettier script/ style/planner/components/map/layers.js --write",
+    "check-pretty": "npx prettier script/ style/planner/components/map/layers.js --check",
+    "make-pretty": "npx prettier script/ style/planner/components/map/layers.js --write",
     "check-types": "npx tsc"
   },
   "devDependencies": {
     "@atlaskit/pragmatic-drag-and-drop-unit-testing": "^1.1.0",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-    "@types/jest": "^30.0.0",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
+    "@types/jest": "^29.0.0",
+    "jest": "^29.0.0",
+    "jest-environment-jsdom": "^29.0.0",
     "prettier": "3.3.3",
     "serve": "^14.2.4",
     "typescript": "^5.9.2"

@@ -1,14 +1,13 @@
 /**
  * @jest-environment jsdom
  */
-
-import { initTestDOM, TEST_DOM, timeout } from "tests/_helpers/domUtils.js";
-import { DAY1 } from "tests/_helpers/data.js";
 import {
   COLUMN_FIRST_DAY,
   ROW_MIDNIGHT,
   addEntryToCalendar,
 } from "tests/_helpers/calendarUtils.js";
+import { DAY1 } from "tests/_helpers/data.js";
+import { initTestDOM, TEST_DOM, timeout } from "tests/_helpers/domUtils.js";
 
 beforeEach(async () => {
   initTestDOM();
@@ -169,7 +168,9 @@ test("delete entry that spans three columns/days", async function () {
 
 test("entry locations should be updated when calendar start date changes", async function () {
   const entryColumns = () =>
-    TEST_DOM.calendarEntryParts.map((e) => e.style._values["grid-column"]);
+    TEST_DOM.calendarEntryParts.map((e) =>
+      Number(e.style.getPropertyValue("grid-column")),
+    );
 
   await addEntryToCalendar("T1: S1@D2T16->S2@D3T02");
   await addEntryToCalendar("T2: S2@D3T07->S3@D3T08");
@@ -247,7 +248,7 @@ test("entry parts active should be updated when external active status changes",
 
 test("entry parts color should be updated when external color changes", async function () {
   const color = () =>
-    TEST_DOM.calendarEntryParts.map((e) => e.style._values["--color"]);
+    TEST_DOM.calendarEntryParts.map((e) => e.style.getPropertyValue("--color"));
 
   const entry = await addEntryToCalendar("T1: S1@D2T14->S2@D3T15");
 

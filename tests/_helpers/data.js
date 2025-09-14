@@ -1,8 +1,9 @@
+// @ts-expect-error TS2307
 import { DateTime } from "external/luxon.js";
 
-import { Stop } from "script/types/stop.js";
 import { Connection } from "script/types/connection.js";
 import { Itinerary } from "script/types/itinerary.js";
+import { Stop } from "script/types/stop.js";
 
 export const DAY1 = DateTime.fromISO("2024-10-15");
 

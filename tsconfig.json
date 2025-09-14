@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es2015",
+    "target": "es2022",
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "allowJs": true,
     "checkJs": true,
     "noEmit": true,
     "lib": [
-      "es2015",
+      "es2022",
       "DOM"
     ],
     "paths": {
@@ -18,6 +18,8 @@
   },
   "include": [
     "script/**/*.js",
+    "tests/**/*.js",
+    "tests/_helpers/domUtilsTypefix.ts"
   ],
   "exclude": [
     "node_modules"

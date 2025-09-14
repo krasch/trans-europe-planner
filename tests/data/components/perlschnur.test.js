@@ -1,22 +1,22 @@
 /**
  * @jest-environment jsdom
  */
-
+// @ts-expect-error TS2307
 import { DateTime } from "external/luxon.js";
 
+import { identifiers } from "script/data/components/_common.js";
 import {
   prepareDataForPerlschnur,
   formatTimedelta,
 } from "script/data/components/perlschnur.js";
 import { Itinerary } from "script/types/itinerary.js";
 
-import { initTestDOM } from "tests/_helpers/domUtils.js";
 import {
   getTestColor as _color,
   connectionFromShorthand as _c,
   DAY1,
 } from "tests/_helpers/data.js";
-import { identifiers } from "script/data/components/_common.js";
+import { initTestDOM } from "tests/_helpers/domUtils.js";
 
 beforeEach(async () => {
   initTestDOM(); // needed to get connection colors from css
