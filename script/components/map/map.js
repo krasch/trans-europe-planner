@@ -3,7 +3,7 @@ import { mapLayers } from "style/planner/components/map/layers.js";
 import { Cities } from "./cities.js";
 import { Edges } from "./edges.js";
 
-function cityToGeojson(data) {
+function _cityToGeojson(data) {
   const [id, city] = data;
 
   return {
@@ -20,7 +20,7 @@ function cityToGeojson(data) {
   };
 }
 
-function edgeToGeojson(data) {
+function _edgeToGeojson(data) {
   const [id, edge] = data;
 
   return {
@@ -34,7 +34,7 @@ function edgeToGeojson(data) {
   };
 }
 
-function asGeojsonFeatureCollection(features) {
+function _asGeojsonFeatureCollection(features) {
   return {
     type: "FeatureCollection",
     features: features,
@@ -141,21 +141,28 @@ export class MapWrapper {
     this.#callbacks[eventName] = callback;
   }
 
+  /**
+   * @typedef {import("script/data/components/map.js").InitialCityData} InitialCityData
+   * @typedef {import("script/data/components/map.js").InitialEdgeData} InitialEdgeData
+   *
+   * @param {[InitialCityData, InitialEdgeData]} data
+   * @param {boolean} animation
+   */
   initMapData(data, animation = false) {
     const [cities, edges] = data;
 
     // add cities and legs sources
     this.#map.addSource("cities", {
       type: "geojson",
-      data: asGeojsonFeatureCollection(
-        Object.entries(cities.geo).map(cityToGeojson),
+      data: _asGeojsonFeatureCollection(
+        Object.entries(cities.geo).map(_cityToGeojson),
       ),
       promoteId: "id", // otherwise can not use non-numeric ids
     });
     this.#map.addSource("edges", {
       type: "geojson",
-      data: asGeojsonFeatureCollection(
-        Object.entries(edges.geo).map(edgeToGeojson),
+      data: _asGeojsonFeatureCollection(
+        Object.entries(edges.geo).map(_edgeToGeojson),
       ),
       promoteId: "id", // otherwise can not use non-numeric ids
     });
@@ -202,7 +209,14 @@ export class MapWrapper {
   }
 
   /**
-   * @param {{ edges: any; cities: any; itineraries: any; }} data
+   * @typedef {import("script/data/components/map.js").CityUpdate} CityUpdate
+   * @typedef {import("script/data/components/map.js").EdgeUpdate} EdgeUpdate
+   * @typedef {import("script/data/components/map.js").ItinerarySummary} ItinerarySummary
+   *
+   * @param {object} data
+   * @param {Object<string,CityUpdate>} data.cities
+   * @param {Object<string,EdgeUpdate>} data.edges
+   * @param {Object<string, ItinerarySummary>} data.itineraries
    */
   updateView(data) {
     // todo clean this up

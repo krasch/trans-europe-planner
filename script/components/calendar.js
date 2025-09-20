@@ -1,3 +1,4 @@
+import { DateTime } from "script/types/dateTime.js";
 import { createElementFromTemplate } from "script/util.js";
 
 export class CalendarWrapper {
@@ -39,8 +40,10 @@ export class CalendarWrapper {
   }
 
   /**
-   * @param startDate
-   * @param {import("script/data/components/_types.js").CalendarEvent[]} connections
+   * @typedef {import("script/data/components/calendar.js").CalendarEvent} CalendarEvent
+   *
+   * @param {DateTime} startDate
+   * @param {CalendarEvent[]} connections
    */
   updateView(startDate, connections) {
     // change calendar start date if necessary
@@ -50,6 +53,7 @@ export class CalendarWrapper {
     // sort such that earliest will be first child etc
     // otherwise they might overlay each other and drag&drop won't work
     // warning: this only works because we are never adding new connections to existing legs
+    // @ts-expect-error 2362 - minus not defined for our DateTime type
     connections.sort((c1, c2) => c1.startDateTime - c2.startDateTime);
 
     // remove entries that are currently in calendar but no longer necessary

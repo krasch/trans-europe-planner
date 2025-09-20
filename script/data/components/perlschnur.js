@@ -1,9 +1,12 @@
+import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
 
 import { ICONS, getColor, identifiers } from "./_common.js";
 
-// todo localization
-// todo error if order wrong?
+/**
+ * @param {DateTime} earlierTimestamp
+ * @param {DateTime} laterTimestamp
+ */
 export function formatTimedelta(earlierTimestamp, laterTimestamp) {
   const units = ["hours", "minutes"];
   const diff = laterTimestamp.diff(earlierTimestamp, units).toObject();
@@ -19,7 +22,14 @@ export function formatTimedelta(earlierTimestamp, laterTimestamp) {
 }
 
 /**
+ * @typedef {Object} ItinerarySummary
+ * @property {string} from
+ * @property {string} to
+ * @property {string} totalTime
+ * @property {string} via
+ *
  * @param {Itinerary} itinerary
+ * @returns {ItinerarySummary}
  */
 function itinerarySummary(itinerary) {
   const from = itinerary.connections[0].from;
@@ -35,13 +45,27 @@ function itinerarySummary(itinerary) {
 }
 
 /**
+ * @typedef {Object} PerlschnurConnection
+ * @property {string} id
+ * @property {string} color
+ * @property {string} name
+ * @property {string} icon
+ * @property {string} travelTime
+ * @property {{station: string, time: string, date: string}[]} stops
+ *
+ * @typedef {Object} PerlschnurTransfer
+ * @property {string} time
+ *
  * @param {Itinerary} activeItinerary
+ * @returns {{summary: ItinerarySummary | {},
+ *            connections: PerlschnurConnection[],
+ *            transfers: PerlschnurTransfer[]}}
  */
 export function prepareDataForPerlschnur(activeItinerary) {
   const result = {
     summary: {},
-    transfers: [],
     connections: [],
+    transfers: [], // interleaved transfers and connections
   };
 
   if (!activeItinerary) return result;

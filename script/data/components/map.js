@@ -2,11 +2,24 @@ import { Itinerary } from "script/types/itinerary.js";
 
 import { getColor, identifiers } from "./_common.js";
 
-/**@typedef {import("./_types.js").MapItinerarySummary} MapItinerarySummary */
-
 /**
+ * @typedef ExternalCityData city metadata supplied to this function
+ * @property {string} id
+ * @property {string} name
+ * @property {number[]} lngLat
+ * @property {boolean} [isDestination]
+ *
+ * @typedef {Object} InitialCityData city data returned by this function
+ * @property {Object.<string, {name: string, lngLat: number[]}>} geo
+ * @property {Object.<string, {rank: number, isHome: boolean, isDestination: boolean, isVisible: boolean}>} defaults
+ *
+ * @typedef {Object} InitialEdgeData edge data returned by this function
+ * @property {Object.<string, {name: string, lngLat: number[]}>} geo
+ * @property {Object.<string, {isVisible: boolean}>} defaults
+ *
  * @param {string} home
- * @param {any[]} cities todo type
+ * @param {ExternalCityData[]} cities
+ * @returns {[InitialCityData, InitialEdgeData]}
  */
 export function prepareInitialDataForMap(home, cities) {
   const preparedCities = { geo: {}, defaults: {} };
@@ -57,6 +70,15 @@ export function prepareInitialDataForMap(home, cities) {
   return [preparedCities, preparedEdges];
 }
 
+/**
+ * @typedef {Object} CityUpdate
+ * @property {boolean} isVisible
+ * @property {boolean} isStop
+ * @property {boolean} isTransfer
+ * @property {string} circleColor
+ *
+ * @returns CityUpdate
+ */
 function defaultCityData() {
   return {
     // todo why do we need both isVisible and isStop? why not isActive?
@@ -68,6 +90,18 @@ function defaultCityData() {
   };
 }
 
+/**
+ * @typedef {Object} EdgeUpdate
+ * @property {boolean} isVisible
+ * @property {string[]} legs
+ * @property {string[]} itineraries
+ * @property {boolean} isActive
+ * @property {string} color
+ * @property {string | null} activeLeg
+ * @property {string | null} activeItinerary
+ *
+ * @returns {EdgeUpdate}
+ */
 function defaultEdgeData() {
   return {
     isVisible: true,
@@ -83,8 +117,15 @@ function defaultEdgeData() {
 }
 
 /**
+ * @typedef {Object} ItinerarySummary
+ * @property {string} from
+ * @property {string} to
+ * @property {string[]} via
+ * @property {number} numTransfer
+ * @property {string} travelTime
+ *
  * @param {Itinerary} itinerary
- * @returns {MapItinerarySummary}
+ * @returns {ItinerarySummary}
  */
 function itinerarySummary(itinerary) {
   return {
@@ -99,9 +140,12 @@ function itinerarySummary(itinerary) {
 }
 
 /**
+ *
  * @param {Itinerary} activeItinerary
  * @param {Itinerary[]} otherItineraries
- * @returns {{cities: any, edges: any, itineraries: Object.<string,MapItinerarySummary>}}
+ * @returns {{cities: Object<string,CityUpdate>,
+ *            edges: Object<string,EdgeUpdate>,
+ *            itineraries: Object.<string, ItinerarySummary>}}
  */
 export function prepareDataForMap(activeItinerary, otherItineraries) {
   const result = {

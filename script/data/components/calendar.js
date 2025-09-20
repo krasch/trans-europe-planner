@@ -1,11 +1,22 @@
 import { Connection } from "script/types/connection.js";
+import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
 
 import { ICONS, getColor, identifiers } from "./_common.js";
 
-/**@typedef {import("./_types.js").CalendarEvent} CalendarEvent */
-
 /**
+ * @typedef {Object} CalendarEvent
+ * @property {string} uniqueId
+ * @property {string} leg
+ * @property {string} name
+ * @property {string} icon
+ * @property {string} startStation
+ * @property {DateTime} startDateTime
+ * @property {string} endStation
+ * @property {DateTime} endDateTime
+ * @property {string} color
+ * @property {boolean} selected
+ *
  * @param {Connection} connection
  * @param {string} color
  * @param {boolean} isSelected

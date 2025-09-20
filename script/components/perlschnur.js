@@ -20,6 +20,16 @@ export class Perlschnur {
     });
   }
 
+  /**
+   * @typedef {import("script/data/components/perlschnur.js").ItinerarySummary} ItinerarySummary
+   * @typedef {import("script/data/components/perlschnur.js").PerlschnurConnection} PerlschnurConnection
+   * @typedef {import("script/data/components/perlschnur.js").PerlschnurTransfer} PerlschnurTransfer
+   *
+   * @param {object} data
+   * @param {ItinerarySummary} data.summary
+   * @param {PerlschnurConnection[]} data.connections
+   * @param {PerlschnurTransfer[]} data.transfers
+   */
   updateView(data) {
     updateElement(this.#container, {
       ".total-time": { innerText: data.summary.totalTime },
