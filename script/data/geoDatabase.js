@@ -75,7 +75,9 @@ export class GeoDatabase {
         throw new DataError(`Stop ${stopId} references unknown city`);
 
       this.#cityIdToStopIds.get(stop.cityId).stopIds.push(stopId);
-      stop.motisIds.forEach((m) => this.#motisStopIdToStopId.set(m, stopId));
+
+      if (stop.motisIds)
+        stop.motisIds.forEach((m) => this.#motisStopIdToStopId.set(m, stopId));
     });
 
     // set main stop per city
