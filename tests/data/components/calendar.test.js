@@ -1,15 +1,15 @@
 /**
  * @jest-environment jsdom
  */
-
 import { prepareDataForCalendar } from "script/data/components/calendar.js";
-import { initTestDOM } from "tests/_helpers/domUtils.js";
+import { Itinerary } from "script/types/itinerary.js";
+
 import {
   getTestColor as _color,
   connectionFromShorthand as _c,
   timestampFromShorthand,
 } from "tests/_helpers/data.js";
-import { Itinerary } from "script/types/itinerary.js";
+import { initTestDOM } from "tests/_helpers/domUtils.js";
 
 beforeEach(async () => {
   initTestDOM(); // needed to get connection colors from css
@@ -31,7 +31,7 @@ test("prepareDataForCalenderOneConnectionNoAlternatives", function () {
     {
       uniqueId: c1.id,
       leg: "S1->S3",
-      name: "T1",
+      name: "ICE T1",
       icon: expect.stringMatching("train.svg"),
       startStation: "S1",
       startDateTime: timestampFromShorthand("D1T10"),
@@ -58,7 +58,7 @@ test("prepareDataForCalenderOneConnectionWithAlternatives", function () {
     {
       uniqueId: c1.id,
       leg: "S1->S3",
-      name: "T1",
+      name: "ICE T1",
       icon: expect.stringMatching("train.svg"),
       startStation: "S1",
       startDateTime: timestampFromShorthand("D1T10"),
@@ -70,7 +70,7 @@ test("prepareDataForCalenderOneConnectionWithAlternatives", function () {
     {
       uniqueId: c1_alt1.id,
       leg: "S1->S3",
-      name: "T2",
+      name: "ICE T2",
       icon: expect.stringMatching("train.svg"),
       startStation: "S1",
       startDateTime: timestampFromShorthand("D2T10"),
@@ -82,7 +82,7 @@ test("prepareDataForCalenderOneConnectionWithAlternatives", function () {
     {
       uniqueId: c1_alt2.id,
       leg: "S1->S3",
-      name: "T3",
+      name: "ICE T3",
       icon: expect.stringMatching("train.svg"),
       startStation: "S1",
       startDateTime: timestampFromShorthand("D3T10"),
@@ -112,7 +112,7 @@ test("prepareDataForCalenderMultipleConnectionsWithAlternatives", function () {
     {
       uniqueId: c1.id,
       leg: "S1->S3",
-      name: "T1",
+      name: "ICE T1",
       icon: expect.stringMatching("train.svg"),
       startStation: "S1",
       startDateTime: timestampFromShorthand("D1T10"),
@@ -124,7 +124,7 @@ test("prepareDataForCalenderMultipleConnectionsWithAlternatives", function () {
     {
       uniqueId: c1_alt1.id,
       leg: "S1->S3",
-      name: "T4",
+      name: "ICE T4",
       icon: expect.stringMatching("train.svg"),
       startStation: "S1",
       startDateTime: timestampFromShorthand("D2T10"),
@@ -136,7 +136,7 @@ test("prepareDataForCalenderMultipleConnectionsWithAlternatives", function () {
     {
       uniqueId: c1_alt2.id,
       leg: "S1->S3",
-      name: "T5",
+      name: "ICE T5",
       icon: expect.stringMatching("train.svg"),
       startStation: "S1",
       startDateTime: timestampFromShorthand("D3T10"),
@@ -148,7 +148,7 @@ test("prepareDataForCalenderMultipleConnectionsWithAlternatives", function () {
     {
       uniqueId: c2.id,
       leg: "S3->S4",
-      name: "T2",
+      name: "ICE T2",
       icon: expect.stringMatching("train.svg"),
       startStation: "S3",
       startDateTime: timestampFromShorthand("D1T12"),
@@ -160,7 +160,7 @@ test("prepareDataForCalenderMultipleConnectionsWithAlternatives", function () {
     {
       uniqueId: c3.id,
       leg: "S4->S5",
-      name: "T3",
+      name: "ICE T3",
       icon: expect.stringMatching("train.svg"),
       startStation: "S4",
       startDateTime: timestampFromShorthand("D1T14"),
@@ -172,7 +172,7 @@ test("prepareDataForCalenderMultipleConnectionsWithAlternatives", function () {
     {
       uniqueId: c3_alt1.id,
       leg: "S4->S5",
-      name: "T6",
+      name: "ICE T6",
       icon: expect.stringMatching("train.svg"),
       startStation: "S4",
       startDateTime: timestampFromShorthand("D3T14"),

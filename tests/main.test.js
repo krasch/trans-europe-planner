@@ -157,8 +157,8 @@ test("when user selects a destination, database should be queried for routes and
 
   // calendar was updated correctly
   expect(components.calendar.updateView).toHaveBeenCalledWith(DAY1, [
-    expect.objectContaining({ name: "T1", selected: true }),
-    expect.objectContaining({ name: "T2", selected: false }),
+    expect.objectContaining({ name: "ICE T1", selected: true }),
+    expect.objectContaining({ name: "ICE T2", selected: false }),
   ]);
 
   // map was updated correctly
@@ -172,7 +172,7 @@ test("when user selects a destination, database should be queried for routes and
   expect(components.perlschnur.updateView).toHaveBeenCalledWith({
     summary: expect.objectContaining({ from: "S1", to: "S3" }),
     transfers: [],
-    connections: [expect.objectContaining({ name: "T1" })],
+    connections: [expect.objectContaining({ name: "ICE T1" })],
   });
 });
 
@@ -202,8 +202,8 @@ test("when user moves things around in the calendar, components should be update
   // calendar now shows T2 as active
   expect(components.calendar.updateView).toHaveBeenCalledWith(DAY1, [
     // todo they are coming in the wrong order
-    expect.objectContaining({ name: "T2", selected: true }),
-    expect.objectContaining({ name: "T1", selected: false }),
+    expect.objectContaining({ name: "ICE T2", selected: true }),
+    expect.objectContaining({ name: "ICE T1", selected: false }),
   ]);
 
   // map data is unchanged
@@ -217,7 +217,7 @@ test("when user moves things around in the calendar, components should be update
   expect(components.perlschnur.updateView).toHaveBeenCalledWith({
     summary: expect.objectContaining({ from: "S1", to: "S3" }),
     transfers: [],
-    connections: [expect.objectContaining({ name: "T2" })],
+    connections: [expect.objectContaining({ name: "ICE T2" })],
   });
 });
 
@@ -262,8 +262,8 @@ test("when user picks a different journey as active, components should be update
 
   // calendar now shows connections for second itinerary
   expect(components.calendar.updateView).toHaveBeenCalledWith(DAY1, [
-    expect.objectContaining({ name: "T2", selected: true }),
-    expect.objectContaining({ name: "T3", selected: true }),
+    expect.objectContaining({ name: "ICE T2", selected: true }),
+    expect.objectContaining({ name: "ICE T3", selected: true }),
   ]);
 
   // map still shows both itineraries, but the edges for the second one are active now
@@ -289,8 +289,8 @@ test("when user picks a different journey as active, components should be update
     summary: expect.objectContaining({ from: "S1", to: "S3" }),
     transfers: [expect.objectContaining({ time: "2h" })],
     connections: [
-      expect.objectContaining({ name: "T2" }),
-      expect.objectContaining({ name: "T3" }),
+      expect.objectContaining({ name: "ICE T2" }),
+      expect.objectContaining({ name: "ICE T3" }),
     ],
   });
 });

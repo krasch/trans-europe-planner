@@ -66,7 +66,7 @@ test("update view should fill in template correctly", async function () {
     },
     selectors: {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
-      ".connection-number": { innerHTML: "T1" },
+      ".connection-number": { innerHTML: "ICE T1" },
       ".start .time": { innerHTML: "10:00" },
       ".start .station": { innerHTML: "S1" },
       ".destination .time": { innerHTML: "11:00" },
@@ -83,7 +83,7 @@ test("update view should fill in template correctly", async function () {
     },
     selectors: {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
-      ".connection-number": { innerHTML: "T2" },
+      ".connection-number": { innerHTML: "ICE T2" },
       ".start .time": { innerHTML: "10:00" },
       ".start .station": { innerHTML: "S1" },
       ".destination .time": { innerHTML: "11:00" },
@@ -100,7 +100,7 @@ test("update view should fill in template correctly", async function () {
     },
     selectors: {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
-      ".connection-number": { innerHTML: "T3" },
+      ".connection-number": { innerHTML: "ICE T3" },
       ".start .time": { innerHTML: "10:00" },
       ".start .station": { innerHTML: "S1" },
       ".destination .time": { innerHTML: "11:00" },
@@ -117,7 +117,7 @@ test("update view should fill in template correctly", async function () {
     },
     selectors: {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
-      ".connection-number": { innerHTML: "T4" },
+      ".connection-number": { innerHTML: "ICE T4" },
       ".start .time": { innerHTML: "14:00" },
       ".start .station": { innerHTML: "S2" },
       ".destination .time": { innerHTML: "15:00" },
@@ -138,7 +138,12 @@ test("update view should sort connections by start datetime", async function () 
   const calendar = new CalendarWrapper(TEST_DOM.calendar);
   await updateCalendar(calendar, active, alternatives);
 
-  expect(connectionNumbers()).toMatchObject(["T2", "T3", "T1", "T4"]);
+  expect(connectionNumbers()).toMatchObject([
+    "ICE T2",
+    "ICE T3",
+    "ICE T1",
+    "ICE T4",
+  ]);
 });
 
 test("update view should add/delete connections as necessary", async function () {
@@ -154,15 +159,25 @@ test("update view should add/delete connections as necessary", async function ()
 
   // all connections currently relevant
   await updateCalendar(calendar, active, alternatives);
-  expect(connectionNumbers()).toMatchObject(["T1", "T2", "T3", "T4"]);
+  expect(connectionNumbers()).toMatchObject([
+    "ICE T1",
+    "ICE T2",
+    "ICE T3",
+    "ICE T4",
+  ]);
 
   // they are still relevant
   await updateCalendar(calendar, active, alternatives);
-  expect(connectionNumbers()).toMatchObject(["T1", "T2", "T3", "T4"]);
+  expect(connectionNumbers()).toMatchObject([
+    "ICE T1",
+    "ICE T2",
+    "ICE T3",
+    "ICE T4",
+  ]);
 
   // removing the alternatives
   await updateCalendar(calendar, active, [[], []]);
-  expect(connectionNumbers()).toMatchObject(["T1", "T4"]);
+  expect(connectionNumbers()).toMatchObject(["ICE T1", "ICE T4"]);
 
   // now alternatives are back
   // todo yes indeed that results in a bad time order of connections
@@ -171,7 +186,12 @@ test("update view should add/delete connections as necessary", async function ()
   // which means that this will happen to all the entries which means bad performance
   // todo but they need to be in right time order for drag and drop to work
   await updateCalendar(calendar, active, alternatives);
-  expect(connectionNumbers()).toMatchObject(["T1", "T4", "T2", "T3"]);
+  expect(connectionNumbers()).toMatchObject([
+    "ICE T1",
+    "ICE T4",
+    "ICE T2",
+    "ICE T3",
+  ]);
 });
 
 test("update view should propagate connection changes to calendar entries", async function () {

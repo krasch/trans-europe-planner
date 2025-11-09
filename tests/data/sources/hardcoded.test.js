@@ -71,7 +71,7 @@ test("Init connection", function () {
   const data = {
     id: "T1",
     type: "REGIONAL_RAIL",
-    name: "T1",
+    name: "ICE T1",
     stops: [
       {
         stopId: "S1",

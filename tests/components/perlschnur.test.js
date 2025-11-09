@@ -1,15 +1,15 @@
 /**
  * @jest-environment jsdom
  */
-
+import { Perlschnur } from "script/components/perlschnur.js";
 import { prepareDataForPerlschnur } from "script/data/components/perlschnur.js";
 import { Itinerary } from "script/types/itinerary.js";
-import { initTestDOM, TEST_DOM, timeout } from "tests/_helpers/domUtils.js";
-import { Perlschnur } from "script/components/perlschnur.js";
+
 import {
   getTestColor as _color,
   connectionFromShorthand as _c,
 } from "tests/_helpers/data.js";
+import { initTestDOM, TEST_DOM, timeout } from "tests/_helpers/domUtils.js";
 
 beforeEach(async () => {
   initTestDOM();
@@ -63,7 +63,7 @@ test("update view should fill in template correctly", async function () {
   expect(gotConnections[0]).toMatchDOMObject({
     selectors: {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
-      ".connection-number": { innerText: "T1" },
+      ".connection-number": { innerText: "ICE T1" },
       ".connection-travel-time": { innerText: "2h" },
     },
     style: { "--color": _color(0) },
@@ -80,7 +80,7 @@ test("update view should fill in template correctly", async function () {
   expect(gotConnections[1]).toMatchDOMObject({
     selectors: {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
-      ".connection-number": { innerText: "T2" },
+      ".connection-number": { innerText: "ICE T2" },
       ".connection-travel-time": { innerText: "1h" },
     },
     style: { "--color": _color(1) },
@@ -96,7 +96,7 @@ test("update view should fill in template correctly", async function () {
   expect(gotConnections[2]).toMatchDOMObject({
     selectors: {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
-      ".connection-number": { innerText: "T3" },
+      ".connection-number": { innerText: "ICE T3" },
       ".connection-travel-time": { innerText: "14h" },
     },
     style: { "--color": _color(2) },
@@ -150,7 +150,7 @@ test("update view should update with new connection data", async function () {
   expect(gotConnections.length).toBe(1);
   expect(gotConnections[0]).toMatchDOMObject({
     selectors: {
-      ".connection-number": { innerText: "T2" },
+      ".connection-number": { innerText: "ICE T2" },
     },
     style: { "--color": _color(0) },
   });

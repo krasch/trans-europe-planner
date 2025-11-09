@@ -53,7 +53,7 @@ export class Perlschnur {
       "template-perlschnur-connection",
       {
         ".connection-icon": { src: connection.icon },
-        ".connection-number": { innerText: connection.name },
+        ".connection-number": { innerText: connection.name }, // todo is this correct?
         ".connection-travel-time": { innerText: connection.travelTime },
       },
     );

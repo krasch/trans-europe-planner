@@ -65,7 +65,7 @@ export function connectionFromData(data) {
   return new Connection(
     data.tripId,
     data.mode ?? "REGIONAL_RAIL",
-    data.routeShortName ?? data.tripId,
+    data.routeShortName ?? `ICE ${data.tripId}`,
     data.from,
     data.to,
     data.intermediate ?? [],
