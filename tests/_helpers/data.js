@@ -73,18 +73,6 @@ export function stopFromShorthand(shorthand, type = "intermediate") {
   );
 }
 
-// todo remove
-export function connectionFromData(data) {
-  return new Connection(
-    data.tripId,
-    data.mode ?? "REGIONAL_RAIL",
-    data.routeShortName ?? `ICE ${data.tripId}`,
-    data.from,
-    data.to,
-    data.intermediate ?? [],
-  );
-}
-
 /**
  * @param {string} shorthand
  * @returns Connection
@@ -101,12 +89,10 @@ export function connectionFromShorthand(shorthand) {
     .slice(1, -1)
     .map((s) => stopFromShorthand(s, "intermediate"));
 
-  return connectionFromData({
-    tripId: tripId,
-    from: from,
-    to: to,
-    intermediate: intermediate,
-  });
+  const mode = "train";
+  const name = `ICE ${tripId}`;
+
+  return new Connection(tripId, mode, name, from, to, intermediate);
 }
 
 /**

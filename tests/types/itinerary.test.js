@@ -3,16 +3,11 @@ import { Stop } from "script/types/stop.js";
 
 import {
   stopFromShorthand as _s,
-  connectionFromData as _c,
+  connectionFromShorthand as _c,
 } from "tests/_helpers/data.js";
 
 test("Itinerary with one connection", function () {
-  const c1 = _c({
-    tripId: "T1",
-    from: _s("S1@D1T10"),
-    to: _s("S1@D1T11"),
-  });
-
+  const c1 = _c("T1: S1@D1T10->S2@D1T11");
   const itinerary = new Itinerary([c1]);
 
   expect(itinerary.from).toStrictEqual(c1.from);
@@ -22,23 +17,9 @@ test("Itinerary with one connection", function () {
 });
 
 test("Itinerary with multiple connections", function () {
-  const c1 = _c({
-    tripId: "T1",
-    from: _s("S1@D1T10"),
-    to: _s("S2@D1T11"),
-  });
-
-  const c2 = _c({
-    tripId: "T2",
-    from: _s("S2@D1T12"),
-    to: _s("S3@D1T14"),
-  });
-
-  const c3 = _c({
-    tripId: "T3",
-    from: _s("S3@D1T15"),
-    to: _s("S3@D1T20"),
-  });
+  const c1 = _c("T1: S1@D1T10->S2@D1T11");
+  const c2 = _c("T2: S2@D1T12->S3@D1T14");
+  const c3 = _c("T3: S3@D1T15->S2@D1T20");
 
   const itinerary = new Itinerary([c1, c2, c3]);
 

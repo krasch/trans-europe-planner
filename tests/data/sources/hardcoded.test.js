@@ -70,7 +70,7 @@ test("Init stop", function () {
 test("Init connection", function () {
   const data = {
     id: "T1",
-    type: "REGIONAL_RAIL",
+    type: "train",
     name: "ICE T1",
     stops: [
       {
