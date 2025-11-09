@@ -38,7 +38,6 @@ export function timestampFromShorthand(tsShorthand) {
   return DAY1.plus({ days: day - 1, hours: hour }); // -1 because T1 should be Day1
 }
 
-// todo add minute for departure
 /**
  * @param {string} shorthand
  * @param {('first'|'intermediate'|'last')} type
@@ -55,8 +54,9 @@ export function stopFromShorthand(shorthand, type = "intermediate") {
   let arrival = null;
   if (type !== "first") arrival = timestamp;
 
+  // IMPORTANT: departure is always 1 minute later than arrival to make tests stronger
   let departure = null;
-  if (type !== "last") departure = timestamp;
+  if (type !== "last") departure = timestamp.plus({ minute: 1 });
 
   // stop S1 with name Stop1, city C1 with name City1
   const stopId = `S${stopNumber}`;
@@ -73,6 +73,7 @@ export function stopFromShorthand(shorthand, type = "intermediate") {
   );
 }
 
+// todo remove
 export function connectionFromData(data) {
   return new Connection(
     data.tripId,

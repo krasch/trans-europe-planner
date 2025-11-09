@@ -287,7 +287,7 @@ test("when user picks a different journey as active, components should be update
   // perlschnur now shows the second itinerary
   expect(components.perlschnur.updateView).toHaveBeenCalledWith({
     summary: expect.objectContaining({ from: "Stop1", to: "Stop3" }),
-    transfers: [expect.objectContaining({ time: "2h" })],
+    transfers: [expect.objectContaining({ time: "2h 1min" })],
     connections: [
       expect.objectContaining({ name: "ICE T2" }),
       expect.objectContaining({ name: "ICE T3" }),

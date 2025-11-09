@@ -61,7 +61,7 @@ test("prepareDataForMapOneItineraryOneConnectionNotActive", function () {
       to: "City3",
       via: [],
       numTransfer: 0,
-      travelTime: 120,
+      travelTime: 119,
     },
   };
 
@@ -126,7 +126,7 @@ test("prepareDataForMapOneItineraryOneConnectionActive", function () {
       to: "City3",
       via: [],
       numTransfer: 0,
-      travelTime: 120,
+      travelTime: 119,
     },
   };
 
@@ -192,7 +192,7 @@ test("prepareDataForMapOneItineraryMultipleConnectionsActive", function () {
       to: "City3",
       via: ["City2"],
       numTransfer: 1,
-      travelTime: 300,
+      travelTime: 299,
     },
   };
 
@@ -286,14 +286,14 @@ test("prepareDataForMapMultipleItineraryMultipleConnections", function () {
       to: "City5",
       via: [],
       numTransfer: 0,
-      travelTime: 120,
+      travelTime: 119,
     },
     "C1->C2->C4->C5": {
       from: "City1",
       to: "City5",
       via: ["City2", "City4"],
       numTransfer: 2,
-      travelTime: 360,
+      travelTime: 359,
     },
   };
 

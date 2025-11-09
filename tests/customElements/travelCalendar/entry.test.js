@@ -32,7 +32,7 @@ test("one day entry should create one entry part that contains all connection in
     },
     // contains start and end info
     selectors: {
-      ".start .time": { innerHTML: "10:00" },
+      ".start .time": { innerHTML: "10:01" },
       ".destination .time": { innerHTML: "11:00" },
     },
   });
@@ -68,7 +68,7 @@ test("entry that spans two columns/days", async function () {
     },
     // first part contains start info
     selectors: {
-      ".start .time": { innerHTML: "16:00" },
+      ".start .time": { innerHTML: "16:01" },
       ".destination .time": null,
     },
   });
@@ -108,7 +108,7 @@ test("entry that spans three columns/days", async function () {
     },
     // first part contains start info
     selectors: {
-      ".start .time": { innerHTML: "16:00" },
+      ".start .time": { innerHTML: "16:01" },
       ".destination .time": null,
     },
   });

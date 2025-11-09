@@ -42,7 +42,7 @@ test("prepareDataForPerlschnurSingleConnectionNoIntermediateStops", function () 
       from: "Stop1",
       to: "Stop2",
       via: "",
-      totalTime: "1h",
+      totalTime: "59min",
     },
     connections: [
       {
@@ -50,9 +50,9 @@ test("prepareDataForPerlschnurSingleConnectionNoIntermediateStops", function () 
         color: _color(0),
         icon: expect.stringMatching("train.svg"),
         name: c1.name,
-        travelTime: "1h",
+        travelTime: "59min",
         stops: [
-          { date: null, time: "10:00", station: "Stop1" },
+          { date: null, time: "10:01", station: "Stop1" },
           { date: null, time: "11:00", station: "Stop2" },
         ],
       },
@@ -73,7 +73,7 @@ test("prepareDataForPerlschnurSingleConnectionIntermediateStops", function () {
       from: "Stop1",
       to: "Stop3",
       via: "",
-      totalTime: "2h",
+      totalTime: "1h 59min",
     },
     connections: [
       {
@@ -81,9 +81,9 @@ test("prepareDataForPerlschnurSingleConnectionIntermediateStops", function () {
         color: _color(0),
         icon: expect.stringMatching("train.svg"),
         name: c1.name,
-        travelTime: "2h",
+        travelTime: "1h 59min",
         stops: [
-          { date: null, time: "10:00", station: "Stop1" },
+          { date: null, time: "10:01", station: "Stop1" },
           { date: null, time: "11:00", station: "Stop2" },
           { date: null, time: "12:00", station: "Stop3" },
         ],
@@ -107,7 +107,7 @@ test("prepareDataForPerlschnurMultipleConnections", function () {
       from: "Stop1",
       to: "Stop4",
       via: "via Stop2, Stop3",
-      totalTime: "7h",
+      totalTime: "6h 59min",
     },
     connections: [
       {
@@ -115,9 +115,9 @@ test("prepareDataForPerlschnurMultipleConnections", function () {
         color: _color(0),
         icon: expect.stringMatching("train.svg"),
         name: c1.name,
-        travelTime: "1h",
+        travelTime: "59min",
         stops: [
-          { date: null, time: "10:00", station: "Stop1" },
+          { date: null, time: "10:01", station: "Stop1" },
           { date: null, time: "11:00", station: "Stop2" },
         ],
       },
@@ -126,9 +126,9 @@ test("prepareDataForPerlschnurMultipleConnections", function () {
         color: _color(1),
         icon: expect.stringMatching("train.svg"),
         name: c2.name,
-        travelTime: "2h",
+        travelTime: "1h 59min",
         stops: [
-          { date: null, time: "12:00", station: "Stop2" },
+          { date: null, time: "12:01", station: "Stop2" },
           { date: null, time: "14:00", station: "Stop3" },
         ],
       },
@@ -137,14 +137,14 @@ test("prepareDataForPerlschnurMultipleConnections", function () {
         color: _color(2),
         icon: expect.stringMatching("train.svg"),
         name: c3.name,
-        travelTime: "1h",
+        travelTime: "59min",
         stops: [
-          { date: null, time: "16:00", station: "Stop3" },
+          { date: null, time: "16:01", station: "Stop3" },
           { date: null, time: "17:00", station: "Stop4" },
         ],
       },
     ],
-    transfers: [{ time: "1h" }, { time: "2h" }],
+    transfers: [{ time: "1h 1min" }, { time: "2h 1min" }],
   };
 
   const got = prepareDataForPerlschnur(i1);
@@ -167,7 +167,7 @@ test("prepareDataForPerlschnurMultipleConnectionsMultiday", function () {
       from: "Stop1",
       to: "Stop4",
       via: "via Stop2, Stop3",
-      totalTime: "79h",
+      totalTime: "78h 59min",
     },
     connections: [
       {
@@ -175,9 +175,9 @@ test("prepareDataForPerlschnurMultipleConnectionsMultiday", function () {
         color: _color(0),
         icon: expect.stringMatching("train.svg"),
         name: c1.name,
-        travelTime: "25h",
+        travelTime: "24h 59min",
         stops: [
-          { date: null, time: "10:00", station: "Stop1" },
+          { date: null, time: "10:01", station: "Stop1" },
           { date: D2, time: "11:00", station: "Stop2" },
         ],
       },
@@ -186,9 +186,9 @@ test("prepareDataForPerlschnurMultipleConnectionsMultiday", function () {
         color: _color(1),
         icon: expect.stringMatching("train.svg"),
         name: c2.name,
-        travelTime: "20h",
+        travelTime: "19h 59min",
         stops: [
-          { date: null, time: "12:00", station: "Stop2" },
+          { date: null, time: "12:01", station: "Stop2" },
           { date: D3, time: "08:00", station: "Stop3" },
         ],
       },
@@ -197,14 +197,14 @@ test("prepareDataForPerlschnurMultipleConnectionsMultiday", function () {
         color: _color(2),
         icon: expect.stringMatching("train.svg"),
         name: c3.name,
-        travelTime: "1h",
+        travelTime: "59min",
         stops: [
-          { date: D4, time: "16:00", station: "Stop3" },
+          { date: D4, time: "16:01", station: "Stop3" },
           { date: null, time: "17:00", station: "Stop4" },
         ],
       },
     ],
-    transfers: [{ time: "1h" }, { time: "32h" }],
+    transfers: [{ time: "1h 1min" }, { time: "32h 1min" }],
   };
 
   const got = prepareDataForPerlschnur(i1);

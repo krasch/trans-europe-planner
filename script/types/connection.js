@@ -1,5 +1,7 @@
 import { Stop } from "script/types/stop.js";
 
+// todo check times work and stops work
+
 export class Connection {
   /**
    * @param {string} tripId

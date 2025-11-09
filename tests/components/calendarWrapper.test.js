@@ -67,7 +67,7 @@ test("update view should fill in template correctly", async function () {
     selectors: {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
       ".connection-number": { innerHTML: "ICE T1" },
-      ".start .time": { innerHTML: "10:00" },
+      ".start .time": { innerHTML: "10:01" },
       ".start .station": { innerHTML: "Stop1" },
       ".destination .time": { innerHTML: "11:00" },
       ".destination .station": { innerHTML: "Stop2" },
@@ -84,7 +84,7 @@ test("update view should fill in template correctly", async function () {
     selectors: {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
       ".connection-number": { innerHTML: "ICE T2" },
-      ".start .time": { innerHTML: "10:00" },
+      ".start .time": { innerHTML: "10:01" },
       ".start .station": { innerHTML: "Stop1" },
       ".destination .time": { innerHTML: "11:00" },
       ".destination .station": { innerHTML: "Stop2" },
@@ -101,7 +101,7 @@ test("update view should fill in template correctly", async function () {
     selectors: {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
       ".connection-number": { innerHTML: "ICE T3" },
-      ".start .time": { innerHTML: "10:00" },
+      ".start .time": { innerHTML: "10:01" },
       ".start .station": { innerHTML: "Stop1" },
       ".destination .time": { innerHTML: "11:00" },
       ".destination .station": { innerHTML: "Stop2" },
@@ -118,7 +118,7 @@ test("update view should fill in template correctly", async function () {
     selectors: {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
       ".connection-number": { innerHTML: "ICE T4" },
-      ".start .time": { innerHTML: "14:00" },
+      ".start .time": { innerHTML: "14:01" },
       ".start .station": { innerHTML: "Stop2" },
       ".destination .time": { innerHTML: "15:00" },
       ".destination .station": { innerHTML: "Stop3" },

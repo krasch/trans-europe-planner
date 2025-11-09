@@ -58,7 +58,7 @@ test("Init stop", function () {
   const data = {
     stopId: "S1",
     arrivalTime: "10:00:00",
-    departureTime: "10:00:00",
+    departureTime: "10:01:00",
   };
 
   const exp = _s("S1@D1T10");
@@ -76,12 +76,12 @@ test("Init connection", function () {
       {
         stopId: "S1",
         arrivalTime: null,
-        departureTime: "10:00:00",
+        departureTime: "10:01:00",
       },
       {
         stopId: "S2",
         arrivalTime: "11:00:00",
-        departureTime: "11:00:00",
+        departureTime: "11:01:00",
       },
       {
         stopId: "S3",

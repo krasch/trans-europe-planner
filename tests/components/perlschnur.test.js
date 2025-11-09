@@ -51,7 +51,7 @@ test("update view should fill in template correctly", async function () {
       ".from": { innerText: "Stop1" },
       ".to": { innerText: "Stop5" },
       ".via": { innerText: "via Stop3, Stop4" },
-      ".total-time": { innerText: "21h" },
+      ".total-time": { innerText: "20h 59min" },
     },
   });
 
@@ -64,7 +64,7 @@ test("update view should fill in template correctly", async function () {
     selectors: {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
       ".connection-number": { innerText: "ICE T1" },
-      ".connection-travel-time": { innerText: "2h" },
+      ".connection-travel-time": { innerText: "1h 59min" },
     },
     style: { "--color": _color(0) },
   });
@@ -72,7 +72,7 @@ test("update view should fill in template correctly", async function () {
   // stops for connection 1
   let gotStops = gotConnections[0].querySelectorAll(".perlschnur-stop");
   expect(gotStops.length).toBe(3);
-  expect(gotStops[0]).toMatchDOMObject(_stop("", "10:00", "Stop1"));
+  expect(gotStops[0]).toMatchDOMObject(_stop("", "10:01", "Stop1"));
   expect(gotStops[1]).toMatchDOMObject(_stop("", "11:00", "Stop2"));
   expect(gotStops[2]).toMatchDOMObject(_stop("", "12:00", "Stop3"));
 
@@ -81,7 +81,7 @@ test("update view should fill in template correctly", async function () {
     selectors: {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
       ".connection-number": { innerText: "ICE T2" },
-      ".connection-travel-time": { innerText: "1h" },
+      ".connection-travel-time": { innerText: "59min" },
     },
     style: { "--color": _color(1) },
   });
@@ -89,7 +89,7 @@ test("update view should fill in template correctly", async function () {
   // stops for connection 2
   gotStops = gotConnections[1].querySelectorAll(".perlschnur-stop");
   expect(gotStops.length).toBe(2);
-  expect(gotStops[0]).toMatchDOMObject(_stop("", "13:00", "Stop3"));
+  expect(gotStops[0]).toMatchDOMObject(_stop("", "13:01", "Stop3"));
   expect(gotStops[1]).toMatchDOMObject(_stop("", "14:00", "Stop4"));
 
   // connection 3
@@ -97,7 +97,7 @@ test("update view should fill in template correctly", async function () {
     selectors: {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
       ".connection-number": { innerText: "ICE T3" },
-      ".connection-travel-time": { innerText: "14h" },
+      ".connection-travel-time": { innerText: "13h 59min" },
     },
     style: { "--color": _color(2) },
   });
@@ -105,7 +105,7 @@ test("update view should fill in template correctly", async function () {
   // stops for connection 3
   gotStops = gotConnections[2].querySelectorAll(".perlschnur-stop");
   expect(gotStops.length).toBe(2);
-  expect(gotStops[0]).toMatchDOMObject(_stop("", "17:00", "Stop4"));
+  expect(gotStops[0]).toMatchDOMObject(_stop("", "17:01", "Stop4"));
   expect(gotStops[1]).toMatchDOMObject(_stop("(16 Oct)", "07:00", "Stop5"));
 
   // transfers
@@ -114,12 +114,12 @@ test("update view should fill in template correctly", async function () {
 
   // transfer between c1 and c2
   expect(gotTransfers[0]).toMatchDOMObject({
-    selectors: { ".transfer-time": { innerText: "1h" } },
+    selectors: { ".transfer-time": { innerText: "1h 1min" } },
   });
 
   // transfer between c2 and c3
   expect(gotTransfers[1]).toMatchDOMObject({
-    selectors: { ".transfer-time": { innerText: "3h" } },
+    selectors: { ".transfer-time": { innerText: "3h 1min" } },
   });
 });
 
@@ -141,7 +141,7 @@ test("update view should update with new connection data", async function () {
       ".from": { innerText: "Stop3" },
       ".to": { innerText: "Stop4" },
       ".via": { innerText: "" },
-      ".total-time": { innerText: "1h" },
+      ".total-time": { innerText: "59min" },
     },
   });
 
@@ -158,7 +158,7 @@ test("update view should update with new connection data", async function () {
   // stops
   let gotStops = gotConnections[0].querySelectorAll(".perlschnur-stop");
   expect(gotStops.length).toBe(2);
-  expect(gotStops[0]).toMatchDOMObject(_stop("", "13:00", "Stop3"));
+  expect(gotStops[0]).toMatchDOMObject(_stop("", "13:01", "Stop3"));
   expect(gotStops[1]).toMatchDOMObject(_stop("", "14:00", "Stop4"));
 
   // transfers
