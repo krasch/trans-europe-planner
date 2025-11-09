@@ -18,7 +18,7 @@ export function getTestColor(idx) {
 }
 
 export function timestampFromShorthand(tsShorthand) {
-  // string has form "D1T10"
+  // "D1T10"
   const split = tsShorthand.split("T");
   const day = Number(split[0].slice(1));
   const hour = Number(split[1]);
@@ -43,22 +43,26 @@ export function stopFromData(data) {
 
 // todo different naming for stop and city
 // todo add minute for departure
-export function stopFromShorthand(shorthand, arrival = true, departure = true) {
+/**
+ * @param {string} shorthand
+ * @param {('first'|'intermediate'|'last')} type
+ */
+export function stopFromShorthand(shorthand, type = "intermediate") {
   // S1@D1T10
-  let [id, timestamp] = shorthand.split("@");
-  timestamp = timestampFromShorthand(timestamp);
+  const [id, tsShorthand] = shorthand.split("@");
+  const timestamp = timestampFromShorthand(tsShorthand);
+
+  let arrival = null;
+  if (type !== "first") arrival = timestamp;
+
+  let departure = null;
+  if (type !== "last") departure = timestamp;
 
   const stopId = id;
   const stopName = id;
   const city = { id: id, name: id };
 
-  return new Stop(
-    stopId,
-    stopName,
-    city,
-    arrival ? timestamp : null,
-    departure ? timestamp : null,
-  );
+  return new Stop(stopId, stopName, city, arrival, departure);
 }
 
 export function connectionFromData(data) {
@@ -72,37 +76,17 @@ export function connectionFromData(data) {
   );
 }
 
-// todo use stop from shorthand?
 export function connectionFromShorthand(shorthand) {
   // "T1: S1@D1T10->S2@D1T11->S3@D1T12"
-  const [tripId, shorthandStops] = shorthand.split(": ");
+  const [tripId, stopListString] = shorthand.split(": ");
+  const stops = stopListString.split("->");
 
-  const stops = shorthandStops
-    .split("->")
-    .map((stop) => ({ id: stop.split("@")[0], ts: stop.split("@")[1] }));
+  const from = stopFromShorthand(stops[0], "first");
+  const to = stopFromShorthand(stops.at(-1), "last");
 
-  const from = stopFromData({
-    stopId: stops[0].id,
-    departure: timestampFromShorthand(stops[0].ts),
-    arrival: null,
-  });
-
-  const to = stopFromData({
-    stopId: stops.at(-1).id,
-    departure: null,
-    arrival: timestampFromShorthand(stops.at(-1).ts),
-  });
-
-  const intermediate = [];
-  for (let i = 1; i < stops.length - 1; i++) {
-    intermediate.push(
-      stopFromData({
-        stopId: stops.at(i).id,
-        arrival: timestampFromShorthand(stops.at(i).ts),
-        departure: timestampFromShorthand(stops.at(i).ts),
-      }),
-    );
-  }
+  const intermediate = stops
+    .slice(1, -1)
+    .map((s) => stopFromShorthand(s, "intermediate"));
 
   return connectionFromData({
     tripId: tripId,
