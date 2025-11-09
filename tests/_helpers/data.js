@@ -20,25 +20,10 @@ export function getTestColor(idx) {
 export function timestampFromShorthand(tsShorthand) {
   // "D1T10"
   const split = tsShorthand.split("T");
-  const day = Number(split[0].slice(1));
+  const day = Number(split[0].slice(1)); // todo check for D
   const hour = Number(split[1]);
 
   return DAY1.plus({ days: day - 1, hours: hour }); // -1 because T1 should be Day1
-}
-
-// todo delete this or make different thing with city and station?
-export function stopFromData(data) {
-  return new Stop(
-    data.stopId,
-    data.stopName ?? data.stopId,
-    {
-      id: data.city ? data.city.id : data.stopId,
-      name: data.city ? data.city.name : data.stopId,
-    },
-    // respect that arrival or departure can be null, todo also for all other attributes?
-    data.arrival !== undefined ? data.arrival : data.departure,
-    data.departure !== undefined ? data.departure : data.arrival,
-  );
 }
 
 // todo different naming for stop and city

@@ -1,12 +1,10 @@
 import { Connection } from "script/types/connection.js";
-import {
-  stopFromData as _s,
-  timestampFromShorthand as _ts,
-} from "tests/_helpers/data.js";
+
+import { stopFromShorthand as _s } from "tests/_helpers/data.js";
 
 test("Connection without intermediate stops", function () {
-  const from = _s({ stopId: "S1", departure: _ts("D1T10") });
-  const to = _s({ stopId: "S2", departure: _ts("D1T11") });
+  const from = _s("S1@D1T10");
+  const to = _s("S2@D1T11");
 
   const con = new Connection("123", "rail", "RE1", from, to, []);
 
@@ -16,11 +14,11 @@ test("Connection without intermediate stops", function () {
 });
 
 test("Connection with intermediate stops", function () {
-  const s1 = _s({ stopId: "S1", departure: _ts("D1T10") });
-  const s2 = _s({ stopId: "S2", departure: _ts("D1T11") });
-  const s3 = _s({ stopId: "S3", departure: _ts("D1T12") });
-  const s4 = _s({ stopId: "S4", departure: _ts("D1T13") });
-  const s5 = _s({ stopId: "S5", departure: _ts("D1T14") });
+  const s1 = _s("S1@D1T10");
+  const s2 = _s("S2@D1T11");
+  const s3 = _s("S3@D1T12");
+  const s4 = _s("S4@D1T13");
+  const s5 = _s("S5@D1T14");
 
   const from = s1;
   const to = s5;
@@ -39,16 +37,16 @@ test("Connection with intermediate stops", function () {
 });
 
 test("Connection single day", function () {
-  const from = _s({ stopId: "S1", departure: _ts("D1T10") });
-  const to = _s({ stopId: "S2", departure: _ts("D1T11") });
+  const from = _s("S1@D1T10");
+  const to = _s("S2@D1T11");
 
   const con = new Connection("123", "rail", "RE1", from, to, []);
   expect(con.isMultiday).toStrictEqual(false);
 });
 
 test("Connection multiday", function () {
-  const from = _s({ stopId: "S1", departure: _ts("D1T10") });
-  const to = _s({ stopId: "S2", departure: _ts("D2T11") });
+  const from = _s("S1@D1T10");
+  const to = _s("S2@D2T11");
 
   const con = new Connection("123", "rail", "RE1", from, to, []);
   expect(con.isMultiday).toStrictEqual(true);
