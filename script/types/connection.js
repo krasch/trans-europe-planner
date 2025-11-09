@@ -10,6 +10,7 @@ export class Connection {
    * @param {Stop[]} intermediateStops
    */
   constructor(tripId, mode, name, from, to, intermediateStops) {
+    this.tripId = tripId;
     this.mode = mode;
     this.name = name;
     this.from = from;

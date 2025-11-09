@@ -26,6 +26,7 @@ export function timestampFromShorthand(tsShorthand) {
   return DAY1.plus({ days: day - 1, hours: hour }); // -1 because T1 should be Day1
 }
 
+// todo delete this or make different thing with city and station?
 export function stopFromData(data) {
   return new Stop(
     data.stopId,
@@ -40,6 +41,26 @@ export function stopFromData(data) {
   );
 }
 
+// todo different naming for stop and city
+// todo add minute for departure
+export function stopFromShorthand(shorthand, arrival = true, departure = true) {
+  // S1@D1T10
+  let [id, timestamp] = shorthand.split("@");
+  timestamp = timestampFromShorthand(timestamp);
+
+  const stopId = id;
+  const stopName = id;
+  const city = { id: id, name: id };
+
+  return new Stop(
+    stopId,
+    stopName,
+    city,
+    arrival ? timestamp : null,
+    departure ? timestamp : null,
+  );
+}
+
 export function connectionFromData(data) {
   return new Connection(
     data.tripId,
@@ -51,6 +72,7 @@ export function connectionFromData(data) {
   );
 }
 
+// todo use stop from shorthand?
 export function connectionFromShorthand(shorthand) {
   // "T1: S1@D1T10->S2@D1T11->S3@D1T12"
   const [tripId, shorthandStops] = shorthand.split(": ");

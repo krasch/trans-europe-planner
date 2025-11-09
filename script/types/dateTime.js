@@ -7,6 +7,7 @@ import { DateTime as LuxonDateTime } from "external/luxon@3.5.0/luxon.min.js";
 // * only need to do the ts-expect-error (see above) once
 export class DateTime extends LuxonDateTime {
   diff = super.diff;
+  plus = super.plus;
   startOf = super.startOf;
   static fromISO = super.fromISO;
   toISO = super.toISO;

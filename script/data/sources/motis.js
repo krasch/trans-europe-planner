@@ -97,12 +97,12 @@ export class MotisClient {
    * @returns {Promise<Itinerary[]>}
    */
   async plan(fromCityId, toCityId, startDate, geoDatabase) {
-    const fromStationId = geoDatabase.motisStopIdForCityId(fromCityId);
-    const toStationId = geoDatabase.motisStopIdForCityId(toCityId);
+    const fromStopId = geoDatabase.motisStopIdForCityId(fromCityId);
+    const toStopId = geoDatabase.motisStopIdForCityId(toCityId);
 
     const url = this.constructURL("/api/v3/plan", {
-      fromPlace: fromStationId,
-      toPlace: toStationId,
+      fromPlace: fromStopId,
+      toPlace: toStopId,
       detailedTransfers: false, // don't return geodata
       transitModes: TRANSIT_MODES,
       time: startDate.toISO(),

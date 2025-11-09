@@ -48,7 +48,7 @@ export class GeoDatabase {
 
   /** @type {Map<string,string>} */
   #cityNameToId;
-  /** @type {Map<string,Object<string,any>>} */ /* todo could have nicer type */
+  /** @type {Map<string,{stopIds: string[], mainStopId: string}>} */
   #cityIdToStopIds;
   /** @type {Map<string,string>} */
   #motisStopIdToStopId;
@@ -122,6 +122,18 @@ export class GeoDatabase {
   }
 
   /**
+   * todo test
+   * @param {string} cityId
+   * @returns {{stopIds: string[], mainStopId: string}} stopIds
+   */
+  stopIdsForCityId(cityId) {
+    if (!this.#cityIdToStopIds.has(cityId))
+      throw new DataError(`City with id ${cityId} unknown`);
+
+    return this.#cityIdToStopIds.get(cityId);
+  }
+
+  /**
    * @param {string} cityId
    * @returns {string} motisStopId
    */
@@ -129,7 +141,7 @@ export class GeoDatabase {
     if (!this.#cityIdToStopIds.has(cityId))
       throw new DataError(`City with id ${cityId} unknown`);
 
-    const mainStop = this.#cityIdToStopIds.get(cityId).mainStopId;
+    const mainStop = this.#cityIdToStopIds.get(cityId).mainStopId; // todo could be multiple stops in the city
     return this.#stops.get(mainStop).motisIds[0]; // todo very implicit
   }
 
@@ -167,5 +179,15 @@ export class GeoDatabase {
 
     const stop = this.#stops.get(stopId);
     return { id: stop.cityId, name: this.#cities.get(stop.cityId).name };
+  }
+
+  /**
+   * todo test
+   * @param {string} stopId
+   */
+  stopName(stopId) {
+    if (!this.#stops.has(stopId))
+      throw new DataError(`Stop with id ${stopId} unknown`);
+    return this.#stops.get(stopId).name;
   }
 }

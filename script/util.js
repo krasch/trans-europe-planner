@@ -50,3 +50,21 @@ export function groupBy(array, keyFn) {
 
   return grouped;
 }
+
+/** @template K,V */
+export class DefaultMap extends Map {
+  // todo tests
+  constructor(defaultFn) {
+    super();
+    this.defaultFn = defaultFn;
+  }
+
+  /**
+   * @param {K} key
+   * @returns {V} value
+   */
+  get(key) {
+    if (!super.has(key)) super.set(key, this.defaultFn());
+    return super.get(key);
+  }
+}
