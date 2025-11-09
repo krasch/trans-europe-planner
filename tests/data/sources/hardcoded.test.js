@@ -25,15 +25,15 @@ const FILES = {
 };
 
 const CITIES = {
-  S1: { name: "S1", geo: { latitude: 10, longitude: 10 } },
-  S2: { name: "S2", geo: { latitude: 20, longitude: 20 } },
-  S3: { name: "S3", geo: { latitude: 30, longitude: 30 } },
+  C1: { name: "City1", geo: { latitude: 10, longitude: 10 } },
+  C2: { name: "City2", geo: { latitude: 20, longitude: 20 } },
+  C3: { name: "City3", geo: { latitude: 30, longitude: 30 } },
 };
 
 const STOPS = {
-  S1: { name: "S1", geo: { latitude: 10, longitude: 10 }, cityId: "S1" },
-  S2: { name: "S2", geo: { latitude: 20, longitude: 20 }, cityId: "S2" },
-  S3: { name: "S3", geo: { latitude: 30, longitude: 30 }, cityId: "S3" },
+  S1: { name: "Stop1", geo: { latitude: 10, longitude: 10 }, cityId: "C1" },
+  S2: { name: "Stop2", geo: { latitude: 20, longitude: 20 }, cityId: "C2" },
+  S3: { name: "Stop3", geo: { latitude: 30, longitude: 30 }, cityId: "C3" },
 };
 
 function initGeoDatabase() {

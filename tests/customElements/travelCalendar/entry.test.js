@@ -21,7 +21,7 @@ test("one day entry should create one entry part that contains all connection in
   expect(TEST_DOM.calendarEntryParts.length).toBe(1);
   expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
     dataset: {
-      group: "S1->S2",
+      group: "C1->C2",
       status: "inactive",
     },
     style: {
@@ -57,7 +57,7 @@ test("entry that spans two columns/days", async function () {
   expect(TEST_DOM.calendarEntryParts.length).toBe(2);
   expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
     dataset: {
-      group: "S1->S2",
+      group: "C1->C2",
       status: "inactive",
     },
     style: {
@@ -74,7 +74,7 @@ test("entry that spans two columns/days", async function () {
   });
   expect(TEST_DOM.calendarEntryParts[1]).toMatchDOMObject({
     dataset: {
-      group: "S1->S2",
+      group: "C1->C2",
       status: "inactive",
     },
     style: {
@@ -97,7 +97,7 @@ test("entry that spans three columns/days", async function () {
   expect(TEST_DOM.calendarEntryParts.length).toBe(3);
   expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
     dataset: {
-      group: "S1->S2",
+      group: "C1->C2",
       status: "inactive",
     },
     style: {
@@ -114,7 +114,7 @@ test("entry that spans three columns/days", async function () {
   });
   expect(TEST_DOM.calendarEntryParts[1]).toMatchDOMObject({
     dataset: {
-      group: "S1->S2",
+      group: "C1->C2",
       status: "inactive",
     },
     style: {
@@ -131,7 +131,7 @@ test("entry that spans three columns/days", async function () {
   });
   expect(TEST_DOM.calendarEntryParts[2]).toMatchDOMObject({
     dataset: {
-      group: "S1->S2",
+      group: "C1->C2",
       status: "inactive",
     },
     style: {

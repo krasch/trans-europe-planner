@@ -1,3 +1,5 @@
+import assert from "assert";
+
 import { Connection } from "script/types/connection.js";
 import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
@@ -13,12 +15,22 @@ export const COLORS = [
   "255, 0, 255",
 ];
 
+/**
+ * @param {number} idx
+ * @returns string
+ */
 export function getTestColor(idx) {
   return COLORS[idx];
 }
 
+/**
+ * @param {string} tsShorthand
+ * @returns DateTime
+ */
 export function timestampFromShorthand(tsShorthand) {
   // "D1T10"
+  assert(tsShorthand.match("D[0-9]T[0-9][0-9]"), "Bad timestamp format");
+
   const split = tsShorthand.split("T");
   const day = Number(split[0].slice(1)); // todo check for D
   const hour = Number(split[1]);
@@ -26,15 +38,18 @@ export function timestampFromShorthand(tsShorthand) {
   return DAY1.plus({ days: day - 1, hours: hour }); // -1 because T1 should be Day1
 }
 
-// todo different naming for stop and city
 // todo add minute for departure
 /**
  * @param {string} shorthand
  * @param {('first'|'intermediate'|'last')} type
+ * @returns Stop
  */
 export function stopFromShorthand(shorthand, type = "intermediate") {
   // S1@D1T10
   const [id, tsShorthand] = shorthand.split("@");
+  assert(id.match("S[0-9]+"), "Bad stopId format");
+
+  const stopNumber = id.slice(1); // remove the initial "S"
   const timestamp = timestampFromShorthand(tsShorthand);
 
   let arrival = null;
@@ -43,11 +58,19 @@ export function stopFromShorthand(shorthand, type = "intermediate") {
   let departure = null;
   if (type !== "last") departure = timestamp;
 
-  const stopId = id;
-  const stopName = id;
-  const city = { id: id, name: id };
+  // stop S1 with name Stop1, city C1 with name City1
+  const stopId = `S${stopNumber}`;
+  const stopName = `Stop${stopNumber}`;
+  const cityId = `C${stopNumber}`;
+  const cityName = `City${stopNumber}`;
 
-  return new Stop(stopId, stopName, city, arrival, departure);
+  return new Stop(
+    stopId,
+    stopName,
+    { id: cityId, name: cityName },
+    arrival,
+    departure,
+  );
 }
 
 export function connectionFromData(data) {
@@ -61,6 +84,10 @@ export function connectionFromData(data) {
   );
 }
 
+/**
+ * @param {string} shorthand
+ * @returns Connection
+ */
 export function connectionFromShorthand(shorthand) {
   // "T1: S1@D1T10->S2@D1T11->S3@D1T12"
   const [tripId, stopListString] = shorthand.split(": ");
@@ -81,6 +108,10 @@ export function connectionFromShorthand(shorthand) {
   });
 }
 
+/**
+ * @param {string[]} connectionShorthands
+ * @returns Itinerary
+ */
 export function itineraryFromShortHand(connectionShorthands) {
   return new Itinerary(connectionShorthands.map(connectionFromShorthand));
 }

@@ -1,13 +1,12 @@
 /**
  * @jest-environment jsdom
  */
-
 import { prepareDataForMap } from "script/data/components/map.js";
 import { Itinerary } from "script/types/itinerary.js";
 
-import { initTestDOM } from "tests/_helpers/domUtils.js";
 import { connectionFromShorthand as _c } from "tests/_helpers/data.js";
 import { getTestColor } from "tests/_helpers/data.js";
+import { initTestDOM } from "tests/_helpers/domUtils.js";
 
 beforeEach(async () => {
   initTestDOM(); // needed to get connection colors from css
@@ -30,25 +29,25 @@ test("prepareDataForMapOneItineraryOneConnectionNotActive", function () {
   const got = prepareDataForMap(null, [i1]);
 
   const expCities = {
-    S1: { isVisible: true, isStop: true, circleColor: null, isTransfer: false },
-    S2: { isVisible: true, isStop: true, circleColor: null, isTransfer: false },
-    S3: { isVisible: true, isStop: true, circleColor: null, isTransfer: false },
+    C1: { isVisible: true, isStop: true, circleColor: null, isTransfer: false },
+    C2: { isVisible: true, isStop: true, circleColor: null, isTransfer: false },
+    C3: { isVisible: true, isStop: true, circleColor: null, isTransfer: false },
   };
 
   const expEdges = {
-    "S1->S2": {
+    "C1->C2": {
       isVisible: true,
-      legs: ["S1->S3"],
-      itineraries: ["S1->S3"],
+      legs: ["C1->C3"],
+      itineraries: ["C1->C3"],
       isActive: false,
       color: null,
       activeLeg: null,
       activeItinerary: null,
     },
-    "S2->S3": {
+    "C2->C3": {
       isVisible: true,
-      legs: ["S1->S3"],
-      itineraries: ["S1->S3"],
+      legs: ["C1->C3"],
+      itineraries: ["C1->C3"],
       isActive: false,
       color: null,
       activeLeg: null,
@@ -57,9 +56,9 @@ test("prepareDataForMapOneItineraryOneConnectionNotActive", function () {
   };
 
   const expItineraries = {
-    "S1->S3": {
-      from: "S1",
-      to: "S3",
+    "C1->C3": {
+      from: "City1",
+      to: "City3",
       via: [],
       numTransfer: 0,
       travelTime: 120,
@@ -80,19 +79,19 @@ test("prepareDataForMapOneItineraryOneConnectionActive", function () {
   const got = prepareDataForMap(i1, []);
 
   const expCities = {
-    S1: {
+    C1: {
       isVisible: true,
       isStop: true,
       circleColor: _color(0),
       isTransfer: false,
     },
-    S2: {
+    C2: {
       isVisible: true,
       isStop: true,
       circleColor: _color(0),
       isTransfer: false,
     },
-    S3: {
+    C3: {
       isVisible: true,
       isStop: true,
       circleColor: _color(0),
@@ -101,30 +100,30 @@ test("prepareDataForMapOneItineraryOneConnectionActive", function () {
   };
 
   const expEdges = {
-    "S1->S2": {
+    "C1->C2": {
       isVisible: true,
-      legs: ["S1->S3"],
-      itineraries: ["S1->S3"],
+      legs: ["C1->C3"],
+      itineraries: ["C1->C3"],
       isActive: true,
       color: _color(0),
-      activeLeg: "S1->S3",
-      activeItinerary: "S1->S3",
+      activeLeg: "C1->C3",
+      activeItinerary: "C1->C3",
     },
-    "S2->S3": {
+    "C2->C3": {
       isVisible: true,
-      legs: ["S1->S3"],
-      itineraries: ["S1->S3"],
+      legs: ["C1->C3"],
+      itineraries: ["C1->C3"],
       isActive: true,
       color: _color(0),
-      activeLeg: "S1->S3",
-      activeItinerary: "S1->S3",
+      activeLeg: "C1->C3",
+      activeItinerary: "C1->C3",
     },
   };
 
   const expItineraries = {
-    "S1->S3": {
-      from: "S1",
-      to: "S3",
+    "C1->C3": {
+      from: "City1",
+      to: "City3",
       via: [],
       numTransfer: 0,
       travelTime: 120,
@@ -146,19 +145,19 @@ test("prepareDataForMapOneItineraryMultipleConnectionsActive", function () {
   const got = prepareDataForMap(i1, []);
 
   const expCities = {
-    S1: {
+    C1: {
       isVisible: true,
       isStop: true,
       circleColor: _color(0),
       isTransfer: false,
     },
-    S2: {
+    C2: {
       isVisible: true,
       isStop: true,
       circleColor: _color(1),
       isTransfer: true,
     },
-    S3: {
+    C3: {
       isVisible: true,
       isStop: true,
       circleColor: _color(1),
@@ -167,31 +166,31 @@ test("prepareDataForMapOneItineraryMultipleConnectionsActive", function () {
   };
 
   const expEdges = {
-    "S1->S2": {
+    "C1->C2": {
       isVisible: true,
-      legs: ["S1->S2"],
-      itineraries: ["S1->S2->S3"],
+      legs: ["C1->C2"],
+      itineraries: ["C1->C2->C3"],
       isActive: true,
       color: _color(0),
-      activeLeg: "S1->S2",
-      activeItinerary: "S1->S2->S3",
+      activeLeg: "C1->C2",
+      activeItinerary: "C1->C2->C3",
     },
-    "S2->S3": {
+    "C2->C3": {
       isVisible: true,
-      legs: ["S2->S3"],
-      itineraries: ["S1->S2->S3"],
+      legs: ["C2->C3"],
+      itineraries: ["C1->C2->C3"],
       isActive: true,
       color: _color(1),
-      activeLeg: "S2->S3",
-      activeItinerary: "S1->S2->S3",
+      activeLeg: "C2->C3",
+      activeItinerary: "C1->C2->C3",
     },
   };
 
   const expItineraries = {
-    "S1->S2->S3": {
-      from: "S1",
-      to: "S3",
-      via: ["S2"],
+    "C1->C2->C3": {
+      from: "City1",
+      to: "City3",
+      via: ["City2"],
       numTransfer: 1,
       travelTime: 300,
     },
@@ -216,25 +215,25 @@ test("prepareDataForMapMultipleItineraryMultipleConnections", function () {
   const got = prepareDataForMap(i2, [i1]);
 
   const expCities = {
-    S1: {
+    C1: {
       isVisible: true,
       isStop: true,
       circleColor: _color(0),
       isTransfer: false,
     },
-    S2: {
+    C2: {
       isVisible: true,
       isStop: true,
       circleColor: _color(1),
       isTransfer: true,
     },
-    S4: {
+    C4: {
       isVisible: true,
       isStop: true,
       circleColor: _color(2),
       isTransfer: true,
     },
-    S5: {
+    C5: {
       isVisible: true,
       isStop: true,
       circleColor: _color(2),
@@ -243,56 +242,56 @@ test("prepareDataForMapMultipleItineraryMultipleConnections", function () {
   };
 
   const expEdges = {
-    "S1->S2": {
+    "C1->C2": {
       isVisible: true,
-      legs: ["S1->S5", "S1->S2"],
-      itineraries: ["S1->S5", "S1->S2->S4->S5"],
+      legs: ["C1->C5", "C1->C2"],
+      itineraries: ["C1->C5", "C1->C2->C4->C5"],
       isActive: true,
       color: _color(0),
-      activeLeg: "S1->S2",
-      activeItinerary: "S1->S2->S4->S5",
+      activeLeg: "C1->C2",
+      activeItinerary: "C1->C2->C4->C5",
     },
-    "S2->S4": {
+    "C2->C4": {
       isVisible: true,
-      legs: ["S2->S4"],
-      itineraries: ["S1->S2->S4->S5"],
+      legs: ["C2->C4"],
+      itineraries: ["C1->C2->C4->C5"],
       isActive: true,
       color: _color(1),
-      activeLeg: "S2->S4",
-      activeItinerary: "S1->S2->S4->S5",
+      activeLeg: "C2->C4",
+      activeItinerary: "C1->C2->C4->C5",
     },
-    "S2->S5": {
+    "C2->C5": {
       isVisible: true,
-      legs: ["S1->S5"],
-      itineraries: ["S1->S5"],
+      legs: ["C1->C5"],
+      itineraries: ["C1->C5"],
       isActive: false,
       color: null,
       activeLeg: null,
       activeItinerary: null,
     },
-    "S4->S5": {
+    "C4->C5": {
       isVisible: true,
-      legs: ["S4->S5"],
-      itineraries: ["S1->S2->S4->S5"],
+      legs: ["C4->C5"],
+      itineraries: ["C1->C2->C4->C5"],
       isActive: true,
       color: _color(2),
-      activeLeg: "S4->S5",
-      activeItinerary: "S1->S2->S4->S5",
+      activeLeg: "C4->C5",
+      activeItinerary: "C1->C2->C4->C5",
     },
   };
 
   const expItineraries = {
-    "S1->S5": {
-      from: "S1",
-      to: "S5",
+    "C1->C5": {
+      from: "City1",
+      to: "City5",
       via: [],
       numTransfer: 0,
       travelTime: 120,
     },
-    "S1->S2->S4->S5": {
-      from: "S1",
-      to: "S5",
-      via: ["S2", "S4"],
+    "C1->C2->C4->C5": {
+      from: "City1",
+      to: "City5",
+      via: ["City2", "City4"],
       numTransfer: 2,
       travelTime: 360,
     },

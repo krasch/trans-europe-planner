@@ -39,8 +39,8 @@ test("prepareDataForPerlschnurSingleConnectionNoIntermediateStops", function () 
 
   const exp = {
     summary: {
-      from: "S1",
-      to: "S2",
+      from: "Stop1",
+      to: "Stop2",
       via: "",
       totalTime: "1h",
     },
@@ -52,8 +52,8 @@ test("prepareDataForPerlschnurSingleConnectionNoIntermediateStops", function () 
         name: c1.name,
         travelTime: "1h",
         stops: [
-          { date: null, time: "10:00", station: "S1" },
-          { date: null, time: "11:00", station: "S2" },
+          { date: null, time: "10:00", station: "Stop1" },
+          { date: null, time: "11:00", station: "Stop2" },
         ],
       },
     ],
@@ -70,8 +70,8 @@ test("prepareDataForPerlschnurSingleConnectionIntermediateStops", function () {
 
   const exp = {
     summary: {
-      from: "S1",
-      to: "S3",
+      from: "Stop1",
+      to: "Stop3",
       via: "",
       totalTime: "2h",
     },
@@ -83,9 +83,9 @@ test("prepareDataForPerlschnurSingleConnectionIntermediateStops", function () {
         name: c1.name,
         travelTime: "2h",
         stops: [
-          { date: null, time: "10:00", station: "S1" },
-          { date: null, time: "11:00", station: "S2" },
-          { date: null, time: "12:00", station: "S3" },
+          { date: null, time: "10:00", station: "Stop1" },
+          { date: null, time: "11:00", station: "Stop2" },
+          { date: null, time: "12:00", station: "Stop3" },
         ],
       },
     ],
@@ -104,9 +104,9 @@ test("prepareDataForPerlschnurMultipleConnections", function () {
 
   const exp = {
     summary: {
-      from: "S1",
-      to: "S4",
-      via: "via S2, S3",
+      from: "Stop1",
+      to: "Stop4",
+      via: "via Stop2, Stop3",
       totalTime: "7h",
     },
     connections: [
@@ -117,8 +117,8 @@ test("prepareDataForPerlschnurMultipleConnections", function () {
         name: c1.name,
         travelTime: "1h",
         stops: [
-          { date: null, time: "10:00", station: "S1" },
-          { date: null, time: "11:00", station: "S2" },
+          { date: null, time: "10:00", station: "Stop1" },
+          { date: null, time: "11:00", station: "Stop2" },
         ],
       },
       {
@@ -128,8 +128,8 @@ test("prepareDataForPerlschnurMultipleConnections", function () {
         name: c2.name,
         travelTime: "2h",
         stops: [
-          { date: null, time: "12:00", station: "S2" },
-          { date: null, time: "14:00", station: "S3" },
+          { date: null, time: "12:00", station: "Stop2" },
+          { date: null, time: "14:00", station: "Stop3" },
         ],
       },
       {
@@ -139,8 +139,8 @@ test("prepareDataForPerlschnurMultipleConnections", function () {
         name: c3.name,
         travelTime: "1h",
         stops: [
-          { date: null, time: "16:00", station: "S3" },
-          { date: null, time: "17:00", station: "S4" },
+          { date: null, time: "16:00", station: "Stop3" },
+          { date: null, time: "17:00", station: "Stop4" },
         ],
       },
     ],
@@ -164,9 +164,9 @@ test("prepareDataForPerlschnurMultipleConnectionsMultiday", function () {
 
   const exp = {
     summary: {
-      from: "S1",
-      to: "S4",
-      via: "via S2, S3",
+      from: "Stop1",
+      to: "Stop4",
+      via: "via Stop2, Stop3",
       totalTime: "79h",
     },
     connections: [
@@ -177,8 +177,8 @@ test("prepareDataForPerlschnurMultipleConnectionsMultiday", function () {
         name: c1.name,
         travelTime: "25h",
         stops: [
-          { date: null, time: "10:00", station: "S1" },
-          { date: D2, time: "11:00", station: "S2" },
+          { date: null, time: "10:00", station: "Stop1" },
+          { date: D2, time: "11:00", station: "Stop2" },
         ],
       },
       {
@@ -188,8 +188,8 @@ test("prepareDataForPerlschnurMultipleConnectionsMultiday", function () {
         name: c2.name,
         travelTime: "20h",
         stops: [
-          { date: null, time: "12:00", station: "S2" },
-          { date: D3, time: "08:00", station: "S3" },
+          { date: null, time: "12:00", station: "Stop2" },
+          { date: D3, time: "08:00", station: "Stop3" },
         ],
       },
       {
@@ -199,8 +199,8 @@ test("prepareDataForPerlschnurMultipleConnectionsMultiday", function () {
         name: c3.name,
         travelTime: "1h",
         stops: [
-          { date: D4, time: "16:00", station: "S3" },
-          { date: null, time: "17:00", station: "S4" },
+          { date: D4, time: "16:00", station: "Stop3" },
+          { date: null, time: "17:00", station: "Stop4" },
         ],
       },
     ],

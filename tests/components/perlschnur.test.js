@@ -48,9 +48,9 @@ test("update view should fill in template correctly", async function () {
   // overview
   expect(TEST_DOM.summary).toMatchDOMObject({
     selectors: {
-      ".from": { innerText: "S1" },
-      ".to": { innerText: "S5" },
-      ".via": { innerText: "via S3, S4" },
+      ".from": { innerText: "Stop1" },
+      ".to": { innerText: "Stop5" },
+      ".via": { innerText: "via Stop3, Stop4" },
       ".total-time": { innerText: "21h" },
     },
   });
@@ -72,9 +72,9 @@ test("update view should fill in template correctly", async function () {
   // stops for connection 1
   let gotStops = gotConnections[0].querySelectorAll(".perlschnur-stop");
   expect(gotStops.length).toBe(3);
-  expect(gotStops[0]).toMatchDOMObject(_stop("", "10:00", "S1"));
-  expect(gotStops[1]).toMatchDOMObject(_stop("", "11:00", "S2"));
-  expect(gotStops[2]).toMatchDOMObject(_stop("", "12:00", "S3"));
+  expect(gotStops[0]).toMatchDOMObject(_stop("", "10:00", "Stop1"));
+  expect(gotStops[1]).toMatchDOMObject(_stop("", "11:00", "Stop2"));
+  expect(gotStops[2]).toMatchDOMObject(_stop("", "12:00", "Stop3"));
 
   // connection 2
   expect(gotConnections[1]).toMatchDOMObject({
@@ -89,8 +89,8 @@ test("update view should fill in template correctly", async function () {
   // stops for connection 2
   gotStops = gotConnections[1].querySelectorAll(".perlschnur-stop");
   expect(gotStops.length).toBe(2);
-  expect(gotStops[0]).toMatchDOMObject(_stop("", "13:00", "S3"));
-  expect(gotStops[1]).toMatchDOMObject(_stop("", "14:00", "S4"));
+  expect(gotStops[0]).toMatchDOMObject(_stop("", "13:00", "Stop3"));
+  expect(gotStops[1]).toMatchDOMObject(_stop("", "14:00", "Stop4"));
 
   // connection 3
   expect(gotConnections[2]).toMatchDOMObject({
@@ -105,8 +105,8 @@ test("update view should fill in template correctly", async function () {
   // stops for connection 3
   gotStops = gotConnections[2].querySelectorAll(".perlschnur-stop");
   expect(gotStops.length).toBe(2);
-  expect(gotStops[0]).toMatchDOMObject(_stop("", "17:00", "S4"));
-  expect(gotStops[1]).toMatchDOMObject(_stop("(16 Oct)", "07:00", "S5"));
+  expect(gotStops[0]).toMatchDOMObject(_stop("", "17:00", "Stop4"));
+  expect(gotStops[1]).toMatchDOMObject(_stop("(16 Oct)", "07:00", "Stop5"));
 
   // transfers
   const gotTransfers = TEST_DOM.perlschnurTransfers;
@@ -138,8 +138,8 @@ test("update view should update with new connection data", async function () {
   // overview
   expect(TEST_DOM.summary).toMatchDOMObject({
     selectors: {
-      ".from": { innerText: "S3" },
-      ".to": { innerText: "S4" },
+      ".from": { innerText: "Stop3" },
+      ".to": { innerText: "Stop4" },
       ".via": { innerText: "" },
       ".total-time": { innerText: "1h" },
     },
@@ -158,8 +158,8 @@ test("update view should update with new connection data", async function () {
   // stops
   let gotStops = gotConnections[0].querySelectorAll(".perlschnur-stop");
   expect(gotStops.length).toBe(2);
-  expect(gotStops[0]).toMatchDOMObject(_stop("", "13:00", "S3"));
-  expect(gotStops[1]).toMatchDOMObject(_stop("", "14:00", "S4"));
+  expect(gotStops[0]).toMatchDOMObject(_stop("", "13:00", "Stop3"));
+  expect(gotStops[1]).toMatchDOMObject(_stop("", "14:00", "Stop4"));
 
   // transfers
   const gotTransfers = TEST_DOM.perlschnurTransfers;

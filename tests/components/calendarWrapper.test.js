@@ -58,7 +58,7 @@ test("update view should fill in template correctly", async function () {
   expect(TEST_DOM.calendarEntries.length).toBe(4);
   expect(TEST_DOM.calendarEntries[0]).toMatchDOMObject({
     dataset: {
-      group: "S1->S2",
+      group: "C1->C2",
       active: "active",
       color: _color(0),
       departureDatetime: c1.from.departure.toISO(),
@@ -68,14 +68,14 @@ test("update view should fill in template correctly", async function () {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
       ".connection-number": { innerHTML: "ICE T1" },
       ".start .time": { innerHTML: "10:00" },
-      ".start .station": { innerHTML: "S1" },
+      ".start .station": { innerHTML: "Stop1" },
       ".destination .time": { innerHTML: "11:00" },
-      ".destination .station": { innerHTML: "S2" },
+      ".destination .station": { innerHTML: "Stop2" },
     },
   });
   expect(TEST_DOM.calendarEntries[1]).toMatchDOMObject({
     dataset: {
-      group: "S1->S2",
+      group: "C1->C2",
       active: "",
       color: _color(0),
       departureDatetime: c1_alt1.from.departure.toISO(),
@@ -85,14 +85,14 @@ test("update view should fill in template correctly", async function () {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
       ".connection-number": { innerHTML: "ICE T2" },
       ".start .time": { innerHTML: "10:00" },
-      ".start .station": { innerHTML: "S1" },
+      ".start .station": { innerHTML: "Stop1" },
       ".destination .time": { innerHTML: "11:00" },
-      ".destination .station": { innerHTML: "S2" },
+      ".destination .station": { innerHTML: "Stop2" },
     },
   });
   expect(TEST_DOM.calendarEntries[2]).toMatchDOMObject({
     dataset: {
-      group: "S1->S2",
+      group: "C1->C2",
       active: "",
       color: _color(0),
       departureDatetime: c1_alt2.from.departure.toISO(),
@@ -102,14 +102,14 @@ test("update view should fill in template correctly", async function () {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
       ".connection-number": { innerHTML: "ICE T3" },
       ".start .time": { innerHTML: "10:00" },
-      ".start .station": { innerHTML: "S1" },
+      ".start .station": { innerHTML: "Stop1" },
       ".destination .time": { innerHTML: "11:00" },
-      ".destination .station": { innerHTML: "S2" },
+      ".destination .station": { innerHTML: "Stop2" },
     },
   });
   expect(TEST_DOM.calendarEntries[3]).toMatchDOMObject({
     dataset: {
-      group: "S2->S3",
+      group: "C2->C3",
       active: "active",
       color: _color(1),
       departureDatetime: c2.from.departure.toISO(),
@@ -119,9 +119,9 @@ test("update view should fill in template correctly", async function () {
       ".connection-icon": { src: expect.stringMatching("train.svg") },
       ".connection-number": { innerHTML: "ICE T4" },
       ".start .time": { innerHTML: "14:00" },
-      ".start .station": { innerHTML: "S2" },
+      ".start .station": { innerHTML: "Stop2" },
       ".destination .time": { innerHTML: "15:00" },
-      ".destination .station": { innerHTML: "S3" },
+      ".destination .station": { innerHTML: "Stop3" },
     },
   });
 });
@@ -271,13 +271,13 @@ test("calendar wrapper should propagate callbacks/commands from/to calendar", as
   // run a bunch of callbacks on the calendar entries
   // -> these should be propagated to calendar wrapper and our callback mocks should be called
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[0], "mouseover");
-  expect(hoverOnCallback).toHaveBeenCalledWith("S1->S2");
+  expect(hoverOnCallback).toHaveBeenCalledWith("C1->C2");
 
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[1], "mouseout");
-  expect(hoverOffCallback).toHaveBeenCalledWith("S1->S2");
+  expect(hoverOffCallback).toHaveBeenCalledWith("C1->C2");
 
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[3], "mouseout");
-  expect(hoverOffCallback).toHaveBeenCalledWith("S2->S3");
+  expect(hoverOffCallback).toHaveBeenCalledWith("C2->C3");
 
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[0], "dragstart");
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[1], "dragenter");
@@ -285,7 +285,7 @@ test("calendar wrapper should propagate callbacks/commands from/to calendar", as
   expect(dropCallback).toHaveBeenCalledWith(c1_alt1.id);
 
   // when sending a command to calendar wrapper it should be propagated to the calendar
-  calendar.setHoverLeg("S1->S2");
+  calendar.setHoverLeg("C1->C2");
   expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
     class: expect.stringMatching("hover"),
   });

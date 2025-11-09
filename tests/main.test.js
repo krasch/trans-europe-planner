@@ -137,7 +137,7 @@ test("when user selects a destination, database should be queried for routes and
   await main("C1", components, travelDatabase);
   jest.clearAllMocks(); // reset after first call to updateComponents
 
-  // there is just one route, directly from S1->S3
+  // there is just one route, directly from C1->C3
   travelDatabase.plan.mockReturnValueOnce([
     new Itinerary([_c("T1: S1@D1T10->S3@D1T11")]),
   ]);
@@ -163,14 +163,14 @@ test("when user selects a destination, database should be queried for routes and
 
   // map was updated correctly
   expect(components.map.updateView).toHaveBeenCalledWith({
-    cities: { S1: expect.any(Object), S3: expect.any(Object) },
-    edges: { "S1->S3": expect.any(Object) },
-    itineraries: { "S1->S3": expect.any(Object) },
+    cities: { C1: expect.any(Object), C3: expect.any(Object) },
+    edges: { "C1->C3": expect.any(Object) },
+    itineraries: { "C1->C3": expect.any(Object) },
   });
 
   // perlschnur was updated correctly
   expect(components.perlschnur.updateView).toHaveBeenCalledWith({
-    summary: expect.objectContaining({ from: "S1", to: "S3" }),
+    summary: expect.objectContaining({ from: "Stop1", to: "Stop3" }),
     transfers: [],
     connections: [expect.objectContaining({ name: "ICE T1" })],
   });
@@ -185,7 +185,7 @@ test("when user moves things around in the calendar, components should be update
   const c1 = _c("T1: S1@D1T10->S3@D1T11");
   const c2 = _c("T2: S1@D2T10->S3@D2T11");
 
-  // there is just one route, directly from S1->S3
+  // there is just one route, directly from C1->C3
   travelDatabase.plan.mockReturnValueOnce([new Itinerary([c1])]);
   // same direct connection but on a different day
   travelDatabase.getAlternatives.mockReturnValueOnce([[c2]]);
@@ -197,7 +197,7 @@ test("when user moves things around in the calendar, components should be update
   jest.clearAllMocks();
   travelDatabase.getCachedConnection.mockReturnValueOnce(c2);
   travelDatabase.getAlternatives.mockReturnValueOnce([[c1]]);
-  await callbacks.calendar.legChanged("S1->S3", c2.id);
+  await callbacks.calendar.legChanged("C1->C3", c2.id);
 
   // calendar now shows T2 as active
   expect(components.calendar.updateView).toHaveBeenCalledWith(DAY1, [
@@ -208,14 +208,14 @@ test("when user moves things around in the calendar, components should be update
 
   // map data is unchanged
   expect(components.map.updateView).toHaveBeenCalledWith({
-    cities: { S1: expect.any(Object), S3: expect.any(Object) },
-    edges: { "S1->S3": expect.any(Object) },
-    itineraries: { "S1->S3": expect.any(Object) },
+    cities: { C1: expect.any(Object), C3: expect.any(Object) },
+    edges: { "C1->C3": expect.any(Object) },
+    itineraries: { "C1->C3": expect.any(Object) },
   });
 
   // perlschnur now shows T2
   expect(components.perlschnur.updateView).toHaveBeenCalledWith({
-    summary: expect.objectContaining({ from: "S1", to: "S3" }),
+    summary: expect.objectContaining({ from: "Stop1", to: "Stop3" }),
     transfers: [],
     connections: [expect.objectContaining({ name: "ICE T2" })],
   });
@@ -269,24 +269,24 @@ test("when user picks a different journey as active, components should be update
   // map still shows both itineraries, but the edges for the second one are active now
   expect(components.map.updateView).toHaveBeenCalledWith({
     cities: {
-      S1: expect.objectContaining({ isVisible: true }),
-      S2: expect.objectContaining({ isVisible: true }),
-      S3: expect.objectContaining({ isVisible: true }),
+      C1: expect.objectContaining({ isVisible: true }),
+      C2: expect.objectContaining({ isVisible: true }),
+      C3: expect.objectContaining({ isVisible: true }),
     },
     edges: {
-      "S1->S2": expect.objectContaining({ isActive: true }),
-      "S2->S3": expect.objectContaining({ isActive: true }),
-      "S1->S3": expect.objectContaining({ isActive: false }),
+      "C1->C2": expect.objectContaining({ isActive: true }),
+      "C2->C3": expect.objectContaining({ isActive: true }),
+      "C1->C3": expect.objectContaining({ isActive: false }),
     },
     itineraries: {
-      "S1->S2->S3": expect.any(Object),
-      "S1->S3": expect.any(Object),
+      "C1->C2->C3": expect.any(Object),
+      "C1->C3": expect.any(Object),
     },
   });
 
   // perlschnur now shows the second itinerary
   expect(components.perlschnur.updateView).toHaveBeenCalledWith({
-    summary: expect.objectContaining({ from: "S1", to: "S3" }),
+    summary: expect.objectContaining({ from: "Stop1", to: "Stop3" }),
     transfers: [expect.objectContaining({ time: "2h" })],
     connections: [
       expect.objectContaining({ name: "ICE T2" }),
