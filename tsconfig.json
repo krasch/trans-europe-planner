@@ -11,6 +11,7 @@
       "DOM"
     ],
     "paths": {
+      "data/inputDataFormats.js": ["./data/inputDataFormats.js"],
       "script/*": ["./script/*"],
       "tests/*": ["./tests/*"],
       "style/*": ["./style/*"]

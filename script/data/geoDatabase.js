@@ -1,3 +1,8 @@
+/**
+ * @typedef {import("data/inputDataFormats.js").City} InputCityFormat
+ * @typedef {import("data/inputDataFormats.js").Stop} InputStopFormat
+ */
+
 export class DataError extends Error {
   /**
    * @param {string} message
@@ -8,42 +13,10 @@ export class DataError extends Error {
   }
 }
 
-/*
-todo the three below describe the schema of the static dataset we are loading
-- can we make that clearer?
-- can we avoid some of the data transformations?
- */
-
-/**
- * @typedef Geo
- * @type {object}
- * @property {number} latitude
- * @property {number} longitude
- */
-
-/**
- * @typedef CityData
- * @type {object}
- * @property {string} name
- * @property {Geo} geo
- * @property {boolean} isDestination
- */
-
-/**
- * @typedef StopData
- * @type {object}
- * @property {string} name
- * @property {Geo} geo
- * @property {string} cityId
- * @property {string} country
- * @property {string[]} motisIds
- * @property {boolean} secondary
- */
-
 export class GeoDatabase {
-  /** @type {Map<string,CityData>} */
+  /** @type {Map<string,InputCityFormat>} */
   #cities;
-  /** @type {Map<string,StopData>} */
+  /** @type {Map<string,InputStopFormat>} */
   #stops;
 
   /** @type {Map<string,string>} */
@@ -54,8 +27,8 @@ export class GeoDatabase {
   #motisStopIdToStopId;
 
   /**
-   * @param { Object.<String,CityData>} cities {id: cityData}
-   * @param { Object.<String,StopData>} stops {id: stopData}
+   * @param { Object.<String,InputCityFormat>} cities {id: InputCityFormat}
+   * @param { Object.<String,InputStopFormat>} stops {id: InputStopFormat}
    */
   constructor(cities, stops) {
     this.#cities = new Map(Object.entries(cities));
@@ -99,12 +72,12 @@ export class GeoDatabase {
 
   get geoDataForAllCities() {
     const result = [];
-    this.#cities.forEach((cityData, cityId) => {
+    this.#cities.forEach((InputCityFormat, cityId) => {
       result.push({
         id: cityId,
-        name: cityData.name,
-        lngLat: [cityData.geo.longitude, cityData.geo.latitude],
-        isDestination: cityData.isDestination,
+        name: InputCityFormat.name,
+        lngLat: [InputCityFormat.geo.longitude, InputCityFormat.geo.latitude],
+        isDestination: InputCityFormat.isDestination,
       });
     });
     return result;

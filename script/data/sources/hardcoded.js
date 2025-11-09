@@ -11,20 +11,8 @@ const PLACEHOLDER_DATE = DateTime.fromISO("2025-01-01");
 const NUM_DAYS = 3;
 
 /**
- * @typedef HardcodedStopData - format coming from connections file
- * @type {object}
- * @property {string} stopId
- * @property {string} arrivalTime
- * @property {string} departureTime
- */
-
-/**
- * @typedef HardcodedConnectionData - format coming from connections file
- * @type {object}
- * @property {string} id
- * @property {string} type
- * @property {string} name
- * @property {HardcodedStopData[]} stops
+ * @typedef {import("data/inputDataFormats.js").StopTime} InputStopFormat
+ * @typedef {import("data/inputDataFormats.js").Connection} InputConnectionFormat
  */
 
 /**
@@ -39,7 +27,7 @@ export function initDatetime(date, timeString) {
 }
 
 /**
- * @param {HardcodedStopData} data
+ * @param {InputStopFormat} data
  * @param {DateTime} travelDate
  * @param {GeoDatabase} geoDatabase
  * @returns Stop
@@ -62,7 +50,7 @@ export function initStop(data, travelDate, geoDatabase) {
 }
 
 /**
- * @param {HardcodedConnectionData} data
+ * @param {InputConnectionFormat} data
  * @param {DateTime} travelDate
  * @param {GeoDatabase} geoDatabase
  * @returns {Connection}
@@ -112,7 +100,7 @@ export class HardcodedConnectionDatabase {
   #connectionStopOrder;
 
   /**
-   * @param {HardcodedConnectionData[]} connections
+   * @param {InputConnectionFormat[]} connections
    * @param {any} routes
    * @param {GeoDatabase} geoDatabase
    */
