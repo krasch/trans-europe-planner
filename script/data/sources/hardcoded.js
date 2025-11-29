@@ -5,99 +5,143 @@ import { Connection } from "script/types/connection.js";
 import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
 import { Stop } from "script/types/stop.js";
-import { DefaultMap } from "script/util.js";
-
-const PLACEHOLDER_DATE = DateTime.fromISO("2025-01-01");
-const NUM_DAYS = 3;
 
 /**
- * @typedef {import("data/inputDataFormats.js").StopTime} InputStopFormat
  * @typedef {import("data/inputDataFormats.js").Connection} InputConnectionFormat
  */
 
-/**
- * @param {DateTime} date
- * @param {string} timeString e,g. 07:02:03 or 36:04:19
- * @returns {DateTime}
- */
-export function initDatetime(date, timeString) {
-  const [hours, minutes, seconds] = timeString.split(":");
+export class InputConnectionDataWrapper {
+  /**
+   * @param {InputConnectionFormat} data
+   */
+  constructor(data) {
+    this.data = data;
 
-  return date.plus({ hours: hours, minutes: minutes });
-}
+    this.stopOrder = new Map();
+    data.stops.forEach((s, i) => this.stopOrder.set(s.stopId, i));
+  }
 
-/**
- * @param {InputStopFormat} data
- * @param {DateTime} travelDate
- * @param {GeoDatabase} geoDatabase
- * @returns Stop
- */
-export function initStop(data, travelDate, geoDatabase) {
-  let arrival = null;
-  if (data.arrivalTime) arrival = initDatetime(travelDate, data.arrivalTime);
+  /**
+   * todo do for cities
+   * @param {string} fromStopId
+   * @param {string} toStopId
+   * @returns InputConnectionDataWrapper
+   */
+  slice(fromStopId, toStopId) {
+    assert(this.connects(fromStopId, toStopId));
 
-  let departure = null;
-  if (data.departureTime)
-    departure = initDatetime(travelDate, data.departureTime);
+    const slicedStops = this.data.stops.slice(
+      this.stopOrder.get(fromStopId),
+      this.stopOrder.get(toStopId) + 1,
+    );
 
-  return new Stop(
-    data.stopId,
-    geoDatabase.stopName(data.stopId),
-    geoDatabase.cityForStopId(data.stopId),
-    arrival,
-    departure,
-  );
-}
+    // the new starting stop could have a departure > 24 -> need to shift all times
+    const newDeparture = slicedStops[0].departureTime;
+    const dayOffset = Math.floor(
+      this.#splitTimeString(newDeparture).hours / 24,
+    );
 
-/**
- * @param {InputConnectionFormat} data
- * @param {DateTime} travelDate
- * @param {GeoDatabase} geoDatabase
- * @returns {Connection}
- */
-export function initConnection(data, travelDate, geoDatabase) {
-  const stops = data.stops.map((s) => initStop(s, travelDate, geoDatabase));
+    const shiftedStops = slicedStops.map((s) => ({
+      stopId: s.stopId,
+      departureTime: this.#shiftTimestring(s.departureTime, dayOffset),
+      arrivalTime: this.#shiftTimestring(s.arrivalTime, dayOffset),
+    }));
 
-  const from = stops[0];
-  const to = stops.at(-1);
-  const intermediate = stops.slice(1, stops.length - 1);
+    shiftedStops[0].arrivalTime = null;
+    shiftedStops.at(-1).departureTime = null;
 
-  return new Connection(data.id, data.type, data.name, from, to, intermediate);
-}
+    return new InputConnectionDataWrapper({
+      id: this.data.id,
+      type: this.data.type,
+      name: this.data.name,
+      stops: shiftedStops,
+    });
+  }
 
-/**
- * @param {Connection} connection
- * @param {Number} fromIdx inclusive
- * @param {Number} toIdx exclusive
- * @returns Connection sliced from [fromIdx,toIdx)
- */
-export function sliceConnection(connection, fromIdx, toIdx) {
-  assert(fromIdx < toIdx);
+  /**
+   * @param {string} fromStopId
+   * @param {string} toStopId
+   * @returns {boolean}
+   */
+  connects(fromStopId, toStopId) {
+    return (
+      this.stopOrder.has(fromStopId) &&
+      this.stopOrder.has(toStopId) &&
+      this.stopOrder.get(fromStopId) < this.stopOrder.get(toStopId)
+    );
+  }
 
-  const slicedStops = connection.stops.slice(fromIdx, toIdx);
+  /**
+   * Convert to our proper Connection format. Sets a travel date!
+   * @param {DateTime} travelDate
+   * @param {GeoDatabase} geoDatabase
+   * @returns {Connection}
+   */
+  convert(travelDate, geoDatabase) {
+    const stops = this.data.stops.map(
+      (s) =>
+        new Stop(
+          s.stopId,
+          geoDatabase.stopName(s.stopId),
+          geoDatabase.cityForStopId(s.stopId),
+          this.#initDatetime(travelDate, s.arrivalTime),
+          this.#initDatetime(travelDate, s.departureTime),
+        ),
+    );
 
-  const from = slicedStops[0];
-  const to = slicedStops.at(-1);
-  const intermediate = slicedStops.slice(1, -1);
+    const from = stops[0];
+    const to = stops.at(-1);
+    const intermediate = stops.slice(1, stops.length - 1);
 
-  // these attributes are not set for first/last stop in connection
-  from.arrival = null;
-  to.departure = null;
+    from.arrival = null;
+    to.departure = null;
 
-  return new Connection(
-    connection.tripId,
-    connection.mode,
-    connection.name,
-    from,
-    to,
-    intermediate,
-  );
+    return new Connection(
+      this.data.id,
+      this.data.type,
+      this.data.name,
+      from,
+      to,
+      intermediate,
+    );
+  }
+
+  /**
+   * @param {string} timeString
+   */
+  #splitTimeString(timeString) {
+    const [hours, minutes, seconds] = timeString.split(":");
+    return { hours: Number(hours), minutes: Number(minutes) };
+  }
+
+  /**
+   * @param {DateTime} date
+   * @param {string} timeString e,g. 07:02:03 or 36:04:19
+   * @returns {DateTime}
+   */
+  #initDatetime(date, timeString) {
+    if (timeString === null) return null;
+    const split = this.#splitTimeString(timeString);
+    return date.plus({ hours: split.hours, minutes: split.minutes });
+  }
+
+  /**
+   * @param {string} timeString
+   * @param {number} numDays
+   * @returns {string} shiftedTimeString
+   */
+  #shiftTimestring(timeString, numDays) {
+    if (timeString === null) return null;
+    const split = this.#splitTimeString(timeString);
+
+    const hours = split.hours - numDays * 24;
+    const minutes = split.minutes;
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+  }
 }
 
 export class HardcodedConnectionDatabase {
   #connections;
-  #connectionIdToStopId;
-  #connectionStopOrder;
 
   /**
    * @param {InputConnectionFormat[]} connections
@@ -105,30 +149,9 @@ export class HardcodedConnectionDatabase {
    * @param {GeoDatabase} geoDatabase
    */
   constructor(connections, routes, geoDatabase) {
-    /** @type {Map<string, Connection>} */
-    this.#connections = new Map();
-
-    /** @type {DefaultMap<string, string[]>} */
-    this.#connectionIdToStopId = new DefaultMap(() => []);
-
-    /** @type {Map<string,Object<string,number>>} */
-    this.#connectionStopOrder = new DefaultMap(() => {});
-
-    // convert to Connection type, using placeholder date
-    connections.forEach((c) => {
-      const connection = initConnection(c, PLACEHOLDER_DATE, geoDatabase);
-      this.#connections.set(connection.id, connection);
-
-      // for quick lookup of all connections stopping at stop A
-      connection.stops.forEach((stop) => {
-        this.#connectionIdToStopId.get(stop.stopId).push(connection.id);
-      });
-
-      // for quick lookup if one stops comes before the other in a connection
-      connection.stops.forEach((stop, stopIdx) => {
-        this.#connectionStopOrder.get(connection.id)[stop.stopId] = stopIdx;
-      });
-    });
+    this.#connections = connections.map(
+      (c) => new InputConnectionDataWrapper(c),
+    );
   }
 
   /**
@@ -153,44 +176,18 @@ export class HardcodedConnectionDatabase {
     const fromStopIds = geoDatabase.stopIdsForCityId(fromCityId);
     const toStopIds = geoDatabase.stopIdsForCityId(toCityId);
 
+    // todo better lookup so I don't have to look at all connections
     // todo other stop ids
-    const matches = this.#directConnectionIds(
-      fromStopIds.mainStopId,
-      toStopIds.mainStopId,
-    );
+    const result = this.#connections
+      // which connections run between these stops?
+      .filter((c) => c.connects(fromStopIds.mainStopId, toStopIds.mainStopId))
+      // slice connection up to keep only the piece we need
+      .map((c) => c.slice(fromStopIds.mainStopId, toStopIds.mainStopId))
+      // apply date and convert to our internal format;
+      .map((c) => c.convert(startDate, geoDatabase));
 
     return new Promise((resolve, reject) => {
-      resolve(null);
+      resolve(result);
     });
-  }
-
-  /**
-   * @param {string} fromStopId
-   * @param {string} toStopId
-   */
-  #directConnectionIds(fromStopId, toStopId) {
-    const candidatesFrom = this.#connectionIdToStopId.get(fromStopId);
-    const candidatesTo = this.#connectionIdToStopId.get(toStopId);
-
-    // connections that stop in both from and to stop
-    const candidates = candidatesFrom.filter((c) => candidatesTo.includes(c));
-
-    // keep only the part of the connection between from and to
-    const sliced = candidates.filter((c) => {
-      const stopIndices = this.#connectionStopOrder.get(c.id);
-
-      // this connection goes in the wrong direction
-      if (stopIndices[fromStopId] > stopIndices[toStopId]) return null;
-    });
-
-    // in right direction
-    //return candidates.filter((c) =>
-    //  this.#hasRightDirection(c, fromStopId, toStopId),
-    //);
   }
 }
-
-/*    // maps {stopId: idx} - needed for hardcoded connection dataset
-    this.stopIndices = Object.fromEntries(
-      this.stops.map((s, i) => [s.stopId, i]),
-    );*/

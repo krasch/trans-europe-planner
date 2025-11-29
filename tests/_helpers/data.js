@@ -40,10 +40,9 @@ export function timestampFromShorthand(tsShorthand) {
 
 /**
  * @param {string} shorthand
- * @param {('first'|'intermediate'|'last')} type
  * @returns Stop
  */
-export function stopFromShorthand(shorthand, type = "intermediate") {
+export function stopFromShorthand(shorthand) {
   // S1@D1T10
   const [id, tsShorthand] = shorthand.split("@");
   assert(id.match("S[0-9]+"), "Bad stopId format");
@@ -51,12 +50,9 @@ export function stopFromShorthand(shorthand, type = "intermediate") {
   const stopNumber = id.slice(1); // remove the initial "S"
   const timestamp = timestampFromShorthand(tsShorthand);
 
-  let arrival = null;
-  if (type !== "first") arrival = timestamp;
-
   // IMPORTANT: departure is always 1 minute later than arrival to make tests stronger
-  let departure = null;
-  if (type !== "last") departure = timestamp.plus({ minute: 1 });
+  const arrival = timestamp;
+  const departure = timestamp.plus({ minute: 1 });
 
   // stop S1 with name Stop1, city C1 with name City1
   const stopId = `S${stopNumber}`;
@@ -80,14 +76,15 @@ export function stopFromShorthand(shorthand, type = "intermediate") {
 export function connectionFromShorthand(shorthand) {
   // "T1: S1@D1T10->S2@D1T11->S3@D1T12"
   const [tripId, stopListString] = shorthand.split(": ");
-  const stops = stopListString.split("->");
 
-  const from = stopFromShorthand(stops[0], "first");
-  const to = stopFromShorthand(stops.at(-1), "last");
+  const stops = stopListString.split("->").map((s) => stopFromShorthand(s));
 
-  const intermediate = stops
-    .slice(1, -1)
-    .map((s) => stopFromShorthand(s, "intermediate"));
+  const from = stops[0];
+  const to = stops.at(-1);
+  const intermediate = stops.slice(1, -1);
+
+  from.arrival = null;
+  to.departure = null;
 
   const mode = "train";
   const name = `ICE ${tripId}`;

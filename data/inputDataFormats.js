@@ -28,8 +28,8 @@
  * @typedef StopTime
  * @type {object}
  * @property {string} stopId
- * @property {string} arrivalTime
- * @property {string} departureTime
+ * @property {string | null} arrivalTime
+ * @property {string | null} departureTime
  */
 
 /**

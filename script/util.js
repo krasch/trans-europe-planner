@@ -64,7 +64,11 @@ export class DefaultMap extends Map {
    * @returns {V} value
    */
   get(key) {
-    if (!super.has(key)) super.set(key, this.defaultFn());
+    if (!super.has(key)) {
+      const value = this.defaultFn();
+      console.assert(value !== undefined);
+      super.set(key, value);
+    }
     return super.get(key);
   }
 }

@@ -1,4 +1,4 @@
-import { groupBy } from "script/util.js";
+import { DefaultMap, groupBy } from "script/util.js";
 
 test("groupBy", function () {
   const items = [
@@ -26,4 +26,25 @@ test("groupByNoItems", function () {
 
   const got = groupBy(items, (i) => i.key);
   expect(got).toStrictEqual(exp);
+});
+
+test("defaultMapScalar", function () {
+  const map = new DefaultMap(() => "Hallo");
+  expect(map.get("test")).toBe("Hallo");
+});
+
+test("defaultMapList", function () {
+  const map = new DefaultMap(() => []);
+  expect(map.get("test")).toStrictEqual([]);
+
+  map.get("test").push("hallo");
+  expect(map.get("test")).toStrictEqual(["hallo"]);
+});
+
+test("defaultMapDict", function () {
+  const map = new DefaultMap(() => ({}));
+  expect(map.get("test")).toStrictEqual({});
+
+  map.get("test")["key"] = "value";
+  expect(map.get("test")).toStrictEqual({ key: "value" });
 });
