@@ -22,13 +22,42 @@ export class InputConnectionDataWrapper {
   }
 
   /**
-   * todo do for cities
+   * @param {string} fromStopId
+   * @param {string} toStopId
+   * @returns {boolean}
+   */
+  #connectsStopToStop(fromStopId, toStopId) {
+    return (
+      this.stopOrder.has(fromStopId) &&
+      this.stopOrder.has(toStopId) &&
+      this.stopOrder.get(fromStopId) < this.stopOrder.get(toStopId)
+    );
+  }
+
+  /**
+   * @param {string} fromCityId
+   * @param {string} toCityId
+   * @param {GeoDatabase} geo
+   * @returns {boolean}
+   */
+  connectsCityToCity(fromCityId, toCityId, geo) {
+    // is this connection going from any of the stops in fromCity to any of the stops in toCity?
+    for (let fromStopId of geo.stopIdsForCityId(fromCityId).stopIds) {
+      for (let toStopId of geo.stopIdsForCityId(toCityId).stopIds) {
+        if (this.#connectsStopToStop(fromStopId, toStopId)) return true;
+      }
+    }
+    // no such pair of stops found
+    return false;
+  }
+
+  /**
    * @param {string} fromStopId
    * @param {string} toStopId
    * @returns InputConnectionDataWrapper
    */
-  slice(fromStopId, toStopId) {
-    assert(this.connects(fromStopId, toStopId));
+  #sliceStopToStop(fromStopId, toStopId) {
+    assert(this.#connectsStopToStop(fromStopId, toStopId));
 
     const slicedStops = this.data.stops.slice(
       this.stopOrder.get(fromStopId),
@@ -59,16 +88,46 @@ export class InputConnectionDataWrapper {
   }
 
   /**
-   * @param {string} fromStopId
-   * @param {string} toStopId
-   * @returns {boolean}
+   * @param {string} fromCityId
+   * @param {string} toCityId
+   * @param {GeoDatabase} geo
+   * @returns InputConnectionDataWrapper
    */
-  connects(fromStopId, toStopId) {
-    return (
-      this.stopOrder.has(fromStopId) &&
-      this.stopOrder.has(toStopId) &&
-      this.stopOrder.get(fromStopId) < this.stopOrder.get(toStopId)
-    );
+  sliceCityToCity(fromCityId, toCityId, geo) {
+    const fromStopIds = geo.stopIdsForCityId(fromCityId);
+    const toStopIds = geo.stopIdsForCityId(toCityId);
+
+    // for fromCity
+    // by default, slice at the main stop id
+    let fromStopId = fromStopIds.mainStopId;
+    // however, if this train only stops in secondary stops in this city
+    // then take the ***latest*** of these stops (in terms of stop order)
+    if (!this.stopOrder.has(fromStopId)) {
+      const candidateIndices = fromStopIds.stopIds
+        // keep only stops that are actually on this connection
+        .filter((s) => this.stopOrder.has(s))
+        // get the stop order index of these stops
+        .map((s) => this.stopOrder.get(s));
+      const latest = Math.max(...candidateIndices);
+      fromStopId = this.data.stops[latest].stopId;
+    }
+
+    // nearly same for fromCity
+    // by default, slice at the main stop id
+    let toStopId = toStopIds.mainStopId;
+    // however, if this train only stops in secondary stops in this city
+    // then take the ***earliest*** of these stops (in terms of stop order)
+    if (!this.stopOrder.has(toStopId)) {
+      const candidateIndices = toStopIds.stopIds
+        // keep only stops that are actually on this connection
+        .filter((s) => this.stopOrder.has(s))
+        // get the stop order index of these stops
+        .map((s) => this.stopOrder.get(s));
+      const earliest = Math.min(...candidateIndices);
+      toStopId = this.data.stops[earliest].stopId;
+    }
+
+    return this.#sliceStopToStop(fromStopId, toStopId);
   }
 
   /**
@@ -173,16 +232,12 @@ export class HardcodedConnectionDatabase {
    * @returns {Promise<Connection[]>}
    */
   async direct(fromCityId, toCityId, startDate, geoDatabase) {
-    const fromStopIds = geoDatabase.stopIdsForCityId(fromCityId);
-    const toStopIds = geoDatabase.stopIdsForCityId(toCityId);
-
-    // todo better lookup so I don't have to look at all connections
-    // todo other stop ids
+    // todo better lookup so I don't have to look at all connections?
     const result = this.#connections
       // which connections run between these stops?
-      .filter((c) => c.connects(fromStopIds.mainStopId, toStopIds.mainStopId))
+      .filter((c) => c.connectsCityToCity(fromCityId, toCityId, geoDatabase))
       // slice connection up to keep only the piece we need
-      .map((c) => c.slice(fromStopIds.mainStopId, toStopIds.mainStopId))
+      .map((c) => c.sliceCityToCity(fromCityId, toCityId, geoDatabase))
       // apply date and convert to our internal format;
       .map((c) => c.convert(startDate, geoDatabase));
 

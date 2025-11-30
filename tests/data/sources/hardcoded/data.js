@@ -4,12 +4,28 @@ const CITIES = {
   C1: { name: "City1", geo: { latitude: 10, longitude: 10 } },
   C2: { name: "City2", geo: { latitude: 20, longitude: 20 } },
   C3: { name: "City3", geo: { latitude: 30, longitude: 30 } },
+  C4: { name: "City4", geo: { latitude: 40, longitude: 40 } },
+  C5: { name: "City5", geo: { latitude: 50, longitude: 50 } },
 };
 
 const STOPS = {
   S1: { name: "Stop1", geo: { latitude: 10, longitude: 10 }, cityId: "C1" },
   S2: { name: "Stop2", geo: { latitude: 20, longitude: 20 }, cityId: "C2" },
   S3: { name: "Stop3", geo: { latitude: 30, longitude: 30 }, cityId: "C3" },
+  S4: { name: "Stop4", geo: { latitude: 40, longitude: 40 }, cityId: "C4" },
+  S5A: { name: "Stop5A", geo: { latitude: 50, longitude: 50 }, cityId: "C5" },
+  S5B: {
+    name: "Stop5B",
+    geo: { latitude: 50, longitude: 50 },
+    cityId: "C5",
+    secondary: true,
+  },
+  S5C: {
+    name: "Stop5C",
+    geo: { latitude: 50, longitude: 50 },
+    cityId: "C5",
+    secondary: true,
+  },
 };
 
 // testing with the real data to make sure it is formatted as expected todo
