@@ -1,10 +1,34 @@
 import { HardcodedConnectionDatabase } from "script/data/sources/hardcoded.js";
 
-import { DAY1, connectionFromShorthand as _c } from "tests/_helpers/data.js";
+import {
+  DAY1,
+  connectionFromShorthand as _c,
+  itineraryFromShortHand as _i,
+} from "tests/_helpers/data.js";
 import {
   initGeoDatabase,
   hardcodedConnectionDataFromShorthand,
 } from "tests/data/sources/hardcoded/data.js";
+
+/**
+ * @typedef {import("data/inputDataFormats.js").CityToCityRoutes} CityToCityRoutes
+ */
+
+const geo = initGeoDatabase();
+
+// todo the below is wrong, it should be multiple routes in one thing
+/**
+ * @param {string} shorthand
+ * @returns {CityToCityRoutes}
+ */
+function routeFromShorthand(shorthand) {
+  const cityNames = shorthand.split("->");
+  return {
+    fromCityName: cityNames[0],
+    toCityName: cityNames.at(-1),
+    routes: [cityNames],
+  };
+}
 
 test.each([
   // only one matching connection
@@ -44,7 +68,6 @@ test.each([
     checkLengthOnly: true,
   },
 ])("Direct", async function (data) {
-  const geo = initGeoDatabase();
   const db = new HardcodedConnectionDatabase(
     data.connections.map(hardcodedConnectionDataFromShorthand),
     [],
@@ -61,4 +84,32 @@ test.each([
 
   expect(got.length).toBe(exp.length);
   if (!data.checkLengthOnly) expect(got).toStrictEqual(exp);
+});
+
+test.each([
+  // route can be done with one single connection
+  {
+    connections: ["T1: S1@D10->S2@T11->S3@T12"],
+    routes: ["City1->City2"],
+    fromCityId: "C1",
+    toCityId: "C2",
+    travelDate: DAY1,
+    expected: [["T1: S1@D1T10->S2@D1T11"]],
+  },
+])("Plan", async function (data) {
+  const db = new HardcodedConnectionDatabase(
+    data.connections.map(hardcodedConnectionDataFromShorthand),
+    data.routes.map(routeFromShorthand),
+    geo,
+  );
+
+  const exp = data.expected.map((shorthand) => _i(shorthand));
+  const got = await db.plan(
+    data.fromCityId,
+    data.toCityId,
+    data.travelDate,
+    geo,
+  );
+
+  expect(got).toStrictEqual(exp);
 });

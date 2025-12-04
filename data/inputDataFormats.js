@@ -40,3 +40,16 @@
  * @property {string} name
  * @property {StopTime[]} stops
  */
+
+/**
+ * @typedef Route
+ * @type {string[]} List of cities en route
+ */
+
+/**
+ * @typedef CityToCityRoutes
+ * @type {object}
+ * @property {string} fromCityName
+ * @property {string} toCityName
+ * @property {Route[]} routes
+ */

@@ -8,6 +8,7 @@ import { Stop } from "script/types/stop.js";
 
 /**
  * @typedef {import("data/inputDataFormats.js").Connection} InputConnectionFormat
+ * @typedef {import("data/inputDataFormats.js").CityToCityRoutes} InputCityToCityRoutesFormat
  */
 
 export class InputConnectionDataWrapper {
@@ -204,7 +205,7 @@ export class HardcodedConnectionDatabase {
 
   /**
    * @param {InputConnectionFormat[]} connections
-   * @param {any} routes
+   * @param {InputCityToCityRoutesFormat[]} routes
    * @param {GeoDatabase} geoDatabase
    */
   constructor(connections, routes, geoDatabase) {
@@ -221,7 +222,18 @@ export class HardcodedConnectionDatabase {
    * @returns {Promise<Itinerary[]>}
    */
   async plan(fromCityId, toCityId, startDate, geoDatabase) {
-    return new Promise(null);
+    // todo actually plan
+    const connections = await this.direct(
+      fromCityId,
+      toCityId,
+      startDate,
+      geoDatabase,
+    );
+    const result = new Itinerary([connections[0]]);
+
+    return new Promise((resolve, reject) => {
+      resolve([result]);
+    });
   }
 
   /**
@@ -238,7 +250,7 @@ export class HardcodedConnectionDatabase {
       .filter((c) => c.connectsCityToCity(fromCityId, toCityId, geoDatabase))
       // slice connection up to keep only the piece we need
       .map((c) => c.sliceCityToCity(fromCityId, toCityId, geoDatabase))
-      // apply date and convert to our internal format;
+      // apply date and convert to our internal format
       .map((c) => c.convert(startDate, geoDatabase));
 
     return new Promise((resolve, reject) => {

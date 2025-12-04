@@ -1,5 +1,4 @@
 import { InputConnectionDataWrapper } from "script/data/sources/hardcoded.js";
-import { init } from "script/init.js";
 
 import { DAY1, connectionFromShorthand as _c } from "tests/_helpers/data.js";
 import {
