@@ -6,10 +6,19 @@ import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
 import { Stop } from "script/types/stop.js";
 
+const TRANSFER_TIME = 30; // minutes
+
 /**
  * @typedef {import("data/inputDataFormats.js").Connection} InputConnectionFormat
  * @typedef {import("data/inputDataFormats.js").CityToCityRoutes} InputCityToCityRoutesFormat
  */
+
+export class RoutingError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "RoutingError";
+  }
+}
 
 export class InputConnectionDataWrapper {
   /**
@@ -202,6 +211,7 @@ export class InputConnectionDataWrapper {
 
 export class HardcodedConnectionDatabase {
   #connections;
+  #routes;
 
   /**
    * @param {InputConnectionFormat[]} connections
@@ -212,27 +222,14 @@ export class HardcodedConnectionDatabase {
     this.#connections = connections.map(
       (c) => new InputConnectionDataWrapper(c),
     );
-  }
 
-  /**
-   * @param {String} fromCityId
-   * @param {String} toCityId
-   * @param {DateTime} startDate
-   * @param {GeoDatabase} geoDatabase
-   * @returns {Promise<Itinerary[]>}
-   */
-  async plan(fromCityId, toCityId, startDate, geoDatabase) {
-    // todo actually plan
-    const connections = await this.direct(
-      fromCityId,
-      toCityId,
-      startDate,
-      geoDatabase,
-    );
-    const result = new Itinerary([connections[0]]);
-
-    return new Promise((resolve, reject) => {
-      resolve([result]);
+    this.#routes = {};
+    routes.forEach((r) => {
+      const from = geoDatabase.cityNameToId(r.fromCityName);
+      const to = geoDatabase.cityNameToId(r.toCityName);
+      this.#routes[this.#routeKey(from, to)] = r.routes.map((cities) =>
+        cities.map((c) => geoDatabase.cityNameToId(c)),
+      );
     });
   }
 
@@ -245,6 +242,8 @@ export class HardcodedConnectionDatabase {
    */
   async direct(fromCityId, toCityId, startDate, geoDatabase) {
     // todo better lookup so I don't have to look at all connections?
+    // todo caching?
+    // todo multi-dates
     const result = this.#connections
       // which connections run between these stops?
       .filter((c) => c.connectsCityToCity(fromCityId, toCityId, geoDatabase))
@@ -256,5 +255,102 @@ export class HardcodedConnectionDatabase {
     return new Promise((resolve, reject) => {
       resolve(result);
     });
+  }
+
+  /**
+   * @param {String} fromCityId
+   * @param {String} toCityId
+   * @param {DateTime} startDate
+   * @param {GeoDatabase} geoDatabase
+   * @returns {Promise<Itinerary[]>}
+   */
+  async plan(fromCityId, toCityId, startDate, geoDatabase) {
+    // which routes connect these cities?
+    const routes = this.#routes[this.#routeKey(fromCityId, toCityId)];
+    if (!routes)
+      return new Promise((resolve, reject) => {
+        const msg = `No routes available for ${fromCityId}->${toCityId}`;
+        reject(new RoutingError(msg));
+      });
+
+    // create itinerary for each of these routes
+    const result = [];
+    for (let route of routes) {
+      const connectionsByLeg = await this.#getConnectionsForAllLegs(
+        route,
+        startDate,
+        geoDatabase,
+      );
+      // todo push to later
+      const earliest = this.#earliestItinerary(connectionsByLeg);
+      result.push(new Itinerary(earliest));
+    }
+
+    return new Promise((resolve, reject) => {
+      resolve(result);
+    });
+  }
+
+  /**
+   * @param {string} fromCityId
+   * @param {string} toCityId
+   * @returns {string}
+   */
+  #routeKey(fromCityId, toCityId) {
+    return `${fromCityId}->${toCityId}`;
+  }
+
+  /**
+   * @param {string} route
+   * @param {DateTime} startDate
+   * @param {GeoDatabase} geoDatabase
+   * @returns {Promise<Connection[][]>}
+   */
+  async #getConnectionsForAllLegs(route, startDate, geoDatabase) {
+    const connectionsByLeg = [];
+
+    for (let i = 0; i < route.length - 1; i++) {
+      const fromCityId = route[i];
+      const toCityId = route[i + 1];
+
+      const connections = await this.direct(
+        fromCityId,
+        toCityId,
+        startDate,
+        geoDatabase,
+      );
+
+      if (connections.length === 0)
+        throw new RoutingError(
+          `No suitable connections for leg ${fromCityId}->${toCityId} `,
+        );
+
+      connectionsByLeg.push(connections);
+    }
+
+    return connectionsByLeg;
+  }
+
+  /**
+   * @param {Connection[][]} connectionsByLeg
+   * @returns {Connection[]}
+   */
+  #earliestItinerary(connectionsByLeg) {
+    // start with the earliest connection on the first leg
+    const itinerary = [connectionsByLeg[0][0]];
+
+    // loop over legs
+    for (let i = 1; i < connectionsByLeg.length; i++) {
+      const previousArrival = itinerary.at(-1).to.arrival;
+      const filtered = connectionsByLeg[i].filter(
+        (c) =>
+          c.from.departure.diff(previousArrival).as("minutes") >= TRANSFER_TIME,
+      );
+
+      if (filtered.length === 0) throw new RoutingError();
+      itinerary.push(filtered[0]); // earliest we can catch for this leg
+    }
+
+    return itinerary;
   }
 }

@@ -1,4 +1,8 @@
-import { HardcodedConnectionDatabase } from "script/data/sources/hardcoded.js";
+import {
+  HardcodedConnectionDatabase,
+  RoutingError,
+} from "script/data/sources/hardcoded.js";
+import { groupBy } from "script/util.js";
 
 import {
   DAY1,
@@ -18,16 +22,27 @@ const geo = initGeoDatabase();
 
 // todo the below is wrong, it should be multiple routes in one thing
 /**
- * @param {string} shorthand
- * @returns {CityToCityRoutes}
+ * @param {string[]} shorthands
+ * @returns {CityToCityRoutes[]}
  */
-function routeFromShorthand(shorthand) {
-  const cityNames = shorthand.split("->");
-  return {
-    fromCityName: cityNames[0],
-    toCityName: cityNames.at(-1),
-    routes: [cityNames],
-  };
+function _init_routes(shorthands) {
+  const split = shorthands.map((s) => s.split("->"));
+
+  // all routes with same from and to get grouped
+  const grouped = groupBy(split, (s) => [
+    s[0], // fromCityId
+    s.at(-1), // toCityId
+  ]);
+
+  return Object.entries(grouped).map((group) => {
+    const [key, routes] = group;
+    return {
+      // use first route in this group to set from and to
+      fromCityName: routes[0][0],
+      toCityName: routes[0].at(-1),
+      routes: routes,
+    };
+  });
 }
 
 test.each([
@@ -96,10 +111,35 @@ test.each([
     travelDate: DAY1,
     expected: [["T1: S1@D1T10->S2@D1T11"]],
   },
+  // route has multiple connections
+  {
+    connections: ["T1: S1@D10->S2@T11->S3@T12", "T2: S2@T12->S3@T13->S4@T14"],
+    routes: ["City1->City2->City4"],
+    fromCityId: "C1",
+    toCityId: "C4",
+    travelDate: DAY1,
+    expected: [["T1: S1@D1T10->S2@D1T11", "T2: S2@D1T12->S3@D1T13->S4@D1T14"]],
+  },
+  // different routes available
+  {
+    connections: [
+      "T1: S1@T10->S2@T11->S3@T12",
+      "T2: S2@T12->S3@T13->S4@T14",
+      "T3: S1@D10->S4@T11",
+    ],
+    routes: ["City1->City4", "City1->City2->City4"],
+    fromCityId: "C1",
+    toCityId: "C4",
+    travelDate: DAY1,
+    expected: [
+      ["T3: S1@D1T10->S4@D1T11"],
+      ["T1: S1@D1T10->S2@D1T11", "T2: S2@D1T12->S3@D1T13->S4@D1T14"],
+    ],
+  },
 ])("Plan", async function (data) {
   const db = new HardcodedConnectionDatabase(
     data.connections.map(hardcodedConnectionDataFromShorthand),
-    data.routes.map(routeFromShorthand),
+    _init_routes(data.routes),
     geo,
   );
 
@@ -112,4 +152,35 @@ test.each([
   );
 
   expect(got).toStrictEqual(exp);
+});
+
+test.each([
+  // no routes at all
+  {
+    routes: [],
+    fromCityId: "C2",
+    toCityId: "C3",
+  },
+  // no matching routes
+  {
+    routes: ["City1->City2"],
+    fromCityId: "C2",
+    toCityId: "C3",
+  },
+  // no connections for route
+  {
+    routes: ["City1->City2"],
+    fromCityId: "C1",
+    toCityId: "C2",
+  },
+])("Plan fails because not matching routes", async function (data) {
+  const db = new HardcodedConnectionDatabase(
+    [],
+    _init_routes(data.routes),
+    geo,
+  );
+
+  await expect(
+    db.plan(data.fromCityId, data.toCityId, DAY1, geo),
+  ).rejects.toThrow(RoutingError);
 });
