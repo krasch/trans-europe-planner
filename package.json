@@ -9,7 +9,8 @@
     "test": "node --experimental-vm-modules node_modules/.bin/jest tests",
     "check-pretty": "npx prettier script/ style/planner/components/map/layers.js --check",
     "make-pretty": "npx prettier script/ style/planner/components/map/layers.js --write",
-    "check-types": "npx tsc"
+    "check-types": "npx tsc",
+    "check": "npm run check-pretty && npm run check-types && npm run test"
   },
   "devDependencies": {
     "@atlaskit/pragmatic-drag-and-drop-unit-testing": "^1.1.0",
