@@ -1,13 +1,14 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
+import { beforeEach, test, expect } from "vitest";
+
 import { prepareDataForCalendar } from "script/data/components/calendar.js";
 import { Itinerary } from "script/types/itinerary.js";
 
 import {
   getTestColor as _color,
   connectionFromShorthand as _c,
-  timestampFromShorthand,
 } from "tests/_helpers/data.js";
 import { initTestDOM } from "tests/_helpers/domUtils.js";
 

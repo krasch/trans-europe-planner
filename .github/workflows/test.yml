@@ -11,11 +11,5 @@ jobs:
       - name: Install javascript modules
         run: npm install
 
-      - name: Check code formatting
-        run: npm run check-pretty
-
-      - name: Check types
-        run: npm run check-types
-
-      - name: Run tests
-        run: npm test
+      - name: Check code formatting, types, run tests
+        run: npm check

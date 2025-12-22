@@ -1,3 +1,5 @@
+import { test, expect } from "vitest";
+
 import { InputConnectionDataWrapper } from "script/data/sources/hardcoded.js";
 
 import { DAY1, connectionFromShorthand as _c } from "tests/_helpers/data.js";

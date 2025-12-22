@@ -1,3 +1,5 @@
+import { test, expect } from "vitest";
+
 import { DefaultMap, groupBy } from "script/util.js";
 
 test("groupBy", function () {

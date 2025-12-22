@@ -1,3 +1,5 @@
+import { beforeEach, test, expect, vi } from "vitest";
+
 import { GeoDatabase } from "script/data/geoDatabase.js";
 import { MotisClient } from "script/data/sources/motis.js";
 import { DateTime } from "script/types/dateTime.js";
@@ -121,9 +123,13 @@ const MOTIS_RESPONSE = {
 
 beforeEach(async () => {
   // mock fetch to always return the fake motis response defined above
-  global.fetch = async () =>
-    // @ts-expect-error 2322
-    Promise.resolve({ ok: true, json: () => Promise.resolve(MOTIS_RESPONSE) });
+  //@ts-expect-error 2488
+  global.fetch = vi.fn(() =>
+    Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve(MOTIS_RESPONSE),
+    }),
+  );
 });
 
 test("Plan itinerary using motis and parse result", async function () {

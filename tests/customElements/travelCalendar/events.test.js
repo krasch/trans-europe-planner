@@ -1,7 +1,7 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-import { jest } from "@jest/globals";
+import { beforeEach, test, expect, vi } from "vitest";
 
 import { addEntryToCalendar } from "tests/_helpers/calendarUtils.js";
 import { DAY1 } from "tests/_helpers/data.js";
@@ -11,9 +11,6 @@ import {
   TEST_DOM,
   timeout,
 } from "tests/_helpers/domUtils.js";
-
-// @ts-expect-error TS2306
-import("@atlaskit/pragmatic-drag-and-drop-unit-testing/drag-event-polyfill");
 
 beforeEach(async () => {
   initTestDOM();
@@ -82,8 +79,8 @@ test("when hovering over a part of multiparty entry, then all parts should hover
 test("hover on/off callback should be called when hovering over entry", async function () {
   const entry = await addEntryToCalendar("T1: S1@D1T10->S2@D3T11"); // 3-day entry
 
-  const hoverOnCallback = jest.fn();
-  const hoverOffCallback = jest.fn();
+  const hoverOnCallback = vi.fn();
+  const hoverOffCallback = vi.fn();
   TEST_DOM.calendar.on("hoverOn", hoverOnCallback);
   TEST_DOM.calendar.on("hoverOff", hoverOffCallback);
 
@@ -184,7 +181,7 @@ test("drag and drop after changing entry group", async function () {
 test("drop callback should be called after drop occurs", async function () {
   const entry = await addEntryToCalendar("T1: S1@D1T10->S2@D3T11"); // 3-day entry
 
-  const dropCallback = jest.fn();
+  const dropCallback = vi.fn();
   TEST_DOM.calendar.on("drop", dropCallback);
 
   await dispatchTestEvent(TEST_DOM.calendarEntryParts[0], "dragstart");

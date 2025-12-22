@@ -8,7 +8,8 @@
     "noEmit": true,
     "lib": [
       "es2022",
-      "DOM"
+      "DOM",
+      "DOM.Iterable"
     ],
     "paths": {
       "data/inputDataFormats.js": ["./data/inputDataFormats.js"],
@@ -20,7 +21,7 @@
   "include": [
     "script/**/*.js",
     "tests/**/*.js",
-    "tests/_helpers/domUtilsTypefix.ts"
+    "tests/**/*.ts"
   ],
   "exclude": [
     "node_modules"

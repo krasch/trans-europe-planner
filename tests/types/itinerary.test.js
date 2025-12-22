@@ -1,3 +1,5 @@
+import { test, expect } from "vitest";
+
 import { Itinerary } from "script/types/itinerary.js";
 import { Stop } from "script/types/stop.js";
 

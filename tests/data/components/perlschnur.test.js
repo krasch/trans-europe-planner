@@ -1,6 +1,8 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
+import { beforeEach, test, expect } from "vitest";
+
 import { identifiers } from "script/data/components/_common.js";
 import {
   prepareDataForPerlschnur,

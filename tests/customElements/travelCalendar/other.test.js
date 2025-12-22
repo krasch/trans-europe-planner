@@ -1,6 +1,7 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
+import { test, expect } from "vitest";
 
 import {
   LookupUtil,

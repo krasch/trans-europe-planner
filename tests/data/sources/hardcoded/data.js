@@ -1,3 +1,5 @@
+import { test, expect } from "vitest";
+
 import { GeoDatabase } from "script/data/geoDatabase.js";
 
 const CITIES = {

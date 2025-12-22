@@ -1,4 +1,4 @@
-import { jest } from "@jest/globals";
+import { test, expect, vi } from "vitest";
 
 import { TravelDatabase } from "script/data/travelDatabase.js";
 import { Itinerary } from "script/types/itinerary.js";
@@ -7,9 +7,9 @@ import { connectionFromShorthand as _c, DAY1 } from "tests/_helpers/data.js";
 
 function mockDatasource() {
   return {
-    plan: jest.fn(),
-    direct: jest.fn(),
-    constructURL: jest.fn(),
+    plan: vi.fn(),
+    direct: vi.fn(),
+    constructURL: vi.fn(),
   };
 }
 
@@ -30,7 +30,6 @@ test("Group itineraries per route and pick one each", async function () {
   const mockSource = mockDatasource();
   mockSource.plan.mockReturnValueOnce([i1, i1_alt, i2]);
 
-  // @ts-expect-error TS2345
   const db = new TravelDatabase(mockSource, null);
 
   const got = await db.plan("S1", "S3", DAY1);
@@ -56,7 +55,6 @@ test("Alternatives for itinerary", async function () {
   mockSource.direct.mockReturnValueOnce([c1_alt, c1_alt2]); // first call
   mockSource.direct.mockReturnValueOnce([]); // second call
 
-  // @ts-expect-error TS2345
   const db = new TravelDatabase(mockSource, null);
 
   const got = await db.getAlternatives(i1, DAY1);

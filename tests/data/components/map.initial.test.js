@@ -1,3 +1,5 @@
+import { test, expect } from "vitest";
+
 import { prepareInitialDataForMap } from "script/data/components/map.js";
 
 test("prepareInitialDataForMap", function () {

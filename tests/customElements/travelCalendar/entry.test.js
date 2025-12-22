@@ -1,6 +1,8 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
+import { beforeEach, test, expect } from "vitest";
+
 import {
   COLUMN_FIRST_DAY,
   ROW_MIDNIGHT,
@@ -25,9 +27,9 @@ test("one day entry should create one entry part that contains all connection in
       status: "inactive",
     },
     style: {
-      "grid-column": COLUMN_FIRST_DAY,
-      "grid-row-start": ROW_MIDNIGHT + 10 * 4,
-      "grid-row-end": ROW_MIDNIGHT + 11 * 4,
+      "grid-column": COLUMN_FIRST_DAY.toString(),
+      "grid-row-start": (ROW_MIDNIGHT + 10 * 4).toString(),
+      "grid-row-end": (ROW_MIDNIGHT + 11 * 4).toString(),
       "--color": "test-color",
     },
     // contains start and end info
@@ -44,9 +46,9 @@ test("one day entry ranging from midnight to just before midnight", async functi
   expect(TEST_DOM.calendarEntryParts.length).toBe(1);
   expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
     style: {
-      "grid-column": COLUMN_FIRST_DAY,
-      "grid-row-start": ROW_MIDNIGHT,
-      "grid-row-end": ROW_MIDNIGHT + 23 * 4,
+      "grid-column": COLUMN_FIRST_DAY.toString(),
+      "grid-row-start": ROW_MIDNIGHT.toString(),
+      "grid-row-end": (ROW_MIDNIGHT + 23 * 4).toString(),
     },
   });
 });
@@ -61,9 +63,9 @@ test("entry that spans two columns/days", async function () {
       status: "inactive",
     },
     style: {
-      "grid-column": COLUMN_FIRST_DAY,
-      "grid-row-start": ROW_MIDNIGHT + 16 * 4,
-      "grid-row-end": ROW_MIDNIGHT + 24 * 4,
+      "grid-column": COLUMN_FIRST_DAY.toString(),
+      "grid-row-start": (ROW_MIDNIGHT + 16 * 4).toString(),
+      "grid-row-end": (ROW_MIDNIGHT + 24 * 4).toString(),
       "--color": "test-color",
     },
     // first part contains start info
@@ -78,9 +80,9 @@ test("entry that spans two columns/days", async function () {
       status: "inactive",
     },
     style: {
-      "grid-column": COLUMN_FIRST_DAY + 1,
-      "grid-row-start": ROW_MIDNIGHT,
-      "grid-row-end": ROW_MIDNIGHT + 14 * 4,
+      "grid-column": (COLUMN_FIRST_DAY + 1).toString(),
+      "grid-row-start": ROW_MIDNIGHT.toString(),
+      "grid-row-end": (ROW_MIDNIGHT + 14 * 4).toString(),
       "--color": "test-color",
     },
     // second part contains end info
@@ -101,9 +103,9 @@ test("entry that spans three columns/days", async function () {
       status: "inactive",
     },
     style: {
-      "grid-column": COLUMN_FIRST_DAY,
-      "grid-row-start": ROW_MIDNIGHT + 16 * 4,
-      "grid-row-end": ROW_MIDNIGHT + 24 * 4,
+      "grid-column": COLUMN_FIRST_DAY.toString(),
+      "grid-row-start": (ROW_MIDNIGHT + 16 * 4).toString(),
+      "grid-row-end": (ROW_MIDNIGHT + 24 * 4).toString(),
       "--color": "test-color",
     },
     // first part contains start info
@@ -118,9 +120,9 @@ test("entry that spans three columns/days", async function () {
       status: "inactive",
     },
     style: {
-      "grid-column": COLUMN_FIRST_DAY + 1,
-      "grid-row-start": ROW_MIDNIGHT,
-      "grid-row-end": ROW_MIDNIGHT + 24 * 4,
+      "grid-column": (COLUMN_FIRST_DAY + 1).toString(),
+      "grid-row-start": ROW_MIDNIGHT.toString(),
+      "grid-row-end": (ROW_MIDNIGHT + 24 * 4).toString(),
       "--color": "test-color",
     },
     // second part contains neither
@@ -135,9 +137,9 @@ test("entry that spans three columns/days", async function () {
       status: "inactive",
     },
     style: {
-      "grid-column": COLUMN_FIRST_DAY + 2,
-      "grid-row-start": ROW_MIDNIGHT,
-      "grid-row-end": ROW_MIDNIGHT + 2 * 4,
+      "grid-column": (COLUMN_FIRST_DAY + 2).toString(),
+      "grid-row-start": ROW_MIDNIGHT.toString(),
+      "grid-row-end": (ROW_MIDNIGHT + 2 * 4).toString(),
       "--color": "test-color",
     },
     // third part contains end info
@@ -159,9 +161,9 @@ test("delete entry that spans three columns/days", async function () {
   expect(TEST_DOM.calendarEntryParts.length).toBe(1);
   expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
     style: {
-      "grid-column": COLUMN_FIRST_DAY + 1,
-      "grid-row-start": ROW_MIDNIGHT + 7 * 4,
-      "grid-row-end": ROW_MIDNIGHT + 8 * 4,
+      "grid-column": (COLUMN_FIRST_DAY + 1).toString(),
+      "grid-row-start": (ROW_MIDNIGHT + 7 * 4).toString(),
+      "grid-row-end": (ROW_MIDNIGHT + 8 * 4).toString(),
     },
   });
 });
@@ -169,32 +171,32 @@ test("delete entry that spans three columns/days", async function () {
 test("entry locations should be updated when calendar start date changes", async function () {
   const entryColumns = () =>
     TEST_DOM.calendarEntryParts.map((e) =>
-      Number(e.style.getPropertyValue("grid-column")),
+      e.style.getPropertyValue("grid-column"),
     );
 
   await addEntryToCalendar("T1: S1@D2T16->S2@D3T02");
   await addEntryToCalendar("T2: S2@D3T07->S3@D3T08");
 
   expect(entryColumns()).toStrictEqual([
-    COLUMN_FIRST_DAY + 1,
-    COLUMN_FIRST_DAY + 2,
-    COLUMN_FIRST_DAY + 2,
+    (COLUMN_FIRST_DAY + 1).toString(),
+    (COLUMN_FIRST_DAY + 2).toString(),
+    (COLUMN_FIRST_DAY + 2).toString(),
   ]);
 
   // move date forward
   await TEST_DOM.calendar.setAttribute("start-date", DAY1.plus({ days: 1 }));
   expect(entryColumns()).toStrictEqual([
-    COLUMN_FIRST_DAY,
-    COLUMN_FIRST_DAY + 1,
-    COLUMN_FIRST_DAY + 1,
+    COLUMN_FIRST_DAY.toString(),
+    (COLUMN_FIRST_DAY + 1).toString(),
+    (COLUMN_FIRST_DAY + 1).toString(),
   ]);
 
   // move date backward
   await TEST_DOM.calendar.setAttribute("start-date", DAY1);
   expect(entryColumns()).toStrictEqual([
-    COLUMN_FIRST_DAY + 1,
-    COLUMN_FIRST_DAY + 2,
-    COLUMN_FIRST_DAY + 2,
+    (COLUMN_FIRST_DAY + 1).toString(),
+    (COLUMN_FIRST_DAY + 2).toString(),
+    (COLUMN_FIRST_DAY + 2).toString(),
   ]);
 });
 
@@ -208,9 +210,9 @@ test("entry parts should be moved when entry start/end change", async function (
 
   expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
     style: {
-      "grid-column": COLUMN_FIRST_DAY,
-      "grid-row-start": ROW_MIDNIGHT + 13 * 4,
-      "grid-row-end": ROW_MIDNIGHT + 17 * 4,
+      "grid-column": COLUMN_FIRST_DAY.toString(),
+      "grid-row-start": (ROW_MIDNIGHT + 13 * 4).toString(),
+      "grid-row-end": (ROW_MIDNIGHT + 17 * 4).toString(),
     },
   });
 });

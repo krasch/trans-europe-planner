@@ -1,7 +1,7 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-import { jest } from "@jest/globals";
+import { beforeEach, test, expect, vi } from "vitest";
 
 import { CalendarWrapper } from "script/components/calendar.js";
 import { prepareDataForCalendar } from "script/data/components/calendar.js";
@@ -18,9 +18,6 @@ import {
   TEST_DOM,
   timeout,
 } from "tests/_helpers/domUtils.js";
-
-// @ts-expect-error TS2306
-import("@atlaskit/pragmatic-drag-and-drop-unit-testing/drag-event-polyfill");
 
 beforeEach(async () => {
   initTestDOM();
@@ -261,9 +258,9 @@ test("calendar wrapper should propagate callbacks/commands from/to calendar", as
   await updateCalendar(calendar, active, alternatives);
 
   // setup callback mocks
-  const dropCallback = jest.fn();
-  const hoverOnCallback = jest.fn();
-  const hoverOffCallback = jest.fn();
+  const dropCallback = vi.fn();
+  const hoverOnCallback = vi.fn();
+  const hoverOffCallback = vi.fn();
   calendar.on("legChanged", dropCallback);
   calendar.on("legHoverStart", hoverOnCallback);
   calendar.on("legHoverStop", hoverOffCallback);

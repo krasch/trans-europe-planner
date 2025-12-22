@@ -1,7 +1,7 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-import { jest } from "@jest/globals";
+import { test, expect, vi } from "vitest";
 
 import { GeoDatabase } from "script/data/geoDatabase.js";
 import { main } from "script/main.js";
@@ -43,33 +43,33 @@ function initMocks() {
   const callbacks = { calendar: {}, datepicker: {}, map: {}, perlschnur: {} };
 
   const components = {
-    mainContainer: { classList: { add: jest.fn(), remove: jest.fn() } },
+    mainContainer: { classList: { add: vi.fn(), remove: vi.fn() } },
     calendar: {
       on: (name, fn) => (callbacks.calendar[name] = fn),
-      updateView: jest.fn(),
+      updateView: vi.fn(),
     },
     datepicker: {
       currentDate: DAY1,
       on: (name, fn) => (callbacks.datepicker[name] = fn),
-      updateView: jest.fn(), // todo no expects for this currently
+      updateView: vi.fn(), // todo no expects for this currently
     },
     map: {
-      initMapData: jest.fn(),
+      initMapData: vi.fn(),
       on: (name, fn) => (callbacks.map[name] = fn),
-      updateView: jest.fn(),
+      updateView: vi.fn(),
     },
     perlschnur: {
       on: (name, fn) => (callbacks.perlschnur[name] = fn),
-      updateView: jest.fn(),
+      updateView: vi.fn(),
     },
   };
 
   const geoDatabase = new GeoDatabase(testCities, testStops);
   const travelDatabase = {
     geoDatabase: geoDatabase,
-    getAlternatives: jest.fn(),
-    plan: jest.fn(),
-    getCachedConnection: jest.fn(),
+    getAlternatives: vi.fn(),
+    plan: vi.fn(),
+    getCachedConnection: vi.fn(),
   };
 
   return [components, travelDatabase, callbacks];
@@ -135,7 +135,7 @@ test("when user selects a destination, database should be queried for routes and
   const [components, travelDatabase, callbacks] = initMocks();
   // @ts-expect-error TS2345
   await main("C1", components, travelDatabase);
-  jest.clearAllMocks(); // reset after first call to updateComponents
+  vi.clearAllMocks(); // reset after first call to updateComponents
 
   // there is just one route, directly from C1->C3
   travelDatabase.plan.mockReturnValueOnce([
@@ -194,7 +194,7 @@ test("when user moves things around in the calendar, components should be update
   await callbacks.map.showCityRoutes("C3");
 
   // now pretend that user has moved things around in the calendar
-  jest.clearAllMocks();
+  vi.clearAllMocks();
   travelDatabase.getCachedConnection.mockReturnValueOnce(c2);
   travelDatabase.getAlternatives.mockReturnValueOnce([[c1]]);
   await callbacks.calendar.legChanged("C1->C3", c2.id);
@@ -252,7 +252,7 @@ test("when user picks a different journey as active, components should be update
   // pretend user has clicked on the map, this runs fake trip planning and sets
   // first itinerary as active
   await callbacks.map.showCityRoutes("C2");
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 
   // will now set other itinerary as active -> need to set up alternatives
   travelDatabase.getAlternatives.mockReturnValueOnce(alternatives.via);

@@ -1,3 +1,5 @@
+import { test, expect } from "vitest";
+
 import { State, StateError } from "../script/state.js";
 import {
   itineraryFromShortHand as _i,

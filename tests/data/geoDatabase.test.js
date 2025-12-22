@@ -1,3 +1,5 @@
+import { test, expect } from "vitest";
+
 import { DataError, GeoDatabase } from "script/data/geoDatabase.js";
 
 function initDatabase(cityData, stopData) {

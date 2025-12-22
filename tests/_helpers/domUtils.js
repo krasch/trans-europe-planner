@@ -1,4 +1,5 @@
 import fs from "fs";
+import { expect } from "vitest";
 
 import { TravelCalendar } from "script/customElements/travelCalendar/travelCalendar.js";
 
@@ -35,7 +36,7 @@ export function domElementToObject(element, optionalSelectors = null) {
   const result = {
     id: element.id,
     dataset: Object.assign({}, element.dataset),
-    style: Object.assign({}, element.style._values),
+    style: Object.fromEntries(element.style._values),
     innerHTML: element.innerHTML,
     innerText: element.innerText,
   };
@@ -82,6 +83,8 @@ export async function dispatchTestEvent(
       this.features = [{ state: { isVisible: true }, id: "C1" }];
     }
   }
+
+  class DragEvent extends Event {}
 
   const classes = {
     mouseover: MouseEvent,

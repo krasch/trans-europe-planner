@@ -1,6 +1,8 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
+import { beforeEach, test, expect } from "vitest";
+
 import { prepareDataForMap } from "script/data/components/map.js";
 import { Itinerary } from "script/types/itinerary.js";
 

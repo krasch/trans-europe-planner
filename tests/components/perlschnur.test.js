@@ -1,6 +1,8 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
+import { beforeEach, test, expect } from "vitest";
+
 import { Perlschnur } from "script/components/perlschnur.js";
 import { prepareDataForPerlschnur } from "script/data/components/perlschnur.js";
 import { Itinerary } from "script/types/itinerary.js";

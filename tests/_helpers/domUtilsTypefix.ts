@@ -1,7 +1,9 @@
-declare global {
-  namespace jest {
-    interface Matchers<R> {
-      toMatchDOMObject(expected: object): CustomMatcherResult;
-    }
-  }
+import "vitest";
+
+interface CustomMatchers<R = unknown> {
+  toMatchDOMObject: (actual, expected) => R;
+}
+
+declare module "vitest" {
+  interface Matchers<T = any> extends CustomMatchers<T> {}
 }
