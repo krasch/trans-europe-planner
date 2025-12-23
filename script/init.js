@@ -3,44 +3,9 @@ import { Datepicker } from "script/components/datepicker.js";
 import { showLandingPage } from "script/components/landing.js";
 import { MapWrapper } from "script/components/map/map.js";
 import { Perlschnur } from "script/components/perlschnur.js";
-import { GeoDatabase } from "script/data/geoDatabase.js";
 import { MotisClient } from "script/data/sources/motis.js";
 import { TravelDatabase } from "script/data/travelDatabase.js";
 import { main } from "script/main.js";
-
-const HOMES = ["Schwerin"];
-
-const PATHS = {
-  stops: "data/mv/stops.json",
-  cities: "data/mv/cities.json",
-};
-
-/**
- * @returns {string | null} The name of the home city
- */
-function parseURLParams() {
-  const params = new URLSearchParams(window.location.search);
-  const home = params.get("start");
-
-  if (home && HOMES.includes(home)) return home;
-
-  return null;
-}
-
-/**
- * @param {string} path
- */
-async function loadDataFile(path) {
-  const response = await fetch(path);
-  return await response.json();
-}
-
-async function loadAndPrepareData() {
-  const stops = await loadDataFile(PATHS.stops);
-  const cities = await loadDataFile(PATHS.cities);
-
-  return new GeoDatabase(cities, stops);
-}
 
 /**
  * for all elements, set exactly the ones in selectedNames to ".selected"
@@ -145,12 +110,12 @@ export async function init() {
   };
 
   const isMobile = window.matchMedia("(max-width: 1000px)");
-  let defaultZoom = 6.3;
+  let defaultZoom = 4.3;
   if (isMobile.matches) defaultZoom = 3.3;
 
   // map is initially in non-interactive mode with reduced opacity (to be a nice background image basically)
   // this already starts loading the map while we do other stuff
-  const map = new MapWrapper("map", [12.82862, 53.7299], defaultZoom);
+  const map = new MapWrapper("map", [10.0821932, 49.786322], defaultZoom);
 
   // also create all the other components (less to do for them)
   const components = {
@@ -161,16 +126,6 @@ export async function init() {
     datepicker: new Datepicker(elements.tabContents.config),
   };
 
-  // also start loading the data
-  const dataPromise = loadAndPrepareData();
-
-  // home can be passed as URL parameter, e.g. ?start=Berlin
-  let home = parseURLParams();
-
-  // if it was not, show landing page and ask user for home
-  // (landing page dialog closes automatically when user clicks submit button)
-  if (!home) home = await showLandingPage(elements.landing);
-
   // init both navigations, CSS will pick which navigation is being shown
   initMobileNavigation(elements.navMobile, elements.tabContents, elements.main);
   initDesktopNavigation(elements.navDesktop, elements.tabContents);
@@ -178,18 +133,9 @@ export async function init() {
   // show the <main> element
   elements.main.classList.remove("closed");
 
-  // now we actually need the map, so wait until the load event has been fired
-  await components.map.loaded;
-
-  // increases map opacity and enables the usual map controls
-  map.enableMapInteraction();
-
-  // wait until data loading finished
-  const geoDatabase = await dataPromise;
-
   // currently hard-code using motis
   const motis = new MotisClient();
-  const travelDatabase = new TravelDatabase(motis, geoDatabase);
+  const travelDatabase = new TravelDatabase(motis);
 
-  await main(geoDatabase.cityNameToId(home), components, travelDatabase);
+  await main(components, travelDatabase);
 }

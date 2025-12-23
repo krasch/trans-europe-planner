@@ -1,108 +1,10 @@
-import { createElementFromTemplate } from "script/util.js";
-
 import {
   MouseEventHelper,
   StateDict,
-  animateDropWithBounce,
   filterChanges,
   groupChangesById,
   updateSourceData,
-  updateVisibility,
 } from "./util.js";
-
-function initHomeMarker(id, lngLat) {
-  const element = createElementFromTemplate("template-city-marker-home", {
-    $root$: { "data-city-id": id },
-  });
-
-  // @ts-expect-error TS2304 (todo not doing module import for maplibre)
-  const marker = new maplibregl.Marker({
-    element: element,
-    anchor: "bottom",
-  });
-  marker.setLngLat(lngLat);
-  return marker;
-}
-
-function initDestinationMarker(lngLat) {
-  // @ts-expect-error TS2304 (todo not doing module import for maplibre)
-  const marker = new maplibregl.Marker({
-    element: createElementFromTemplate("template-city-marker-destination"),
-    anchor: "bottom",
-  });
-  marker.setLngLat(lngLat);
-  return marker;
-}
-
-function initCityMenu(id, name, numTransfer, lngLat) {
-  const data = {
-    $root$: { "data-city-id": id },
-    h3: { innerText: name },
-    // ".count": { innerText: numTransfer },
-  };
-
-  const element = createElementFromTemplate("template-city-menu", data);
-
-  const textNumTransfers = element.querySelector(".num-transfers");
-  const buttonShowRoutes = element.querySelector("button[value='showRoutes']");
-  const buttonMakeCut = element.querySelector("button[value='makeCut']");
-
-  // choose which text will be shown
-  //if (numTransfer === 0) textNumTransfers.classList.add("transfers0");
-  //else if (numTransfer === 1) textNumTransfers.classList.add("transfers1");
-  //else textNumTransfers.classList.add("transfersX");
-
-  // @ts-expect-error TS2304 (todo not doing module import for maplibre)
-  const popup = new maplibregl.Popup({
-    anchor: "left",
-    offset: [5, 0],
-    closeButton: true,
-  });
-  popup.setDOMContent(element).setLngLat(lngLat);
-
-  popup.updateElement = (state) => {
-    if (state.isDestination !== undefined) {
-      updateVisibility(buttonShowRoutes.parentElement, state.isDestination);
-      //updateVisibility(textNumTransfers.parentElement, state.isDestination);
-    }
-    if (state.isTransfer !== undefined && state.isStop !== undefined) {
-      //updateVisibility(buttonMakeCut, state.isStop && !state.isTransfer);
-    }
-  };
-
-  return popup;
-}
-
-function showStartAnimation(map, geo, initialState, animationDoneCallback) {
-  const homeMarkers = [];
-  const destinationMarkers = [];
-
-  for (let id in initialState) {
-    if (initialState[id].isHome)
-      homeMarkers.push(initHomeMarker(id, geo[id].lngLat));
-    if (initialState[id].isDestination)
-      destinationMarkers.push(initDestinationMarker(geo[id].lngLat));
-  }
-
-  //this is the second animation we'll do (show destination markers dropping)
-  const animateDestinations = () =>
-    animateDropWithBounce(
-      map,
-      destinationMarkers,
-      200,
-      3,
-      () => animationDoneCallback(destinationMarkers), // when animation is done callback to main
-    );
-
-  // run the first animation (show home marker(s) dropping)
-  animateDropWithBounce(
-    map,
-    homeMarkers,
-    300,
-    3,
-    animateDestinations, // when that is done do the second animation
-  );
-}
 
 export class Cities {
   #callbacks = {
@@ -140,10 +42,8 @@ export class Cities {
 
   #pulsars = null;
 
-  constructor(map, geo, initialState, showAnimation) {
+  constructor(map) {
     this.#map = map;
-    this.#geo = geo;
-
     this.#state = new StateDict(this.#resetKeys);
 
     const events = new MouseEventHelper(this.#map, this.#layers);
@@ -186,16 +86,6 @@ export class Cities {
       this.#showCityMenu(id);
       this.#callbacks["click"](id);
     });
-
-    // initial drawing
-    if (showAnimation) {
-      showStartAnimation(this.#map, geo, initialState, (pulsars) => {
-        this.#pulsars = pulsars;
-        this.update(initialState);
-      });
-    } else {
-      this.update(initialState);
-    }
   }
 
   on(eventName, callback) {

@@ -22,7 +22,7 @@ export class Datepicker {
     this.#decreaseDateElement = this.#container.querySelector("#decrease-date");
     this.#increaseDateElement = this.#container.querySelector("#increase-date");
 
-    const today = DateTime.fromISO("2025-07-22"); //DateTime.now().startOf("day");
+    const today = DateTime.fromISO("2025-08-11"); //DateTime.now().startOf("day");
     this.#start = today.plus({ days: 1 });
     this.#end = today.plus({ days: 3 * 30 });
     this.#default = today.plus({ days: 30 });

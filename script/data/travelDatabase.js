@@ -1,4 +1,3 @@
-import { GeoDatabase } from "script/data/geoDatabase.js";
 import { MotisClient } from "script/data/sources/motis.js";
 import { Connection } from "script/types/connection.js";
 import { DateTime } from "script/types/dateTime.js";
@@ -7,43 +6,33 @@ import { groupBy } from "script/util.js";
 
 export class TravelDatabase {
   #client;
-  geoDatabase;
 
   #connectionCache = {};
 
   /**
    * @param {MotisClient} client
-   * @param {GeoDatabase} geoDatabase
    */
-  constructor(client, geoDatabase) {
+  constructor(client) {
     this.#client = client;
-    this.geoDatabase = geoDatabase;
   }
 
   /**
-   * @param {string} fromCityId
-   * @param {string} toCityId
+   * @param {string} fromStopId
+   * @param {string} toStopId
    * @param {DateTime} fromDate
    * @returns {Promise<Itinerary[]>}
    *   // todo toDate
    */
-  async plan(fromCityId, toCityId, fromDate) {
-    const itineraries = await this.#client.plan(
-      fromCityId,
-      toCityId,
-      fromDate,
-      this.geoDatabase,
-    );
+  async plan(fromStopId, toStopId, fromDate) {
+    const itineraries = await this.#client.plan(fromStopId, toStopId, fromDate);
 
     for (let itinerary of itineraries)
       for (let connection of itinerary.connections)
-        this.#connectionCache[connection.id] = connection;
+        this.#connectionCache[connection.id] = connection; // todo browser cache?
 
     // group by geographical route
     // todo keep only the best geographical routes
-    const grouped = groupBy(itineraries, (itinerary) =>
-      itinerary.cities.map((c) => c.id).join("->"),
-    );
+    const grouped = groupBy(itineraries, (i) => i.stopIds.join("->"));
 
     // todo calculate itinerary score and keep only the best for each geographical route
     // todo right now always keeping the first itinerary for each route

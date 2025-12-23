@@ -24,8 +24,7 @@ export class State {
    * @param {string} homeCityId
    * @param {DateTime} desiredStartDate
    */
-  constructor(homeCityId, desiredStartDate) {
-    this.homeCityId = homeCityId;
+  constructor(desiredStartDate) {
     this.desiredStartDate = desiredStartDate;
 
     this.#activeItinerary = null;

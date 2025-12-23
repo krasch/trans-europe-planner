@@ -97,45 +97,6 @@ export class StateDict {
   }
 }
 
-export function animateDropWithBounce(
-  map,
-  markers,
-  initialHeightPixels,
-  bounciness,
-  callback,
-) {
-  const speedup = 2;
-
-  const animationStart = Number(document.timeline.currentTime);
-  let previousHeight = 1000;
-
-  function update(timestamp) {
-    const secondsSinceStart = (timestamp - animationStart) / 1000.0;
-    const x = secondsSinceStart * speedup;
-
-    // https://gamedev.stackexchange.com/a/137185
-    const height = Math.floor(
-      Math.exp(-x) * Math.abs(initialHeightPixels * Math.cos(bounciness * x)),
-    );
-
-    for (let m of markers) {
-      m.setOffset([0, -height]);
-      m.addTo(map);
-    }
-
-    // no more changes happening, can stop the animation
-    if (height < 1 && previousHeight < 1) {
-      if (callback) callback();
-      return;
-    }
-
-    previousHeight = height;
-    requestAnimationFrame(update);
-  }
-
-  requestAnimationFrame(update);
-}
-
 // this class abstracts away following issues
 // 1. We want to react on multiple layers (e.g. all city layers) with the same event handlers
 // 2. The maplibre mouseLeave event does not contain the feature that was left -> need to keep state

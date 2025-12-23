@@ -44,21 +44,11 @@ async function updateAllComponents(components, travelDatabase, state) {
 }
 
 /**
- * @param {string} homeCityId
  * @param {Object.<string,any>} components
  * @param {TravelDatabase} travelDatabase
  */
-export async function main(homeCityId, components, travelDatabase) {
-  const state = new State(homeCityId, components.datepicker.currentDate);
-
-  // prepare all geo etc data that map needs
-  const initialMapData = prepareInitialDataForMap(
-    state.homeCityId,
-    travelDatabase.geoDatabase.geoDataForAllCities,
-  );
-
-  // and add that data to the map
-  components.map.initMapData(initialMapData);
+export async function main(components, travelDatabase) {
+  const state = new State(components.datepicker.currentDate);
 
   // partial function for conveniently updating the components
   const updateComponents = updateAllComponents.bind(
@@ -100,15 +90,14 @@ export async function main(homeCityId, components, travelDatabase) {
 
   components.datepicker.on("dateChanged", async (date) => {
     // todo
-    /*const diff = diffDays(state.date, date);
-    if (diff === 0) return;
-
-    state.itineraries.shiftDate(diff, geoDatabase);
-    state.date = date;
-
-    await updateComponents(state);*/
   });
 
   // trigger initial update
-  await updateComponents(state);
+  //await updateComponents(state);
+  const result = await travelDatabase.plan(
+    "de_de:13073:10401",
+    "de_de:13003:1489_G",
+    state.desiredStartDate,
+  );
+  console.log(result);
 }

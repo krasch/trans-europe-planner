@@ -16,25 +16,12 @@ export class MotisError extends Error {
 }
 
 /**
- * @param {string} stopId
- * @returns {string}
- */
-function fixMotisStopId(stopId) {
-  return stopId.split(":").slice(0, 3).join(":"); // todo remove _G?
-}
-
-/**
  * @param {Object} motisStop
- * @param {GeoDatabase} geoDatabase
  * @returns {Stop}
  */
-function parseMotisStop(motisStop, geoDatabase) {
-  const stop = geoDatabase.stopForMotisStopId(fixMotisStopId(motisStop.stopId));
-
-  if (!stop)
-    throw Error(`Unknown motis stop ${motisStop.name} ${motisStop.stopId}`);
-
-  const city = geoDatabase.cityForStopId(stop.id);
+function parseMotisStop(motisStop) {
+  let stopId = motisStop.stopId;
+  if (motisStop.parentId) stopId = motisStop.parentId;
 
   let arrival = null;
   if (motisStop.scheduledArrival)
@@ -44,19 +31,24 @@ function parseMotisStop(motisStop, geoDatabase) {
   if (motisStop.scheduledDeparture)
     departure = DateTime.fromISO(motisStop.scheduledDeparture);
 
-  return new Stop(stop.id, stop.name, city, arrival, departure);
+  return new Stop(
+    stopId,
+    motisStop.name,
+    motisStop.lat,
+    motisStop.lng,
+    arrival,
+    departure,
+  );
 }
 
 /**
  * @param {Object} motisLeg
- * @param {GeoDatabase} geoDatabase
  * @returns {Connection}
  */
-function parseMotisConnection(motisLeg, geoDatabase) {
-  const from = parseMotisStop(motisLeg.from, geoDatabase);
-  const to = parseMotisStop(motisLeg.to, geoDatabase);
-
-  const intermediate = []; // todo parse intermediate stops
+function parseMotisConnection(motisLeg) {
+  const from = parseMotisStop(motisLeg.from);
+  const to = parseMotisStop(motisLeg.to);
+  const intermediate = motisLeg.intermediateStops.map(parseMotisStop);
 
   return new Connection(
     motisLeg.tripId,
@@ -70,16 +62,12 @@ function parseMotisConnection(motisLeg, geoDatabase) {
 
 /**
  * @param {Object} motisItinerary
- * @param {GeoDatabase} geoDatabase
  * @returns {Itinerary}
  */
-function parseMotisItinerary(motisItinerary, geoDatabase) {
+function parseMotisItinerary(motisItinerary) {
   // remove walk legs
   const legs = motisItinerary.legs.filter((l) => l.mode !== "WALK");
-
-  return new Itinerary(
-    legs.map((leg) => parseMotisConnection(leg, geoDatabase)),
-  );
+  return new Itinerary(legs.map(parseMotisConnection));
 }
 
 export class MotisClient {
@@ -90,17 +78,13 @@ export class MotisClient {
   }
 
   /**
-   * @param {String} fromCityId
-   * @param {String} toCityId
+   * @param {String} fromStopId
+   * @param {String} toStopId
    * @param {DateTime} startDate
-   * @param {GeoDatabase} geoDatabase
    * @returns {Promise<Itinerary[]>}
    */
-  async plan(fromCityId, toCityId, startDate, geoDatabase) {
-    const fromStopId = geoDatabase.motisStopIdForCityId(fromCityId);
-    const toStopId = geoDatabase.motisStopIdForCityId(toCityId);
-
-    const url = this.constructURL("/api/v3/plan", {
+  async plan(fromStopId, toStopId, startDate) {
+    const url = this.constructURL("/api/v5/plan", {
       fromPlace: fromStopId,
       toPlace: toStopId,
       detailedTransfers: false, // don't return geodata
@@ -114,9 +98,7 @@ export class MotisClient {
       throw new MotisError([response.status, response.statusText].join());
 
     const data = await response.json();
-    return data.itineraries.map((itinerary) =>
-      parseMotisItinerary(itinerary, geoDatabase),
-    );
+    return data.itineraries.map(parseMotisItinerary);
   }
 
   /**

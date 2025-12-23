@@ -17,18 +17,18 @@ export class Itinerary {
         new Stop(
           connections[i].from.stopId,
           connections[i].from.stopName,
-          connections[i].from.city,
+          connections[i].from.latitude,
+          connections[i].from.longitude,
           connections[i - 1].to.arrival,
           connections[i].from.departure,
         ),
       );
     }
 
-    this.cities = [this.from.city]
-      .concat(this.vias.map((v) => v.city))
-      .concat(this.to.city);
+    this.stopIds = [this.from.stopId]
+      .concat(this.vias.map((v) => v.stopId))
+      .concat(this.to.stopId);
 
-    //this.geoRoute = cityNames.join("->"); // todo directly go with id? todo should use this instead of id for clarity?
-    this.id = this.cities.map((city) => city.id).join("->"); // todo this is the internal id, not used by component data todo delete?
+    this.id = this.stopIds.join("->"); // todo add time?
   }
 }

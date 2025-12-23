@@ -44,6 +44,7 @@ function _asGeojsonFeatureCollection(features) {
 export class MapWrapper {
   #attribution;
   #map;
+  #mapReady;
 
   #callbacks = {
     /**
@@ -78,42 +79,32 @@ export class MapWrapper {
     // visual indication that map is non-interactive
     this.#map._container.style.opacity = 0.4;
 
-    // add attribution control
-    // @ts-expect-error TS2304 (todo not doing module import for maplibre)
-    this.#attribution = new maplibregl.AttributionControl();
-    this.#map.addControl(this.#attribution);
+    this.#mapReady = new Promise((fulfilled, rejected) => {
+      this.#map.on("load", async () => {
+        await this.#configureMap();
+        this.#setupLayers();
 
-    // in non-interactive map, only show the little (i), not the full attribution
-    // (because on mobile it is in the way and very little is visible of the map anyway
-    // todo do this only on mobile?
-    this.#attribution._container.classList.remove("maplibregl-compact-show");
-
-    // turn on-load event into promise
-    const onLoadReceived = new Promise((fulfilled, rejected) => {
-      this.#map.on("load", fulfilled(this.#map));
+        // now map is interactive, show with full opacity
+        this.#map._container.style.opacity = 1.0;
+      });
     });
-
-    // additional post-loading instructions
-    const configureMap = async function (map) {
-      // load additional assets
-      const image = await map.loadImage("/images/markers/circle.sdf.png");
-      map.addImage("circle", image.data, { sdf: true });
-
-      // configure map details
-      map.getCanvas().style.cursor = "default";
-    };
-
-    // after load event has been received, trigger any additional map config that needs to get done
-    // store promise in a variable that user of this class has to await before doing anything with the map
-    this.loaded = onLoadReceived.then(configureMap);
   }
 
-  enableMapInteraction() {
-    // reset opacity
-    this.#map._container.style.opacity = 1.0;
+  on(eventName, callback) {
+    this.#callbacks[eventName] = callback;
+  }
 
-    // show full attribution
-    this.#attribution._container.classList.add("maplibregl-compact-show");
+  async #configureMap() {
+    const image = await this.#map.loadImage("/images/markers/circle.sdf.png");
+    this.#map.addImage("circle", image.data, { sdf: true });
+
+    // configure map details
+    this.#map.getCanvas().style.cursor = "default";
+
+    // add attribution control
+    // @ts-expect-error TS2304 (todo not doing module import for maplibre)
+    const attribution = new maplibregl.AttributionControl();
+    this.#map.addControl(attribution);
 
     // show +/- zoom buttons
     this.#map.addControl(
@@ -137,41 +128,24 @@ export class MapWrapper {
     this.#map.keyboard.disableRotation();
   }
 
-  on(eventName, callback) {
-    this.#callbacks[eventName] = callback;
-  }
-
-  /**
-   * @typedef {import("script/data/components/map.js").InitialCityData} InitialCityData
-   * @typedef {import("script/data/components/map.js").InitialEdgeData} InitialEdgeData
-   *
-   * @param {[InitialCityData, InitialEdgeData]} data
-   * @param {boolean} animation
-   */
-  initMapData(data, animation = false) {
-    const [cities, edges] = data;
-
-    // add cities and legs sources
-    this.#map.addSource("cities", {
+  #setupLayers() {
+    // add cities and legs source layers
+    /*this.#map.addSource("cities", {
       type: "geojson",
-      data: _asGeojsonFeatureCollection(
-        Object.entries(cities.geo).map(_cityToGeojson),
-      ),
+      data: _asGeojsonFeatureCollection([]),
       promoteId: "id", // otherwise can not use non-numeric ids
     });
     this.#map.addSource("edges", {
       type: "geojson",
-      data: _asGeojsonFeatureCollection(
-        Object.entries(edges.geo).map(_edgeToGeojson),
-      ),
+      data: _asGeojsonFeatureCollection([]),
       promoteId: "id", // otherwise can not use non-numeric ids
     });
 
     // add all layers
     for (let layer of mapLayers) this.#map.addLayer(layer);
 
-    this.cities = new Cities(this.#map, cities.geo, cities.defaults, animation);
-    this.edges = new Edges(this.#map, edges.geo, edges.defaults);
+    this.cities = new Cities(this.#map);
+    this.edges = new Edges(this.#map);
 
     this.cities.on("menuClick", (id, entry) => {
       if (entry === "showRoutes") this.#callbacks["showCityRoutes"](id);
@@ -205,7 +179,7 @@ export class MapWrapper {
       if (entry === "showCalendar") {
         this.#callbacks["showCalendar"](journeyId);
       }
-    });
+    });*/
   }
 
   /**
@@ -218,9 +192,10 @@ export class MapWrapper {
    * @param {Object<string,EdgeUpdate>} data.edges
    * @param {Object<string, ItinerarySummary>} data.itineraries
    */
-  updateView(data) {
+  async updateView(data) {
+    await this.#mapReady;
     // todo clean this up
-    this.#mapping = { edges: {} };
+    /*this.#mapping = { edges: {} };
     for (let edgeId in data.edges) {
       this.#mapping.edges[edgeId] = {
         legs: data.edges[edgeId].legs,
@@ -232,7 +207,7 @@ export class MapWrapper {
 
     this.cities.update(data.cities);
     this.edges.update(data.edges);
-    this.#journeys = data.itineraries;
+    this.#journeys = data.itineraries;*/
   }
 
   setLegHoverState(leg, state) {
