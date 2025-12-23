@@ -35,7 +35,7 @@ function parseMotisStop(motisStop) {
     stopId,
     motisStop.name,
     motisStop.lat,
-    motisStop.lng,
+    motisStop.lon,
     arrival,
     departure,
   );

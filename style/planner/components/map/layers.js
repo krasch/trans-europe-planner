@@ -1,4 +1,4 @@
-export const mapLayers = [
+/*export const mapLayers = [
   // ################################
   //           edges (subLegs)
   // ################################
@@ -211,4 +211,127 @@ export const mapLayers = [
       "text-halo-color": "rgba(255,255,255,0.8)",
     },
   },
+];*/
+
+export const mapLayers = [
+  // ###########################################################################
+  //           edges
+  // ###########################################################################
+  // extra wide line to allow users to interact with edges even when not hovering directly over them
+  {
+    id: "edges-interact",
+    source: "edges",
+    type: "line",
+    paint: {
+      "line-opacity": 0.0,
+      "line-width": 20,
+    },
+  },
+  // additional border to highlight the line when hovering
+  {
+    id: "edges-border",
+    source: "edges",
+    type: "line",
+    layout: {
+      "line-join": "miter",
+    },
+    paint: {
+      "line-color": ["feature-state", "color"],
+      "line-width": 2,
+      "line-opacity": [
+        "case",
+        ["boolean", ["feature-state", "isHover"], false],
+        1.0,
+        0.0,
+      ],
+      "line-gap-width": 4, // -> line center is not highlighted
+    },
+  },
+  // the actual lines
+  {
+    id: "edges",
+    source: "edges",
+    type: "line",
+    layout: {
+      "line-join": "miter",
+    },
+    paint: {
+      "line-color": ["feature-state", "color"],
+      "line-opacity": [
+        "case",
+        ["boolean", ["feature-state", "isActive"], false],
+        0.6,
+        0.4,
+      ],
+      "line-width": 8,
+    },
+  },
+
+  // ###########################################################################
+  //           stops
+  // ###########################################################################
+  {
+    id: "stop-circle",
+    source: "stops",
+    type: "circle",
+    paint: {
+      "circle-radius": [
+        "case",
+        ["boolean", ["feature-state", "isHome"], false],
+        6.0,
+        ["boolean", ["feature-state", "isDestination"], false],
+        6.0,
+        4.0,
+      ],
+      "circle-color": "white",
+      "circle-opacity": [
+        "case",
+        ["boolean", ["feature-state", "isHome"], false],
+        1.0,
+        ["boolean", ["feature-state", "isDestination"], false],
+        1.0,
+        0.6,
+      ],
+      "circle-stroke-width": 1,
+      "circle-stroke-color": ["feature-state", "color"],
+    },
+  },
+  // ###########################################################################
+  //           stop names
+  // ###########################################################################
+  /*{
+    id: "city-name",
+    source: "cities",
+    type: "symbol",
+    filter: [
+      "any",
+      // important hubs always shown
+      [">", ["get", "rank"], 1],
+      // other cities only visible in higher zoom levels
+      [">=", ["zoom"], 5],
+    ],
+    symbolSortKey: ["get", "rank"],
+    layout: {
+      "text-font": ["Stadia Semibold"],
+      "text-size": {
+        base: 1.2,
+        stops: [
+          [7, 14],
+          [11, 24],
+        ],
+      },
+      "text-field": ["get", "name"],
+      "text-max-width": 8,
+      "text-line-height": 1.55,
+      "text-offset": [0.4, 0],
+      "text-variable-anchor": ["left", "right"],
+      "icon-allow-overlap": true,
+      "text-allow-overlap": false,
+    },
+    paint: {
+      "text-halo-width": 0.8,
+      "text-color": "#666",
+      "text-halo-color": "rgba(255,255,255,0.8)",
+    },
+  },*/
 ];

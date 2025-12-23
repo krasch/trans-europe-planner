@@ -110,12 +110,12 @@ export async function init() {
   };
 
   const isMobile = window.matchMedia("(max-width: 1000px)");
-  let defaultZoom = 4.3;
+  let defaultZoom = 7.3;
   if (isMobile.matches) defaultZoom = 3.3;
 
   // map is initially in non-interactive mode with reduced opacity (to be a nice background image basically)
   // this already starts loading the map while we do other stuff
-  const map = new MapWrapper("map", [10.0821932, 49.786322], defaultZoom);
+  const map = new MapWrapper("map", [11.75685, 54.0443], defaultZoom);
 
   // also create all the other components (less to do for them)
   const components = {

@@ -11,6 +11,8 @@ export const ICONS = {
   REGIONAL_RAIL: "images/icons/train.svg",
 };
 
+export const GREY = "#aaa";
+
 // will be loaded first time we need colors
 // can not immediately read the colors here because during testing the HTML document is not available at this point yet
 let COLORS = null;
@@ -40,7 +42,7 @@ export function getColor(idx) {
  * @param {string} start
  * @param {string} end
  */
-function toAlphabeticEdgeString(start, end) {
+export function toAlphabeticEdgeString(start, end) {
   if (start < end) return `${start}->${end}`;
   else return `${end}->${start}`;
 }

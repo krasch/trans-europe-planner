@@ -1,40 +1,6 @@
 import { mapLayers } from "style/planner/components/map/layers.js";
 
-import { Cities } from "./cities.js";
-import { Edges } from "./edges.js";
-
-function _cityToGeojson(data) {
-  const [id, city] = data;
-
-  return {
-    type: "Feature",
-    geometry: {
-      type: "Point",
-      coordinates: city.lngLat,
-    },
-    // use this instead of outer-level 'id' field because those ids must be numeric
-    properties: {
-      id: id,
-      name: city.name,
-    },
-  };
-}
-
-function _edgeToGeojson(data) {
-  const [id, edge] = data;
-
-  return {
-    type: "Feature",
-    geometry: {
-      type: "LineString",
-      coordinates: [edge.startLngLat, edge.endLngLat],
-    },
-    // use this instead of outer-level 'id' field because those ids must be numeric
-    properties: { id: id },
-  };
-}
-
-function _asGeojsonFeatureCollection(features) {
+function asGeojsonFeatureCollection(features) {
   return {
     type: "FeatureCollection",
     features: features,
@@ -42,21 +8,13 @@ function _asGeojsonFeatureCollection(features) {
 }
 
 export class MapWrapper {
-  #attribution;
   #map;
   #mapReady;
 
-  #callbacks = {
-    /**
-     * @param {string} journeyId
-     */
-    selectJourney: (journeyId) => {},
-    showCityRoutes: (cityId) => {},
-    showCalendar: (journeyId) => {},
-  };
+  #previousData = { stops: {}, edges: {} };
+  #connectionIdToEdges = {};
 
-  #journeys;
-  #mapping;
+  #callbacks = { itinerarySelected: (itineraryId) => {} };
 
   /**
    * @param {string} containerId
@@ -79,13 +37,16 @@ export class MapWrapper {
     // visual indication that map is non-interactive
     this.#map._container.style.opacity = 0.4;
 
+    // after map has loaded, do a bunch of initialisation stuff
     this.#mapReady = new Promise((fulfilled, rejected) => {
       this.#map.on("load", async () => {
         await this.#configureMap();
-        this.#setupLayers();
+        await this.#setupLayers();
+        this.#initEventHandlers();
 
-        // now map is interactive, show with full opacity
+        // now map is ready&interactive, show with full opacity
         this.#map._container.style.opacity = 1.0;
+        return fulfilled();
       });
     });
   }
@@ -98,7 +59,6 @@ export class MapWrapper {
     const image = await this.#map.loadImage("/images/markers/circle.sdf.png");
     this.#map.addImage("circle", image.data, { sdf: true });
 
-    // configure map details
     this.#map.getCanvas().style.cursor = "default";
 
     // add attribution control
@@ -128,99 +88,141 @@ export class MapWrapper {
     this.#map.keyboard.disableRotation();
   }
 
-  #setupLayers() {
-    // add cities and legs source layers
-    /*this.#map.addSource("cities", {
+  async #setupLayers() {
+    // empty stops source
+    await this.#map.addSource("stops", {
       type: "geojson",
-      data: _asGeojsonFeatureCollection([]),
-      promoteId: "id", // otherwise can not use non-numeric ids
+      data: asGeojsonFeatureCollection([]),
+      // we are using {"features": {"id": }} as id field
+      // there is also an outer "id" field but that one only allows numeric ids
+      promoteId: "id",
     });
-    this.#map.addSource("edges", {
+
+    // empty edges source
+    await this.#map.addSource("edges", {
       type: "geojson",
-      data: _asGeojsonFeatureCollection([]),
-      promoteId: "id", // otherwise can not use non-numeric ids
+      data: asGeojsonFeatureCollection([]),
+      // see above
+      promoteId: "id",
     });
 
-    // add all layers
-    for (let layer of mapLayers) this.#map.addLayer(layer);
+    for (let layer of mapLayers) await this.#map.addLayer(layer);
+  }
 
-    this.cities = new Cities(this.#map);
-    this.edges = new Edges(this.#map);
+  #initEventHandlers() {
+    let previousEdge = null;
+    let previousCity = null;
 
-    this.cities.on("menuClick", (id, entry) => {
-      if (entry === "showRoutes") this.#callbacks["showCityRoutes"](id);
+    this.#map.on("mousemove", "edges-interact", (e) => {
+      const edge = e.features[0];
+
+      // still hovering over the same edge, nothing changed, nothing to be done
+      if (previousEdge === edge) return;
+
+      // no longer hover over this edge
+      if (previousEdge)
+        this.setHoverConnection(previousEdge.state.connectionId, false);
+
+      // have just started hovering over this edge
+      previousEdge = edge;
+      this.setHoverConnection(edge.state.connectionId, true);
+
+      // todo callback
     });
 
-    this.edges.on("mouseOver", (id, lngLat) => {
-      const journey = this.edges.getState(id, "journey");
-      this.setJourneyHoverState(journey, true);
+    this.#map.on("mouseleave", "edges-interact", (e) => {
+      if (!previousEdge) return;
+
+      // no longer hover over this edge
+      this.setHoverConnection(previousEdge.state.connectionId, false);
+      previousEdge = null;
     });
 
-    this.edges.on("mouseLeave", (id, lngLat) => {
-      const journey = this.edges.getState(id, "journey");
-      this.setJourneyHoverState(journey, false);
+    this.#map.on("click", "edges-interact", (e) => {
+      const edge = e.features[0];
+      if (!edge.state.isActive)
+        this.#callbacks.itinerarySelected(edge.state.itineraryId);
     });
-
-    this.edges.on("click", (id, lngLat) => {
-      const active = this.edges.getState(id, "isActive");
-      const journeyId = this.edges.getState(id, "journey");
-
-      // first click = make active
-      if (!active) {
-        this.#callbacks["selectJourney"](journeyId);
-        return;
-      }
-
-      // second click = show menu
-      //this.edges.showJourneyMenu(journeyId, this.#journeys[journeyId], lngLat);
-    });
-
-    this.edges.on("menuClick", (journeyId, entry) => {
-      if (entry === "showCalendar") {
-        this.#callbacks["showCalendar"](journeyId);
-      }
-    });*/
   }
 
   /**
-   * @typedef {import("script/data/components/map.js").CityUpdate} CityUpdate
-   * @typedef {import("script/data/components/map.js").EdgeUpdate} EdgeUpdate
-   * @typedef {import("script/data/components/map.js").ItinerarySummary} ItinerarySummary
-   *
    * @param {object} data
-   * @param {Object<string,CityUpdate>} data.cities
-   * @param {Object<string,EdgeUpdate>} data.edges
-   * @param {Object<string, ItinerarySummary>} data.itineraries
    */
   async updateView(data) {
     await this.#mapReady;
-    // todo clean this up
-    /*this.#mapping = { edges: {} };
+
+    this.#updateSourceData("stops", data.stops);
+    this.#updateSourceData("edges", data.edges);
+
+    this.#updateFeatureState("stops", data.stops);
+    this.#updateFeatureState("edges", data.edges);
+
+    this.#updateRefs(data);
+
+    this.#previousData = data;
+  }
+
+  /**
+   * @param {string} sourceName
+   * @param {object} data todo
+   */
+  #updateSourceData(sourceName, data) {
+    // completely replace the source, todo instead just update
+    // todo should be async?
+    const geo = asGeojsonFeatureCollection(
+      Object.values(data).map((s) => s.geoJSON),
+    );
+    this.#map.getSource(sourceName).setData(geo);
+  }
+
+  /**
+   * @param {string} sourceName
+   * @param {object} data todo
+   */
+  #updateFeatureState(sourceName, data) {
+    // completely replace the feature state, todo instead just update
+    // todo should be async?
+    for (let id in data) {
+      this.#map.setFeatureState(
+        { source: sourceName, id: id },
+        data[id].featureState,
+      );
+    }
+  }
+
+  /**
+   * @param {object} data todo
+   */
+  #updateRefs(data) {
+    // todo clean up
+    this.#connectionIdToEdges = {};
     for (let edgeId in data.edges) {
-      this.#mapping.edges[edgeId] = {
-        legs: data.edges[edgeId].legs,
-        itineraries: data.edges[edgeId].itineraries,
-      };
-      delete data.edges[edgeId].legs;
-      delete data.edges[edgeId].itineraries;
-    }
-
-    this.cities.update(data.cities);
-    this.edges.update(data.edges);
-    this.#journeys = data.itineraries;*/
-  }
-
-  setLegHoverState(leg, state) {
-    for (let id in this.#mapping.edges) {
-      if (this.#mapping.edges[id].legs.includes(leg))
-        this.edges.setHover(id, state);
+      const connectionId = data.edges[edgeId].featureState.connectionId;
+      if (!this.#connectionIdToEdges[connectionId])
+        this.#connectionIdToEdges[connectionId] = [];
+      this.#connectionIdToEdges[connectionId].push(edgeId);
     }
   }
 
-  setJourneyHoverState(journey, state) {
-    for (let id in this.#mapping.edges) {
-      if (this.#mapping.edges[id].itineraries.includes(journey))
-        this.edges.setHover(id, state);
+  /**
+   * @param {string} connectionId
+   * @param {boolean} state
+   */
+  setHoverConnection(connectionId, state) {
+    const edges = this.#connectionIdToEdges[connectionId];
+    this.#setHoverStateForAll("edges", edges, state);
+  }
+
+  /**
+   * @param {string} sourceName
+   * @param {string[]} ids
+   * @param {boolean} state
+   */
+  #setHoverStateForAll(sourceName, ids, state) {
+    for (let id of ids) {
+      const featureState = this.#previousData[sourceName][id];
+      featureState.isHover = state;
+      this.#map.setFeatureState({ source: sourceName, id: id }, featureState);
     }
   }
 }

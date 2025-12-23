@@ -1,8 +1,5 @@
 import { prepareDataForCalendar } from "script/data/components/calendar.js";
-import {
-  prepareDataForMap,
-  prepareInitialDataForMap,
-} from "script/data/components/map.js";
+import { prepareDataForMap } from "script/data/components/map.js";
 import { prepareDataForPerlschnur } from "script/data/components/perlschnur.js";
 import { TravelDatabase } from "script/data/travelDatabase.js";
 import { State } from "script/state.js";
@@ -14,10 +11,10 @@ import { State } from "script/state.js";
  */
 async function updateAllComponents(components, travelDatabase, state) {
   // alternatives for all the connections in current active itinerary - needed for calendar
-  const alternatives = await travelDatabase.getAlternatives(
+  /*const alternatives = await travelDatabase.getAlternatives(
     state.activeItinerary,
     state.desiredStartDate,
-  );
+  );*/
 
   // update map
   const mapData = prepareDataForMap(
@@ -27,7 +24,7 @@ async function updateAllComponents(components, travelDatabase, state) {
   components.map.updateView(mapData);
 
   // update calendar
-  const calendarData = prepareDataForCalendar(
+  /*const calendarData = prepareDataForCalendar(
     state.activeItinerary,
     alternatives,
   );
@@ -40,7 +37,7 @@ async function updateAllComponents(components, travelDatabase, state) {
   // make calendar/perlschnur visible if there is an active journey
   if (state.activeItinerary)
     components.mainContainer.classList.remove("no-journey");
-  else components.mainContainer.classList.add("no-journey");
+  else components.mainContainer.classList.add("no-journey");*/
 }
 
 /**
@@ -64,8 +61,8 @@ export async function main(components, travelDatabase) {
     await updateComponents(state);
   });
 
-  components.map.on("selectJourney", async (journeyId) => {
-    state.setActiveItinerary(journeyId);
+  components.map.on("itinerarySelected", async (itineraryId) => {
+    state.setActiveItinerary(itineraryId);
     await updateComponents(state);
   });
 
@@ -80,24 +77,26 @@ export async function main(components, travelDatabase) {
     await updateComponents(state);
   });
 
-  components.calendar.on("legHoverStart", (/** @type {string} */ leg) => {
-    components.map.setLegHoverState(leg, true);
-  });
-
-  components.calendar.on("legHoverStop", (/** @type {string} */ leg) =>
-    components.map.setLegHoverState(leg, false),
-  );
-
   components.datepicker.on("dateChanged", async (date) => {
     // todo
   });
 
-  // trigger initial update
-  //await updateComponents(state);
-  const result = await travelDatabase.plan(
-    "de_de:13073:10401",
-    "de_de:13003:1489_G",
+  const itineraries = await travelDatabase.plan(
+    // "de_de:13073:10401", // Stralsund
+    "de_de:13074:1011", // Wismar
+    "de_de:13003:1489_G", // Rostock
     state.desiredStartDate,
   );
-  console.log(result);
+  state.replaceItineraries(itineraries, true);
+
+  // trigger initial update
+  await updateComponents(state);
+
+  /*const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  await sleep(1000);
+
+  components.map.setHoverConnection(
+    "20250910_04:42_de_2873716364XXXde_de:13074:1011XXXde_de:13003:1489",
+    true,
+  );*/
 }
