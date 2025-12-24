@@ -155,39 +155,35 @@ export const mapLayers = [
   // ###########################################################################
   //           stop names
   // ###########################################################################
-  /*{
-    id: "city-name",
-    source: "cities",
+  {
+    id: "stop-name",
+    source: "stops",
     type: "symbol",
-    filter: [
-      "any",
-      // important hubs always shown
-      [">", ["get", "rank"], 1],
-      // other cities only visible in higher zoom levels
-      [">=", ["zoom"], 5],
-    ],
-    symbolSortKey: ["get", "rank"],
     layout: {
       "text-font": ["Stadia Semibold"],
-      "text-size": {
-        base: 1.2,
-        stops: [
-          [7, 14],
-          [11, 24],
-        ],
-      },
+      "text-size": 12,
       "text-field": ["get", "name"],
-      "text-max-width": 8,
-      "text-line-height": 1.55,
-      "text-offset": [0.4, 0],
+      "text-offset": [1, 0],
       "text-variable-anchor": ["left", "right"],
-      "icon-allow-overlap": true,
-      "text-allow-overlap": false,
+      "icon-allow-overlap": false,
+      "text-allow-overlap": true,
     },
     paint: {
       "text-halo-width": 0.8,
-      "text-color": "#666",
+      "text-color": ["feature-state", "color"],
       "text-halo-color": "rgba(255,255,255,0.8)",
+      "text-opacity": [
+        "case",
+        [
+          "any",
+          ["boolean", ["feature-state", "isHome"], false],
+          ["boolean", ["feature-state", "isDestination"], false],
+          ["boolean", ["feature-state", "isTransfer"], false],
+          ["boolean", ["feature-state", "isHover"], false],
+        ],
+        1.0,
+        0.0,
+      ],
     },
-  },*/
+  },
 ];
