@@ -1,5 +1,7 @@
 import { mapLayers } from "style/planner/components/map/layers.js";
 
+import { groupBy } from "script/util.js";
+
 function asGeojsonFeatureCollection(features) {
   return {
     type: "FeatureCollection",
@@ -12,9 +14,19 @@ export class MapWrapper {
   #mapReady;
 
   #previousData = { stops: {}, edges: {} };
-  #connectionIdToEdges = {};
+  #lookup = { connectionIdToEdges: {}, itineraryIdToEdges: {} };
 
-  #callbacks = { itinerarySelected: (itineraryId) => {} };
+  #callbacks = {
+    stopHoverOn: (stopId) => {},
+    stopHoverOff: (stopId) => {},
+    stopClicked: (stopId) => {},
+    connectionHoverOn: (connectionId) => {},
+    connectionHoverOff: (connectionId) => {},
+    // connectionClicked: (connectionId) => {},
+    itineraryHoverOn: (itineraryId) => {},
+    itineraryHoverOff: (itineraryId) => {},
+    itineraryClicked: (itineraryId) => {},
+  };
 
   /**
    * @param {string} containerId
@@ -42,7 +54,9 @@ export class MapWrapper {
       this.#map.on("load", async () => {
         await this.#configureMap();
         await this.#setupLayers();
-        this.#initEventHandlers();
+
+        this.#initStopEventHandlers();
+        this.#initEdgeEventHandlers();
 
         // now map is ready&interactive, show with full opacity
         this.#map._container.style.opacity = 1.0;
@@ -109,39 +123,82 @@ export class MapWrapper {
     for (let layer of mapLayers) await this.#map.addLayer(layer);
   }
 
-  #initEventHandlers() {
-    let previousEdge = null;
-    let previousCity = null;
+  #initStopEventHandlers() {
+    let previousStop = null;
 
+    this.#map.on("mousemove", "stops-interact", (e) => {
+      const stop = e.features[0];
+
+      // still hovering over the same stop, nothing changed, nothing to be done
+      if (previousStop && previousStop.id === stop.id) return;
+
+      // let's say "stop" and "previousStop" are overlapping each other
+      // i.e. we are hovering over both at the same time (but "stop" is nearer)
+      // this means that no leave event for "previousStop" was fired
+      // -> we need to un-highlight "previousStop" here, otherwise two stops
+      //    would be highlighted at the same time
+      if (previousStop) {
+        this.setHoverStop(previousStop.id, false);
+        this.#callbacks.stopHoverOff(previousStop.id);
+      }
+
+      // have just started hovering over this stop
+      this.setHoverStop(stop.id, true);
+      this.#callbacks.stopHoverOn(stop.id);
+
+      previousStop = stop;
+    });
+
+    this.#map.on("mouseleave", "stops-interact", (e) => {
+      if (!previousStop) return;
+
+      // have just stopped hovering over previous stop
+      this.setHoverStop(previousStop.id, false);
+      this.#callbacks.stopHoverOff(previousStop.id);
+
+      previousStop = null;
+    });
+
+    this.#map.on("click", "stops-interact", (e) => {
+      const stop = e.features[0];
+      this.#callbacks.stopClicked(stop.id);
+    });
+  }
+
+  #initEdgeEventHandlers() {
+    let previousEdge = null;
     this.#map.on("mousemove", "edges-interact", (e) => {
       const edge = e.features[0];
 
       // still hovering over the same edge, nothing changed, nothing to be done
       if (previousEdge === edge) return;
 
-      // no longer hover over this edge
-      if (previousEdge)
-        this.setHoverConnection(previousEdge.state.connectionId, false);
+      // see explanation in stop mousemove event handler
+      if (previousEdge) {
+        this.setHoverItinerary(previousEdge.state.itineraryId, false);
+        this.#callbacks.itineraryHoverOff(previousEdge.state.itineraryId);
+      }
 
       // have just started hovering over this edge
-      previousEdge = edge;
-      this.setHoverConnection(edge.state.connectionId, true);
+      this.setHoverItinerary(edge.state.itineraryId, true);
+      this.#callbacks.itineraryHoverOn(edge.state.itineraryId);
 
-      // todo callback
+      previousEdge = edge;
     });
 
     this.#map.on("mouseleave", "edges-interact", (e) => {
       if (!previousEdge) return;
 
-      // no longer hover over this edge
-      this.setHoverConnection(previousEdge.state.connectionId, false);
+      // no longer hovering over previous edge
+      this.setHoverItinerary(previousEdge.state.itineraryId, false);
+      this.#callbacks.itineraryHoverOff(previousEdge.state.itineraryId);
+
       previousEdge = null;
     });
 
     this.#map.on("click", "edges-interact", (e) => {
       const edge = e.features[0];
-      if (!edge.state.isActive)
-        this.#callbacks.itinerarySelected(edge.state.itineraryId);
+      this.#callbacks.itineraryClicked(edge.state.itineraryId);
     });
   }
 
@@ -157,7 +214,7 @@ export class MapWrapper {
     this.#updateFeatureState("stops", data.stops);
     this.#updateFeatureState("edges", data.edges);
 
-    this.#updateRefs(data);
+    this.#updateLookup(data);
 
     this.#previousData = data;
   }
@@ -193,35 +250,52 @@ export class MapWrapper {
   /**
    * @param {object} data todo
    */
-  #updateRefs(data) {
-    // todo clean up
-    this.#connectionIdToEdges = {};
-    for (let edgeId in data.edges) {
-      const connectionId = data.edges[edgeId].featureState.connectionId;
-      if (!this.#connectionIdToEdges[connectionId])
-        this.#connectionIdToEdges[connectionId] = [];
-      this.#connectionIdToEdges[connectionId].push(edgeId);
-    }
+  #updateLookup(data) {
+    this.#lookup.connectionIdToEdges = groupBy(
+      Object.keys(data.edges),
+      (edgeId) => data.edges[edgeId].featureState.connectionId,
+    );
+    this.#lookup.itineraryIdToEdges = groupBy(
+      Object.keys(data.edges),
+      (edgeId) => data.edges[edgeId].featureState.itineraryId,
+    );
   }
 
   /**
    * @param {string} connectionId
-   * @param {boolean} state
+   * @param {boolean} isHover
    */
-  setHoverConnection(connectionId, state) {
-    const edges = this.#connectionIdToEdges[connectionId];
-    this.#setHoverStateForAll("edges", edges, state);
+  setHoverConnection(connectionId, isHover) {
+    const edges = this.#lookup.connectionIdToEdges[connectionId];
+    this.#setHoverStateForAll("edges", edges, isHover);
+  }
+
+  /**
+   * @param {string} itineraryId
+   * @param {boolean} isHover
+   */
+  setHoverItinerary(itineraryId, isHover) {
+    const edges = this.#lookup.itineraryIdToEdges[itineraryId];
+    this.#setHoverStateForAll("edges", edges, isHover);
+  }
+
+  /**
+   * @param {string} stopId
+   * @param {boolean} isHover
+   */
+  setHoverStop(stopId, isHover) {
+    this.#setHoverStateForAll("stops", [stopId], isHover);
   }
 
   /**
    * @param {string} sourceName
    * @param {string[]} ids
-   * @param {boolean} state
+   * @param {boolean} isHover
    */
-  #setHoverStateForAll(sourceName, ids, state) {
+  #setHoverStateForAll(sourceName, ids, isHover) {
     for (let id of ids) {
       const featureState = this.#previousData[sourceName][id];
-      featureState.isHover = state;
+      featureState.isHover = isHover;
       this.#map.setFeatureState({ source: sourceName, id: id }, featureState);
     }
   }

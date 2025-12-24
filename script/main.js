@@ -61,7 +61,8 @@ export async function main(components, travelDatabase) {
     await updateComponents(state);
   });
 
-  components.map.on("itinerarySelected", async (itineraryId) => {
+  components.map.on("itineraryClicked", async (itineraryId) => {
+    // todo only if not already active
     state.setActiveItinerary(itineraryId);
     await updateComponents(state);
   });
@@ -95,8 +96,22 @@ export async function main(components, travelDatabase) {
   /*const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   await sleep(1000);
 
-  components.map.setHoverConnection(
+  components.map.setHoverStop("de_de:13003:1489", true);
+  components.map.setHoverStop("de_de:13072:125_G", true);*/
+
+  /*components.map.setHoverConnection(
     "20250910_04:42_de_2873716364XXXde_de:13074:1011XXXde_de:13003:1489",
     true,
   );*/
+
+  /*for (let event of [
+    "stopHoverOn",
+    "stopHoverOff",
+    "stopClicked",
+    "itineraryHoverOn",
+    "itineraryHoverOff",
+    "itineraryClicked",
+  ]) {
+    components.map.on(event, (id) => console.log(event, id));
+  }*/
 }
