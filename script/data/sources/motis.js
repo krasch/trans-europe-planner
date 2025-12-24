@@ -102,19 +102,13 @@ export class MotisClient {
   }
 
   /**
-   * @param {String} fromCityId
-   * @param {String} toCityId
+   * @param {String} fromStopId
+   * @param {String} toStopId
    * @param {DateTime} startDate
-   * @param {GeoDatabase} geoDatabase
    * @returns {Promise<Connection[]>}
    */
-  async direct(fromCityId, toCityId, startDate, geoDatabase) {
-    const itineraries = await this.plan(
-      fromCityId,
-      toCityId,
-      startDate,
-      geoDatabase,
-    );
+  async direct(fromStopId, toStopId, startDate) {
+    const itineraries = await this.plan(fromStopId, toStopId, startDate);
 
     return itineraries
       .filter((i) => i.vias.length === 0) // only want direct

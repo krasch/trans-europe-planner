@@ -2,12 +2,11 @@ import { Connection } from "script/types/connection.js";
 import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
 
-import { ICONS, getColor, identifiers } from "./_common.js";
+import { ICONS, getColor } from "./_common.js";
 
 /**
  * @typedef {Object} CalendarEvent
- * @property {string} uniqueId
- * @property {string} leg
+ * @property {string} id
  * @property {string} name
  * @property {string} icon
  * @property {string} startStation
@@ -24,8 +23,7 @@ import { ICONS, getColor, identifiers } from "./_common.js";
  */
 function dataForConnection(connection, color, isSelected) {
   return {
-    uniqueId: identifiers.connection(connection),
-    leg: identifiers.leg(connection),
+    id: connection.id,
     name: connection.name,
     icon: ICONS[connection.mode],
     startStation: connection.from.stopName,

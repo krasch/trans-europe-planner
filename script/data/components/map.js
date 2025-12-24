@@ -1,7 +1,16 @@
 import { Itinerary } from "script/types/itinerary.js";
 import { Stop } from "script/types/stop.js";
 
-import { GREY, getColor, toAlphabeticEdgeString } from "./_common.js";
+import { GREY, getColor } from "./_common.js";
+
+/**
+ * @param {string} start
+ * @param {string} end
+ */
+function toAlphabeticEdgeString(start, end) {
+  if (start < end) return `${start}->${end}`;
+  else return `${end}->${start}`;
+}
 
 /**
  * @param {Stop} stop

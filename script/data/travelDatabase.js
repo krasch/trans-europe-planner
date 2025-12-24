@@ -7,7 +7,7 @@ import { groupBy } from "script/util.js";
 export class TravelDatabase {
   #client;
 
-  #connectionCache = {};
+  #cache = { plan: new Map(), direct: new Map() };
 
   /**
    * @param {MotisClient} client
@@ -24,11 +24,12 @@ export class TravelDatabase {
    *   // todo toDate
    */
   async plan(fromStopId, toStopId, fromDate) {
-    const itineraries = await this.#client.plan(fromStopId, toStopId, fromDate);
+    const key = this.#hashKey(fromStopId, toStopId, fromDate);
 
-    for (let itinerary of itineraries)
-      for (let connection of itinerary.connections)
-        this.#connectionCache[connection.id] = connection; // todo browser cache?
+    if (this.#cache.plan.has(key)) return this.#cache.plan.get(key);
+
+    // must await, because want to transform the itineraries
+    const itineraries = await this.#client.plan(fromStopId, toStopId, fromDate);
 
     // group by geographical route
     // todo keep only the best geographical routes
@@ -38,41 +39,54 @@ export class TravelDatabase {
     // todo right now always keeping the first itinerary for each route
     const result = Object.keys(grouped).map((key) => grouped[key][0]);
 
+    this.#cache.plan.set(key, result);
     return result;
+  }
+
+  /**
+   * @param {string} fromStopId
+   * @param {string} toStopId
+   * @param {DateTime} fromDate
+   * @returns {Promise<Connection[]>}
+   */
+  direct(fromStopId, toStopId, fromDate) {
+    const key = this.#hashKey(fromStopId, toStopId, fromDate);
+
+    if (this.#cache.direct.has(key)) return this.#cache.direct.get(key);
+
+    const promise = this.#client.direct(fromStopId, toStopId, fromDate);
+
+    promise.then((connections) => {
+      this.#cache.direct.set(key, connections);
+    });
+
+    return promise;
   }
 
   /**
    * @param {Itinerary} itinerary
    * @param {DateTime} fromDate
-   * @returns {Promise<Connection[][]>}
+   * @returns {Object.<String,Connection[] | null>}
    */
-  async getAlternatives(itinerary, fromDate) {
-    if (!itinerary) return null;
+  getAlternatives(itinerary, fromDate) {
+    const alternatives = {};
+    for (let ref of itinerary.connections) {
+      const key = this.#hashKey(ref.from.stopId, ref.to.stopId, fromDate);
 
-    const alternatives = []; // will be one entry for each connection in the itinerary
-    for (let reference of itinerary.connections) {
-      // all direct connections between these two cities in this time range
-      const options = await this.#client.direct(
-        reference.from.city.id,
-        reference.to.city.id,
-        fromDate,
-        this.geoDatabase,
-      );
-
-      for (let connection of options)
-        this.#connectionCache[connection.id] = connection;
-
-      // remove the reference connection
-      alternatives.push(options.filter((o) => o.id !== reference.id));
+      // todo this is really un-intuitive
+      if (this.#cache.direct.has(key))
+        alternatives[ref.id] = this.#cache.direct.get(key);
+      else alternatives[ref.id] = null;
     }
     return alternatives;
   }
 
   /**
-   * @param {string} id
-   * @returns {Connection}
+   * @param {string} fromStopId
+   * @param {string} toStopId
+   * @param {DateTime} fromDate
    */
-  getCachedConnection(id) {
-    return this.#connectionCache[id];
+  #hashKey(fromStopId, toStopId, fromDate) {
+    return `${fromStopId}->${toStopId}@${fromDate.toFormat("yyyy-MM-dd")}`;
   }
 }

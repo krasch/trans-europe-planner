@@ -93,6 +93,24 @@ export async function main(components, travelDatabase) {
   // trigger initial update
   await updateComponents(state);
 
+  for (let connection of state.activeItinerary.connections) {
+    travelDatabase.direct(
+      connection.from.stopId,
+      connection.to.stopId,
+      state.desiredStartDate,
+    );
+  }
+
+  for (let itinerary of state.otherItineraries) {
+    for (let connection of itinerary.connections) {
+      travelDatabase.direct(
+        connection.from.stopId,
+        connection.to.stopId,
+        state.desiredStartDate,
+      );
+    }
+  }
+
   /*const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   await sleep(1000);
 
