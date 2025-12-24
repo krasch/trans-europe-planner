@@ -110,50 +110,6 @@
     </div>
 </template>
 
-<template id="template-city-marker-home">
-    <div class="city-marker-home" data-city-id="to-be-filled"></div>
-</template>
-
-<template id="template-city-marker-destination">
-    <div class="city-marker-destination">
-        <div class="inner-circle"></div>
-        <div class="outer-circle"></div>
-    </div>
-</template>
-
-<template id="template-city-menu">
-    <div class="card city-menu" data-city-id="to-be-filled">
-        <h3></h3> <!-- title -->
-        <menu>
-            <!-- temporarily removed because this is not info we have when using external API for data -->
-            <!--li class="hidden">
-                <em class="num-transfers">
-                    <span lang="de" class="transfers0">Direkt erreichbar</span>
-                    <span lang="de" class="transfers1">Mit 1 Umstieg erreichbar</span>
-                    <span lang="de" class="transfersX">Mit <span class="count"></span> Umstiegen erreichbar</span>
-                    <span lang="en" class="transfers0">Directly reachable</span>
-                    <span lang="en" class="transfers1">Reachable with 1 transfer</span>
-                    <span lang="en" class="transfersX">Reachable with <span class="count"></span> transfers</span>
-                </em>
-            </li-->
-            <li class="hidden">
-                <button value="showRoutes">
-                    <img src="images/icons/eye.svg" alt="icon of eye"/>
-                    <span lang="de">Reiserouten anzeigen</span>
-                    <span lang="en">Show routes</span>
-                </button>
-            </li>
-            <li class="hidden">
-                <button value="makeCut">
-                    <img src="images/icons/scissors.svg" alt="icon of a pair of scissors"/>
-                    <span lang="de">Aufenthalt einfügen</span>
-                    <span lang="en">Stay here for longer</span>
-                </button>
-            </li>
-        </menu>
-    </div>
-</template>
-
 <!-- map is placed outside of <main> because also used in <dialog> -->
 <div id="map"></div>
 

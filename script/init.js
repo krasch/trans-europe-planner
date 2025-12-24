@@ -1,7 +1,7 @@
 import { CalendarWrapper } from "script/components/calendar.js";
 import { Datepicker } from "script/components/datepicker.js";
 import { showLandingPage } from "script/components/landing.js";
-import { MapWrapper } from "script/components/map/map.js";
+import { MapWrapper } from "script/components/map.js";
 import { Perlschnur } from "script/components/perlschnur.js";
 import { MotisClient } from "script/data/sources/motis.js";
 import { TravelDatabase } from "script/data/travelDatabase.js";
