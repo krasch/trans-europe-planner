@@ -4469,79 +4469,6 @@
       }
     },
     {
-      "id": "place-village",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "place",
-      "minzoom": 11,
-      "filter": [
-        "==",
-        "class",
-        "village"
-      ],
-      "layout": {
-        "text-font": [
-          "Stadia Regular"
-        ],
-        "text-size": {
-          "base": 1.2,
-          "stops": [
-            [
-              10,
-              12
-            ],
-            [
-              15,
-              22
-            ]
-          ]
-        },
-        "text-field": [
-          "concat",
-          [
-            "get",
-            "name:latin"
-          ],
-          [
-            "case",
-            [
-              "all",
-              [
-                "has",
-                "name:nonlatin"
-              ],
-              [
-                "is-supported-script",
-                [
-                  "get",
-                  "name:nonlatin"
-                ]
-              ]
-            ],
-            [
-              "concat",
-              "\n",
-              [
-                "get",
-                "name:nonlatin"
-              ]
-            ],
-            ""
-          ]
-        ],
-        "text-max-width": 8,
-        "text-line-height": 1.55,
-        "visibility": "visible",
-        "symbol-spacing": 350,
-        "symbol-avoid-edges": true
-      },
-      "paint": {
-        "text-color": "#333",
-        "text-halo-width": 1.2,
-        "text-halo-color": "rgba(255,255,255,0.8)"
-      }
-    },
-    {
       "id": "mountain-peaks",
       "type": "symbol",
       "source": "openmaptiles",
@@ -4731,76 +4658,6 @@
         "text-halo-blur": 0.5,
         "text-halo-color": "#ffffff",
         "text-halo-width": 1
-      }
-    },
-    {
-      "id": "place-town",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "place",
-      "filter": [
-        "==",
-        "class",
-        "town"
-      ],
-      "layout": {
-        "text-font": [
-          "Stadia Regular"
-        ],
-        "text-size": {
-          "base": 1.2,
-          "stops": [
-            [
-              10,
-              14
-            ],
-            [
-              15,
-              22
-            ]
-          ]
-        },
-        "text-field": [
-          "concat",
-          [
-            "get",
-            "name:latin"
-          ],
-          [
-            "case",
-            [
-              "all",
-              [
-                "has",
-                "name:nonlatin"
-              ],
-              [
-                "is-supported-script",
-                [
-                  "get",
-                  "name:nonlatin"
-                ]
-              ]
-            ],
-            [
-              "concat",
-              "\n",
-              [
-                "get",
-                "name:nonlatin"
-              ]
-            ],
-            ""
-          ]
-        ],
-        "text-max-width": 8,
-        "text-line-height": 1.55,
-        "visibility": "visible"
-      },
-      "paint": {
-        "text-color": "#333",
-        "text-halo-width": 1.2,
-        "text-halo-color": "rgba(255,255,255,0.8)"
       }
     },
     {
@@ -5090,52 +4947,6 @@
       },
       "paint": {
         "text-color": "#115AA7"
-      }
-    },
-    {
-      "id": "place-city",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "place",
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "city"
-        ],
-        ["in", "name", "placeholder"]
-      ],
-      "layout": {
-        "text-font": [
-          "Stadia Semibold"
-        ],
-        "text-size": {
-          "base": 1.2,
-          "stops": [
-            [
-              7,
-              14
-            ],
-            [
-              11,
-              24
-            ]
-          ]
-        },
-        "text-field": ["get", "name"],
-        "text-max-width": 8,
-        "text-line-height": 1.55,
-        "text-variable-anchor": [
-          "left",
-          "right"
-        ],
-        "visibility": "visible"
-      },
-      "paint": {
-        "text-color": "#333",
-        "text-halo-width": 1.2,
-        "text-halo-color": "rgba(255,255,255,0.8)"
       }
     }
   ],
