@@ -1,6 +1,8 @@
 import { createElementFromTemplate, updateElement } from "script/util.js";
 
 // todo streamline icons with calendar
+// todo bug; only one of the transfer stop circles hovers
+// todo collapse by clicking on connection body, intermediate steps get "collapses" class instead of hidden
 
 export class Perlschnur {
   #container;
