@@ -86,7 +86,8 @@ main .logo {
         --navbar-height-with-padding: 4.5rem;
 
         /* again, calculate exactly how much height remains, makes calendar behave better */
-        --journey-height: calc(var(--main-height) - var(--logo-size-with-padding) - var(--navbar-height-with-padding));
+        /*--journey-height: calc(var(--main-height) - var(--logo-size-with-padding) - var(--navbar-height-with-padding));*/
+        --journey-height: 2000px;
 
         height: 100%;
         width: calc(var(--logo-size-with-padding) + var(--config-width));
@@ -238,7 +239,8 @@ Layout journey container (containing calendar and summary)
 *********************************************************/
 
 #journey {
-    --calendar-height: min(700px, calc(var(--journey-height)) - 7rem);
+    /*--calendar-height: min(700px, calc(var(--journey-height)) - 7rem);*/
+    --calendar-height: calc(var(--journey-height) - 7rem);
 
     width: 100%;
     height: var(--journey-height);

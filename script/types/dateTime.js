@@ -15,3 +15,24 @@ export class DateTime extends LuxonDateTime {
   hour = super.hour;
   minute = super.minute;
 }
+
+/**
+ *
+ * @param {DateTime} earlier
+ * @param {DateTime} later
+ * @returns {Number}
+ */
+export function diffDays(earlier, later) {
+  const earlierMidnight = earlier.startOf("day");
+  const laterMidnight = later.startOf("day");
+  return laterMidnight.diff(earlierMidnight, "days").as("days");
+}
+
+/**
+ *
+ * @param {DateTime} datetime
+ * @returns {Number}
+ */
+export function minutesSinceMidnight(datetime) {
+  return datetime.hour * 60 + datetime.minute;
+}

@@ -7,31 +7,33 @@ import { ICONS, getColor } from "./_common.js";
 /**
  * @typedef {Object} CalendarEvent
  * @property {string} id
+ * @property {string} leg
  * @property {string} name
  * @property {string} icon
- * @property {string} startStation
- * @property {DateTime} startDateTime
- * @property {string} endStation
- * @property {DateTime} endDateTime
+ * @property {string} from
+ * @property {DateTime} departure
+ * @property {string} to
+ * @property {DateTime} arrival
  * @property {string} color
- * @property {boolean} selected
+ * @property {boolean} isActive
  *
  * @param {Connection} connection
  * @param {string} color
- * @param {boolean} isSelected
+ * @param {boolean} isActive
  * @returns {CalendarEvent}
  */
-function dataForConnection(connection, color, isSelected) {
+function dataForConnection(connection, color, isActive) {
   return {
     id: connection.id,
+    leg: `${connection.from.stopId}->${connection.to.stopId}`,
     name: connection.name,
     icon: ICONS[connection.mode],
-    startStation: connection.from.stopName,
-    startDateTime: connection.from.departure,
-    endStation: connection.to.stopName,
-    endDateTime: connection.to.arrival,
+    from: connection.from.stopName,
+    departure: connection.from.departure,
+    to: connection.to.stopName,
+    arrival: connection.to.arrival,
     color: color,
-    selected: isSelected,
+    isActive: isActive,
   };
 }
 
@@ -52,10 +54,10 @@ export function prepareDataForCalendar(activeItinerary, alternatives) {
     data.push(dataForConnection(connection, getColor(i), true));
 
     // and also add one event for each alternative to this connection
-    for (let alternative of alternatives[i]) {
+    /*for (let alternative of alternatives[i]) {
       if (alternative.id === connection.id) continue;
       data.push(dataForConnection(alternative, getColor(i), false));
-    }
+    }*/
   });
 
   return data;

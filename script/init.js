@@ -38,21 +38,18 @@ function initMobileNavigation(tabs, content, mainContainer) {
 
   // clicking on calendar tab -> show container journey element and its child calendar element
   tabs.calendar.addEventListener("click", (e) => {
-    if (mainContainer.classList.contains("no-journey")) return;
     _setSelected(tabs, ["calendar"]);
     _setSelected(content, ["journey", "calendar"]);
   });
 
   // clicking on summary tab -> show container journey element and its child summary element
   tabs.summary.addEventListener("click", (e) => {
-    if (mainContainer.classList.contains("no-journey")) return;
     _setSelected(tabs, ["summary"]);
     _setSelected(content, ["journey", "summary"]);
   });
 
   // clicking on config tab -> just show config
   tabs.config.addEventListener("click", (e) => {
-    if (mainContainer.classList.contains("no-journey")) return;
     _setSelected(tabs, ["config"]);
     _setSelected(content, ["config"]);
   });
@@ -136,6 +133,9 @@ export async function init() {
   // currently hard-code using motis
   const motis = new MotisClient();
   const travelDatabase = new TravelDatabase(motis);
+
+  // temporary: always show side bar
+  components.mainContainer.classList.remove("no-journey");
 
   await main(components, travelDatabase);
 }

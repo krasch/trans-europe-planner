@@ -11,10 +11,10 @@ import { State } from "script/state.js";
  */
 async function updateAllComponents(components, travelDatabase, state) {
   // alternatives for all the connections in current active itinerary - needed for calendar
-  /*const alternatives = await travelDatabase.getAlternatives(
+  const alternatives = travelDatabase.getAlternatives(
     state.activeItinerary,
     state.desiredStartDate,
-  );*/
+  );
 
   // update map
   const mapData = prepareDataForMap(
@@ -24,14 +24,14 @@ async function updateAllComponents(components, travelDatabase, state) {
   components.map.updateView(mapData);
 
   // update calendar
-  /*const calendarData = prepareDataForCalendar(
+  const calendarData = prepareDataForCalendar(
     state.activeItinerary,
     alternatives,
   );
   components.calendar.updateView(state.desiredStartDate, calendarData);
 
   // update perlschnur
-  const perlschnurData = prepareDataForPerlschnur(state.activeItinerary);
+  /*const perlschnurData = prepareDataForPerlschnur(state.activeItinerary);
   components.perlschnur.updateView(perlschnurData);
 
   // make calendar/perlschnur visible if there is an active journey
@@ -62,20 +62,10 @@ export async function main(components, travelDatabase) {
   });
 
   components.map.on("itineraryClicked", async (itineraryId) => {
-    // todo only if not already active
-    state.setActiveItinerary(itineraryId);
-    await updateComponents(state);
-  });
-
-  components.map.on("showCityRoutes", async (targetCityId) => {
-    const itineraries = await travelDatabase.plan(
-      state.homeCityId,
-      targetCityId,
-      state.desiredStartDate,
-    );
-
-    state.replaceItineraries(itineraries, true);
-    await updateComponents(state);
+    if (state.activeItinerary.id !== itineraryId) {
+      state.setActiveItinerary(itineraryId);
+      await updateComponents(state);
+    }
   });
 
   components.datepicker.on("dateChanged", async (date) => {
@@ -92,6 +82,8 @@ export async function main(components, travelDatabase) {
 
   // trigger initial update
   await updateComponents(state);
+
+  state.activeItinerary.summary;
 
   for (let connection of state.activeItinerary.connections) {
     travelDatabase.direct(

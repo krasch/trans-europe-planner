@@ -1,7 +1,7 @@
 import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
 
-import { ICONS, getColor, identifiers } from "./_common.js";
+import { ICONS, getColor } from "./_common.js";
 
 /**
  * @param {DateTime} earlierTimestamp

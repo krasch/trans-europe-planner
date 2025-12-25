@@ -54,10 +54,10 @@ export class CalendarWrapper {
     // otherwise they might overlay each other and drag&drop won't work
     // warning: this only works because we are never adding new connections to existing legs
     // @ts-expect-error 2362 - minus not defined for our DateTime type
-    connections.sort((c1, c2) => c1.startDateTime - c2.startDateTime);
+    connections.sort((c1, c2) => c1.departure - c2.departure);
 
     // remove entries that are currently in calendar but no longer necessary
-    const ids = connections.map((c) => c.uniqueId);
+    const ids = connections.map((c) => c.id);
     for (let id_ of this.#idToEntry.keys()) {
       if (ids.includes(id_)) continue; // still necessary
 
@@ -71,8 +71,8 @@ export class CalendarWrapper {
     // add new entries
     for (let c of connections) {
       // already added before, just need to update
-      if (this.#idToEntry.has(c.uniqueId)) {
-        const entry = this.#idToEntry.get(c.uniqueId);
+      if (this.#idToEntry.has(c.id)) {
+        const entry = this.#idToEntry.get(c.id);
         this.#updateEntry(entry, c);
       }
       // new connection -> new entry
@@ -80,8 +80,8 @@ export class CalendarWrapper {
         const entry = this.#createEntryFromConnection(c);
         this.#travelCalendar.appendChild(entry);
 
-        this.#idToEntry.set(c.uniqueId, entry);
-        this.#entryToId.set(entry, c.uniqueId);
+        this.#idToEntry.set(c.id, entry);
+        this.#entryToId.set(entry, c.id);
       }
     }
   }
@@ -90,25 +90,25 @@ export class CalendarWrapper {
     const data = {
       ".connection-icon": { src: c.icon },
       ".connection-number": { innerHTML: c.name },
-      ".start .time": { innerHTML: c.startDateTime.toFormat("HH:mm") },
-      ".start .station": { innerHTML: c.startStation },
-      ".destination .time": { innerHTML: c.endDateTime.toFormat("HH:mm") },
-      ".destination .station": { innerHTML: c.endStation },
+      ".start .time": { innerHTML: c.departure.toFormat("HH:mm") },
+      ".start .station": { innerHTML: c.from },
+      ".destination .time": { innerHTML: c.arrival.toFormat("HH:mm") },
+      ".destination .station": { innerHTML: c.to },
     };
 
     // try to move dataset into the above
     const e = createElementFromTemplate("template-calendar-connection", data);
-    e.dataset.departureDatetime = c.startDateTime.toISO();
-    e.dataset.arrivalDatetime = c.endDateTime.toISO();
+    e.dataset.departureDatetime = c.departure.toISO();
+    e.dataset.arrivalDatetime = c.arrival.toISO();
     e.dataset.color = c.color ?? "";
-    e.dataset.active = c.selected ? "active" : "";
+    e.dataset.active = c.isActive ? "active" : "";
     e.dataset.group = c.leg ?? "";
 
     return e;
   }
 
   #updateEntry(entry, c) {
-    const active = c.selected ? "active" : "";
+    const active = c.isActive ? "active" : "";
     if (active !== entry.dataset.active) entry.dataset.active = active;
 
     if (c.color && c.color !== entry.dataset.color)

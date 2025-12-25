@@ -29,6 +29,10 @@ export class Itinerary {
       .concat(this.vias.map((v) => v.stopId))
       .concat(this.to.stopId);
 
-    this.id = this.stopIds.join("->"); // todo add time?
+    this.id = this.stopIds.join("->");
   }
+
+  get summary() {}
+
+  get score() {}
 }
