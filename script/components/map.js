@@ -17,14 +17,11 @@ export class MapWrapper {
   #lookup = { connectionIdToEdges: {}, itineraryIdToEdges: {} };
 
   #callbacks = {
-    stopHoverOn: (stopId) => {},
-    stopHoverOff: (stopId) => {},
+    stopHover: (stopId, isHover) => {},
     stopClicked: (stopId) => {},
-    connectionHoverOn: (connectionId) => {},
-    connectionHoverOff: (connectionId) => {},
-    // connectionClicked: (connectionId) => {},
-    itineraryHoverOn: (itineraryId) => {},
-    itineraryHoverOff: (itineraryId) => {},
+    connectionHover: (connectionId, isHover) => {},
+    connectionClicked: (connectionId) => {},
+    itineraryHover: (itineraryId, isHover) => {},
     itineraryClicked: (itineraryId) => {},
   };
 
@@ -139,12 +136,12 @@ export class MapWrapper {
       //    would be highlighted at the same time
       if (previousStop) {
         this.setHoverStop(previousStop.id, false);
-        this.#callbacks.stopHoverOff(previousStop.id);
+        this.#callbacks.stopHover(previousStop.id, false);
       }
 
       // have just started hovering over this stop
       this.setHoverStop(stop.id, true);
-      this.#callbacks.stopHoverOn(stop.id);
+      this.#callbacks.stopHover(stop.id, true);
 
       previousStop = stop;
     });
@@ -154,7 +151,7 @@ export class MapWrapper {
 
       // have just stopped hovering over previous stop
       this.setHoverStop(previousStop.id, false);
-      this.#callbacks.stopHoverOff(previousStop.id);
+      this.#callbacks.stopHover(previousStop.id, false);
 
       previousStop = null;
     });
@@ -176,12 +173,14 @@ export class MapWrapper {
       // see explanation in stop mousemove event handler
       if (previousEdge) {
         this.setHoverItinerary(previousEdge.state.itineraryId, false);
-        this.#callbacks.itineraryHoverOff(previousEdge.state.itineraryId);
+        this.#callbacks.connectionHover(previousEdge.state.connectionId, false);
+        this.#callbacks.itineraryHover(previousEdge.state.itineraryId, false);
       }
 
       // have just started hovering over this edge
       this.setHoverItinerary(edge.state.itineraryId, true);
-      this.#callbacks.itineraryHoverOn(edge.state.itineraryId);
+      this.#callbacks.connectionHover(edge.state.connectionId, true);
+      this.#callbacks.itineraryHover(edge.state.itineraryId, true);
 
       previousEdge = edge;
     });
@@ -191,13 +190,15 @@ export class MapWrapper {
 
       // no longer hovering over previous edge
       this.setHoverItinerary(previousEdge.state.itineraryId, false);
-      this.#callbacks.itineraryHoverOff(previousEdge.state.itineraryId);
+      this.#callbacks.connectionHover(previousEdge.state.connectionId, false);
+      this.#callbacks.itineraryHover(previousEdge.state.itineraryId, false);
 
       previousEdge = null;
     });
 
     this.#map.on("click", "edges-interact", (e) => {
       const edge = e.features[0];
+      this.#callbacks.connectionClicked(edge.state.connectionId);
       this.#callbacks.itineraryClicked(edge.state.itineraryId);
     });
   }

@@ -49,8 +49,7 @@ export async function main(components, travelDatabase) {
     travelDatabase,
   );
 
-  // moving things around in the calendar
-  components.calendar.on("legChanged", async (newConnectionId) => {
+  components.calendar.on("connectionMoved", async (newConnectionId) => {
     const connection = travelDatabase.getCachedConnection(newConnectionId);
     state.replaceLegInActiveItinerary(connection);
     await updateComponents(state);
@@ -61,6 +60,14 @@ export async function main(components, travelDatabase) {
       state.setActiveItinerary(itineraryId);
       await updateComponents(state);
     }
+  });
+
+  components.calendar.on("connectionHover", async (connectionId, isHover) => {
+    components.map.setHoverConnection(connectionId, isHover);
+  });
+
+  components.map.on("connectionHover", async (connectionId, isHover) => {
+    components.calendar.setHoverConnection(connectionId, isHover);
   });
 
   components.datepicker.on("dateChanged", async (date) => {
@@ -75,12 +82,17 @@ export async function main(components, travelDatabase) {
   );
   state.replaceItineraries(itineraries, true);
 
+  await travelDatabase.triggerLoadAlternatives(
+    state.activeItinerary,
+    state.startDate,
+  );
+
   // trigger initial update
   await updateComponents(state);
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-  await travelDatabase.triggerLoadAlternatives(
+  /*await travelDatabase.triggerLoadAlternatives(
     state.activeItinerary,
     state.startDate,
   );
@@ -91,7 +103,7 @@ export async function main(components, travelDatabase) {
 
   for (let itinerary of state.otherItineraries) {
     travelDatabase.triggerLoadAlternatives(itinerary, state.startDate);
-  }
+  }*/
 
   /*const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   await sleep(1000);

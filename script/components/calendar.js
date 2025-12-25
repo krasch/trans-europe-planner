@@ -3,9 +3,8 @@ import { createElementFromTemplate } from "script/util.js";
 
 export class CalendarWrapper {
   #callbacks = {
-    legChanged: (newConnection) => {},
-    legHoverStart: (leg) => {},
-    legHoverStop: (leg) => {},
+    connectionMoved: (newConnectionId) => {},
+    connectionHover: (connectionId, isHover) => {},
   };
 
   #travelCalendar;
@@ -17,13 +16,13 @@ export class CalendarWrapper {
     this.#travelCalendar = travelCalendar;
 
     this.#travelCalendar.on("hoverOn", (entry) => {
-      this.#callbacks.legHoverStart(entry.dataset.group);
+      this.#callbacks.connectionHover(this.#entryToId.get(entry), true);
     });
     this.#travelCalendar.on("hoverOff", (entry) => {
-      this.#callbacks.legHoverStop(entry.dataset.group);
+      this.#callbacks.connectionHover(this.#entryToId.get(entry), false);
     });
     this.#travelCalendar.on("drop", (entry) => {
-      this.#callbacks.legChanged(this.#entryToId.get(entry));
+      this.#callbacks.connectionMoved(this.#entryToId.get(entry));
     });
   }
 
@@ -31,12 +30,10 @@ export class CalendarWrapper {
     this.#callbacks[eventName] = eventCallback;
   }
 
-  setHoverLeg(leg) {
-    this.#travelCalendar.setHoverGroup(leg);
-  }
-
-  setNoHoverLeg(leg) {
-    this.#travelCalendar.setNoHoverGroup(leg);
+  setHoverConnection(connectionId, isHover) {
+    const entry = this.#idToEntry.get(connectionId);
+    // can be undefined if hovering in map over inactive itinerary
+    if (entry) this.#travelCalendar.setHoverEntry(entry, isHover);
   }
 
   /**

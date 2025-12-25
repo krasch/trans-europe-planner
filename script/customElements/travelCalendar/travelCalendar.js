@@ -136,13 +136,9 @@ export class TravelCalendar extends HTMLElement {
     this.#callbacks[eventName] = eventCallback;
   }
 
-  // todo everything else is done via data attributes, why not this and the next?
-  setHoverGroup(group) {
-    for (let entry of this.#lookup.entriesWithGroup(group)) entry.hover = true;
-  }
-
-  setNoHoverGroup(group) {
-    for (let entry of this.#lookup.entriesWithGroup(group)) entry.hover = false;
+  // todo everything else is done via data attributes, why not this?
+  setHoverEntry(externalElement, isHover) {
+    this.#lookup.entry(externalElement).hover = isHover;
   }
 
   #addEntry(externalElement) {

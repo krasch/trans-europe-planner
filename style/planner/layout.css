@@ -87,7 +87,7 @@ main .logo {
 
         /* again, calculate exactly how much height remains, makes calendar behave better */
         /*--journey-height: calc(var(--main-height) - var(--logo-size-with-padding) - var(--navbar-height-with-padding));*/
-        --journey-height: 1500px;
+        --journey-height: 1000px;
 
         height: 100%;
         width: calc(var(--logo-size-with-padding) + var(--config-width));
