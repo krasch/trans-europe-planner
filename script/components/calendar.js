@@ -102,22 +102,19 @@ export class CalendarWrapper {
     e.dataset.arrivalDatetime = c.arrival.toISO();
     e.dataset.color = c.color ?? "";
     e.dataset.group = c.leg ?? "";
-    e.dataset.active = c.isActive ? "active" : "not-active";
-    e.dataset.loaded = c.isLoaded ? "loaded" : "not-loaded";
+    e.dataset.status = c.status;
 
     return e;
   }
 
   #updateEntry(entry, c) {
-    // todo this triggers 4 mutations
-    entry.dataset.color = c.color;
-    entry.dataset.group = c.leg;
-    entry.dataset.active = c.isActive ? "active" : "not-active";
-    entry.dataset.loaded = c.isLoaded ? "loaded" : "not-loaded";
-
     // travelcalendar supports also changes in startDatetime and endDatetime
     // but right now those don't change and implementing anything here anyway might
     // lead to a lot of date formatting overhead so let's just not do it
     // todo then do I want to allow updating at all?
+
+    for (let key of ["color", "leg", "status"]) {
+      if (c[key] !== entry.dataset[key]) entry.dataset[key] = c[key];
+    }
   }
 }

@@ -100,8 +100,7 @@ export class TravelCalendar extends HTMLElement {
       entryDatasetUpdated: (e, key) => {
         const entry = this.#lookup.entry(e);
         if (key === "data-color") entry.color = e.dataset.color;
-        else if (key === "data-active") entry.active = e.dataset.active;
-        else if (key === "data-loaded") entry.loaded = e.dataset.loaded;
+        else if (key === "data-status") entry.status = e.dataset.status;
       },
       entryUpdated: (e) => {
         this.#removeEntry(e);
@@ -179,8 +178,7 @@ export class TravelCalendar extends HTMLElement {
 
     entry.group = externalElement.dataset.group;
     entry.color = externalElement.dataset.color;
-    entry.active = externalElement.dataset.active;
-    entry.loaded = externalElement.dataset.loaded;
+    entry.status = externalElement.dataset.status;
 
     // todo when changing the calendar date, often the changed entries arrive before the calender grid has changed
     // this means that entries might end up in columns > 3. but since we are filtering out those parts
@@ -408,12 +406,8 @@ export class MultipartCalendarEntry {
     }
   }
 
-  set active(isActive) {
-    for (let part of this.parts) part.dataset.active = isActive;
-  }
-
-  set loaded(isLoaded) {
-    for (let part of this.parts) part.dataset.loaded = isLoaded;
+  set status(status) {
+    for (let part of this.parts) part.dataset.status = status;
   }
 
   set dragStatus(status) {

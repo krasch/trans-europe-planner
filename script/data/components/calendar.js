@@ -15,16 +15,14 @@ import { ICONS, getColor } from "./_common.js";
  * @property {string} to
  * @property {DateTime} arrival
  * @property {string} color
- * @property {boolean} isActive
- * @property {boolean} isLoaded
+ * @property {('active'|'active-loading'|'inactive')} status
  *
  * @param {Connection} connection
  * @param {string} color
- * @param {boolean} isActive
- * @param {boolean} isLoaded
+ * @param {('active'|'active-loading'|'inactive')} status
  * @returns {CalendarEvent}
  */
-function dataForConnection(connection, color, isActive, isLoaded) {
+function dataForConnection(connection, color, status) {
   return {
     id: connection.id,
     leg: `${connection.from.stopId}->${connection.to.stopId}`,
@@ -35,8 +33,7 @@ function dataForConnection(connection, color, isActive, isLoaded) {
     to: connection.to.stopName,
     arrival: connection.to.arrival,
     color: color,
-    isActive: isActive,
-    isLoaded: isLoaded,
+    status: status,
   };
 }
 
@@ -49,18 +46,19 @@ export function prepareDataForCalendar(activeItinerary, alternatives) {
   const data = [];
 
   activeItinerary.connections.forEach((connection, i) => {
-    // alternatives already available for this connection -> can drag&drop
+    // alternatives already available for this connection?
     const isLoaded = alternatives[connection.id] !== null;
+    const status = isLoaded ? "active" : "active-loading";
 
     // this will add an event for the currently selected connection to the calendar
-    data.push(dataForConnection(connection, getColor(i), true, isLoaded));
+    data.push(dataForConnection(connection, getColor(i), status));
 
     // alternatives for this connection haven't finished loading yet
     if (alternatives[connection.id] === null) return;
 
     // add one event for each alternative to this connection
     for (let alt of alternatives[connection.id]) {
-      data.push(dataForConnection(alt, getColor(i), false, isLoaded));
+      data.push(dataForConnection(alt, getColor(i), "inactive"));
     }
   });
 

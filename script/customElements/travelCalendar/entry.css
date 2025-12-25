@@ -65,10 +65,10 @@
 
 
 /* while loading alternatives for a connection, show a spinner instead of the move icon*/
-.entry-part[data-loaded="not-loaded"] .header .move-icon {
+.entry-part[data-status="active-loading"] .header .move-icon {
     display: none;
 }
-.entry-part[data-loaded="not-loaded"] .spinner {
+.entry-part[data-status="active-loading"] .spinner {
     display: inline-block;
     height: 0.75rem;
     width: 0.75rem;
@@ -87,10 +87,10 @@
 }
 
 /* when data for alternatives has finished loading, show move icon instead of spinner */
-.entry-part[data-loaded="loaded"] .header .spinner {
+.entry-part[data-status="active"] .header .spinner {
     display: none;
 }
-.entry-part[data-loaded="loaded"] .header {
+.entry-part[data-status="active"] .header {
     cursor: move;
 }
 
@@ -106,32 +106,36 @@
     --alpha-body-loading: 0.2;
     --alpha-body: 0.4;
     --alpha-body-hover: 0.7;
-}
 
-.entry-part[data-loaded="not-loaded"] {
-    color: darkgrey;
-    background-color: rgba(var(--color), var(--alpha-body-loading));
-}
-
-.entry-part[data-loaded="not-loaded"] .header {
-    background-color: rgba(var(--color), var(--alpha-header-loading));
-}
-
-.entry-part {
     color: #2e210d;
-    background-color: rgba(var(--color), var(--alpha-body));
 }
 
 .entry-part .header {
     color: var(--color-light);
+}
+
+.entry-part[data-status="active-loading"] {
+    color: darkgrey;
+    background-color: rgba(var(--color), var(--alpha-body-loading));
+}
+
+.entry-part[data-status="active-loading"] .header {
+    background-color: rgba(var(--color), var(--alpha-header-loading));
+}
+
+.entry-part[data-status="active"] {
+    background-color: rgba(var(--color), var(--alpha-body));
+}
+
+.entry-part[data-status="active"] .header {
     background-color: rgba(var(--color), var(--alpha-header));
 }
 
-.entry-part[data-loaded="loaded"].hover {
+.entry-part[data-status="active"].hover {
     background-color: rgba(var(--color), var(--alpha-body-hover));
 }
 
-.entry-part[data-loaded="loaded"].hover .header {
+.entry-part[data-status="active"].hover .header {
     background-color: rgba(var(--color), var(--alpha-header-hover));
 }
 
@@ -166,7 +170,8 @@
 }
 
 /* active entry is visible */
-.entry-part[data-active="active"] {
+.entry-part[data-status="active"],
+.entry-part[data-status="active-loading"] {
     visibility: visible;
 }
 
