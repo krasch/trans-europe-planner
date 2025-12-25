@@ -30,9 +30,9 @@ export class CalendarWrapper {
     this.#callbacks[eventName] = eventCallback;
   }
 
-  setHoverConnection(connectionId, isHover) {
-    const entry = this.#idToEntry.get(connectionId);
+  setConnectionHover(connectionId, isHover) {
     // can be undefined if hovering in map over inactive itinerary
+    const entry = this.#idToEntry.get(connectionId);
     if (entry) this.#travelCalendar.setHoverEntry(entry, isHover);
   }
 

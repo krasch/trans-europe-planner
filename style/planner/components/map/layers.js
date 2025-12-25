@@ -3,7 +3,7 @@ const CONFIG = {
   stopStroke: 1.0,
   stopOpacity: 0.6,
   specialStopRadius: 6.0,
-  specialStopStroke: 3.0,
+  specialStopStroke: 2.0,
   specialStopOpacity: 1.0,
   stopInteractRadius: 10.0,
   stopHoverOffset: 4.0,

@@ -66,6 +66,49 @@ export class MapWrapper {
     this.#callbacks[eventName] = callback;
   }
 
+  /**
+   * @param {object} data
+   */
+  async updateView(data) {
+    await this.#mapReady;
+
+    this.#updateSourceData("stops", data.stops);
+    this.#updateSourceData("edges", data.edges);
+
+    this.#updateFeatureState("stops", data.stops);
+    this.#updateFeatureState("edges", data.edges);
+
+    this.#updateLookup(data);
+
+    this.#previousData = data;
+  }
+
+  /**
+   * @param {string} connectionId
+   * @param {boolean} isHover
+   */
+  setConnectionHover(connectionId, isHover) {
+    const edges = this.#lookup.connectionIdToEdges[connectionId];
+    this.#setHoverStateForAll("edges", edges, isHover);
+  }
+
+  /**
+   * @param {string} itineraryId
+   * @param {boolean} isHover
+   */
+  setItineraryHover(itineraryId, isHover) {
+    const edges = this.#lookup.itineraryIdToEdges[itineraryId];
+    this.#setHoverStateForAll("edges", edges, isHover);
+  }
+
+  /**
+   * @param {string} stopId
+   * @param {boolean} isHover
+   */
+  setStopHover(stopId, isHover) {
+    this.#setHoverStateForAll("stops", [stopId], isHover);
+  }
+
   async #configureMap() {
     const image = await this.#map.loadImage("/images/markers/circle.sdf.png");
     this.#map.addImage("circle", image.data, { sdf: true });
@@ -135,12 +178,12 @@ export class MapWrapper {
       // -> we need to un-highlight "previousStop" here, otherwise two stops
       //    would be highlighted at the same time
       if (previousStop) {
-        this.setHoverStop(previousStop.id, false);
+        this.setStopHover(previousStop.id, false);
         this.#callbacks.stopHover(previousStop.id, false);
       }
 
       // have just started hovering over this stop
-      this.setHoverStop(stop.id, true);
+      this.setStopHover(stop.id, true);
       this.#callbacks.stopHover(stop.id, true);
 
       previousStop = stop;
@@ -150,7 +193,7 @@ export class MapWrapper {
       if (!previousStop) return;
 
       // have just stopped hovering over previous stop
-      this.setHoverStop(previousStop.id, false);
+      this.setStopHover(previousStop.id, false);
       this.#callbacks.stopHover(previousStop.id, false);
 
       previousStop = null;
@@ -172,13 +215,13 @@ export class MapWrapper {
 
       // see explanation in stop mousemove event handler
       if (previousEdge) {
-        this.setHoverItinerary(previousEdge.state.itineraryId, false);
+        this.setItineraryHover(previousEdge.state.itineraryId, false);
         this.#callbacks.connectionHover(previousEdge.state.connectionId, false);
         this.#callbacks.itineraryHover(previousEdge.state.itineraryId, false);
       }
 
       // have just started hovering over this edge
-      this.setHoverItinerary(edge.state.itineraryId, true);
+      this.setItineraryHover(edge.state.itineraryId, true);
       this.#callbacks.connectionHover(edge.state.connectionId, true);
       this.#callbacks.itineraryHover(edge.state.itineraryId, true);
 
@@ -189,7 +232,7 @@ export class MapWrapper {
       if (!previousEdge) return;
 
       // no longer hovering over previous edge
-      this.setHoverItinerary(previousEdge.state.itineraryId, false);
+      this.setItineraryHover(previousEdge.state.itineraryId, false);
       this.#callbacks.connectionHover(previousEdge.state.connectionId, false);
       this.#callbacks.itineraryHover(previousEdge.state.itineraryId, false);
 
@@ -201,23 +244,6 @@ export class MapWrapper {
       this.#callbacks.connectionClicked(edge.state.connectionId);
       this.#callbacks.itineraryClicked(edge.state.itineraryId);
     });
-  }
-
-  /**
-   * @param {object} data
-   */
-  async updateView(data) {
-    await this.#mapReady;
-
-    this.#updateSourceData("stops", data.stops);
-    this.#updateSourceData("edges", data.edges);
-
-    this.#updateFeatureState("stops", data.stops);
-    this.#updateFeatureState("edges", data.edges);
-
-    this.#updateLookup(data);
-
-    this.#previousData = data;
   }
 
   /**
@@ -260,32 +286,6 @@ export class MapWrapper {
       Object.keys(data.edges),
       (edgeId) => data.edges[edgeId].featureState.itineraryId,
     );
-  }
-
-  /**
-   * @param {string} connectionId
-   * @param {boolean} isHover
-   */
-  setHoverConnection(connectionId, isHover) {
-    const edges = this.#lookup.connectionIdToEdges[connectionId];
-    this.#setHoverStateForAll("edges", edges, isHover);
-  }
-
-  /**
-   * @param {string} itineraryId
-   * @param {boolean} isHover
-   */
-  setHoverItinerary(itineraryId, isHover) {
-    const edges = this.#lookup.itineraryIdToEdges[itineraryId];
-    this.#setHoverStateForAll("edges", edges, isHover);
-  }
-
-  /**
-   * @param {string} stopId
-   * @param {boolean} isHover
-   */
-  setHoverStop(stopId, isHover) {
-    this.#setHoverStateForAll("stops", [stopId], isHover);
   }
 
   /**

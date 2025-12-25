@@ -2,10 +2,16 @@ import { createElementFromTemplate, updateElement } from "script/util.js";
 
 // todo streamline icons with calendar
 
-// todo rename whole thing to Summary or SummaryWithPerlschnur or Overview or something
-// the perlschnur is just one part of this, so naming is very confusing
 export class Perlschnur {
   #container;
+
+  #idToConnection;
+  #idToStop;
+
+  #callbacks = {
+    connectionHover: (connectionId, isHover) => {},
+    stopHover: (stopId, isHover) => {},
+  };
 
   constructor(container) {
     this.#container = container;
@@ -18,6 +24,42 @@ export class Perlschnur {
         this.#collapse(e.target.parentElement.parentElement);
       }
     });
+
+    container.addEventListener("mouseover", (e) => {
+      e.preventDefault();
+
+      const stop = e.target.closest(".perlschnur-stop");
+      if (stop) {
+        this.setStopHover(stop.dataset.stopId, true);
+        this.#callbacks.stopHover(stop.dataset.stopId, true);
+      }
+
+      const connection = e.target.closest(".perlschnur-connection");
+      if (connection) {
+        this.setConnectionHover(connection.dataset.connectionId, true);
+        this.#callbacks.connectionHover(connection.dataset.connectionId, true);
+      }
+    });
+
+    container.addEventListener("mouseout", (e) => {
+      e.preventDefault();
+
+      const stop = e.target.closest(".perlschnur-stop");
+      if (stop) {
+        this.setStopHover(stop.dataset.stopId, false);
+        this.#callbacks.stopHover(stop.dataset.stopId, false);
+      }
+
+      const connection = e.target.closest(".perlschnur-connection");
+      if (connection) {
+        this.setConnectionHover(connection.dataset.connectionId, false);
+        this.#callbacks.connectionHover(connection.dataset.connectionId, false);
+      }
+    });
+  }
+
+  on(eventName, callback) {
+    this.#callbacks[eventName] = callback;
   }
 
   /**
@@ -31,6 +73,9 @@ export class Perlschnur {
    * @param {PerlschnurTransfer[]} data.transfers
    */
   updateView(data) {
+    this.#idToConnection = new Map();
+    this.#idToStop = new Map();
+
     updateElement(this.#container, {
       ".total-time": { innerText: data.summary.totalTime },
       ".from": { innerText: data.summary.from },
@@ -48,6 +93,24 @@ export class Perlschnur {
     this.#container.querySelector("#perlschnur").replaceChildren(...elements);
   }
 
+  setStopHover(stopId, isHover) {
+    // can be undefined if hovering in map over inactive itinerary
+    const stop = this.#idToStop.get(stopId);
+    if (!stop) return;
+
+    if (isHover) stop.classList.add("hover");
+    else stop.classList.remove("hover");
+  }
+
+  setConnectionHover(connectionId, isHover) {
+    // can be undefined if hovering in map over inactive itinerary
+    const connection = this.#idToConnection.get(connectionId);
+    if (!connection) return;
+
+    if (isHover) connection.classList.add("hover");
+    else connection.classList.remove("hover");
+  }
+
   #createConnection(connection) {
     const element = createElementFromTemplate(
       "template-perlschnur-connection",
@@ -58,6 +121,7 @@ export class Perlschnur {
       },
     );
     element.style.setProperty("--color", connection.color);
+    element.dataset.connectionId = connection.id;
 
     const intermediateSteps = connection.stops.length - 2;
 
@@ -73,13 +137,17 @@ export class Perlschnur {
       const li = createElementFromTemplate("template-perlschnur-stop", {
         ".time": { innerText: connection.stops[i].time },
         ".date": { innerText: connection.stops[i].date ?? "" },
-        ".station": { innerText: connection.stops[i].station },
+        ".station": { innerText: connection.stops[i].stopName },
       });
+      li.dataset.stopId = connection.stops[i].stopId;
       ul.appendChild(li);
+
+      this.#idToStop.set(connection.stops[i].stopId, li);
     }
 
     if (intermediateSteps > 1) this.#collapse(element);
 
+    this.#idToConnection.set(connection.id, element);
     return element;
   }
 

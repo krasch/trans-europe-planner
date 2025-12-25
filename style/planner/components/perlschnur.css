@@ -96,6 +96,15 @@
   }
 }
 
+.perlschnur-connection {
+  outline: 2px solid transparent;
+  outline-offset: 3px;
+}
+
+.perlschnur-connection.hover {
+  outline-color: rgba(var(--color), 0.8);
+}
+
 .perlschnur-connection h3 {
   color: white;
   background-color: rgba(var(--color), 0.8);
@@ -109,7 +118,7 @@
   border-color: rgb(var(--color));
 }
 
-.perlschnur-stop:hover .circle {
+.perlschnur-stop.hover .circle {
   box-shadow: 0 0 0 2px rgb(var(--color));
 }
 

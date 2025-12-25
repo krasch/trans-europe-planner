@@ -51,7 +51,7 @@ function itinerarySummary(itinerary) {
  * @property {string} name
  * @property {string} icon
  * @property {string} travelTime
- * @property {{station: string, time: string, date: string}[]} stops
+ * @property {{stopId: string, stopName: string, time: string, date: string}[]} stops
  *
  * @typedef {Object} PerlschnurTransfer
  * @property {string} time
@@ -67,8 +67,6 @@ export function prepareDataForPerlschnur(activeItinerary) {
     connections: [],
     transfers: [], // interleaved transfers and connections
   };
-
-  if (!activeItinerary) return result;
 
   // this variable will always capture the departure (if first stop in connection)
   // or arrival (all other stops) of the most recent stop, across connections
@@ -93,7 +91,8 @@ export function prepareDataForPerlschnur(activeItinerary) {
       previousTimestamp = timestamp;
 
       return {
-        station: stop.stopName,
+        stopId: stop.stopId,
+        stopName: stop.stopName,
         time: timestamp.toFormat("HH:mm"),
         date: date,
       };
@@ -101,7 +100,7 @@ export function prepareDataForPerlschnur(activeItinerary) {
 
     // combine with all the rest of the connection info
     result.connections.push({
-      id: identifiers.connection(connection),
+      id: connection.id,
       color: getColor(connectionIdx),
       name: connection.name,
       icon: ICONS[connection.mode],

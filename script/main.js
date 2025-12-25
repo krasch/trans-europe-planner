@@ -31,8 +31,8 @@ async function updateAllComponents(components, travelDatabase, state) {
   components.calendar.updateView(state.startDate, calendarData);
 
   // update perlschnur
-  /*const perlschnurData = prepareDataForPerlschnur(state.activeItinerary);
-  components.perlschnur.updateView(perlschnurData);*/
+  const perlschnurData = prepareDataForPerlschnur(state.activeItinerary);
+  components.perlschnur.updateView(perlschnurData);
 }
 
 /**
@@ -63,11 +63,25 @@ export async function main(components, travelDatabase) {
   });
 
   components.calendar.on("connectionHover", async (connectionId, isHover) => {
-    components.map.setHoverConnection(connectionId, isHover);
+    components.map.setConnectionHover(connectionId, isHover);
   });
 
   components.map.on("connectionHover", async (connectionId, isHover) => {
-    components.calendar.setHoverConnection(connectionId, isHover);
+    components.calendar.setConnectionHover(connectionId, isHover);
+    components.perlschnur.setConnectionHover(connectionId, isHover);
+  });
+
+  components.perlschnur.on("connectionHover", async (connectionId, isHover) => {
+    components.calendar.setConnectionHover(connectionId, isHover);
+    components.map.setConnectionHover(connectionId, isHover);
+  });
+
+  components.map.on("stopHover", async (stopId, isHover) => {
+    components.perlschnur.setStopHover(stopId, isHover);
+  });
+
+  components.perlschnur.on("stopHover", async (stopId, isHover) => {
+    components.map.setStopHover(stopId, isHover);
   });
 
   components.datepicker.on("dateChanged", async (date) => {
@@ -86,6 +100,10 @@ export async function main(components, travelDatabase) {
     state.activeItinerary,
     state.startDate,
   );
+
+  for (let itinerary of state.otherItineraries) {
+    travelDatabase.triggerLoadAlternatives(itinerary, state.startDate);
+  }
 
   // trigger initial update
   await updateComponents(state);
