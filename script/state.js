@@ -21,11 +21,10 @@ export class State {
   #otherItineraries;
 
   /**
-   * @param {string} homeCityId
-   * @param {DateTime} desiredStartDate
+   * @param {DateTime} startDate
    */
-  constructor(desiredStartDate) {
-    this.desiredStartDate = desiredStartDate;
+  constructor(startDate) {
+    this.startDate = startDate;
 
     this.#activeItinerary = null;
     this.#otherItineraries = {};
@@ -97,14 +96,14 @@ export class State {
       throw new StateError("No itinerary is currently set to active");
 
     // todo
-    const ref = `${newConnection.from.city.id}->${newConnection.to.city.id}`;
+    const ref = `${newConnection.from.stopId}->${newConnection.to.stopId}`;
 
     // make copy
     const connections = Array.from(this.#activeItinerary.connections);
 
     let found = false;
     for (let i in connections) {
-      const leg = `${connections[i].from.city.id}->${connections[i].to.city.id}`; // todo
+      const leg = `${connections[i].from.stopId}->${connections[i].to.stopId}`; // todo
 
       // move into itinerary: getConnectionForLeg
       if (ref === leg) {

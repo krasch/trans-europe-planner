@@ -39,7 +39,7 @@ test("Group itineraries per route and pick one each", async function () {
 test("Alternatives for empty itinerary", async function () {
   const db = new TravelDatabase(null, null);
 
-  const got = await db.getAlternatives(null, DAY1);
+  const got = await db.getCachedAlternatives(null, DAY1);
   expect(got).toStrictEqual(null);
 });
 
@@ -57,6 +57,6 @@ test("Alternatives for itinerary", async function () {
 
   const db = new TravelDatabase(mockSource, null);
 
-  const got = await db.getAlternatives(i1, DAY1);
+  const got = await db.getCachedAlternatives(i1, DAY1);
   expect(got).toStrictEqual([[c1_alt, c1_alt2], []]);
 });

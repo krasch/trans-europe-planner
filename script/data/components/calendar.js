@@ -59,9 +59,9 @@ export function prepareDataForCalendar(activeItinerary, alternatives) {
     if (alternatives[connection.id] === null) return;
 
     // add one event for each alternative to this connection
-    /*for (let alt of alternatives[connection.id]) {
+    for (let alt of alternatives[connection.id]) {
       data.push(dataForConnection(alt, getColor(i), false, isLoaded));
-    }*/
+    }
   });
 
   return data;

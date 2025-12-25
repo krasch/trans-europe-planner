@@ -7,7 +7,15 @@ import { groupBy } from "script/util.js";
 export class TravelDatabase {
   #client;
 
-  #cache = { plan: new Map(), direct: new Map() };
+  // todo map first two to ConnectionId instead to save some memory?
+  #cache = {
+    // maps from [from,to,date] to Connection[]
+    plan: new Map(),
+    // maps from [from,to,date] to Connection[]
+    direct: new Map(),
+    // maps from connectionId to Connection
+    connections: new Map(),
+  };
 
   /**
    * @param {MotisClient} client
@@ -36,9 +44,11 @@ export class TravelDatabase {
     const grouped = groupBy(itineraries, (i) => i.stopIds.join("->"));
 
     // todo calculate itinerary score and keep only the best for each geographical route
-    // todo right now always keeping the first itinerary for each route
+    //  right now always keeping the first itinerary for each route
     const result = Object.keys(grouped).map((key) => grouped[key][0]);
 
+    // todo add to connection cache? not so important,
+    //  everything will show up in direct call anyway
     this.#cache.plan.set(key, result);
     return result;
   }
@@ -49,7 +59,7 @@ export class TravelDatabase {
    * @param {DateTime} fromDate
    * @returns {Promise<Connection[]>}
    */
-  direct(fromStopId, toStopId, fromDate) {
+  async direct(fromStopId, toStopId, fromDate) {
     const key = this.#hashKey(fromStopId, toStopId, fromDate);
 
     if (this.#cache.direct.has(key)) return this.#cache.direct.get(key);
@@ -58,6 +68,7 @@ export class TravelDatabase {
 
     promise.then((connections) => {
       this.#cache.direct.set(key, connections);
+      for (let c of connections) this.#cache.connections.set(c.id, c);
     });
 
     return promise;
@@ -66,19 +77,43 @@ export class TravelDatabase {
   /**
    * @param {Itinerary} itinerary
    * @param {DateTime} fromDate
+   * @returns {Promise<Object.<String,Connection[] | null>>}
+   */
+  triggerLoadAlternatives(itinerary, fromDate) {
+    const promises = [];
+    for (let ref of itinerary.connections) {
+      promises.push(this.direct(ref.from.stopId, ref.to.stopId, fromDate));
+    }
+    return Promise.all(promises);
+  }
+
+  /**
+   * @param {String} id
+   * @returns Connection
+   */
+  getCachedConnection(id) {
+    return this.#cache.connections.get(id);
+  }
+
+  /**
+   * @param {Itinerary} itinerary
+   * @param {DateTime} fromDate
    * @returns {Object.<String,Connection[] | null>}
    */
-  getAlternatives(itinerary, fromDate) {
+  getCachedAlternatives(itinerary, fromDate) {
     const alternatives = {};
     for (let ref of itinerary.connections) {
       const key = this.#hashKey(ref.from.stopId, ref.to.stopId, fromDate);
 
-      // todo this is really un-intuitive
-      if (this.#cache.direct.has(key)) {
-        alternatives[ref.id] = this.#cache.direct
-          .get(key)
-          .filter((c) => c.id !== ref.id);
-      } else alternatives[ref.id] = null;
+      // there is no cache hit for this connection -> has not finished loading
+      if (!this.#cache.direct.has(key)) {
+        alternatives[ref.id] = null;
+        continue;
+      }
+
+      // loading has finished; need to filter out the reference connection
+      const cached = this.#cache.direct.get(key);
+      alternatives[ref.id] = cached.filter((c) => c.id !== ref.id);
     }
     return alternatives;
   }

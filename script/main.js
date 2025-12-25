@@ -11,9 +11,9 @@ import { State } from "script/state.js";
  */
 async function updateAllComponents(components, travelDatabase, state) {
   // alternatives for all the connections in current active itinerary - needed for calendar
-  const alternatives = travelDatabase.getAlternatives(
+  const alternatives = travelDatabase.getCachedAlternatives(
     state.activeItinerary,
-    state.desiredStartDate,
+    state.startDate,
   );
 
   // update map
@@ -28,16 +28,11 @@ async function updateAllComponents(components, travelDatabase, state) {
     state.activeItinerary,
     alternatives,
   );
-  components.calendar.updateView(state.desiredStartDate, calendarData);
+  components.calendar.updateView(state.startDate, calendarData);
 
   // update perlschnur
   /*const perlschnurData = prepareDataForPerlschnur(state.activeItinerary);
-  components.perlschnur.updateView(perlschnurData);
-
-  // make calendar/perlschnur visible if there is an active journey
-  if (state.activeItinerary)
-    components.mainContainer.classList.remove("no-journey");
-  else components.mainContainer.classList.add("no-journey");*/
+  components.perlschnur.updateView(perlschnurData);*/
 }
 
 /**
@@ -76,7 +71,7 @@ export async function main(components, travelDatabase) {
     // "de_de:13073:10401", // Stralsund
     "de_de:13074:1011", // Wismar
     "de_de:13003:1489_G", // Rostock
-    state.desiredStartDate,
+    state.startDate,
   );
   state.replaceItineraries(itineraries, true);
 
@@ -85,31 +80,18 @@ export async function main(components, travelDatabase) {
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-  for (let connection of state.activeItinerary.connections) {
-    await travelDatabase.direct(
-      connection.from.stopId,
-      connection.to.stopId,
-      state.desiredStartDate,
-    );
-  }
+  await travelDatabase.triggerLoadAlternatives(
+    state.activeItinerary,
+    state.startDate,
+  );
   await sleep(3000);
 
   // loading finished update
   await updateComponents(state);
 
-  /*for (let itinerary of state.otherItineraries) {
-    for (let connection of itinerary.connections) {
-      travelDatabase.direct(
-        connection.from.stopId,
-        connection.to.stopId,
-        state.desiredStartDate,
-      );
-    }
+  for (let itinerary of state.otherItineraries) {
+    travelDatabase.triggerLoadAlternatives(itinerary, state.startDate);
   }
-
-  await sleep(1000);
-
-  await updateComponents(state);*/
 
   /*const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   await sleep(1000);

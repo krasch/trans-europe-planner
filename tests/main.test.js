@@ -142,7 +142,7 @@ test("when user selects a destination, database should be queried for routes and
     new Itinerary([_c("T1: S1@D1T10->S3@D1T11")]),
   ]);
   // same direct connection but on a different day
-  travelDatabase.getAlternatives.mockReturnValueOnce([
+  travelDatabase.getCachedAlternatives.mockReturnValueOnce([
     [_c("T2: S1@D2T10->S3@D2T11")],
   ]);
 
@@ -188,7 +188,7 @@ test("when user moves things around in the calendar, components should be update
   // there is just one route, directly from C1->C3
   travelDatabase.plan.mockReturnValueOnce([new Itinerary([c1])]);
   // same direct connection but on a different day
-  travelDatabase.getAlternatives.mockReturnValueOnce([[c2]]);
+  travelDatabase.getCachedAlternatives.mockReturnValueOnce([[c2]]);
 
   // sets an active route
   await callbacks.map.showCityRoutes("C3");
@@ -196,7 +196,7 @@ test("when user moves things around in the calendar, components should be update
   // now pretend that user has moved things around in the calendar
   vi.clearAllMocks();
   travelDatabase.getCachedConnection.mockReturnValueOnce(c2);
-  travelDatabase.getAlternatives.mockReturnValueOnce([[c1]]);
+  travelDatabase.getCachedAlternatives.mockReturnValueOnce([[c1]]);
   await callbacks.calendar.legChanged("C1->C3", c2.id);
 
   // calendar now shows T2 as active
@@ -247,7 +247,7 @@ test("when user picks a different journey as active, components should be update
     itineraries.via,
   ]);
   // alternatives for first (active) itinerary on different day
-  travelDatabase.getAlternatives.mockReturnValueOnce(alternatives.direct);
+  travelDatabase.getCachedAlternatives.mockReturnValueOnce(alternatives.direct);
 
   // pretend user has clicked on the map, this runs fake trip planning and sets
   // first itinerary as active
@@ -255,7 +255,7 @@ test("when user picks a different journey as active, components should be update
   vi.clearAllMocks();
 
   // will now set other itinerary as active -> need to set up alternatives
-  travelDatabase.getAlternatives.mockReturnValueOnce(alternatives.via);
+  travelDatabase.getCachedAlternatives.mockReturnValueOnce(alternatives.via);
 
   // pretend user has set other itinerary as active
   await callbacks.map.selectJourney(itineraries.via.id);

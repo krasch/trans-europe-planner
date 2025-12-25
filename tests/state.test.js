@@ -11,7 +11,7 @@ test("initialization", async function () {
   const state = new State("C1", DAY1);
 
   expect(state.homeCityId).toBe("C1");
-  expect(state.desiredStartDate).toBe(DAY1);
+  expect(state.startDate).toBe(DAY1);
   expect(state.activeItinerary).toBe(null);
   expect(state.otherItineraries).toStrictEqual([]);
 });
