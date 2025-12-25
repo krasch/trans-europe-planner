@@ -53,7 +53,7 @@ export class CalendarWrapper {
     // sort such that earliest will be first child etc
     // otherwise they might overlay each other and drag&drop won't work
     // warning: this only works because we are never adding new connections to existing legs
-    // @ts-expect-error 2362 - minus not defined for our DateTime type
+    // @ts-expect-error 2362 (minus not defined for our DateTime type)
     connections.sort((c1, c2) => c1.departure - c2.departure);
 
     // remove entries that are currently in calendar but no longer necessary
@@ -101,22 +101,23 @@ export class CalendarWrapper {
     e.dataset.departureDatetime = c.departure.toISO();
     e.dataset.arrivalDatetime = c.arrival.toISO();
     e.dataset.color = c.color ?? "";
-    e.dataset.active = c.isActive ? "active" : "";
     e.dataset.group = c.leg ?? "";
+    e.dataset.active = c.isActive ? "active" : "not-active";
+    e.dataset.loaded = c.isLoaded ? "loaded" : "not-loaded";
 
     return e;
   }
 
   #updateEntry(entry, c) {
-    const active = c.isActive ? "active" : "";
-    if (active !== entry.dataset.active) entry.dataset.active = active;
-
-    if (c.color && c.color !== entry.dataset.color)
-      entry.dataset.color = c.color;
-    if (c.leg && c.leg !== entry.dataset.group) entry.dataset.group = c.leg;
+    // todo this triggers 4 mutations
+    entry.dataset.color = c.color;
+    entry.dataset.group = c.leg;
+    entry.dataset.active = c.isActive ? "active" : "not-active";
+    entry.dataset.loaded = c.isLoaded ? "loaded" : "not-loaded";
 
     // travelcalendar supports also changes in startDatetime and endDatetime
     // but right now those don't change and implementing anything here anyway might
     // lead to a lot of date formatting overhead so let's just not do it
+    // todo then do I want to allow updating at all?
   }
 }

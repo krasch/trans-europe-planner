@@ -74,9 +74,11 @@ export class TravelDatabase {
       const key = this.#hashKey(ref.from.stopId, ref.to.stopId, fromDate);
 
       // todo this is really un-intuitive
-      if (this.#cache.direct.has(key))
-        alternatives[ref.id] = this.#cache.direct.get(key);
-      else alternatives[ref.id] = null;
+      if (this.#cache.direct.has(key)) {
+        alternatives[ref.id] = this.#cache.direct
+          .get(key)
+          .filter((c) => c.id !== ref.id);
+      } else alternatives[ref.id] = null;
     }
     return alternatives;
   }

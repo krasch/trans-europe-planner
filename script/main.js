@@ -83,17 +83,21 @@ export async function main(components, travelDatabase) {
   // trigger initial update
   await updateComponents(state);
 
-  state.activeItinerary.summary;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
   for (let connection of state.activeItinerary.connections) {
-    travelDatabase.direct(
+    await travelDatabase.direct(
       connection.from.stopId,
       connection.to.stopId,
       state.desiredStartDate,
     );
   }
+  await sleep(3000);
 
-  for (let itinerary of state.otherItineraries) {
+  // loading finished update
+  await updateComponents(state);
+
+  /*for (let itinerary of state.otherItineraries) {
     for (let connection of itinerary.connections) {
       travelDatabase.direct(
         connection.from.stopId,
@@ -102,6 +106,10 @@ export async function main(components, travelDatabase) {
       );
     }
   }
+
+  await sleep(1000);
+
+  await updateComponents(state);*/
 
   /*const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   await sleep(1000);

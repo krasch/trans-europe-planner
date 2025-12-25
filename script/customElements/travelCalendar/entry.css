@@ -1,7 +1,7 @@
 .entry-part {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  font-family: helvetica, arial, sans-serif;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-family: helvetica, arial, sans-serif;
 }
 
 /***********************************************
@@ -9,59 +9,89 @@
 ************************************************/
 
 .entry-part {
-  overflow: hidden; /* this is necessary to really get the round corners */
+    overflow: hidden; /* this is necessary to really get the round corners */
 
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
 
-  /* lie horizontally centered in grid column */
-  width: 90%;
-  justify-self: center;
+    /* lie horizontally centered in grid column */
+    width: 90%;
+    justify-self: center;
 
-  /* todo would be nicer to do this in external css */
-  animation: fadein 1s;
+    /* todo would be nicer to do this in external css */
+    animation: fadein 1s;
 }
 
 @keyframes fadein {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .entry-part > * {
-  padding-left: 0.2rem;
+    padding-left: 0.2rem;
 }
 
 .entry-part .header {
-  min-height: 1.5rem; /* otherwise short connections have tiny header */
-  height: 1.5rem;
+    min-height: 1.5rem; /* otherwise short connections have tiny header */
+    height: 1.5rem;
 
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.2rem;
-
-  cursor: move;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.2rem;
 }
 
 .entry-part .header img {
-  height: 1rem;
+    height: 1rem;
 }
 
-/* move icon should be at right of header */
-.entry-part .header img:last-child {
-  margin-left: auto;
-  padding-right: 0.5rem;
+/* move/load icon should be at right of header (only one of these is visible at the same time) */
+.entry-part .header .move-icon,
+.entry-part .header .spinner {
+    margin-left: auto;
+    margin-right: 0.5rem;
 }
 
 /* destination should be at end of entry */
 .entry-part .destination {
-  margin-top: auto;
-  padding-bottom: 0.2rem;
+    margin-top: auto;
+    padding-bottom: 0.2rem;
+}
+
+
+/* while loading alternatives for a connection, show a spinner instead of the move icon*/
+.entry-part[data-loaded="not-loaded"] .header .move-icon {
+    display: none;
+}
+.entry-part[data-loaded="not-loaded"] .spinner {
+    display: inline-block;
+    height: 0.75rem;
+    width: 0.75rem;
+    border: 2px solid var(--color-light);
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    animation: rotation 1s linear infinite;
+}
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* when data for alternatives has finished loading, show move icon instead of spinner */
+.entry-part[data-loaded="loaded"] .header .spinner {
+    display: none;
+}
+.entry-part[data-loaded="loaded"] .header {
+    cursor: move;
 }
 
 /***********************************************
@@ -69,53 +99,62 @@
 ************************************************/
 
 .entry-part {
-  --color: 0, 0, 0; /* will be set in script */
-  color: #2e210d;
+    --color: 0, 0, 0; /* will be set in script */
+    --alpha-header-loading: 0.4;
+    --alpha-header: 0.7;
+    --alpha-header-hover: 1.0;
+    --alpha-body-loading: 0.2;
+    --alpha-body: 0.4;
+    --alpha-body-hover: 0.7;
 }
 
-.entry-part[data-status="active"] {
-  background-color: rgba(var(--color), 0.4);
+.entry-part[data-loaded="not-loaded"] {
+    color: darkgrey;
+    background-color: rgba(var(--color), var(--alpha-body-loading));
 }
 
-.entry-part[data-status="active"].hover {
-  background-color: rgba(var(--color), 0.6);
+.entry-part[data-loaded="not-loaded"] .header {
+    background-color: rgba(var(--color), var(--alpha-header-loading));
+}
+
+.entry-part {
+    color: #2e210d;
+    background-color: rgba(var(--color), var(--alpha-body));
 }
 
 .entry-part .header {
-  color: white;
-  background-color: rgba(var(--color), 0.8);
+    color: var(--color-light);
+    background-color: rgba(var(--color), var(--alpha-header));
+}
+
+.entry-part[data-loaded="loaded"].hover {
+    background-color: rgba(var(--color), var(--alpha-body-hover));
+}
+
+.entry-part[data-loaded="loaded"].hover .header {
+    background-color: rgba(var(--color), var(--alpha-header-hover));
 }
 
 .entry-part .header img {
-  filter: invert(100%); /* can not use var(--filter-white) here */
+    filter: invert(100%); /* can not use var(--filter-white) here */
 }
 
 /***********************************************
  Borders, border radius
 ************************************************/
 
-.entry-part[data-status="active"] {
-  border-left: 1px solid rgb(var(--color));
-  border-right: 1px solid rgb(var(--color));
-}
-
 /* first part of a multi-column calendar entry */
 .entry-first-part {
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-}
-.entry-first-part[data-status="active"] {
-  border-top: 1px solid rgb(var(--color));
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
 
 /* last part of a multi-column calendar entry */
 .entry-last-part {
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
-.entry-last-part[data-status="active"] {
-  border-bottom: 1px solid rgb(var(--color));
-}
+
 
 /***********************************************
  Visibility, drag&drop status etc
@@ -123,33 +162,33 @@
 
 /* by default entry is not visible */
 .entry-part {
-  visibility: hidden;
+    visibility: hidden;
 }
 
 /* active entry is visible */
-.entry-part[data-status="active"] {
-  visibility: visible;
+.entry-part[data-active="active"] {
+    visibility: visible;
 }
 
 /* during drag&drop, entry children are never visible */
 .entry-part[data-drag-status="indicator"] > *,
 .entry-part[data-drag-status="preview"] > * {
-  visibility: hidden;
+    visibility: hidden;
 }
 
 /* but the entry "shell" itself is visible */
 .entry-first-part[data-drag-status="indicator"],
 .entry-part[data-drag-status="preview"] {
-  visibility: visible;
+    visibility: visible;
 }
 
 /* drag&drop "indicator" = border over FIRST PART to show that dropping is possible here */
 .entry-first-part[data-drag-status="indicator"] {
-  border-top: 2px dashed rgba(var(--color));
-  border-radius: 0;
+    border-top: 2px dashed rgba(var(--color));
+    border-radius: 0;
 }
 
 /* drag&drop "preview" = faint background color to show that this is the current drop target */
 .entry-part[data-drag-status="preview"] {
-  background-color: rgba(var(--color), 0.3);
+    background-color: rgba(var(--color), 0.3);
 }

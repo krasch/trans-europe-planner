@@ -97,15 +97,15 @@ export class TravelCalendar extends HTMLElement {
     this.#setupMutationObserver({
       entryAdded: (e) => this.#addEntry(e),
       entryRemoved: (e) => this.#removeEntry(e),
+      entryDatasetUpdated: (e, key) => {
+        const entry = this.#lookup.entry(e);
+        if (key === "data-color") entry.color = e.dataset.color;
+        else if (key === "data-active") entry.active = e.dataset.active;
+        else if (key === "data-loaded") entry.loaded = e.dataset.loaded;
+      },
       entryUpdated: (e) => {
         this.#removeEntry(e);
         this.#addEntry(e);
-      },
-      entryActiveStatusUpdated: (e) => {
-        this.#lookup.entry(e).active = e.dataset.active === "active";
-      },
-      entryColorUpdated: (e) => {
-        this.#lookup.entry(e).color = e.dataset.color;
       },
     });
   }
@@ -178,8 +178,9 @@ export class TravelCalendar extends HTMLElement {
     );
 
     entry.group = externalElement.dataset.group;
-    entry.active = externalElement.dataset.active === "active";
     entry.color = externalElement.dataset.color;
+    entry.active = externalElement.dataset.active;
+    entry.loaded = externalElement.dataset.loaded;
 
     // todo when changing the calendar date, often the changed entries arrive before the calender grid has changed
     // this means that entries might end up in columns > 3. but since we are filtering out those parts
@@ -335,14 +336,6 @@ export class TravelCalendar extends HTMLElement {
     const isEntry = (node) =>
       node.tagName === "DIV" && node.classList.contains("calendar-entry");
 
-    const attributeNameToCallback = {
-      "data-departure-datetime": callbacks.entryUpdated,
-      "data-arrival-datetime": callbacks.entryUpdated,
-      "data-group": callbacks.entryUpdated,
-      "data-active": callbacks.entryActiveStatusUpdated,
-      "data-color": callbacks.entryColorUpdated,
-    };
-
     const observer = new MutationObserver((mutations) => {
       for (let mutation of mutations) {
         if (mutation.type === "childList") {
@@ -353,9 +346,15 @@ export class TravelCalendar extends HTMLElement {
             if (isEntry(node)) callbacks.entryRemoved(node);
           }
         }
+        // todo this seems to be ignoring the start-date mutation on root element?
         if (mutation.type === "attributes") {
           if (isEntry(mutation.target)) {
-            attributeNameToCallback[mutation.attributeName](mutation.target);
+            if (mutation.attributeName.startsWith("data-"))
+              callbacks.entryDatasetUpdated(
+                mutation.target,
+                mutation.attributeName,
+              );
+            else callbacks.entryUpdated(mutation.target);
           }
         }
       }
@@ -410,8 +409,11 @@ export class MultipartCalendarEntry {
   }
 
   set active(isActive) {
-    const value = isActive ? "active" : "inactive";
-    for (let part of this.parts) part.dataset.status = value;
+    for (let part of this.parts) part.dataset.active = isActive;
+  }
+
+  set loaded(isLoaded) {
+    for (let part of this.parts) part.dataset.loaded = isLoaded;
   }
 
   set dragStatus(status) {
