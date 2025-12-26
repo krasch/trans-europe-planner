@@ -119,9 +119,10 @@ export class Perlschnur {
       const connection = connections[i];
 
       // if too many stops, insert special "collapse" element after first stop
+      // todo make it collapse for > 4, must change first/last child css logic
       const stops = connection.stops.map(createStopElement);
-      if (stops.length > 4)
-        stops.splice(1, 0, createCollapseElement(stops.length - 4));
+      if (stops.length > 2)
+        stops.splice(1, 0, createCollapseElement(stops.length - 2));
 
       const connectionElement = createConnectionElement(connections[i]);
       connectionElement
