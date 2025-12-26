@@ -127,7 +127,7 @@ travel-calendar {
 Style journey summary
 ************************************************/
 
-#summary {
+#perlschnur-container {
     color: var(--color-dark);
 }
 

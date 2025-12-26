@@ -1,5 +1,18 @@
 
+#perlschnur-container {
+    min-width: min(350px, 90%);
+    max-width: min(650px, 90%);
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
 #perlschnur {
+  width: 100%;
+  padding: 0.5rem;
+
   display: flex;
   flex-direction: column;
   gap: 0.5rem;

@@ -158,7 +158,7 @@ main .logo {
 
 /* both in desktop and in mobile we can choose between showing calendar and summary */
 #calendar:not(.selected),
-#summary:not(.selected) {
+#perlschnur-container:not(.selected) {
     display: none;
 }
 
@@ -268,26 +268,6 @@ Layout for calendar
 #planner travel-calendar {
     height: 100%;
 }
-
-/***********************************************
-Layout for journey summary
-************************************************/
-
-#summary {
-    min-width: min(350px, 90%);
-    max-width: min(650px, 90%);
-
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-}
-
-#summary #perlschnur {
-    padding: 0.5rem;
-    width: 100%;
-}
-
 
 /*******************************************************
  the card/menu with title, used in map, perlschnur

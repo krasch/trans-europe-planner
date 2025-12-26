@@ -158,7 +158,7 @@ class DOMQueryHelper {
    * @returns {HTMLElement}
    */
   get summary() {
-    return document.querySelector("#summary");
+    return document.querySelector("#perlschnur-container");
   }
 
   /**

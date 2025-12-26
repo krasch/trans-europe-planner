@@ -42,10 +42,10 @@ function initMobileNavigation(tabs, content, mainContainer) {
     _setSelected(content, ["journey", "calendar"]);
   });
 
-  // clicking on summary tab -> show container journey element and its child summary element
-  tabs.summary.addEventListener("click", (e) => {
-    _setSelected(tabs, ["summary"]);
-    _setSelected(content, ["journey", "summary"]);
+  // clicking on perlschnur tab -> show container journey element and its child perlschnur element
+  tabs.perlschnur.addEventListener("click", (e) => {
+    _setSelected(tabs, ["perlschnur"]);
+    _setSelected(content, ["journey", "perlschnur"]);
   });
 
   // clicking on config tab -> just show config
@@ -60,7 +60,7 @@ function initMobileNavigation(tabs, content, mainContainer) {
  * @param {Object.<string, Element>} content
  */
 function initDesktopNavigation(tabs, content) {
-  // on desktop we only need to pick between calendar and summary
+  // on desktop we only need to pick between calendar and perlschnur
   // the config and the journey container are always shown
 
   // within the journey container, on first load show the calendar tab
@@ -73,10 +73,10 @@ function initDesktopNavigation(tabs, content) {
     _setSelected(content, ["calendar"]);
   });
 
-  // clicking on summary tab -> show summary element in journey container
-  tabs.summary.addEventListener("click", (e) => {
-    _setSelected(tabs, ["summary"]);
-    _setSelected(content, ["summary"]);
+  // clicking on perlschnur tab -> show perlschnur element in journey container
+  tabs.perlschnur.addEventListener("click", (e) => {
+    _setSelected(tabs, ["perlschnur"]);
+    _setSelected(content, ["perlschnur"]);
   });
 }
 
@@ -89,19 +89,19 @@ export async function init() {
     navMobile: {
       map: document.querySelector("#nav-mobile-tab-map"),
       calendar: document.querySelector("#nav-mobile-tab-calendar"),
-      summary: document.querySelector("#nav-mobile-tab-summary"),
+      perlschnur: document.querySelector("#nav-mobile-tab-perlschnur"),
       config: document.querySelector("#nav-mobile-tab-config"),
     },
     navDesktop: {
       calendar: document.querySelector("#nav-desktop-tab-calendar"),
-      summary: document.querySelector("#nav-desktop-tab-summary"),
+      perlschnur: document.querySelector("#nav-desktop-tab-perlschnur"),
     },
 
     // items we can control using tabs
     tabContents: {
       journey: document.querySelector("#journey"),
       calendar: document.querySelector("#calendar"),
-      summary: document.querySelector("#summary"),
+      perlschnur: document.querySelector("#perlschnur-container"),
       config: document.querySelector("#config"),
     },
   };
@@ -119,7 +119,7 @@ export async function init() {
     mainContainer: elements.main, // todo a component, just an HTML element
     map: map,
     calendar: new CalendarWrapper(elements.travelCalendar),
-    perlschnur: new Perlschnur(elements.tabContents.summary),
+    perlschnur: new Perlschnur(elements.tabContents.perlschnur),
     datepicker: new Datepicker(elements.tabContents.config),
   };
 
