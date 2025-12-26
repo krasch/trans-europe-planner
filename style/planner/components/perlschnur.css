@@ -10,7 +10,7 @@
 
 #perlschnur-inner {
     width: 90%;
-    padding: 0.5rem;
+    padding: 1rem;
 
     display: flex;
     flex-direction: column;
@@ -79,7 +79,7 @@
 }
 
 .perlschnur-stop .date {
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 
 .perlschnur-stop .date:empty {
