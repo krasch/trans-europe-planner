@@ -22,29 +22,6 @@ export function formatTimedelta(earlierTimestamp, laterTimestamp) {
 }
 
 /**
- * @typedef {Object} ItinerarySummary
- * @property {string} from
- * @property {string} to
- * @property {string} totalTime
- * @property {string} via
- *
- * @param {Itinerary} itinerary
- * @returns {ItinerarySummary}
- */
-function itinerarySummary(itinerary) {
-  const from = itinerary.connections[0].from;
-  const to = itinerary.connections.at(-1).to;
-  const via = itinerary.vias.map((v) => v.stopName);
-
-  return {
-    from: from.stopName,
-    to: to.stopName,
-    totalTime: formatTimedelta(from.departure, to.arrival),
-    via: via.length > 0 ? "via " + via.join(", ") : "",
-  };
-}
-
-/**
  * @typedef {Object} PerlschnurConnection
  * @property {string} id
  * @property {string} color
@@ -57,9 +34,7 @@ function itinerarySummary(itinerary) {
  * @property {string} time
  *
  * @param {Itinerary} activeItinerary
- * @returns {{summary: ItinerarySummary | {},
- *            connections: PerlschnurConnection[],
- *            transfers: PerlschnurTransfer[]}}
+ * @returns {{connections: PerlschnurConnection[], transfers: PerlschnurTransfer[]}}
  */
 export function prepareDataForPerlschnur(activeItinerary) {
   const result = {
@@ -121,6 +96,5 @@ export function prepareDataForPerlschnur(activeItinerary) {
     result.transfers.push(null); // todo explain
   });
 
-  result.summary = itinerarySummary(activeItinerary);
   return result;
 }

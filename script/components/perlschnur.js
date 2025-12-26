@@ -1,13 +1,4 @@
-import { createElementFromTemplate, updateElement } from "script/util.js";
-
-function updateSummary(container, summary) {
-  updateElement(container, {
-    ".total-time": { innerText: summary.totalTime },
-    ".from": { innerText: summary.from },
-    ".to": { innerText: summary.to },
-    ".via": { innerText: summary.via },
-  });
-}
+import { createElementFromTemplate } from "script/util.js";
 
 function createConnectionElement(connection) {
   const element = createElementFromTemplate("template-perlschnur-connection", {
@@ -57,7 +48,7 @@ export class Perlschnur {
   };
 
   constructor(container) {
-    this.#container = container;
+    this.#container = container.querySelector("#perlschnur-inner");
 
     container.addEventListener("click", (e) => {
       e.preventDefault();
@@ -104,18 +95,14 @@ export class Perlschnur {
   }
 
   /**
-   * @typedef {import("script/data/components/perlschnur.js").ItinerarySummary} ItinerarySummary
    * @typedef {import("script/data/components/perlschnur.js").PerlschnurConnection} PerlschnurConnection
    * @typedef {import("script/data/components/perlschnur.js").PerlschnurTransfer} PerlschnurTransfer
    *
    * @param {object} data
-   * @param {ItinerarySummary} data.summary
    * @param {PerlschnurConnection[]} data.connections
    * @param {PerlschnurTransfer[]} data.transfers
    */
   updateView(data) {
-    updateSummary(this.#container, data.summary);
-
     const children = [];
     for (let i in data.connections) {
       const connection = data.connections[i];
@@ -136,7 +123,7 @@ export class Perlschnur {
       if (transfer) children.push(createTransferElement(data.transfers));
     }
 
-    this.#container.querySelector("#perlschnur").replaceChildren(...children);
+    this.#container.replaceChildren(...children);
   }
 
   /**

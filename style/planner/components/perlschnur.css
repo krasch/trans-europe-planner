@@ -1,24 +1,23 @@
 
-#perlschnur-container {
-    min-width: min(350px, 90%);
-    max-width: min(650px, 90%);
+#perlschnur {
+    width: 80%;
 
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 1rem;
 }
 
-#perlschnur {
-  width: 100%;
-  padding: 0.5rem;
+#perlschnur-inner {
+    width: 90%;
+    padding: 0.5rem;
 
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 
-  border: 1px solid lightgrey;
-  border-radius: 5px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
 }
 
 /***********************************************
@@ -26,36 +25,36 @@
 ************************************************/
 
 .perlschnur-connection {
-  --color: 0, 0, 0; /* will be set by Javascript */
-  background-color: rgba(var(--color), 0.4);
-  color: #2e210d;
+    --color: 0, 0, 0; /* will be set by Javascript */
+    background-color: rgba(var(--color), 0.4);
+    color: #2e210d;
 
-  animation: fadein 1s;
+    animation: fadein 1s;
 }
 
 .perlschnur-connection h3 {
-  height: 2rem;
-  font-size: 1rem;
-  justify-content: flex-start;
+    height: 2rem;
+    font-size: 1rem;
+    justify-content: flex-start;
 
-  color: white;
-  background-color: rgba(var(--color), 0.8);
+    color: white;
+    background-color: rgba(var(--color), 0.8);
 }
 
 .perlschnur-connection h3 img {
-  height: 1rem;
-  filter: var(--filter-white);
+    height: 1rem;
+    filter: var(--filter-white);
 }
 
 .perlschnur-connection h3 .connection-travel-time {
-  padding-left: 1rem;
-  flex-grow: 1;
-  font-size: 0.8rem;
+    padding-left: 1rem;
+    flex-grow: 1;
+    font-size: 0.8rem;
 }
 
 .perlschnur-connection .perlschnur-stop-list {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 /***********************************************
@@ -63,12 +62,12 @@
 ************************************************/
 
 .perlschnur-connection {
-  outline: 2px solid transparent;
-  outline-offset: 3px;
+    outline: 2px solid transparent;
+    outline-offset: 3px;
 }
 
 .perlschnur-connection.hover {
-  outline-color: rgba(var(--color), 0.8);
+    outline-color: rgba(var(--color), 0.8);
 }
 
 /***********************************************
@@ -76,24 +75,24 @@
 ************************************************/
 
 .perlschnur-stop {
-  height: 1.5rem;
+    height: 1.5rem;
 }
 
 .perlschnur-stop .date {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .perlschnur-stop .date:empty {
-  display: none;
+    display: none;
 }
 
 .perlschnur-stop .circle {
-  height: 8px;
-  width: 8px;
-  display: inline-block;
+    height: 8px;
+    width: 8px;
+    display: inline-block;
 
-  border-radius: 50%;
-  border: 1px solid rgb(var(--color));
+    border-radius: 50%;
+    border: 1px solid rgb(var(--color));
 }
 
 /***********************************************
@@ -101,8 +100,8 @@
 ************************************************/
 
 .perlschnur-stop.hover .circle {
-  outline: 2px solid rgb(var(--color));
-  outline-offset: 1px;
+    outline: 2px solid rgb(var(--color));
+    outline-offset: 1px;
 }
 
 /***********************************************
@@ -110,8 +109,8 @@
 ************************************************/
 
 .perlschnur-transfer {
-  padding-left: 2rem;
-  color: darkgray;
+    padding-left: 2rem;
+    color: darkgray;
 }
 
 
@@ -120,26 +119,26 @@
 ************************************************/
 
 .perlschnur-stop-list {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .perlschnur-stop-list .perlschnur-collapse {
-  padding-left: 2rem;
-  font-style: italic;
-  display: none;
+    padding-left: 2rem;
+    font-style: italic;
+    display: none;
 }
 
 .perlschnur-stop-list[data-collapsed="collapsed"] .perlschnur-collapse {
-  display: flex;
+    display: flex;
 }
 
 .perlschnur-stop-list[data-collapsed="collapsed"] .perlschnur-stop {
-  display: none;
+    display: none;
 }
 
 .perlschnur-stop-list[data-collapsed="collapsed"] .perlschnur-stop:first-child,
 .perlschnur-stop-list[data-collapsed="collapsed"] .perlschnur-stop:last-child {
-  display: flex;
+    display: flex;
 }
 
 
@@ -148,11 +147,11 @@
 ************************************************/
 
 @keyframes fadein {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 

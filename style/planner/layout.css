@@ -158,7 +158,7 @@ main .logo {
 
 /* both in desktop and in mobile we can choose between showing calendar and summary */
 #calendar:not(.selected),
-#perlschnur-container:not(.selected) {
+#perlschnur:not(.selected) {
     display: none;
 }
 

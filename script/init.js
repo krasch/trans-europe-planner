@@ -101,7 +101,7 @@ export async function init() {
     tabContents: {
       journey: document.querySelector("#journey"),
       calendar: document.querySelector("#calendar"),
-      perlschnur: document.querySelector("#perlschnur-container"),
+      perlschnur: document.querySelector("#perlschnur"),
       config: document.querySelector("#config"),
     },
   };
