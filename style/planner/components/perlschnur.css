@@ -58,7 +58,7 @@
   display: inline-block;
 
   border-radius: 50%;
-  border: 1px solid black;
+  border: 1px solid transparent;
 }
 
 .perlschnur-stop .date:empty {
@@ -119,7 +119,8 @@
 }
 
 .perlschnur-stop.hover .circle {
-  box-shadow: 0 0 0 2px rgb(var(--color));
+  outline: 2px solid rgb(var(--color));
+  outline-offset: 1px;
 }
 
 .perlschnur-stop .date {
