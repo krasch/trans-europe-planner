@@ -1,83 +1,16 @@
-/***********************************************
- Layout
-************************************************/
 
 #perlschnur {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-}
 
-.perlschnur-connection img {
-  height: 1rem;
-}
-
-.perlschnur-connection h3 {
-  height: 2rem;
-  font-size: 1rem;
-  justify-content: flex-start;
-}
-
-.perlschnur-connection h3 .connection-travel-time {
-  padding-left: 1rem;
-  flex-grow: 1;
-  font-size: 0.8rem;
-}
-
-.perlschnur-connection h3 .connection-plus,
-.perlschnur-connection h3 .connection-minus {
-  padding-right: 1.5rem;
-  font-size: 1.5rem;
-  transform: rotate(90deg) translate(0.75rem, 0);
-}
-
-.perlschnur-connection h3 .connection-minus.hidden,
-.perlschnur-connection h3 .connection-minus.hidden {
-  display: none;
-}
-
-.perlschnur-connection li {
-  height: 1.5rem;
-}
-
-.perlschnur-connection li:first-child {
-  padding-top: 0.5rem;
-}
-
-.perlschnur-connection li:last-child {
-  padding-bottom: 0.5rem;
-}
-
-.perlschnur-connection li.perlschnur-collapse {
-  padding-left: 2rem;
-}
-
-.perlschnur-connection .circle {
-  height: 8px;
-  width: 8px;
-  display: inline-block;
-
-  border-radius: 50%;
-  border: 1px solid transparent;
-}
-
-.perlschnur-stop .date:empty {
-  display: none;
-}
-
-.perlschnur-transfer {
-  padding-left: 2rem;
-}
-
-
-/***********************************************
- Style
-************************************************/
-
-#perlschnur {
   border: 1px solid lightgrey;
   border-radius: 5px;
 }
+
+/***********************************************
+ Connection
+************************************************/
 
 .perlschnur-connection {
   --color: 0, 0, 0; /* will be set by Javascript */
@@ -87,14 +20,34 @@
   animation: fadein 1s;
 }
 
-@keyframes fadein {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.perlschnur-connection h3 {
+  height: 2rem;
+  font-size: 1rem;
+  justify-content: flex-start;
+
+  color: white;
+  background-color: rgba(var(--color), 0.8);
 }
+
+.perlschnur-connection h3 img {
+  height: 1rem;
+  filter: var(--filter-white);
+}
+
+.perlschnur-connection h3 .connection-travel-time {
+  padding-left: 1rem;
+  flex-grow: 1;
+  font-size: 0.8rem;
+}
+
+.perlschnur-connection .perlschnur-stop-list {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+/***********************************************
+ Connection hover
+************************************************/
 
 .perlschnur-connection {
   outline: 2px solid transparent;
@@ -105,37 +58,88 @@
   outline-color: rgba(var(--color), 0.8);
 }
 
-.perlschnur-connection h3 {
-  color: white;
-  background-color: rgba(var(--color), 0.8);
-}
+/***********************************************
+ Stop
+************************************************/
 
-.perlschnur-connection h3 img {
-  filter: var(--filter-white);
-}
-
-.perlschnur-connection .circle {
-  border-color: rgb(var(--color));
-}
-
-.perlschnur-stop.hover .circle {
-  outline: 2px solid rgb(var(--color));
-  outline-offset: 1px;
+.perlschnur-stop {
+  height: 1.5rem;
 }
 
 .perlschnur-stop .date {
   font-weight: bold;
 }
 
-.perlschnur-connection li.perlschnur-collapse {
-  font-style: italic;
+.perlschnur-stop .date:empty {
+  display: none;
 }
 
+.perlschnur-stop .circle {
+  height: 8px;
+  width: 8px;
+  display: inline-block;
+
+  border-radius: 50%;
+  border: 1px solid rgb(var(--color));
+}
+
+/***********************************************
+ Stop hover
+************************************************/
+
+.perlschnur-stop.hover .circle {
+  outline: 2px solid rgb(var(--color));
+  outline-offset: 1px;
+}
+
+/***********************************************
+ Transfer
+************************************************/
+
 .perlschnur-transfer {
+  padding-left: 2rem;
   color: darkgray;
 }
 
-.perlschnur-connection a:hover {
+
+/***********************************************
+ Collapse
+************************************************/
+
+.perlschnur-stop-list {
   cursor: pointer;
-  text-shadow: 1px 1px 2px lightgrey;
 }
+
+.perlschnur-stop-list .perlschnur-collapse {
+  padding-left: 2rem;
+  font-style: italic;
+  display: none;
+}
+
+.perlschnur-stop-list[data-collapsed="collapsed"] .perlschnur-collapse {
+  display: flex;
+}
+
+.perlschnur-stop-list[data-collapsed="collapsed"] .perlschnur-stop {
+  display: none;
+}
+
+.perlschnur-stop-list[data-collapsed="collapsed"] .perlschnur-stop:first-child,
+.perlschnur-stop-list[data-collapsed="collapsed"] .perlschnur-stop:last-child {
+  display: flex;
+}
+
+
+/***********************************************
+ Animation
+************************************************/
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+

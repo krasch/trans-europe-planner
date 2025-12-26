@@ -1,6 +1,51 @@
 import { createElementFromTemplate, updateElement } from "script/util.js";
 
-// todo streamline icons with calendar
+function updateSummary(container, summary) {
+  updateElement(container, {
+    ".total-time": { innerText: summary.totalTime },
+    ".from": { innerText: summary.from },
+    ".to": { innerText: summary.to },
+    ".via": { innerText: summary.via },
+  });
+}
+
+function createConnectionElement(connection) {
+  const element = createElementFromTemplate("template-perlschnur-connection", {
+    ".connection-icon": { src: connection.icon },
+    ".connection-number": { innerText: connection.name },
+    ".connection-travel-time": { innerText: connection.travelTime },
+  });
+  element.style.setProperty("--color", connection.color);
+  element.dataset.connectionId = connection.id;
+  return element;
+}
+
+function createStopElement(stop) {
+  const li = createElementFromTemplate("template-perlschnur-stop", {
+    ".time": { innerText: stop.time },
+    ".date": { innerText: stop.date ?? "" },
+    ".station": { innerText: stop.stopName },
+    "data-stop-id": stop.stopId,
+  });
+  li.dataset.stopId = stop.stopId;
+  return li;
+}
+
+/**
+ * @param {Number} numIntermediateSteps
+ */
+function createCollapseElement(numIntermediateSteps) {
+  return createElementFromTemplate("template-perlschnur-collapse", {
+    ".count": { innerText: numIntermediateSteps },
+  });
+}
+
+function createTransferElement(transfer) {
+  return createElementFromTemplate("template-perlschnur-transfer", {
+    ".transfer-time": { innerText: transfer.time },
+  });
+}
+
 // todo collapse by clicking on connection body, intermediate steps get "collapses" class instead of hidden
 
 export class Perlschnur {
@@ -15,12 +60,10 @@ export class Perlschnur {
     this.#container = container;
 
     container.addEventListener("click", (e) => {
-      if (e.target.classList.contains("connection-plus")) {
-        this.#expand(e.target.parentElement.parentElement);
-      }
-      if (e.target.classList.contains("connection-minus")) {
-        this.#collapse(e.target.parentElement.parentElement);
-      }
+      e.preventDefault();
+
+      const stopList = e.target.closest(".perlschnur-stop-list");
+      if (stopList) this.#toggleCollapse(stopList);
     });
 
     container.addEventListener("mouseover", (e) => {
@@ -71,99 +114,66 @@ export class Perlschnur {
    * @param {PerlschnurTransfer[]} data.transfers
    */
   updateView(data) {
-    updateElement(this.#container, {
-      ".total-time": { innerText: data.summary.totalTime },
-      ".from": { innerText: data.summary.from },
-      ".to": { innerText: data.summary.to },
-      ".via": { innerText: data.summary.via },
-    });
+    updateSummary(this.#container, data.summary);
 
-    const elements = [];
+    const children = [];
     for (let i in data.connections) {
-      elements.push(this.#createConnection(data.connections[i]));
-      if (Number(i) < data.connections.length - 1)
-        elements.push(this.#createTransfer(data.transfers[i]));
+      const connection = data.connections[i];
+      const transfer = data.transfers[i];
+
+      // if too many stops, insert special "collapse" element after first stop
+      const stops = connection.stops.map(createStopElement);
+      if (stops.length > 4)
+        stops.splice(1, 0, createCollapseElement(stops.length - 4));
+
+      const connectionElement = createConnectionElement(data.connections[i]);
+      connectionElement
+        .querySelector(".perlschnur-stop-list")
+        .replaceChildren(...stops);
+
+      // add both connection and transfer to stop list
+      children.push(connectionElement);
+      if (transfer) children.push(createTransferElement(data.transfers));
     }
 
-    this.#container.querySelector("#perlschnur").replaceChildren(...elements);
+    this.#container.querySelector("#perlschnur").replaceChildren(...children);
   }
 
+  /**
+   * @param {string} stopId
+   * @param {boolean} isHover
+   */
   setStopHover(stopId, isHover) {
     const selector = `.perlschnur-stop[data-stop-id="${stopId}"]`;
-    for (let stop of this.#container.querySelectorAll(selector)) {
-      if (isHover) stop.classList.add("hover");
-      else stop.classList.remove("hover");
-    }
+    this.#setAllHover(this.#container.querySelectorAll(selector), isHover);
   }
 
+  /**
+   * @param {string} connectionId
+   * @param {boolean} isHover
+   */
   setConnectionHover(connectionId, isHover) {
     const selector = `.perlschnur-connection[data-connection-id="${connectionId}"]`;
-    for (let connection of this.#container.querySelectorAll(selector)) {
-      if (isHover) connection.classList.add("hover");
-      else connection.classList.remove("hover");
+    this.#setAllHover(this.#container.querySelectorAll(selector), isHover);
+  }
+
+  /**
+   * @param {HTMLElement[]} elements
+   * @param {boolean} isHover
+   */
+  #setAllHover(elements, isHover) {
+    for (let element of elements) {
+      if (isHover) element.classList.add("hover");
+      else element.classList.remove("hover");
     }
   }
 
-  #createConnection(connection) {
-    const element = createElementFromTemplate(
-      "template-perlschnur-connection",
-      {
-        ".connection-icon": { src: connection.icon },
-        ".connection-number": { innerText: connection.name }, // todo is this correct?
-        ".connection-travel-time": { innerText: connection.travelTime },
-      },
-    );
-    element.style.setProperty("--color", connection.color);
-    element.dataset.connectionId = connection.id;
-
-    const intermediateSteps = connection.stops.length - 2;
-
-    const ul = element.querySelector("ul");
-    for (let i in connection.stops) {
-      if (i === "1" && intermediateSteps > 1) {
-        const li = createElementFromTemplate("template-perlschnur-collapse", {
-          ".count": { innerText: intermediateSteps },
-        });
-        ul.appendChild(li);
-      }
-
-      const li = createElementFromTemplate("template-perlschnur-stop", {
-        ".time": { innerText: connection.stops[i].time },
-        ".date": { innerText: connection.stops[i].date ?? "" },
-        ".station": { innerText: connection.stops[i].stopName },
-      });
-      li.dataset.stopId = connection.stops[i].stopId;
-      ul.appendChild(li);
-    }
-
-    if (intermediateSteps > 1) this.#collapse(element);
-    return element;
-  }
-
-  #createTransfer(transfer) {
-    const element = createElementFromTemplate("template-perlschnur-transfer", {
-      ".transfer-time": { innerText: transfer.time },
-    });
-    return element;
-  }
-
-  #expand(connection) {
-    const ul = connection.querySelector("ul");
-    for (let i = 2; i < ul.children.length - 1; i++)
-      ul.children[i].classList.remove("hidden");
-    ul.children[1].classList.add("hidden");
-
-    connection.querySelector(".connection-plus").classList.add("hidden");
-    connection.querySelector(".connection-minus").classList.remove("hidden");
-  }
-
-  #collapse(connection) {
-    const ul = connection.querySelector("ul");
-    for (let i = 1; i < ul.children.length - 1; i++)
-      ul.children[i].classList.add("hidden");
-    ul.children[1].classList.remove("hidden");
-
-    connection.querySelector(".connection-plus").classList.remove("hidden");
-    connection.querySelector(".connection-minus").classList.add("hidden");
+  /**
+   * @param {HTMLElement} stopList
+   */
+  #toggleCollapse(stopList) {
+    if (stopList.dataset.collapsed === "collapsed")
+      stopList.dataset.collapsed = "";
+    else stopList.dataset.collapsed = "collapsed";
   }
 }

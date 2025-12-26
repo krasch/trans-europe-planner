@@ -118,6 +118,7 @@ export function prepareDataForPerlschnur(activeItinerary) {
         time: formatTimedelta(previous.to.arrival, connection.from.departure),
       });
     }
+    result.transfers.push(null); // todo explain
   });
 
   result.summary = itinerarySummary(activeItinerary);
