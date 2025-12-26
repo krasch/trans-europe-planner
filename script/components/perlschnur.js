@@ -1,5 +1,14 @@
 import { createElementFromTemplate } from "script/util.js";
 
+/**
+ * @typedef {import("script/data/components/perlschnur.js").PerlschnurStopData} PerlschnurStopData
+ * @typedef {import("script/data/components/perlschnur.js").PerlschnurConnectionData} PerlschnurConnectionData
+ **/
+
+/**
+ * @param {PerlschnurConnectionData} connection
+ * @returns {HTMLElement}
+ */
 function createConnectionElement(connection) {
   const element = createElementFromTemplate("template-perlschnur-connection", {
     ".connection-icon": { src: connection.icon },
@@ -11,6 +20,10 @@ function createConnectionElement(connection) {
   return element;
 }
 
+/**
+ * @param {PerlschnurStopData} stop
+ * @returns {HTMLElement}
+ */
 function createStopElement(stop) {
   const li = createElementFromTemplate("template-perlschnur-stop", {
     ".time": { innerText: stop.time },
@@ -24,6 +37,7 @@ function createStopElement(stop) {
 
 /**
  * @param {Number} numIntermediateSteps
+ * @returns {HTMLElement}
  */
 function createCollapseElement(numIntermediateSteps) {
   return createElementFromTemplate("template-perlschnur-collapse", {
@@ -31,13 +45,15 @@ function createCollapseElement(numIntermediateSteps) {
   });
 }
 
-function createTransferElement(transfer) {
+/**
+ * @param {String} transferTime
+ * @returns {HTMLElement}
+ */
+function createTransferElement(transferTime) {
   return createElementFromTemplate("template-perlschnur-transfer", {
-    ".transfer-time": { innerText: transfer.time },
+    ".transfer-time": { innerText: transferTime },
   });
 }
-
-// todo collapse by clicking on connection body, intermediate steps get "collapses" class instead of hidden
 
 export class Perlschnur {
   #container;
@@ -95,32 +111,27 @@ export class Perlschnur {
   }
 
   /**
-   * @typedef {import("script/data/components/perlschnur.js").PerlschnurConnection} PerlschnurConnection
-   * @typedef {import("script/data/components/perlschnur.js").PerlschnurTransfer} PerlschnurTransfer
-   *
-   * @param {object} data
-   * @param {PerlschnurConnection[]} data.connections
-   * @param {PerlschnurTransfer[]} data.transfers
+   * @param {PerlschnurConnectionData[]} connections
    */
-  updateView(data) {
+  updateView(connections) {
     const children = [];
-    for (let i in data.connections) {
-      const connection = data.connections[i];
-      const transfer = data.transfers[i];
+    for (let i in connections) {
+      const connection = connections[i];
 
       // if too many stops, insert special "collapse" element after first stop
       const stops = connection.stops.map(createStopElement);
       if (stops.length > 4)
         stops.splice(1, 0, createCollapseElement(stops.length - 4));
 
-      const connectionElement = createConnectionElement(data.connections[i]);
+      const connectionElement = createConnectionElement(connections[i]);
       connectionElement
         .querySelector(".perlschnur-stop-list")
         .replaceChildren(...stops);
 
       // add both connection and transfer to stop list
       children.push(connectionElement);
-      if (transfer) children.push(createTransferElement(data.transfers));
+      if (connection.transferTime)
+        children.push(createTransferElement(connection.transferTime));
     }
 
     this.#container.replaceChildren(...children);

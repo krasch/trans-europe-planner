@@ -4,6 +4,25 @@ import { Itinerary } from "script/types/itinerary.js";
 import { ICONS, getColor } from "./_common.js";
 
 /**
+ * @typedef {Object} PerlschnurStopData
+ * @property {string} stopId
+ * @property {string} stopName
+ * @property {string} time
+ * @property {string} date
+ **/
+
+/**
+ * @typedef {Object} PerlschnurConnectionData
+ * @property {string} id
+ * @property {string} color
+ * @property {string} name
+ * @property {string} icon
+ * @property {string} travelTime
+ * @property {string} transferTime
+ * @property {PerlschnurStopData[]} stops
+ **/
+
+/**
  * @param {DateTime} earlierTimestamp
  * @param {DateTime} laterTimestamp
  * @returns {String}
@@ -31,26 +50,11 @@ function formateDate(timestamp) {
 }
 
 /**
- * @typedef {Object} PerlschnurConnection
- * @property {string} id
- * @property {string} color
- * @property {string} name
- * @property {string} icon
- * @property {string} travelTime
- * @property {{stopId: string, stopName: string, time: string, date: string}[]} stops
- *
- * @typedef {Object} PerlschnurTransfer
- * @property {string} time
- *
  * @param {Itinerary} activeItinerary
- * @returns {{connections: PerlschnurConnection[], transfers: PerlschnurTransfer[]}}
+ * @returns {PerlschnurConnectionData[]}
  */
 export function prepareDataForPerlschnur(activeItinerary) {
-  const result = {
-    summary: {},
-    connections: [],
-    transfers: [], // interleaved transfers and connections
-  };
+  const result = [];
 
   // this variable will always capture the departure (if first stop in connection)
   // or arrival (all other stops) of the most recent stop, across connections
@@ -80,8 +84,17 @@ export function prepareDataForPerlschnur(activeItinerary) {
       };
     });
 
+    let transferTime = null;
+    if (connectionIdx < activeItinerary.connections.length - 1) {
+      const next = activeItinerary.connections[connectionIdx + 1];
+      transferTime = formatTimedelta(
+        connection.to.arrival,
+        next.from.departure,
+      );
+    }
+
     // combine with all the rest of the connection info
-    result.connections.push({
+    result.push({
       id: connection.id,
       color: getColor(connectionIdx),
       name: connection.name,
@@ -91,16 +104,8 @@ export function prepareDataForPerlschnur(activeItinerary) {
         connection.to.arrival,
       ),
       stops: stops,
+      transferTime: transferTime,
     });
-
-    // and for all connections except the first, add transfer info
-    if (connectionIdx > 0) {
-      const previous = activeItinerary.connections[connectionIdx - 1];
-      result.transfers.push({
-        time: formatTimedelta(previous.to.arrival, connection.from.departure),
-      });
-    }
-    result.transfers.push(null); // todo explain
   });
 
   return result;
