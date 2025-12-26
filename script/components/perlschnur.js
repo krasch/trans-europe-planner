@@ -1,14 +1,10 @@
 import { createElementFromTemplate, updateElement } from "script/util.js";
 
 // todo streamline icons with calendar
-// todo bug; only one of the transfer stop circles hovers
 // todo collapse by clicking on connection body, intermediate steps get "collapses" class instead of hidden
 
 export class Perlschnur {
   #container;
-
-  #idToConnection;
-  #idToStop;
 
   #callbacks = {
     connectionHover: (connectionId, isHover) => {},
@@ -75,9 +71,6 @@ export class Perlschnur {
    * @param {PerlschnurTransfer[]} data.transfers
    */
   updateView(data) {
-    this.#idToConnection = new Map();
-    this.#idToStop = new Map();
-
     updateElement(this.#container, {
       ".total-time": { innerText: data.summary.totalTime },
       ".from": { innerText: data.summary.from },
@@ -96,21 +89,19 @@ export class Perlschnur {
   }
 
   setStopHover(stopId, isHover) {
-    // can be undefined if hovering in map over inactive itinerary
-    const stop = this.#idToStop.get(stopId);
-    if (!stop) return;
-
-    if (isHover) stop.classList.add("hover");
-    else stop.classList.remove("hover");
+    const selector = `.perlschnur-stop[data-stop-id="${stopId}"]`;
+    for (let stop of this.#container.querySelectorAll(selector)) {
+      if (isHover) stop.classList.add("hover");
+      else stop.classList.remove("hover");
+    }
   }
 
   setConnectionHover(connectionId, isHover) {
-    // can be undefined if hovering in map over inactive itinerary
-    const connection = this.#idToConnection.get(connectionId);
-    if (!connection) return;
-
-    if (isHover) connection.classList.add("hover");
-    else connection.classList.remove("hover");
+    const selector = `.perlschnur-connection[data-connection-id="${connectionId}"]`;
+    for (let connection of this.#container.querySelectorAll(selector)) {
+      if (isHover) connection.classList.add("hover");
+      else connection.classList.remove("hover");
+    }
   }
 
   #createConnection(connection) {
@@ -143,13 +134,9 @@ export class Perlschnur {
       });
       li.dataset.stopId = connection.stops[i].stopId;
       ul.appendChild(li);
-
-      this.#idToStop.set(connection.stops[i].stopId, li);
     }
 
     if (intermediateSteps > 1) this.#collapse(element);
-
-    this.#idToConnection.set(connection.id, element);
     return element;
   }
 
