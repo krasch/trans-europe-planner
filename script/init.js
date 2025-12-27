@@ -60,12 +60,15 @@ function initMobileNavigation(tabs, content, mainContainer) {
  * @param {Object.<string, Element>} content
  */
 function initDesktopNavigation(tabs, content) {
-  // on desktop we only need to pick between calendar and perlschnur
-  // the config and the journey container are always shown
-
   // within the journey container, on first load show the calendar tab
   _setSelected(tabs, ["calendar"]);
   _setSelected(content, ["calendar"]);
+
+  // clicking on config tab -> show config element in journey container
+  tabs.config.addEventListener("click", (e) => {
+    _setSelected(tabs, ["config"]);
+    _setSelected(content, ["config"]);
+  });
 
   // clicking on calendar tab -> show calendar element in journey container
   tabs.calendar.addEventListener("click", (e) => {
@@ -88,21 +91,21 @@ export async function init() {
 
     navMobile: {
       map: document.querySelector("#nav-mobile-tab-map"),
+      config: document.querySelector("#nav-mobile-tab-config"),
       calendar: document.querySelector("#nav-mobile-tab-calendar"),
       perlschnur: document.querySelector("#nav-mobile-tab-perlschnur"),
-      config: document.querySelector("#nav-mobile-tab-config"),
     },
     navDesktop: {
+      config: document.querySelector("#nav-desktop-tab-config"),
       calendar: document.querySelector("#nav-desktop-tab-calendar"),
       perlschnur: document.querySelector("#nav-desktop-tab-perlschnur"),
     },
 
     // items we can control using tabs
     tabContents: {
-      journey: document.querySelector("#journey"),
+      config: document.querySelector("#config"),
       calendar: document.querySelector("#calendar"),
       perlschnur: document.querySelector("#perlschnur"),
-      config: document.querySelector("#config"),
     },
   };
 

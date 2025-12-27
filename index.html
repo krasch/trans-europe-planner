@@ -80,7 +80,7 @@
             <span class="connection-number"></span>
             <span class="connection-travel-time"></span>
         </h3>
-        <ul class="perlschnur-stop-list"  data-collapsed="collapsed"></ul>
+        <ul class="perlschnur-stop-list" data-collapsed="collapsed"></ul>
     </div>
 </template>
 
@@ -114,11 +114,14 @@
 <div id="map"></div>
 
 <main id="planner" class="closed no-journey"> <!-- todo these classes are very brittle -->
-    <a class="logo" href="/">
+    <!--a class="logo" href="/">
         <img src="images/logo.svg" alt="logo for the trans-europe-planner">
-    </a>
+    </a-->
 
     <div id="nav-mobile">
+        <a id="nav-mobile-tab-config">
+            <img src="images/icons/settings.svg" alt="icon for a config menu">
+        </a>
         <a id="nav-mobile-tab-map">
             <span lang="de">Karte</span>
             <span lang="en">Map</span>
@@ -131,50 +134,43 @@
             <span lang="de">Übersicht</span>
             <span lang="en">Summary</span>
         </a>
-        <a id="nav-mobile-tab-config">
-            <img src="images/icons/settings.svg" alt="icon for a config menu">
-        </a>
     </div>
 
-    <!-- on desktop smaller nav bar because map and config are always visible -->
+    <!-- on desktop smaller nav bar because map is always visible -->
     <div id="nav-desktop">
+        <a id="nav-desktop-tab-config">
+            <span lang="de">Suchen</span>
+            <span lang="en">Plan</span>
+        </a>
         <a id="nav-desktop-tab-calendar">
             <span lang="de">Reise anpassen</span>
-            <span lang="en">Edit trip</span>
+            <span lang="en">Adjust</span>
         </a>
         <a id="nav-desktop-tab-perlschnur">
             <span lang="de">Reiseübersicht</span>
-            <span lang="en">Trip summary</span>
+            <span lang="en">Review</span>
         </a>
     </div>
 
-    <div id="config">
-        <h3>
-            <label for="date-picker-input">
-                <span lang="de">Abreisedatum:</span>
-                <span lang="en">Departure date:</span>
-            </label>
-        </h3>
-        <div>
-            <a id="decrease-date" title="One day earlier">◀</a>
-            <input type="date" id="date-picker-input" value="2025-02-01"/>
-            <a id="increase-date" title="One day later">▶</a>
-        </div>
-    </div>
-
     <div id="journey">
+        <div id="config">
+            <h3>
+                <label for="date-picker-input">
+                    <span lang="de">Abreisedatum:</span>
+                    <span lang="en">Departure date:</span>
+                </label>
+            </h3>
+            <div>
+                <a id="decrease-date" title="One day earlier">◀</a>
+                <input type="date" id="date-picker-input" value="2025-02-01"/>
+                <a id="increase-date" title="One day later">▶</a>
+            </div>
+        </div>
         <div id="calendar">
             <travel-calendar start-date="2025-01-01"></travel-calendar>
         </div>
         <div id="perlschnur">
             <div id="perlschnur-inner"></div>
-        </div>
-
-        <div id="share-book">
-            <button lang="de" onclick="alert('coming soon');">🔗 Teilen</button>
-            <button lang="de" onclick="alert('coming soon');">🎫 Buchen</button>
-            <button lang="en" onclick="alert('coming soon');">🔗 Share</button>
-            <button lang="en" onclick="alert('coming soon');">🎫 Book</button>
         </div>
     </div>
 </main>

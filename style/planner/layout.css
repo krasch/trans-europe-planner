@@ -82,37 +82,29 @@ main .logo {
         --logo-size: 7rem;
         --logo-size-with-padding: 9rem;
         --config-width: 20rem;
-        --navbar-padding-top: 2rem;
         --navbar-height-with-padding: 4.5rem;
 
         /* again, calculate exactly how much height remains, makes calendar behave better */
-        /*--journey-height: calc(var(--main-height) - var(--logo-size-with-padding) - var(--navbar-height-with-padding));*/
-        --journey-height: 1000px;
+        --journey-height: calc(var(--main-height) - var(--navbar-height-with-padding));
+        /*--journey-height: 1000px; */
 
         height: 100%;
         width: calc(var(--logo-size-with-padding) + var(--config-width));
 
         display: grid;
         grid-template-columns:
-          var(--logo-size-with-padding)
-          var(--config-width);
+          1fr;
         grid-template-rows:
-          var(--logo-size-with-padding)
           calc(var(--navbar-height-with-padding))
           1fr;
 
         grid-template-areas:
-          "logo             config  "
-          "nav              nav     "
-          "journey          journey ";
+          "nav     "
+          "journey ";
     }
 
     #planner .logo {
         grid-area: logo;
-    }
-
-    #config {
-        grid-area: config;
     }
 
     #nav-desktop {
@@ -129,8 +121,6 @@ main .logo {
 ************************************************/
 
 #nav-desktop {
-    padding-top: var(--navbar-padding-top);
-
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: minmax(0, 1fr);
@@ -158,13 +148,13 @@ main .logo {
 
 /* both in desktop and in mobile we can choose between showing calendar and summary */
 #calendar:not(.selected),
-#perlschnur:not(.selected) {
+#perlschnur:not(.selected),
+#config:not(.selected){
     display: none;
 }
 
 /* on desktop config and journey are always visible, on mobile they might be hidden in a different tab */
 @media only screen and (max-width: 1000px) {
-    #config:not(.selected),
     #journey:not(.selected) {
         display: none;
     }
