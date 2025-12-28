@@ -12,7 +12,7 @@
     color: var(--color-dark);
 }
 
-#config h3 {
+#config h2 {
     font-size: 1.3rem;
 }
 
@@ -30,9 +30,18 @@
     border-radius: 0.5rem;
 }
 
+/***********************************************
+ Form fields
+************************************************/
+
 #config form input {
     height: 3rem;
+    padding-left: 0.5rem;
     color: var(--color-dark);
+}
+
+#config form label {
+    color: darkgray;
 }
 
 #config form button {
@@ -48,8 +57,52 @@
     border-radius: 0.5rem;
 }
 
-#config form button:hover{
+/***********************************************
+ Hover
+************************************************/
+
+#config form button:not(:disabled):hover{
     outline: 1px solid var(--color-dark);
     outline-offset: 2px;
     cursor: pointer;
+}
+
+/***********************************************
+ Disabled
+************************************************/
+
+#config form input:disabled {
+    color: darkgrey;
+}
+
+#config form button:disabled {
+    color: darkgrey;
+    background-color: var(--color-light);
+    border: 1px solid darkgrey;
+}
+
+#config form button:not(:disabled) .spinner {
+    display: none;
+}
+
+/***********************************************
+ Spinner
+************************************************/
+
+#config form .spinner {
+    display: inline-block;
+    height: 0.75rem;
+    width: 0.75rem;
+    border: 2px solid var(--color-dark);
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    animation: rotation 1s linear infinite;
+}
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

@@ -1,10 +1,10 @@
 import { CalendarWrapper } from "script/components/calendar.js";
 import { Config } from "script/components/config.js";
-import { showLandingPage } from "script/components/landing.js";
 import { MapWrapper } from "script/components/map.js";
 import { Perlschnur } from "script/components/perlschnur.js";
 import { MotisClient } from "script/data/sources/motis.js";
 import { TravelDatabase } from "script/data/travelDatabase.js";
+import { showLandingPage } from "script/landing.js";
 import { main } from "script/main.js";
 
 /**
@@ -87,9 +87,9 @@ export async function init() {
   const components = {
     mainContainer: elements.main, // todo a component, just an HTML element
     map: map,
+    config: new Config(elements.content.config),
     calendar: new CalendarWrapper(elements.travelCalendar), // sic
     perlschnur: new Perlschnur(elements.content.perlschnur),
-    datepicker: new Config(elements.content.config),
   };
 
   // show the <main> element

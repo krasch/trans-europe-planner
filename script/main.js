@@ -6,12 +6,16 @@ import { State } from "script/state.js";
 
 import { DateTime } from "./types/dateTime.js";
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 /**
  * @param {Object.<string,any>} components
  * @param {TravelDatabase} travelDatabase
  * @param {State} state
  */
 async function updateAllComponents(components, travelDatabase, state) {
+  if (!state.activeItinerary) return;
+
   // alternatives for all the connections in current active itinerary - needed for calendar
   const alternatives = travelDatabase.getCachedAlternatives(
     state.activeItinerary,
@@ -51,6 +55,41 @@ export async function main(components, travelDatabase) {
     travelDatabase,
   );
 
+  components.config.on("submit", async (from, to, date) => {
+    components.config.lock();
+
+    const itineraries = await travelDatabase.plan(from, to, date);
+    state.replaceItineraries(itineraries, true);
+    await sleep(1000);
+
+    // draw first updates (calendar has no alternatives yet -> no drag&drop)
+    await updateComponents(state);
+    components.config.unlock();
+
+    components.mainContainer
+      .querySelector("#nav-tab-config")
+      .classList.remove("selected");
+    components.mainContainer
+      .querySelector("#config")
+      .classList.remove("selected");
+    components.mainContainer
+      .querySelector("#nav-tab-calendar")
+      .classList.add("selected");
+    components.mainContainer
+      .querySelector("#calendar")
+      .classList.add("selected");
+
+    // load alternatives for calendar events and redraw
+    await travelDatabase.triggerLoadAlternatives(state.activeItinerary, date);
+    await updateComponents(state);
+
+    // already trigger this in case use selects different route
+    // not awaiting here because don't need it right now
+    for (let itinerary of state.otherItineraries) {
+      travelDatabase.triggerLoadAlternatives(itinerary, state.startDate);
+    }
+  });
+
   components.calendar.on("connectionMoved", async (newConnectionId) => {
     const connection = travelDatabase.getCachedConnection(newConnectionId);
     state.replaceLegInActiveItinerary(connection);
@@ -85,65 +124,4 @@ export async function main(components, travelDatabase) {
   components.perlschnur.on("stopHover", async (stopId, isHover) => {
     components.map.setStopHover(stopId, isHover);
   });
-
-  components.datepicker.on("dateChanged", async (date) => {
-    // todo
-  });
-
-  const itineraries = await travelDatabase.plan(
-    // "de_de:13073:10401", // Stralsund
-    "de_de:13074:1011", // Wismar
-    "de_de:13003:1489_G", // Rostock
-    state.startDate,
-  );
-  state.replaceItineraries(itineraries, true);
-
-  await travelDatabase.triggerLoadAlternatives(
-    state.activeItinerary,
-    state.startDate,
-  );
-
-  for (let itinerary of state.otherItineraries) {
-    travelDatabase.triggerLoadAlternatives(itinerary, state.startDate);
-  }
-
-  // trigger initial update
-  await updateComponents(state);
-
-  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-  /*await travelDatabase.triggerLoadAlternatives(
-    state.activeItinerary,
-    state.startDate,
-  );
-  await sleep(3000);
-
-  // loading finished update
-  await updateComponents(state);
-
-  for (let itinerary of state.otherItineraries) {
-    travelDatabase.triggerLoadAlternatives(itinerary, state.startDate);
-  }*/
-
-  /*const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-  await sleep(1000);
-
-  components.map.setHoverStop("de_de:13003:1489", true);
-  components.map.setHoverStop("de_de:13072:125_G", true);*/
-
-  /*components.map.setHoverConnection(
-    "20250910_04:42_de_2873716364XXXde_de:13074:1011XXXde_de:13003:1489",
-    true,
-  );*/
-
-  /*for (let event of [
-    "stopHoverOn",
-    "stopHoverOff",
-    "stopClicked",
-    "itineraryHoverOn",
-    "itineraryHoverOff",
-    "itineraryClicked",
-  ]) {
-    components.map.on(event, (id) => console.log(event, id));
-  }*/
 }

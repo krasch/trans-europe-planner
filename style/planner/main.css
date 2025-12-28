@@ -23,7 +23,7 @@ main {
         --content-height: calc(var(--main-height) - var(--nav-height) - 4rem - 1rem);
 
         background-color: var(--color-dark);
-        opacity: 0.9;
+        opacity: 0.92;
         border-radius: 1rem;
     }
 

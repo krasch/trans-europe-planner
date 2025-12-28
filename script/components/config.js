@@ -1,103 +1,45 @@
 import { DateTime } from "script/types/dateTime.js";
 
 export class Config {
-  #container;
-
-  #inputElement;
-  #decreaseDateElement;
-  #increaseDateElement;
-
-  #start;
-  #end;
-  #default;
+  #elements = {};
 
   #callbacks = {
-    dateChanged: (date) => {},
+    submit: (from, to, date) => {},
   };
 
   constructor(container) {
-    this.#container = container;
+    this.#elements = {
+      from: container.querySelector("#config-from"),
+      to: container.querySelector("#config-to"),
+      date: container.querySelector("#config-date"),
+      submit: container.querySelector("button"),
+    };
 
-    /*this.#inputElement = this.#container.querySelector("input");
-    this.#decreaseDateElement = this.#container.querySelector("#decrease-date");
-    this.#increaseDateElement = this.#container.querySelector("#increase-date");
+    container.addEventListener("submit", (e) => {
+      e.preventDefault();
+      this.#callbacks.submit(
+        this.#elements.from.value,
+        this.#elements.to.value,
+        DateTime.fromISO(this.#elements.date.value),
+      );
+    });
 
+    /*
     const today = DateTime.fromISO("2025-08-11"); //DateTime.now().startOf("day");
     this.#start = today.plus({ days: 1 });
     this.#end = today.plus({ days: 3 * 30 });
-    this.#default = today.plus({ days: 30 });
-
-    this.#inputElement.min = this.#start.toISODate();
-    this.#inputElement.max = this.#end.toISODate();
-
-    // previously picked date might still be set after reloading the page
-    // if is still within the valid range, keep it
-    const stillValid =
-      this.#currentDate &&
-      this.#currentDate >= this.#start &&
-      this.#currentDate <= this.#end;
-
-    if (!stillValid) this.#currentDate = this.#default;
-    this.#showHideArrows();
-
-    this.#container.addEventListener("input", (e) => {
-      // clear button was pressed -> set to default value (meh)
-      // todo why is it so hard to remove the clear button?
-      if (this.#currentDate === null) this.#currentDate = this.#default;
-
-      this.#showHideArrows();
-      this.#callbacks["dateChanged"](this.#currentDate);
-    });
-
-    this.#container.addEventListener("click", (e) => {
-      if (e.target.id === "decrease-date") {
-        this.#currentDate = this.#currentDate.minus({ days: 1 });
-        this.#callbacks["dateChanged"](this.#currentDate);
-        this.#showHideArrows();
-      }
-      if (e.target.id === "increase-date") {
-        this.#currentDate = this.#currentDate.plus({ days: 1 });
-        this.#callbacks["dateChanged"](this.#currentDate);
-        this.#showHideArrows();
-      }
-    });*/
+    this.#default = today.plus({ days: 30 });*/
   }
 
   on(eventName, callback) {
     this.#callbacks[eventName] = callback;
   }
 
-  updateView(data) {}
-
-  get currentDate() {
-    return this.#currentDate;
+  lock() {
+    for (let key in this.#elements) this.#elements[key].disabled = true;
   }
 
-  get #currentDate() {
-    if (this.#inputElement.value.length === 0) return null;
-    return DateTime.fromISO(this.#inputElement.value);
-  }
-
-  set #currentDate(value) {
-    if (value === null) this.#inputElement.value = null;
-    else this.#inputElement.value = value.toISODate();
-  }
-
-  #showHideArrows() {
-    if (this.#currentDate === null) {
-      this.#decreaseDateElement.classList.add("hidden");
-      this.#increaseDateElement.classList.add("hidden");
-      return;
-    }
-
-    const diffStart = this.currentDate.diff(this.#start, "days").as("days");
-    const diffEnd = this.#end.diff(this.currentDate, "days").as("days");
-
-    // todo only add/remove if actually changes?
-    if (diffStart >= 1) this.#decreaseDateElement.classList.remove("hidden");
-    else this.#decreaseDateElement.classList.add("hidden");
-
-    if (diffEnd >= 1) this.#increaseDateElement.classList.remove("hidden");
-    else this.#increaseDateElement.classList.add("hidden");
+  unlock() {
+    for (let key in this.#elements) this.#elements[key].disabled = false;
   }
 }
