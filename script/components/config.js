@@ -1,6 +1,6 @@
 import { DateTime } from "script/types/dateTime.js";
 
-export class Datepicker {
+export class Config {
   #container;
 
   #inputElement;
@@ -18,7 +18,7 @@ export class Datepicker {
   constructor(container) {
     this.#container = container;
 
-    this.#inputElement = this.#container.querySelector("input");
+    /*this.#inputElement = this.#container.querySelector("input");
     this.#decreaseDateElement = this.#container.querySelector("#decrease-date");
     this.#increaseDateElement = this.#container.querySelector("#increase-date");
 
@@ -60,7 +60,7 @@ export class Datepicker {
         this.#callbacks["dateChanged"](this.#currentDate);
         this.#showHideArrows();
       }
-    });
+    });*/
   }
 
   on(eventName, callback) {

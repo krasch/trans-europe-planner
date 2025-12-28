@@ -1,3 +1,8 @@
+/* should usually not be necessary, but somehow is when dialog (landing page) is placed in a grid */
+#landing-page:not([open]) {
+    display: none;
+}
+
 /***********************************************
  Overall layout of the landing page
 ************************************************/

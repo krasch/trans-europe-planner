@@ -4,6 +4,8 @@ import { prepareDataForPerlschnur } from "script/data/components/perlschnur.js";
 import { TravelDatabase } from "script/data/travelDatabase.js";
 import { State } from "script/state.js";
 
+import { DateTime } from "./types/dateTime.js";
+
 /**
  * @param {Object.<string,any>} components
  * @param {TravelDatabase} travelDatabase
@@ -40,7 +42,7 @@ async function updateAllComponents(components, travelDatabase, state) {
  * @param {TravelDatabase} travelDatabase
  */
 export async function main(components, travelDatabase) {
-  const state = new State(components.datepicker.currentDate);
+  const state = new State(DateTime.fromISO("2025-09-11"));
 
   // partial function for conveniently updating the components
   const updateComponents = updateAllComponents.bind(

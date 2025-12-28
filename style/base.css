@@ -1,0 +1,132 @@
+/***********************************************
+ Choosing which language texts to display
+************************************************/
+
+body.de *:lang(en),
+body.en *:lang(de) {
+    display: none;
+}
+
+/***********************************************
+ Resetting some defaults
+************************************************/
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+
+    margin: 0;
+    padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    margin: 0;
+    font-weight: normal;
+}
+
+body * {
+    box-sizing: border-box;
+}
+
+dialog {
+    /* too many annoying defaults, let's reset all of them */
+    all: inherit;
+}
+
+/************************************************************************
+Overall page layout (two-row layout of content and footer)
+*************************************************************************/
+
+body {
+    --footer-height: 2.5rem;
+    /* two reasons why we will later need this in planner
+         1. to be able to calculate exactly how much space we must take, in particular on mobile, to cover map
+         2. to deal with the calendar, which behaves best when it gets an absolute height
+       */
+    --main-height: calc(100vh - var(--footer-height));
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--main-height) var(--footer-height);
+    grid-template-areas:
+       "main"
+       "footer";
+}
+
+#map, #landing-page, main {
+    grid-area: main;
+}
+
+#landing-page, main {
+    z-index: 2;
+}
+
+#footer {
+    grid-area: footer;
+}
+
+/***********************************************
+ Colors and other common stylings
+************************************************/
+
+body {
+    font-family: helvetica, arial, sans-serif;
+
+    /* colors for connections */
+    --color1: 27, 158, 119;
+    --color2: 217, 95, 2;
+    --color3: 117, 112, 179;
+    --color4: 231, 41, 138;
+    --color5: 102, 166, 30;
+
+    --color-light: white;
+    --color-dark: #286099;
+    --color-dark-desaturated: #477099;
+
+    /* https://codepen.io/sosuke/pen/Pjoqqp */
+    --filter-white: invert(100%);
+    /* #286099 */
+    --filter-dark: invert(32%) sepia(12%) saturate(3883%) hue-rotate(173deg) brightness(95%) contrast(86%);
+    /* 477099 */
+    --filter-dark-desaturated: invert(44%) sepia(13%) saturate(1760%) hue-rotate(169deg) brightness(88%) contrast(84%);
+    /* #D3D3D3 */
+    --filter-light-gray: invert(97%) sepia(0%) saturate(0%) hue-rotate(191deg) brightness(87%) contrast(95%);
+    /* #A9A9A9 */
+    --filter-dark-gray: invert(67%) sepia(32%) saturate(0%) hue-rotate(141deg) brightness(96%) contrast(89%);
+}
+
+button, input {
+    font-family: helvetica, arial, sans-serif;
+    font-size: 1rem;
+}
+
+
+
+/***********************************************
+ Utility stuff
+************************************************/
+
+.hidden {
+    visibility: hidden;
+}
+
+/* some elements should only be visible on mobile layout */
+@media only screen and (min-width: 1000px) {
+    .only-mobile {
+        display: none;
+    }
+}
+
+/* and some only on desktop layout */
+@media only screen and (max-width: 1000px) {
+    .only-desktop {
+        display: none;
+    }
+}
