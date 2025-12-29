@@ -1,16 +1,15 @@
 import { DateTime } from "script/types/dateTime.js";
-import { StopPlace } from "script/types/stop.js";
 import { createElementFromTemplate } from "script/util.js";
 
 /**
- * @param {StopPlace} stopPlace
+ * @param {{name: string, location: string}} data
  * @returns {HTMLElement}
  */
-function createAutocompleteItem(stopPlace) {
+function createAutocompleteItem(data) {
   const element = createElementFromTemplate("template-config-autocomplete", {
-    $root$: { innerHTML: stopPlace.stopName },
+    $root$: { innerHTML: data.name },
   });
-  element.dataset.stopId = stopPlace.stopId;
+  element.dataset.location = data.location;
   return element;
 }
 
@@ -38,14 +37,16 @@ export class Config {
         return;
       }
 
-      const candidates = await motisClient.geocode(userInput);
-      const elements = candidates.map(createAutocompleteItem);
+      const places = await motisClient.geocodePlace(userInput);
+      const stops = await motisClient.geocodeStop(userInput);
+
+      const elements = places.concat(stops).map(createAutocompleteItem);
       autocompleteContainer.replaceChildren(...elements);
     }
 
     async function setSelected(e, inputElement, autocompleteContainer) {
       inputElement.value = e.target.innerHTML;
-      inputElement.dataset.stopId = e.target.dataset.stopId;
+      inputElement.dataset.location = e.target.dataset.location;
       autocompleteContainer.innerHTML = "";
     }
 
@@ -77,8 +78,8 @@ export class Config {
       e.preventDefault();
 
       this.#callbacks.submit(
-        this.#elements.from.dataset.stopId,
-        this.#elements.to.dataset.stopId,
+        this.#elements.from.dataset.location,
+        this.#elements.to.dataset.location,
         DateTime.fromISO(this.#elements.date.value),
       );
     });

@@ -37,6 +37,7 @@ export function updateElement(container, data) {
 /**
  * @param {any[]} array
  * @param {function} keyFn - the function by which to group
+ * @returns {object}
  */
 export function groupBy(array, keyFn) {
   const grouped = {};

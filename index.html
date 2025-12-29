@@ -110,7 +110,7 @@
 </template>
 
 <template id="template-config-autocomplete">
-    <li data-stop-id=""></li>
+    <li data-location=""></li>
 </template>
 
 <!-- map is placed outside of <main> because also used in <dialog> -->
@@ -151,7 +151,7 @@
                     <span lang="de">Von</span>
                     <span lang="en">From</span>
                 </label>
-                <input type="text" id="config-from" data-stop-id=""/>
+                <input type="text" id="config-from" data-location=""/>
                 <!-- switch to datalist as soon as it becomes available in firefox android -->
                 <ul id="config-from-values"></ul>
 
@@ -159,7 +159,7 @@
                     <span lang="de">Nach</span>
                     <span lang="en">To</span>
                 </label>
-                <input type="text" id="config-to" data-stop-id=""/>
+                <input type="text" id="config-to" data-location=""/>
                 <ul id="config-to-values"></ul>
 
                 <label for="config-date">

@@ -60,7 +60,7 @@ export async function main(components, travelDatabase) {
 
     const itineraries = await travelDatabase.plan(from, to, date);
     state.replaceItineraries(itineraries, true);
-    await sleep(1000);
+    //await sleep(1000);
 
     // draw first updates (calendar has no alternatives yet -> no drag&drop)
     await updateComponents(state);

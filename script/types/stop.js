@@ -1,16 +1,5 @@
 import { DateTime } from "./dateTime.js";
 
-export class StopPlace {
-  /**
-   * @param {string} stopId
-   * @param {string} stopName
-   */
-  constructor(stopId, stopName) {
-    this.stopId = stopId;
-    this.stopName = stopName;
-  }
-}
-
 export class Stop {
   /**
    * @param {string} stopId
