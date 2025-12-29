@@ -2,13 +2,17 @@ import { DateTime } from "script/types/dateTime.js";
 import { createElementFromTemplate } from "script/util.js";
 
 /**
+ * @param {'stop' | 'place'} kind
  * @param {{name: string, location: string}} data
  * @returns {HTMLElement}
  */
-function createAutocompleteItem(data) {
-  const element = createElementFromTemplate("template-config-autocomplete", {
-    $root$: { innerHTML: data.name },
+function createAutocompleteItem(kind, data) {
+  const template = `template-config-autocomplete-${kind}`;
+
+  const element = createElementFromTemplate(template, {
+    span: { innerHTML: data.name },
   });
+  element.dataset.name = data.name;
   element.dataset.location = data.location;
   return element;
 }
@@ -40,12 +44,13 @@ export class Config {
       const places = await motisClient.geocodePlace(userInput);
       const stops = await motisClient.geocodeStop(userInput);
 
-      const elements = places.concat(stops).map(createAutocompleteItem);
-      autocompleteContainer.replaceChildren(...elements);
+      const elements1 = places.map((p) => createAutocompleteItem("place", p));
+      const elements2 = stops.map((s) => createAutocompleteItem("stop", s));
+      autocompleteContainer.replaceChildren(...elements1.concat(elements2));
     }
 
     async function setSelected(e, inputElement, autocompleteContainer) {
-      inputElement.value = e.target.innerHTML;
+      inputElement.value = e.target.dataset.name;
       inputElement.dataset.location = e.target.dataset.location;
       autocompleteContainer.innerHTML = "";
     }

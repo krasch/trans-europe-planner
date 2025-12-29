@@ -94,11 +94,10 @@
     display: none;
 }
 
-#config form #config-from-values,
-#config form #config-to-values {
+#config-from-values,
+#config-to-values {
     list-style-type: none;
     padding-left: 0;
-    vertical-align: top;
 
     background-color: var(--color-light);
     color: var(--color-dark);
@@ -107,17 +106,33 @@
     border-radius: 0.25rem;
 }
 
-#config form #config-from-values li,
-#config form #config-to-values li{
-    height: 1.25rem;
+#config-from-values li,
+#config-to-values li {
+    display: flex;
+    align-items: center;
+
+    height: 2rem;
+    font-size: 1rem;
     padding-left: 0.5rem;
 }
 
-#config form #config-from-values li:hover,
-#config form #config-to-values li:hover {
+#config-from-values li img,
+#config-to-values li img {
+    height: 1rem;
+    filter: var(--filter-dark);
+}
+
+#config-from-values li:hover,
+#config-to-values li:hover {
     color: var(--color-light);
     background-color: var(--color-dark);
     cursor: pointer;
+}
+
+#config-from-values li:hover img,
+#config-to-values li:hover img {
+    height: 1rem;
+    filter: var(--filter-white);
 }
 
 /***********************************************
