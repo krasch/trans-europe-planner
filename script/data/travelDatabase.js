@@ -9,7 +9,7 @@ export class TravelDatabase {
 
   // todo map first two to ConnectionId instead to save some memory?
   #cache = {
-    // maps from [from,to,date] to Connection[]
+    // maps from [from,to,date] to Itinerary[]
     plan: new Map(),
     // maps from [from,to,date] to Connection[]
     direct: new Map(),

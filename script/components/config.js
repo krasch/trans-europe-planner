@@ -1,4 +1,18 @@
 import { DateTime } from "script/types/dateTime.js";
+import { StopPlace } from "script/types/stop.js";
+import { createElementFromTemplate } from "script/util.js";
+
+/**
+ * @param {StopPlace} stopPlace
+ * @returns {HTMLElement}
+ */
+function createAutocompleteItem(stopPlace) {
+  const element = createElementFromTemplate("template-config-autocomplete", {
+    $root$: { innerHTML: stopPlace.stopName },
+  });
+  element.dataset.stopId = stopPlace.stopId;
+  return element;
+}
 
 export class Config {
   #elements = {};
@@ -7,19 +21,64 @@ export class Config {
     submit: (from, to, date) => {},
   };
 
-  constructor(container) {
+  constructor(container, motisClient) {
     this.#elements = {
       from: container.querySelector("#config-from"),
+      fromAutocomplete: container.querySelector("#config-from-values"),
       to: container.querySelector("#config-to"),
+      toAutocomplete: container.querySelector("#config-to-values"),
       date: container.querySelector("#config-date"),
       submit: container.querySelector("button"),
     };
 
+    async function setAutocompleteOptions(inputElement, autocompleteContainer) {
+      const userInput = inputElement.value;
+      if (userInput.length < 3) {
+        autocompleteContainer.innerHTML = "";
+        return;
+      }
+
+      const candidates = await motisClient.geocode(userInput);
+      const elements = candidates.map(createAutocompleteItem);
+      autocompleteContainer.replaceChildren(...elements);
+    }
+
+    async function setSelected(e, inputElement, autocompleteContainer) {
+      inputElement.value = e.target.innerHTML;
+      inputElement.dataset.stopId = e.target.dataset.stopId;
+      autocompleteContainer.innerHTML = "";
+    }
+
+    this.#elements.from.addEventListener("input", async (e) => {
+      await setAutocompleteOptions(
+        this.#elements.from,
+        this.#elements.fromAutocomplete,
+      );
+    });
+
+    this.#elements.to.addEventListener("input", async (e) => {
+      await setAutocompleteOptions(
+        this.#elements.to,
+        this.#elements.toAutocomplete,
+      );
+    });
+
+    this.#elements.fromAutocomplete.addEventListener("click", (e) => {
+      if (e.target.tagName !== "LI") return;
+      setSelected(e, this.#elements.from, this.#elements.fromAutocomplete);
+    });
+
+    this.#elements.toAutocomplete.addEventListener("click", (e) => {
+      if (e.target.tagName !== "LI") return;
+      setSelected(e, this.#elements.to, this.#elements.toAutocomplete);
+    });
+
     container.addEventListener("submit", (e) => {
       e.preventDefault();
+
       this.#callbacks.submit(
-        this.#elements.from.value,
-        this.#elements.to.value,
+        this.#elements.from.dataset.stopId,
+        this.#elements.to.dataset.stopId,
         DateTime.fromISO(this.#elements.date.value),
       );
     });

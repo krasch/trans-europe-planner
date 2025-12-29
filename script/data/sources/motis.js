@@ -1,12 +1,18 @@
-import { GeoDatabase } from "script/data/geoDatabase.js";
 import { Connection } from "script/types/connection.js";
 import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
-import { Stop } from "script/types/stop.js";
+import { Stop, StopPlace } from "script/types/stop.js";
 
 const BASE_URL = "http://localhost:8080";
-const TRANSIT_MODES = "REGIONAL_RAIL";
 const SEARCH_WINDOW = 3 * 24 * 60 * 60; // 3 days in seconds
+const TRANSIT_MODES = [
+  "RAIL",
+  "HIGHSPEED_RAIL",
+  "LONG_DISTANCE",
+  "NIGHT_RAIL",
+  "REGIONAL_FAST_RAIL",
+  "REGIONAL_RAIL",
+].join(",");
 
 export class MotisError extends Error {
   constructor(message) {
@@ -87,10 +93,10 @@ export class MotisClient {
     const url = this.constructURL("/api/v5/plan", {
       fromPlace: fromStopId,
       toPlace: toStopId,
-      detailedTransfers: false, // don't return geodata
+      detailedTransfers: false,
       transitModes: TRANSIT_MODES,
       time: startDate.toISO(),
-      searchWindow: SEARCH_WINDOW, // 3 days in seconds
+      searchWindow: SEARCH_WINDOW,
     });
 
     const response = await fetch(url);
@@ -113,5 +119,24 @@ export class MotisClient {
     return itineraries
       .filter((i) => i.vias.length === 0) // only want direct
       .map((i) => i.connections[0]); // only want the first (=only) connection
+  }
+
+  /**
+   * @param {String} userInput
+   * @returns {Promise<StopPlace[]>}
+   */
+  async geocode(userInput) {
+    const url = this.constructURL("/api/v1/geocode", {
+      text: userInput,
+      type: "STOP",
+      mode: TRANSIT_MODES,
+    });
+
+    const response = await fetch(url);
+    if (!response.ok)
+      throw new MotisError([response.status, response.statusText].join());
+
+    const result = await response.json();
+    return result.map((s) => new StopPlace(s.id, s.name));
   }
 }

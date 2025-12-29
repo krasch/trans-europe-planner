@@ -101,13 +101,16 @@
     </li>
 </template>
 
-
 <template id="template-perlschnur-transfer">
     <div class="perlschnur-transfer">
         <span lang="de">Umstiegszeit: </span>
         <span lang="en">Transfer time: </span>
         <span class="transfer-time"></span>
     </div>
+</template>
+
+<template id="template-config-autocomplete">
+    <li data-stop-id=""></li>
 </template>
 
 <!-- map is placed outside of <main> because also used in <dialog> -->
@@ -143,18 +146,21 @@
         <div id="config">
             <h2 lang="de">Wo soll's denn hingehen?</h2>
             <h2 lang="en">Where do you want to go? 🏖️ ⛰️ 🏛️ </h2>
-            <form>
+            <form autocomplete="off">
                 <label for="config-from">
                     <span lang="de">Von</span>
                     <span lang="en">From</span>
                 </label>
-                <input type="text" id="config-from" value="de_de:13074:1011"/>
+                <input type="text" id="config-from" data-stop-id=""/>
+                <!-- switch to datalist as soon as it becomes available in firefox android -->
+                <ul id="config-from-values"></ul>
 
                 <label for="config-to">
                     <span lang="de">Nach</span>
                     <span lang="en">To</span>
                 </label>
-                <input type="text" id="config-to" value="de_de:13003:1489_G"/>
+                <input type="text" id="config-to" data-stop-id=""/>
+                <ul id="config-to-values"></ul>
 
                 <label for="config-date">
                     <span lang="de">Am</span>

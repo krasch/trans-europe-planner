@@ -83,21 +83,21 @@ export async function init() {
   // this already starts loading the map while we do other stuff
   const map = new MapWrapper("map", [11.75685, 54.0443], defaultZoom);
 
-  // also create all the other components (less to do for them)
+  // currently hard-code using motis
+  const motis = new MotisClient();
+  const travelDatabase = new TravelDatabase(motis);
+
+  // also create all the other components
   const components = {
     mainContainer: elements.main, // todo a component, just an HTML element
     map: map,
-    config: new Config(elements.content.config),
+    config: new Config(elements.content.config, motis),
     calendar: new CalendarWrapper(elements.travelCalendar), // sic
     perlschnur: new Perlschnur(elements.content.perlschnur),
   };
 
   // show the <main> element
   // elements.main.classList.remove("closed");
-
-  // currently hard-code using motis
-  const motis = new MotisClient();
-  const travelDatabase = new TravelDatabase(motis);
 
   // temporary: always show side bar
   components.mainContainer.classList.remove("no-journey");

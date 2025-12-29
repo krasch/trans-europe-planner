@@ -23,11 +23,34 @@
     display: grid;
     grid-template-columns: 3rem 1fr; /* label, input */
     grid-auto-rows: 4rem;
+
     align-items: center;
     gap: 1rem;
 
     border: 1px solid lightgrey;
     border-radius: 0.5rem;
+}
+
+/* from <input> and from <select> share the same space in the grid */
+#config form #config-from,
+#config form #config-from-values {
+    grid-row: 1/2;
+    grid-column: 2/3;
+}
+
+/* same for to <input> and to <select> */
+#config form #config-to,
+#config form #config-to-values {
+    grid-row: 2/3;
+    grid-column: 2/3;
+}
+
+/* but actually the two select fields are positioned just below the <input> fields */
+#config form #config-from-values,
+#config form #config-to-values {
+    margin-top: 4rem; /* height of the <input> field */
+    transform: translateY(50%); /* otherwise positioning is based on center of list */
+    z-index: 2
 }
 
 /***********************************************
@@ -37,6 +60,10 @@
 #config form input {
     height: 3rem;
     padding-left: 0.5rem;
+
+    border: 1px solid darkgrey;
+    border-radius: 0.25rem;
+
     color: var(--color-dark);
 }
 
@@ -55,6 +82,42 @@
 
     border: 0;
     border-radius: 0.5rem;
+}
+
+
+/***********************************************
+ <select> fields for autocomplete
+************************************************/
+
+#config-from-values:empty,
+#config-to-values:empty {
+    display: none;
+}
+
+#config form #config-from-values,
+#config form #config-to-values {
+    list-style-type: none;
+    padding-left: 0;
+    vertical-align: top;
+
+    background-color: var(--color-light);
+    color: var(--color-dark);
+
+    border: 1px solid darkgray;
+    border-radius: 0.25rem;
+}
+
+#config form #config-from-values li,
+#config form #config-to-values li{
+    height: 1.25rem;
+    padding-left: 0.5rem;
+}
+
+#config form #config-from-values li:hover,
+#config form #config-to-values li:hover {
+    color: var(--color-light);
+    background-color: var(--color-dark);
+    cursor: pointer;
 }
 
 /***********************************************
