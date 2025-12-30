@@ -1,7 +1,7 @@
 import { prepareDataForCalendar } from "script/data/components/calendar.js";
 import { prepareDataForMap } from "script/data/components/map.js";
 import { prepareDataForPerlschnur } from "script/data/components/perlschnur.js";
-import { TravelDatabase } from "script/data/travelDatabase.js";
+import { Planner } from "script/planner.js";
 import { State } from "script/state.js";
 
 import { DateTime } from "./types/dateTime.js";
@@ -10,14 +10,14 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /**
  * @param {Object.<string,any>} components
- * @param {TravelDatabase} travelDatabase
+ * @param {Planner} planner
  * @param {State} state
  */
-async function updateAllComponents(components, travelDatabase, state) {
+async function updateAllComponents(components, planner, state) {
   if (!state.activeItinerary) return;
 
   // alternatives for all the connections in current active itinerary - needed for calendar
-  const alternatives = travelDatabase.getCachedAlternatives(
+  const alternatives = planner.getCachedAlternatives(
     state.activeItinerary,
     state.startDate,
   );
@@ -43,7 +43,7 @@ async function updateAllComponents(components, travelDatabase, state) {
 
 /**
  * @param {Object.<string,any>} components
- * @param {TravelDatabase} travelDatabase
+ * @param {Planner} travelDatabase
  */
 export async function main(components, travelDatabase) {
   const state = new State(DateTime.fromISO("2025-09-11"));

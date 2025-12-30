@@ -1,4 +1,4 @@
-import { geocodePlace, geocodeStop } from "script/data/motis/client.js";
+import { geocodePlace, geocodeStop } from "script/motis/client.js";
 import { DateTime } from "script/types/dateTime.js";
 import { createElementFromTemplate } from "script/util.js";
 

@@ -5,7 +5,7 @@ import { groupBy } from "script/util.js";
 
 import { plan as motis_plan, direct as motis_direct } from "./motis/client.js";
 
-export class TravelDatabase {
+export class Planner {
   // todo map first two to ConnectionId instead to save some memory?
   #cache = {
     // maps from [from,to,date] to Itinerary[]

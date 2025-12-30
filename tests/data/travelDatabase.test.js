@@ -1,6 +1,6 @@
 import { test, expect, vi } from "vitest";
 
-import { TravelDatabase } from "script/data/travelDatabase.js";
+import { Planner } from "script/data/planner.js";
 import { Itinerary } from "script/types/itinerary.js";
 
 import { connectionFromShorthand as _c, DAY1 } from "tests/_helpers/data.js";
@@ -30,14 +30,14 @@ test("Group itineraries per route and pick one each", async function () {
   const mockSource = mockDatasource();
   mockSource.plan.mockReturnValueOnce([i1, i1_alt, i2]);
 
-  const db = new TravelDatabase(mockSource, null);
+  const db = new Planner(mockSource, null);
 
   const got = await db.plan("S1", "S3", DAY1);
   expect(got).toStrictEqual([i1, i2]);
 });
 
 test("Alternatives for empty itinerary", async function () {
-  const db = new TravelDatabase(null, null);
+  const db = new Planner(null, null);
 
   const got = await db.getCachedAlternatives(null, DAY1);
   expect(got).toStrictEqual(null);
@@ -55,7 +55,7 @@ test("Alternatives for itinerary", async function () {
   mockSource.direct.mockReturnValueOnce([c1_alt, c1_alt2]); // first call
   mockSource.direct.mockReturnValueOnce([]); // second call
 
-  const db = new TravelDatabase(mockSource, null);
+  const db = new Planner(mockSource, null);
 
   const got = await db.getCachedAlternatives(i1, DAY1);
   expect(got).toStrictEqual([[c1_alt, c1_alt2], []]);

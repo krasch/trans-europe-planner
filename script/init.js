@@ -2,9 +2,9 @@ import { CalendarWrapper } from "script/components/calendar.js";
 import { Config } from "script/components/config.js";
 import { MapWrapper } from "script/components/map.js";
 import { Perlschnur } from "script/components/perlschnur.js";
-import { TravelDatabase } from "script/data/travelDatabase.js";
 import { showLandingPage } from "script/landing.js";
 import { main } from "script/main.js";
+import { Planner } from "script/planner.js";
 
 /**
  * for all elements, set exactly the ones in selectedNames to ".selected"
@@ -83,7 +83,7 @@ export async function init() {
   const map = new MapWrapper("map", [11.75685, 54.0443], defaultZoom);
 
   // currently hard-code using motis
-  const travelDatabase = new TravelDatabase();
+  const travelDatabase = new Planner();
 
   // also create all the other components
   const components = {
