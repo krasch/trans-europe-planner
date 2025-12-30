@@ -3,6 +3,7 @@
 Pipfile
 materials/blog/2025_04_22_why/overlayed.svg
 told
+todo.md
 
 docker-compose.yml
 Dockerfile
