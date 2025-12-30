@@ -1,20 +1,20 @@
-import { geocodePlace, geocodeStop } from "script/motis/client.js";
+import { geocode } from "script/motis/client.js";
+import { GeocodedLocation } from "script/motis/parser.js";
 import { DateTime } from "script/types/dateTime.js";
 import { createElementFromTemplate } from "script/util.js";
 
 /**
- * @param {'stop' | 'place'} kind
- * @param {{name: string, location: string}} data
+ * @param {GeocodedLocation} data
  * @returns {HTMLElement}
  */
-function createAutocompleteItem(kind, data) {
-  const template = `template-config-autocomplete-${kind}`;
+function createAutocompleteItem(data) {
+  const template = `template-config-autocomplete-${data.kind}`;
 
   const element = createElementFromTemplate(template, {
     span: { innerHTML: data.name },
   });
   element.dataset.name = data.name;
-  element.dataset.location = data.location;
+  element.dataset.data = JSON.stringify(data);
   return element;
 }
 
@@ -29,23 +29,20 @@ async function setAutocompleteOptions(inputElement, autocompleteContainer) {
     return;
   }
 
-  const places = await geocodePlace(userInput);
-  const stops = await geocodeStop(userInput);
+  const geocoded = await geocode(userInput);
 
-  const elements1 = places.map((p) => createAutocompleteItem("place", p));
-  const elements2 = stops.map((s) => createAutocompleteItem("stop", s));
-  autocompleteContainer.replaceChildren(...elements1.concat(elements2));
-}
+  const places = [];
+  const stops = [];
 
-/**
- * @param {HTMLLIElement} item
- * @param {HTMLInputElement} inputElement
- * @param {HTMLUListElement} autocompleteContainer
- */
-async function submitChosen(item, inputElement, autocompleteContainer) {
-  inputElement.value = item.dataset.name;
-  inputElement.dataset.location = item.dataset.location;
-  autocompleteContainer.innerHTML = "";
+  for (let result of geocoded) {
+    // todo currently working with places does not really work revisit
+    //if (result.place) places.push(createAutocompleteItem(result.place));
+    //else stops.push(createAutocompleteItem(result.stop));
+    stops.push(createAutocompleteItem(result.stop));
+  }
+
+  // todo remove duplicates from places?
+  autocompleteContainer.replaceChildren(...places.concat(stops));
 }
 
 export class Config {
@@ -93,7 +90,10 @@ export class Config {
       const li = e.target.closest("li");
       if (!li) return;
 
-      submitChosen(li, this.#elements.from, this.#elements.fromAutocomplete);
+      this.#elements.from.value = li.dataset.name;
+      this.#elements.from.dataset.data = li.dataset.data;
+      this.#elements.fromAutocomplete.innerHTML = "";
+
       this.#checkSubmitPossible();
     });
 
@@ -101,7 +101,10 @@ export class Config {
       const li = e.target.closest("li");
       if (!li) return;
 
-      submitChosen(li, this.#elements.to, this.#elements.toAutocomplete);
+      this.#elements.to.value = li.dataset.name;
+      this.#elements.to.dataset.data = li.dataset.data;
+      this.#elements.toAutocomplete.innerHTML = "";
+
       this.#checkSubmitPossible();
     });
 
@@ -109,8 +112,8 @@ export class Config {
       e.preventDefault();
 
       this.#callbacks.submit(
-        this.#elements.from.dataset.location,
-        this.#elements.to.dataset.location,
+        JSON.parse(this.#elements.from.dataset.data),
+        JSON.parse(this.#elements.to.dataset.data),
         DateTime.fromISO(this.#elements.date.value),
       );
     });
@@ -138,8 +141,8 @@ export class Config {
   }
 
   #checkSubmitPossible() {
-    const hasFrom = this.#elements.from.dataset.location;
-    const hasTo = this.#elements.to.dataset.location;
+    const hasFrom = this.#elements.from.dataset.data;
+    const hasTo = this.#elements.to.dataset.data;
     const hasDate = this.#elements.date.value;
     this.#elements.submit.disabled = !hasFrom || !hasTo || !hasDate;
   }

@@ -52,6 +52,14 @@ export function groupBy(array, keyFn) {
   return grouped;
 }
 
+export function intersection(array1, array2) {
+  const result = [];
+  for (let item of array1) {
+    if (array2.includes(item)) result.push(item);
+  }
+  return result;
+}
+
 /** @template K,V */
 export class DefaultMap extends Map {
   // todo tests
