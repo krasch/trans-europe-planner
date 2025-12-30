@@ -159,7 +159,7 @@
     border: 1px solid darkgrey;
 }
 
-#config form button:not(:disabled) .spinner {
+#config form button:not(.spinning) .spinner {
     display: none;
 }
 

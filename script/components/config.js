@@ -65,6 +65,8 @@ export class Config {
       submit: container.querySelector("button"),
     };
 
+    this.#checkSubmitPossible();
+
     this.#elements.from.addEventListener("input", async (e) => {
       await setAutocompleteOptions(
         this.#elements.from,
@@ -79,16 +81,24 @@ export class Config {
       );
     });
 
+    this.#elements.date.addEventListener("input", async (e) => {
+      this.#checkSubmitPossible();
+    });
+
     this.#elements.fromAutocomplete.addEventListener("click", (e) => {
       const li = e.target.closest("li");
       if (!li) return;
+
       submitChosen(li, this.#elements.from, this.#elements.fromAutocomplete);
+      this.#checkSubmitPossible();
     });
 
     this.#elements.toAutocomplete.addEventListener("click", (e) => {
       const li = e.target.closest("li");
       if (!li) return;
+
       submitChosen(li, this.#elements.to, this.#elements.toAutocomplete);
+      this.#checkSubmitPossible();
     });
 
     container.addEventListener("submit", (e) => {
@@ -114,9 +124,18 @@ export class Config {
 
   lock() {
     for (let key in this.#elements) this.#elements[key].disabled = true;
+    this.#elements.submit.classList.add("spinning");
   }
 
   unlock() {
     for (let key in this.#elements) this.#elements[key].disabled = false;
+    this.#elements.submit.classList.remove("spinning");
+  }
+
+  #checkSubmitPossible() {
+    const hasFrom = this.#elements.from.dataset.location;
+    const hasTo = this.#elements.to.dataset.location;
+    const hasDate = this.#elements.date.value;
+    this.#elements.submit.disabled = !hasFrom || !hasTo || !hasDate;
   }
 }
