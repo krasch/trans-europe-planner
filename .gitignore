@@ -1,5 +1,8 @@
 .idea
 /node_modules/
+Pipfile
+materials/blog/2025_04_22_why/overlayed.svg
+told
 
 docker-compose.yml
 Dockerfile
