@@ -10,8 +10,12 @@ import {
 } from "./parser.js";
 
 const BASE_URL = "http://localhost:8080";
+//const BASE_URL = "https://api.transitous.org/api";
 const REFERRER = "https://trans-europe-planner.eu";
-const NUM_DAYS = 3;
+
+const NUM_DAYS_PLAN = 1;
+const NUM_DAYS_DIRECT = 3;
+
 const RAIL_MODES = [
   "RAIL",
   "HIGHSPEED_RAIL",
@@ -63,12 +67,10 @@ export async function plan(from, to, startDate) {
     modes: RAIL_MODES,
     detailedTransfers: false,
     time: startDate.toISO(),
-    searchWindow: NUM_DAYS * 24 * 60 * 60, // in seconds
+    searchWindow: NUM_DAYS_PLAN * 24 * 60 * 60, // in seconds
   });
 
-  return result.itineraries
-    .map(parseMotisItinerary)
-    .filter((i) => i.to.arrival < startDate.plus({ days: NUM_DAYS }));
+  return result.itineraries.map(parseMotisItinerary);
 }
 
 /**
@@ -85,7 +87,7 @@ export async function direct(fromStopId, toStopId, startDate) {
     maxTransfers: 0,
     detailedTransfers: false,
     time: startDate.toISO(),
-    searchWindow: NUM_DAYS * 24 * 60 * 60, // in seconds
+    searchWindow: NUM_DAYS_DIRECT * 24 * 60 * 60, // in seconds
   });
 
   const itineraries = result.itineraries.map(parseMotisItinerary);

@@ -31,8 +31,4 @@ export class Itinerary {
 
     this.id = this.stopIds.join("->");
   }
-
-  get summary() {}
-
-  get score() {}
 }

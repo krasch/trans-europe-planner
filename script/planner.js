@@ -1,9 +1,38 @@
 import { Connection } from "script/types/connection.js";
-import { DateTime } from "script/types/dateTime.js";
+import {
+  DateTime,
+  diffDays,
+  minutesSinceMidnight,
+} from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
 import { groupBy } from "script/util.js";
 
 import { plan as motis_plan, direct as motis_direct } from "./motis/client.js";
+import { GeocodedLocation } from "./motis/parser.js";
+
+/**
+ * @param {Itinerary} itinerary
+ * @param {DateTime} fromDate
+ * @returns {Number}
+ */
+function itineraryScore(itinerary, fromDate) {
+  const days = diffDays(fromDate, itinerary.to.arrival);
+
+  const departureMinutes = itinerary.connections.map((c) =>
+    minutesSinceMidnight(c.from.departure),
+  );
+  const arrivalMinutes = itinerary.connections.map((c) =>
+    minutesSinceMidnight(c.to.arrival),
+  );
+
+  const earliestDeparture = Math.min(...departureMinutes);
+  const latestArrival = Math.max(...arrivalMinutes);
+
+  const minutesBefore8 = Math.max(0, 8 * 60 - earliestDeparture);
+  const minutesAfter22 = Math.max(0, latestArrival - 22 * 60);
+
+  return -1000 * days - minutesBefore8 - minutesAfter22;
+}
 
 export class Planner {
   // todo map first two to ConnectionId instead to save some memory?
@@ -17,32 +46,38 @@ export class Planner {
   };
 
   /**
-   * @param {string} fromStopId
-   * @param {string} toStopId
+   * @param {GeocodedLocation} from
+   * @param {GeocodedLocation} to
    * @param {DateTime} fromDate
    * @returns {Promise<Itinerary[]>}
    *   // todo toDate
    */
-  async plan(fromStopId, toStopId, fromDate) {
-    const key = this.#hashKey(fromStopId, toStopId, fromDate);
+  async plan(from, to, fromDate) {
+    //const key = this.#hashKey(from, to, fromDate); // ouch
 
-    if (this.#cache.plan.has(key)) return this.#cache.plan.get(key);
+    //if (this.#cache.plan.has(key)) return this.#cache.plan.get(key);
 
     // must await, because want to transform the itineraries
-    const itineraries = await motis_plan(fromStopId, toStopId, fromDate);
+    const itineraries = await motis_plan(from, to, fromDate);
 
     // group by geographical route
-    // todo keep only the best geographical routes
-    const grouped = groupBy(itineraries, (i) => i.stopIds.join("->"));
+    const geoRoute = (i) => i.stopIds.join("->");
+    const grouped = Object.values(groupBy(itineraries, geoRoute));
 
-    // todo calculate itinerary score and keep only the best for each geographical route
-    //  right now always keeping the first itinerary for each route
-    const result = Object.keys(grouped).map((key) => grouped[key][0]);
+    // order by how many itineraries per geographical route
+    const sortLongest = (group1, group2) => group2.length - group1.length;
+    const sorted = grouped.sort(sortLongest);
+
+    // keep highest-scoring itinerary per route
+    const sortHighest = (i1, i2) =>
+      itineraryScore(i2, fromDate) - itineraryScore(i1, fromDate);
+    const result = sorted.map((group) => group.sort(sortHighest)[0]);
 
     // todo add to connection cache? not so important,
     //  everything will show up in direct call anyway
-    this.#cache.plan.set(key, result);
-    return result;
+    //this.#cache.plan.set(key, result);
+
+    return result.slice(0, 3); // todo
   }
 
   /**
