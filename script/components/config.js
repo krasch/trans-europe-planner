@@ -65,6 +65,10 @@ export class Config {
       submit: container.querySelector("button"),
     };
 
+    const today = DateTime.now().startOf("day");
+    this.#elements.date.min = today.toISODate();
+    this.#elements.date.max = today.plus({ days: 3 * 30 }).toISODate();
+
     this.#checkSubmitPossible();
 
     this.#elements.from.addEventListener("input", async (e) => {
@@ -110,16 +114,17 @@ export class Config {
         DateTime.fromISO(this.#elements.date.value),
       );
     });
-
-    /*
-    const today = DateTime.fromISO("2025-08-11"); //DateTime.now().startOf("day");
-    this.#start = today.plus({ days: 1 });
-    this.#end = today.plus({ days: 3 * 30 });
-    this.#default = today.plus({ days: 30 });*/
   }
 
   on(eventName, callback) {
     this.#callbacks[eventName] = callback;
+  }
+
+  /**
+   * @param {DateTime} date
+   */
+  set date(date) {
+    this.#elements.date.value = date.toISODate();
   }
 
   lock() {

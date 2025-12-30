@@ -5,7 +5,7 @@ import { Itinerary } from "script/types/itinerary.js";
 import { parseMotisItinerary } from "./parser.js";
 
 const BASE_URL = "http://localhost:8080";
-const REFERRER = "http://trans-europe-planner.eu";
+const REFERRER = "https://trans-europe-planner.eu";
 const SEARCH_WINDOW = 3 * 24 * 60 * 60; // 3 days in seconds
 const TRANSIT_MODES = [
   "RAIL",

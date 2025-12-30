@@ -11,10 +11,12 @@ export class DateTime extends LuxonDateTime {
   startOf = super.startOf;
   static fromISO = super.fromISO;
   toISO = super.toISO;
+  toISODate = super.toISODate;
   toFormat = super.toFormat;
   toLocaleString = super.toLocaleString;
   hour = super.hour;
   minute = super.minute;
+  static now = LuxonDateTime.now;
 }
 
 /**

@@ -46,7 +46,9 @@ async function updateAllComponents(components, planner, state) {
  * @param {Planner} travelDatabase
  */
 export async function main(components, travelDatabase) {
-  const state = new State(DateTime.fromISO("2025-09-11"));
+  const today = DateTime.now().startOf("day");
+  const state = new State(today.plus({ days: 30 }));
+  components.config.date = state.startDate;
 
   // partial function for conveniently updating the components
   const updateComponents = updateAllComponents.bind(
