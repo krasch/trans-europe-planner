@@ -11,7 +11,7 @@ import {
 
 const BASE_URL = "http://localhost:8080";
 const REFERRER = "https://trans-europe-planner.eu";
-const SEARCH_WINDOW = 3 * 24 * 60 * 60; // 3 days in seconds
+const NUM_DAYS = 3;
 const RAIL_MODES = [
   "RAIL",
   "HIGHSPEED_RAIL",
@@ -63,10 +63,12 @@ export async function plan(from, to, startDate) {
     modes: RAIL_MODES,
     detailedTransfers: false,
     time: startDate.toISO(),
-    searchWindow: SEARCH_WINDOW,
+    searchWindow: NUM_DAYS * 24 * 60 * 60, // in seconds
   });
 
-  return result.itineraries.map(parseMotisItinerary);
+  return result.itineraries
+    .map(parseMotisItinerary)
+    .filter((i) => i.to.arrival < startDate.plus({ days: NUM_DAYS }));
 }
 
 /**
@@ -83,7 +85,7 @@ export async function direct(fromStopId, toStopId, startDate) {
     maxTransfers: 0,
     detailedTransfers: false,
     time: startDate.toISO(),
-    searchWindow: SEARCH_WINDOW,
+    searchWindow: NUM_DAYS * 24 * 60 * 60, // in seconds
   });
 
   const itineraries = result.itineraries.map(parseMotisItinerary);
