@@ -2,7 +2,6 @@ import { CalendarWrapper } from "script/components/calendar.js";
 import { Config } from "script/components/config.js";
 import { MapWrapper } from "script/components/map.js";
 import { Perlschnur } from "script/components/perlschnur.js";
-import { MotisClient } from "script/data/sources/motis.js";
 import { TravelDatabase } from "script/data/travelDatabase.js";
 import { showLandingPage } from "script/landing.js";
 import { main } from "script/main.js";
@@ -84,14 +83,13 @@ export async function init() {
   const map = new MapWrapper("map", [11.75685, 54.0443], defaultZoom);
 
   // currently hard-code using motis
-  const motis = new MotisClient();
-  const travelDatabase = new TravelDatabase(motis);
+  const travelDatabase = new TravelDatabase();
 
   // also create all the other components
   const components = {
     mainContainer: elements.main, // todo a component, just an HTML element
     map: map,
-    config: new Config(elements.content.config, motis),
+    config: new Config(elements.content.config),
     calendar: new CalendarWrapper(elements.travelCalendar), // sic
     perlschnur: new Perlschnur(elements.content.perlschnur),
   };

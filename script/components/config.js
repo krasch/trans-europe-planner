@@ -1,3 +1,4 @@
+import { geocodePlace, geocodeStop } from "script/data/motis/client.js";
 import { DateTime } from "script/types/dateTime.js";
 import { createElementFromTemplate } from "script/util.js";
 
@@ -24,7 +25,7 @@ export class Config {
     submit: (from, to, date) => {},
   };
 
-  constructor(container, motisClient) {
+  constructor(container) {
     this.#elements = {
       from: container.querySelector("#config-from"),
       fromAutocomplete: container.querySelector("#config-from-values"),
@@ -41,8 +42,8 @@ export class Config {
         return;
       }
 
-      const places = await motisClient.geocodePlace(userInput);
-      const stops = await motisClient.geocodeStop(userInput);
+      const places = await geocodePlace(userInput);
+      const stops = await geocodeStop(userInput);
 
       const elements1 = places.map((p) => createAutocompleteItem("place", p));
       const elements2 = stops.map((s) => createAutocompleteItem("stop", s));

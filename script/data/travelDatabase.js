@@ -1,12 +1,11 @@
-import { MotisClient } from "script/data/sources/motis.js";
 import { Connection } from "script/types/connection.js";
 import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
 import { groupBy } from "script/util.js";
 
-export class TravelDatabase {
-  #client;
+import { plan as motis_plan, direct as motis_direct } from "./motis/client.js";
 
+export class TravelDatabase {
   // todo map first two to ConnectionId instead to save some memory?
   #cache = {
     // maps from [from,to,date] to Itinerary[]
@@ -16,13 +15,6 @@ export class TravelDatabase {
     // maps from connectionId to Connection
     connections: new Map(),
   };
-
-  /**
-   * @param {MotisClient} client
-   */
-  constructor(client) {
-    this.#client = client;
-  }
 
   /**
    * @param {string} fromStopId
@@ -37,7 +29,7 @@ export class TravelDatabase {
     if (this.#cache.plan.has(key)) return this.#cache.plan.get(key);
 
     // must await, because want to transform the itineraries
-    const itineraries = await this.#client.plan(fromStopId, toStopId, fromDate);
+    const itineraries = await motis_plan(fromStopId, toStopId, fromDate);
 
     // group by geographical route
     // todo keep only the best geographical routes
@@ -64,7 +56,7 @@ export class TravelDatabase {
 
     if (this.#cache.direct.has(key)) return this.#cache.direct.get(key);
 
-    const promise = this.#client.direct(fromStopId, toStopId, fromDate);
+    const promise = motis_direct(fromStopId, toStopId, fromDate);
 
     promise.then((connections) => {
       this.#cache.direct.set(key, connections);
