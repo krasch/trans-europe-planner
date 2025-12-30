@@ -18,6 +18,36 @@ function createAutocompleteItem(kind, data) {
   return element;
 }
 
+/**
+ * @param {HTMLInputElement} inputElement
+ * @param {HTMLUListElement} autocompleteContainer
+ */
+async function setAutocompleteOptions(inputElement, autocompleteContainer) {
+  const userInput = inputElement.value;
+  if (userInput.length < 3) {
+    autocompleteContainer.innerHTML = "";
+    return;
+  }
+
+  const places = await geocodePlace(userInput);
+  const stops = await geocodeStop(userInput);
+
+  const elements1 = places.map((p) => createAutocompleteItem("place", p));
+  const elements2 = stops.map((s) => createAutocompleteItem("stop", s));
+  autocompleteContainer.replaceChildren(...elements1.concat(elements2));
+}
+
+/**
+ * @param {HTMLLIElement} item
+ * @param {HTMLInputElement} inputElement
+ * @param {HTMLUListElement} autocompleteContainer
+ */
+async function submitChosen(item, inputElement, autocompleteContainer) {
+  inputElement.value = item.dataset.name;
+  inputElement.dataset.location = item.dataset.location;
+  autocompleteContainer.innerHTML = "";
+}
+
 export class Config {
   #elements = {};
 
@@ -35,27 +65,6 @@ export class Config {
       submit: container.querySelector("button"),
     };
 
-    async function setAutocompleteOptions(inputElement, autocompleteContainer) {
-      const userInput = inputElement.value;
-      if (userInput.length < 3) {
-        autocompleteContainer.innerHTML = "";
-        return;
-      }
-
-      const places = await geocodePlace(userInput);
-      const stops = await geocodeStop(userInput);
-
-      const elements1 = places.map((p) => createAutocompleteItem("place", p));
-      const elements2 = stops.map((s) => createAutocompleteItem("stop", s));
-      autocompleteContainer.replaceChildren(...elements1.concat(elements2));
-    }
-
-    async function setSelected(e, inputElement, autocompleteContainer) {
-      inputElement.value = e.target.dataset.name;
-      inputElement.dataset.location = e.target.dataset.location;
-      autocompleteContainer.innerHTML = "";
-    }
-
     this.#elements.from.addEventListener("input", async (e) => {
       await setAutocompleteOptions(
         this.#elements.from,
@@ -71,13 +80,15 @@ export class Config {
     });
 
     this.#elements.fromAutocomplete.addEventListener("click", (e) => {
-      if (e.target.tagName !== "LI") return;
-      setSelected(e, this.#elements.from, this.#elements.fromAutocomplete);
+      const li = e.target.closest("li");
+      if (!li) return;
+      submitChosen(li, this.#elements.from, this.#elements.fromAutocomplete);
     });
 
     this.#elements.toAutocomplete.addEventListener("click", (e) => {
-      if (e.target.tagName !== "LI") return;
-      setSelected(e, this.#elements.to, this.#elements.toAutocomplete);
+      const li = e.target.closest("li");
+      if (!li) return;
+      submitChosen(li, this.#elements.to, this.#elements.toAutocomplete);
     });
 
     container.addEventListener("submit", (e) => {
