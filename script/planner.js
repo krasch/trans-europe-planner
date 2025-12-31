@@ -34,6 +34,19 @@ function itineraryScore(itinerary, fromDate) {
   return -1000 * days - minutesBefore8 - minutesAfter22;
 }
 
+/**
+ * @param {Itinerary[]} group
+ * @param {Itinerary[][]} otherGroups
+ */
+function isParetoOptimal(group, otherGroups) {
+  for (let other of otherGroups) {
+    const otherRunsMoreOften = other.length > group.length;
+    const otherHasFewerTransfers = other[0].vias.length < group[0].vias.length;
+    if (otherRunsMoreOften && otherHasFewerTransfers) return false;
+  }
+  return true;
+}
+
 export class Planner {
   // todo map first two to ConnectionId instead to save some memory?
   #cache = {
@@ -61,23 +74,35 @@ export class Planner {
     const itineraries = await motis_plan(from, to, fromDate);
 
     // group by geographical route
-    const geoRoute = (i) => i.stopIds.join("->");
+    const geoRoute = (i) => i.vias.map((v) => v.stopName).join("->");
     const grouped = Object.values(groupBy(itineraries, geoRoute));
 
-    // order by how many itineraries per geographical route
+    // order so that itineraries that work often come first
     const sortLongest = (group1, group2) => group2.length - group1.length;
     const sorted = grouped.sort(sortLongest);
+
+    /*for (let group of sorted) {
+      console.log(
+        group[0].vias.map((v) => [v.stopId, v.stopName]),
+        group[0].connections.map((c) => c.mode),
+        group.length,
+        isParetoOptimal(group, sorted),
+      );
+    }*/
+
+    // keep only pareto-optimal solutions (how often, how many transfers)
+    const pareto = sorted.filter((g) => isParetoOptimal(g, grouped));
 
     // keep highest-scoring itinerary per route
     const sortHighest = (i1, i2) =>
       itineraryScore(i2, fromDate) - itineraryScore(i1, fromDate);
-    const result = sorted.map((group) => group.sort(sortHighest)[0]);
+    const result = pareto.map((group) => group.sort(sortHighest)[0]);
 
     // todo add to connection cache? not so important,
     //  everything will show up in direct call anyway
     //this.#cache.plan.set(key, result);
 
-    return result.slice(0, 3); // todo
+    return result;
   }
 
   /**
