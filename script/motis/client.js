@@ -64,7 +64,7 @@ export async function plan(from, to, startDate) {
   const result = await query("/api/v5/plan", {
     fromPlace: fromLocation,
     toPlace: toLocation,
-    modes: RAIL_MODES,
+    transitModes: RAIL_MODES,
     detailedTransfers: false,
     time: startDate.toISO(),
     searchWindow: NUM_DAYS_PLAN * 24 * 60 * 60, // in seconds
@@ -83,7 +83,7 @@ export async function direct(fromStopId, toStopId, startDate) {
   const result = await query("/api/v5/plan", {
     fromPlace: fromStopId,
     toPlace: toStopId,
-    modes: RAIL_MODES,
+    transitModes: RAIL_MODES,
     maxTransfers: 0,
     detailedTransfers: false,
     time: startDate.toISO(),
