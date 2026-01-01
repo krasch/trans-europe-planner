@@ -2,9 +2,9 @@ import { CalendarWrapper } from "script/components/calendar.js";
 import { Config } from "script/components/config.js";
 import { MapWrapper } from "script/components/map.js";
 import { Perlschnur } from "script/components/perlschnur.js";
-import { showLandingPage } from "script/landing.js";
 import { main } from "script/main.js";
 import { Planner } from "script/planner.js";
+import { DateTime } from "script/types/dateTime.js";
 
 /**
  * for all elements, set exactly the ones in selectedNames to ".selected"
@@ -51,7 +51,35 @@ function initNavigation(tabs, content, mainContainer) {
   });
 }
 
+/**
+ * @param {HTMLDialogElement} modal
+ */
+async function showLandingPage(modal) {
+  // using form with submit = "dialog"
+  // submit -> automatically closes -> resolves
+  const modalClosedPromise = new Promise((resolve) =>
+    modal.addEventListener("close", (e) => {
+      resolve();
+    }),
+  );
+
+  modal.show();
+
+  return modalClosedPromise;
+}
+
 export async function init() {
+  const isMobile = window.matchMedia("(max-width: 1000px)");
+
+  const today = DateTime.now().startOf("day");
+  const calendarMin = today;
+  const calendarMax = today.plus({ days: 3 * 30 });
+  const calendarInitialDate = today.plus({ days: 30 });
+
+  let zoom = 7.3;
+  if (isMobile.matches) zoom = 3.3;
+  const mapCenter = [11.75685, 54.0443];
+
   const elements = {
     landing: document.querySelector("dialog"),
     main: document.querySelector("main"),
@@ -74,31 +102,30 @@ export async function init() {
 
   initNavigation(elements.nav, elements.content, elements.main);
 
-  const isMobile = window.matchMedia("(max-width: 1000px)");
-  let defaultZoom = 7.3;
-  if (isMobile.matches) defaultZoom = 3.3;
-
   // map is initially in non-interactive mode with reduced opacity (to be a nice background image basically)
   // this already starts loading the map while we do other stuff
-  const map = new MapWrapper("map", [11.75685, 54.0443], defaultZoom);
-
-  // currently hard-code using motis
-  const travelDatabase = new Planner();
+  const map = new MapWrapper("map", mapCenter, zoom);
 
   // also create all the other components
   const components = {
     mainContainer: elements.main, // todo a component, just an HTML element
     map: map,
-    config: new Config(elements.content.config),
+    config: new Config(elements.content.config, calendarMin, calendarMax),
     calendar: new CalendarWrapper(elements.travelCalendar), // sic
     perlschnur: new Perlschnur(elements.content.perlschnur),
   };
 
+  // set initial values
+  components.config.date = calendarInitialDate;
+
+  // show landing page
+  // wait until user clicks the "Try it out!" button
+  // this also automatically closes the landing page
+  await showLandingPage(elements.landing);
+
   // show the <main> element
-  // elements.main.classList.remove("closed");
+  elements.main.classList.remove("closed");
 
-  // temporary: always show side bar
-  components.mainContainer.classList.remove("no-journey");
-
-  await main(components, travelDatabase);
+  const planner = new Planner();
+  await main(components, planner);
 }

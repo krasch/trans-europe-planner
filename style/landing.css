@@ -8,78 +8,72 @@
 ************************************************/
 
 #landing-page {
-  --item-width: min(95%, 400px);
-  --gap: 2rem;
-  --padding-top-bottom: 2rem;
-  --slide-max-image-height: 100%;
+    --item-width: min(95%, 400px);
+    --gap: 2rem;
+    --padding-top-bottom: 2rem;
+    --slide-max-image-height: 100%;
 
-  /* by default (=on mobile), we want only one item to fit per row */
-  width: var(--item-width);
-  height: calc(100% - 2*var(--padding-top-bottom));
+    /* by default (=on mobile), we want only one item to fit per row */
+    width: var(--item-width);
+    height: calc(100% - 2 * var(--padding-top-bottom));
 
-  /* location of this container in its grid cell */
-  align-self: center;
-  justify-self: center;
+    /* location of this container in its grid cell */
+    align-self: center;
+    justify-self: center;
 
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 
-  /* horizontal centering of the items */
-  justify-content: center;
-  align-content: center;
+    /* horizontal centering of the items */
+    justify-content: center;
+    align-content: center;
 
-  padding: var(--padding-top-bottom) 0 var(--padding-top-bottom) 0;
-  gap: var(--gap);
-}
-
-#landing-page > * {
-  /* every item on landing page has the same width */
-  width: var(--item-width);
+    padding: var(--padding-top-bottom) 0 var(--padding-top-bottom) 0;
+    gap: var(--gap);
 }
 
 @media only screen and (min-width: 1000px) {
-  #landing-page {
-    /* on desktop, can have two items per row */
-    width: calc(2 * var(--item-width) + var(--gap));
-    justify-content: start;
+    #landing-page {
+        /* on desktop, can have two items per row */
+        width: calc(2 * var(--item-width) + var(--gap));
+        justify-content: start;
 
-    /* on desktop, we want the footer to always be visible */
-    height: calc(var(--main-height) - 2 * var(--padding-top-bottom));
+        /* on desktop, we want the footer to always be visible */
+        height: calc(var(--main-height) - 2 * var(--padding-top-bottom));
 
-    /* somehow it does not like me calculating with --main-height here :-( */
-    --slide-max-image-height: min(40vh, 512px);
-  }
+        /* somehow it does not like me calculating with --main-height here :-( */
+        --slide-max-image-height: min(40vh, 512px);
+    }
 
-  /* on desktop, there is a utility div to keep an empty space but we want it to not be visible */
-  #landing-page > .only-desktop {
-    visibility: collapse;
-  }
+    /* on desktop, there is a utility div to keep an empty space but we want it to not be visible */
+    #landing-page > .only-desktop {
+        visibility: collapse;
+    }
+}
+
+#landing-page > * {
+    /* every item on landing page has the same width */
+    width: var(--item-width);
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 #landing-page > *:not(.only-desktop) {
-  /* every item takes up the height it needs but not more */
-  height: fit-content;
-  padding: 1rem;
-
-  /* every item is also a flexbox */
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+    /* every item takes up the height it needs but not more */
+    height: fit-content;
+    padding: 1rem;
 }
 
 #landing-page .logo > img {
-  max-height: 8rem;
-  padding: 1rem;
-}
-
-#landing-page #showcase {
-  /* this is the tallest item -> if need scrollbar, let's do it here */
-  overflow-y: auto;
+    max-height: 8rem;
+    padding: 1rem;
 }
 
 /***********************************************
@@ -87,86 +81,77 @@
 ************************************************/
 
 #landing-page {
-  background: transparent;
+    background: transparent;
 }
 
 #landing-page > * {
-  background-color: var(--color-dark);
-  color: var(--color-light);
-  border-radius: 1rem;
-  opacity: 95%;
+    background-color: var(--color-dark);
+    color: var(--color-light);
+    border-radius: 1rem;
 }
 
 #landing-page .logo > img {
-  filter: var(--filter-white);
+    filter: var(--filter-white);
 }
 
 #landing-page a {
-  color: var(--color-light);
+    color: var(--color-light);
 }
 
 /***********************************************
- Layout and style the slide
+ Showcase
 ************************************************/
 
+#showcase {
+    /* this is the tallest item -> if need scrollbar, let's do it here */
+    overflow-y: auto;
+}
+
+
 #slide {
-  width: 100%;
-  padding: 0.75rem;
+    width: 100%;
+    padding: 0.75rem;
 
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: center;
 
-  background-color: var(--color-light);
-  color: var(--color-dark);
-  border-radius: 10px;
-  opacity: 95%;
+    background-color: var(--color-light);
+    color: var(--color-dark);
+    border-radius: 10px;
+    opacity: 95%;
 }
 
 #slide img {
-  max-height: var(--slide-max-image-height);
-  max-width: 100%;
-  object-fit: contain;
+    max-height: var(--slide-max-image-height);
+    max-width: 100%;
+    object-fit: contain;
 }
 
 /***********************************************
- Layout the form
+ Form
 ************************************************/
 
-#landing-page form select,
-#landing-page form button {
-  height: 2rem;
-  font-size: 1rem;
-  max-width: 100%; /* otherwise select can become too wide on small displays */
+#landing-page button {
+    width: 80%;
+    height: 3rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+
+    padding-left: 1rem;
+    padding-right: 1rem;
+
+    font-size: 1.2rem;
+    background-color: var(--color-light);
+    color: var(--color-dark);
+
+    border: 0;
+    border-radius: 0.5rem;
 }
 
-#landing-page form button {
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-/***********************************************
- Style the form
-************************************************/
-
-#landing-page form select {
-  background-color: var(--color-light);
-  color: var(--color-dark);
-  border-radius: 5px;
-}
-
-#landing-page form button {
-  cursor: pointer;
-
-  background-color: #289929;
-  color: var(--color-light);
-
-  border: 0;
-  border-radius: 5px;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-#landing-page form button:hover {
-  background-color: #2faf30;
+#landing-page button:hover {
+    cursor: pointer;
+    outline: 2px solid var(--color-light);
+    outline-offset: 3px;
 }

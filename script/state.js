@@ -1,8 +1,6 @@
 import { Connection } from "script/types/connection.js";
 import { Itinerary } from "script/types/itinerary.js";
 
-import { DateTime } from "./types/dateTime.js";
-
 export class StateError extends Error {
   /**
    * @param {string} message
@@ -20,12 +18,7 @@ export class State {
   /** @type {Object.<string,Itinerary>} */
   #otherItineraries;
 
-  /**
-   * @param {DateTime} startDate
-   */
-  constructor(startDate) {
-    this.startDate = startDate;
-
+  constructor() {
     this.#activeItinerary = null;
     this.#otherItineraries = {};
   }

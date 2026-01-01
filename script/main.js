@@ -4,8 +4,6 @@ import { prepareDataForPerlschnur } from "script/data/components/perlschnur.js";
 import { Planner } from "script/planner.js";
 import { State } from "script/state.js";
 
-import { DateTime } from "./types/dateTime.js";
-
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /**
@@ -16,10 +14,13 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 async function updateAllComponents(components, planner, state) {
   if (!state.activeItinerary) return;
 
+  // todo move back into state? what if empty?
+  const travelDate = components.config.date;
+
   // alternatives for all the connections in current active itinerary - needed for calendar
   const alternatives = planner.getCachedAlternatives(
     state.activeItinerary,
-    state.startDate,
+    travelDate,
   );
 
   // update map
@@ -34,7 +35,7 @@ async function updateAllComponents(components, planner, state) {
     state.activeItinerary,
     alternatives,
   );
-  components.calendar.updateView(state.startDate, calendarData);
+  components.calendar.updateView(travelDate, calendarData);
 
   // update perlschnur
   const perlschnurData = prepareDataForPerlschnur(state.activeItinerary);
@@ -46,9 +47,7 @@ async function updateAllComponents(components, planner, state) {
  * @param {Planner} travelDatabase
  */
 export async function main(components, travelDatabase) {
-  const today = DateTime.now().startOf("day");
-  const state = new State(today.plus({ days: 30 }));
-  components.config.date = state.startDate;
+  const state = new State();
 
   // partial function for conveniently updating the components
   const updateComponents = updateAllComponents.bind(

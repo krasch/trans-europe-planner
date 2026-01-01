@@ -110,14 +110,14 @@
 </template>
 
 <template id="template-config-autocomplete-stop">
-    <li data-name="" data-data="">
+    <li class="autocomplete-option" data-name="" data-data="">
         <img src="images/icons/transport/rail.svg" alt="Icon for a train"/>
         <span></span>
     </li>
 </template>
 
 <template id="template-config-autocomplete-place">
-    <li data-name="" data-data="">
+    <li class="autocomplete-option" data-name="" data-data="">
         <span></span>
     </li>
 </template>
@@ -125,8 +125,7 @@
 <!-- map is placed outside of <main> because also used in <dialog> -->
 <div id="map"></div>
 
-<!-- !--class="closed no-journey">-->  <!-- todo these classes are very brittle -->
-<main>
+<main class="closed">
 
     <a class="logo" href="/">
         <img src="images/logo.svg" alt="logo for the trans-europe-planner">
@@ -200,7 +199,7 @@
 
 <!-- landing "page" (or rather landing modal) -->
 <!-- does not have open attribute -> by default closed -->
-<dialog id="landing-page" open>
+<dialog id="landing-page">
     <a class="logo" href="/">
         <img src="images/logo2.svg" alt="logo for the trans-europe-planner">
     </a>
@@ -219,34 +218,20 @@
             <img src="materials/blog/2025_04_22_why/calendar.gif"
                  alt="GIF video of calendar view for trip from Hamburg to Roma via Zürich and Milano, showing user moving connections (=calendar events) around">
         </div>
+
         <a href="blog.html#warum" lang="de"><em>Blog: Warum Reiseplanung neu denken?</em></a>
         <a href="blog.html#why" lang="en"><em>Blog: Why reimagine travel planning?</em></a>
     </section>
 
     <form method="dialog">
-        <h2>
-            <label for="select-start">
-                <span lang="de">Wo soll deine Zugreise starten?</span>
-                <span lang="en">Where should your train trip start?</span>
-            </label>
-        </h2>
-        <select name="start" id="select-start">
-            <option value="Berlin">Berlin</option>
-            <option value="Hamburg">Hamburg</option>
-            <option value="Köln">Köln</option>
-            <option value="München">München</option>
-            <option value="" disabled lang="de">Weitere Städte bald verfügbar</option>
-            <option value="" disabled lang="en">Additional cities soon available</option>
-        </select>
+        <h2 lang="de">Zugreise planen?</h2>
+        <h2 lang="en">Planning your next train trip?</h2>
         <button type="submit">
             <span lang="de">Ausprobieren!</span>
             <span lang="en">Try it out!</span>
         </button>
-        <em lang="de">Der Trans Europa Planer ist zurzeit noch ein Prototyp. <a href="blog.html#status">Mehr
-            erfahren.</a> </em>
-        <em lang="en">The Trans Europe Planner is still just a prototype. <a href="blog.html#status">Learn more.</a>
-        </em>
     </form>
+
 </dialog>
 
 <footer>

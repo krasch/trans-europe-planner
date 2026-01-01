@@ -7,6 +7,10 @@ main {
     --content-height: calc(var(--main-height) - var(--nav-height));
 }
 
+main.closed {
+    display: none;
+}
+
 @media only screen and (min-width: 1000px) {
     main {
         /* to make sidebar appear floating in the air */
