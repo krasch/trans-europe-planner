@@ -128,6 +128,15 @@ export class Config {
   }
 
   /**
+   * @returns date
+   */
+  get date() {
+    const val = this.#elements.date.value;
+    if (val) return DateTime.fromISO(val);
+    else return null;
+  }
+
+  /**
    * @param {DateTime} date
    */
   set date(date) {
