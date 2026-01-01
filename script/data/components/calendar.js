@@ -2,7 +2,7 @@ import { Connection } from "script/types/connection.js";
 import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
 
-import { ICONS, getColor } from "./_common.js";
+import { getIcon, getColor } from "./_common.js";
 
 /**
  * @typedef {Object} CalendarEvent
@@ -27,7 +27,7 @@ function dataForConnection(connection, color, status) {
     id: connection.id,
     leg: `${connection.from.stopId}->${connection.to.stopId}`,
     name: connection.name,
-    icon: ICONS[connection.mode],
+    icon: getIcon(connection.mode),
     from: connection.from.stopName,
     departure: connection.from.departure,
     to: connection.to.stopName,

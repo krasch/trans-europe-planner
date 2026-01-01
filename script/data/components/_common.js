@@ -1,11 +1,33 @@
 /**
  * @type {Object.<string,string>}
  */
-export const ICONS = {
-  train: "images/icons/train.svg",
-  ferry: "images/icons/ferry.svg",
-  REGIONAL_RAIL: "images/icons/train.svg",
+const ICONS = {
+  OTHER: "images/icons/transport/empty.svg",
+
+  BUS: "images/icons/transport/bus.svg",
+  COACH: "images/icons/transport/bus.svg",
+
+  RAIL: "images/icons/transport/rail.svg",
+  HIGHSPEED_RAIL: "images/icons/transport/rail.svg",
+  LONG_DISTANCE: "images/icons/transport/rail.svg",
+  NIGHT_RAIL: "images/icons/transport/rail.svg",
+  REGIONAL_FAST_RAIL: "images/icons/transport/rail.svg",
+  REGIONAL_RAIL: "images/icons/transport/rail.svg",
+  METRO: "images/icons/transport/rail.svg",
+  SUBURBAN: "images/icons/transport/rail.svg",
+  TRAM: "images/icons/transport/rail.svg",
+  SUBWAY: "images/icons/transport/rail.svg",
+  TRANSIT: "images/icons/transport/rail.svg",
 };
+
+/**
+ * @param {string} mode
+ * @returns {string} image path
+ */
+export function getIcon(mode) {
+  if (ICONS[mode]) return ICONS[mode];
+  else return ICONS.OTHER;
+}
 
 export const GREY = "#aaa";
 

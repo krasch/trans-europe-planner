@@ -1,7 +1,7 @@
 import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
 
-import { ICONS, getColor } from "./_common.js";
+import { getIcon, getColor } from "./_common.js";
 
 /**
  * @typedef {Object} PerlschnurStopData
@@ -98,7 +98,7 @@ export function prepareDataForPerlschnur(activeItinerary) {
       id: connection.id,
       color: getColor(connectionIdx),
       name: connection.name,
-      icon: ICONS[connection.mode],
+      icon: getIcon(connection.mode),
       travelTime: formatTimedelta(
         connection.from.departure,
         connection.to.arrival,
