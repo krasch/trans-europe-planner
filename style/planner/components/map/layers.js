@@ -184,10 +184,11 @@ export const mapLayers = [
           ],
           [
             "any",
-            ["boolean", ["feature-state", "isHome"], false],
+            ["boolean", ["feature-state", "isActive"], false],
             ["boolean", ["feature-state", "isHover"], false],
           ],
         ],
+        1.0,
         0.0,
       ],
     },
