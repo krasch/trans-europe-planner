@@ -125,12 +125,14 @@
 
 #config-from-values li,
 #config-to-values li {
+    padding-left: 0.5rem;
+    height: 2rem;
+
     display: flex;
     align-items: center;
+    gap: 0.5rem;
 
-    height: 2rem;
     font-size: 1rem;
-    padding-left: 0.5rem;
 }
 
 #config-from-values li img,
