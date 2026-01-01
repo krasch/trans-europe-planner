@@ -2,6 +2,7 @@
 #perlschnur {
     height: 100%;
     width: 100%;
+    overflow-y: auto;
     padding: 3rem 1rem 1rem 1rem;
 
     display: flex;
