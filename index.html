@@ -111,14 +111,14 @@
 
 <template id="template-config-autocomplete-stop">
     <li data-name="" data-data="">
-       <img src="images/icons/transport/train.svg" alt="Icon for a train"/>
-       <span></span>
+        <img src="images/icons/transport/rail.svg" alt="Icon for a train"/>
+        <span></span>
     </li>
 </template>
 
 <template id="template-config-autocomplete-place">
     <li data-name="" data-data="">
-       <span></span>
+        <span></span>
     </li>
 </template>
 
@@ -200,7 +200,7 @@
 
 <!-- landing "page" (or rather landing modal) -->
 <!-- does not have open attribute -> by default closed -->
-<dialog id="landing-page">
+<dialog id="landing-page" open>
     <a class="logo" href="/">
         <img src="images/logo2.svg" alt="logo for the trans-europe-planner">
     </a>
@@ -211,31 +211,13 @@
     <section id="showcase">
         <h2 lang="de">Reiseplanung neu gedacht</h2>
         <h2 lang="en">Reimagining travel planning</h2>
-        <div id="slide-carousel">
-            <div id="slides">
-                <div class="slide">
-                    <h3>
-                        <span lang="de">Reiseziel auf Karte auswählen</span>
-                        <span lang="en">Choose destination from the map</span>
-                    </h3>
-                    <img src="materials/blog/2025_04_22_why/map.gif"
-                         alt="GIF video of map of Europe, with travel starting point set on Hamburg, user clicking on Rome and getting shown different routes">
-                </div>
-                <div class="slide">
-                    <h3>
-                        <span lang="de">Reise per Drag&Drop anpassen</span>
-                        <span lang="en">Modify trip via Drag&Drop</span>
-                    </h3>
-                    <img src="materials/blog/2025_04_22_why/calendar.gif"
-                         alt="GIF video of calendar view for trip from Hamburg to Roma via Zürich and Milano, showing user moving connections (=calendar events) around">
-                </div>
-            </div>
-            <div id="slide-controls">
-                <img class="arrow" data-slide="prev" src="images/icons/arrow_left.svg" alt="arrow to the left">
-                <img class="dot" data-slide="1" src="images/icons/dot.svg" alt="just a circle"/>
-                <img class="dot" data-slide="2" src="images/icons/dot.svg" alt="just a circle"/>
-                <img class="arrow" data-slide="next" src="images/icons/arrow_right.svg" alt="arrow to the right">
-            </div>
+        <div id="slide">
+            <h3>
+                <span lang="de">Reise per Drag&Drop anpassen</span>
+                <span lang="en">Modify trip via Drag&Drop</span>
+            </h3>
+            <img src="materials/blog/2025_04_22_why/calendar.gif"
+                 alt="GIF video of calendar view for trip from Hamburg to Roma via Zürich and Milano, showing user moving connections (=calendar events) around">
         </div>
         <a href="blog.html#warum" lang="de"><em>Blog: Warum Reiseplanung neu denken?</em></a>
         <a href="blog.html#why" lang="en"><em>Blog: Why reimagine travel planning?</em></a>
