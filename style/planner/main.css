@@ -144,3 +144,21 @@ nav > *:last-child.selected {
 #planner .logo img {
     filter: var(--filter-white);
 }
+
+/************************************************
+Opening animation
+*************************************************/
+
+main {
+    animation: openSidebar 0.2s;
+
+}
+
+@keyframes openSidebar {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}

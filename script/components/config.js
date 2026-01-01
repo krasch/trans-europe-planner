@@ -52,7 +52,12 @@ export class Config {
     submit: (from, to, date) => {},
   };
 
-  constructor(container) {
+  /**
+   * @param {Element} container
+   * @param {DateTime} calendarMin
+   * @param {DateTime} calendarMax
+   */
+  constructor(container, calendarMin, calendarMax) {
     this.#elements = {
       from: container.querySelector("#config-from"),
       fromAutocomplete: container.querySelector("#config-from-values"),
@@ -62,9 +67,8 @@ export class Config {
       submit: container.querySelector("button"),
     };
 
-    const today = DateTime.now().startOf("day");
-    this.#elements.date.min = today.toISODate();
-    this.#elements.date.max = today.plus({ days: 3 * 30 }).toISODate();
+    this.#elements.date.min = calendarMin.toISODate();
+    this.#elements.date.max = calendarMax.toISODate();
 
     this.#checkSubmitPossible();
 

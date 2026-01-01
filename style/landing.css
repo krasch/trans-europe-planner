@@ -155,3 +155,28 @@
     outline: 2px solid var(--color-light);
     outline-offset: 3px;
 }
+
+/************************************************
+Closing animation (only works in chrome)
+*************************************************/
+
+dialog {
+  --duration: 0.2s;
+
+  transition:
+    translate var(--duration) ease-in-out,
+    scale     var(--duration) ease-in-out,
+    display   var(--duration) ease-in-out allow-discrete;
+
+}
+
+dialog[open] {
+    translate: 0 0;
+    scale: 1;
+}
+
+dialog:not([open]) {
+    translate: -90vh 0;
+    scale: 0;
+}
+
