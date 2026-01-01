@@ -175,13 +175,19 @@ export const mapLayers = [
       "text-opacity": [
         "case",
         [
-          "any",
-          ["boolean", ["feature-state", "isHome"], false],
-          ["boolean", ["feature-state", "isDestination"], false],
-          ["boolean", ["feature-state", "isTransfer"], false],
-          ["boolean", ["feature-state", "isHover"], false],
+          "all",
+          [
+            "any",
+            ["boolean", ["feature-state", "isHome"], false],
+            ["boolean", ["feature-state", "isDestination"], false],
+            ["boolean", ["feature-state", "isTransfer"], false],
+          ],
+          [
+            "any",
+            ["boolean", ["feature-state", "isHome"], false],
+            ["boolean", ["feature-state", "isHover"], false],
+          ],
         ],
-        1.0,
         0.0,
       ],
     },
