@@ -65,6 +65,7 @@ export class Config {
       toAutocomplete: container.querySelector("#config-to-values"),
       date: container.querySelector("#config-date"),
       submit: container.querySelector("button"),
+      error: container.querySelector("#planner-error"),
     };
 
     this.#elements.date.min = calendarMin.toISODate();
