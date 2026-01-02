@@ -62,7 +62,7 @@ body {
        "footer";
 }
 
-#map, #landing-page, main {
+#map, #landing-page, main, #blog {
     grid-area: main;
 }
 
