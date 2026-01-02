@@ -72,6 +72,13 @@ body {
     grid-area: footer;
 }
 
+#main-logo {
+    position: absolute;
+    top: 2rem;
+    right: 1rem;
+    z-index: 3;
+}
+
 /***********************************************
  Colors and other common stylings
 ************************************************/
@@ -107,7 +114,15 @@ button, input {
     font-size: 1rem;
 }
 
+/***********************************************
+ Main page logo
+************************************************/
 
+#main-logo img {
+    height: 8rem;
+    filter: var(--filter-dark);
+    opacity: 0.8;
+}
 
 /***********************************************
  Utility stuff

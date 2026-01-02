@@ -159,8 +159,8 @@
 ************************************************/
 
 #config form button:not(:disabled):hover{
-    outline: 1px solid var(--color-dark);
-    outline-offset: 2px;
+    outline: 2px solid var(--color-dark);
+    outline-offset: 3px;
     cursor: pointer;
 }
 

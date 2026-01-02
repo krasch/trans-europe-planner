@@ -71,11 +71,6 @@
     padding: 1rem;
 }
 
-#landing-page .logo > img {
-    max-height: 8rem;
-    padding: 1rem;
-}
-
 /***********************************************
  Overall styling
 ************************************************/
@@ -90,12 +85,14 @@
     border-radius: 1rem;
 }
 
-#landing-page .logo > img {
-    filter: var(--filter-white);
-}
-
 #landing-page a {
     color: var(--color-light);
+}
+
+#landing-logo > img {
+    max-height: 8rem;
+    padding: 1rem;
+    filter: var(--filter-white);
 }
 
 /***********************************************

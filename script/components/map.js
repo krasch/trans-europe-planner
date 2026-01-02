@@ -127,6 +127,7 @@ export class MapWrapper {
         showCompass: false,
         showZoom: true,
       }),
+      "bottom-right",
     );
 
     this.#map.boxZoom.enable();

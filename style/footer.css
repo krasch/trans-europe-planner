@@ -15,14 +15,14 @@ footer {
 }
 
 /* vertically center images */
-footer a {
+footer > *  {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
 footer img {
-  max-height: 1.3rem;
+  height: 1.3rem;
 }
 
 /***********************************************

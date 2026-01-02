@@ -121,7 +121,7 @@ export async function init() {
   // show landing page
   // wait until user clicks the "Try it out!" button
   // this also automatically closes the landing page
-  await showLandingPage(elements.landing);
+  //await showLandingPage(elements.landing);
 
   // show the <main> element
   elements.main.classList.remove("closed");

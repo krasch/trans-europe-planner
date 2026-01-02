@@ -125,12 +125,11 @@
 <!-- map is placed outside of <main> because also used in <dialog> -->
 <div id="map"></div>
 
+<a id="main-logo" href="/">
+    <img src="images/logo.svg" alt="logo for the trans-europe-planner">
+</a>
+
 <main class="closed">
-
-    <a class="logo" href="/">
-        <img src="images/logo.svg" alt="logo for the trans-europe-planner">
-    </a>
-
     <nav>
         <a id="nav-tab-config">
             <span lang="de">Config</span>
@@ -179,7 +178,7 @@
                 <button>
                     <span lang="de">Los geht's!</span>
                     <span lang="en">Take me there!</span>
-                    <div class="spinner"></div>
+                    <span class="spinner"></span>
                 </button>
 
                 <aside>
@@ -200,7 +199,7 @@
 <!-- landing "page" (or rather landing modal) -->
 <!-- does not have open attribute -> by default closed -->
 <dialog id="landing-page">
-    <a class="logo" href="/">
+    <a id="landing-logo" href="/">
         <img src="images/logo2.svg" alt="logo for the trans-europe-planner">
     </a>
 
@@ -236,7 +235,7 @@
 
 <footer>
     <span class="only-desktop">
-        Trans Europe Planner -
+        <span>Trans Europe Planner - </span>
         <em lang="de">Einfacher mit dem Zug quer durch Europa</em>
         <em lang="en">The simpler way to plan your train trip across Europe</em>
     </span>
