@@ -1,18 +1,18 @@
 #calendar {
     --padding-top: 3rem;
     --padding-bottom: 1rem;
-
     --calendar-height: calc(var(--content-height) - var(--padding-top) - var(--padding-bottom));
 
     width: 100%;
-    height: 100%;
+    height: var(--content-height);
     padding: var(--padding-top) 1rem var(--padding-bottom) 1rem;
 
     background-color: var(--color-light);
 }
 
 travel-calendar {
-    height: var(--calendar-height);
+    /* this MUST be an absolute value, i.e. you must have calculated this properly */
+    height: min(1000px, var(--calendar-height));
 
     border: 1px solid lightgrey;
     border-radius: 0.5rem;

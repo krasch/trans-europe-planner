@@ -77,7 +77,7 @@ export async function init() {
   const calendarInitialDate = today.plus({ days: 30 });
 
   let zoom = 7.3;
-  if (isMobile.matches) zoom = 3.3;
+  if (isMobile.matches) zoom = 5.3;
   const mapCenter = [11.75685, 54.0443];
 
   const elements = {
@@ -121,10 +121,11 @@ export async function init() {
   // show landing page
   // wait until user clicks the "Try it out!" button
   // this also automatically closes the landing page
-  //await showLandingPage(elements.landing);
+  await showLandingPage(elements.landing);
 
   // show the <main> element
   elements.main.classList.remove("closed");
+  components.map.setMapInteractive();
 
   const planner = new Planner();
   await main(components, planner);

@@ -1,8 +1,9 @@
 
 #perlschnur {
-    height: 100%;
+    height: var(--content-height);
     width: 100%;
     overflow-y: auto;
+
     padding: 3rem 1rem 1rem 1rem;
 
     display: flex;

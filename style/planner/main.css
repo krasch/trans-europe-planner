@@ -1,6 +1,6 @@
 main {
     width: 100%;
-    /* map-content has height 0 i.e. user can interact with the map below todo for #map only?*/
+    /* content has height 0 i.e. user can interact with the map below*/
     height: fit-content;
 
     --nav-height: 4rem;
@@ -14,17 +14,18 @@ main.closed {
 @media only screen and (min-width: 1000px) {
     main {
         /* to make sidebar appear floating in the air */
-        margin: 2rem 0 2rem 1rem; /* top, right, bottom, left */
+        --margin-top-bottom: 2rem;
+        margin: var(--margin-top-bottom) 0 var(--margin-top-bottom) 1rem;
 
         /* to make a little border around the sidebar */
-        padding: 0.5rem;
+        --padding: 0.5rem;
+        padding: var(--padding);
 
         width: 30rem;
-        height: calc(100% - 4rem); /* - 2*margin top/bottom */
+        height: calc(100% - 2 * var(--margin-top-bottom));
 
         --nav-height: 4rem;
-        /* must be -2*margin - 2*padding */
-        --content-height: calc(var(--main-height) - var(--nav-height) - 4rem - 1rem);
+        --content-height: calc(var(--main-height) - var(--nav-height) - 2 * var(--margin-top-bottom) - 2 * var(--padding));
 
         background-color: var(--color-dark);
         opacity: 0.92;
@@ -53,7 +54,7 @@ main {
     grid-template-columns: 1fr;
     grid-template-rows:
         var(--nav-height)
-        var(--content-height);
+        1fr; /* don't set to --content-height, because then can see but not interact with map */
     grid-template-areas:
         "nav"
         "content";
@@ -97,8 +98,6 @@ nav > * {
 nav > *.selected {
     color: var(--color-dark);
     background-color: var(--color-light);
-    border-top-left-radius: 0.5rem;
-    border-top-right-radius: 0.5rem;
 }
 
 nav > *:first-child.selected {
@@ -108,6 +107,14 @@ nav > *:first-child.selected {
 nav > *:last-child.selected {
     margin-right: 0;
 }
+
+@media only screen and (min-width: 1000px) {
+    nav > * {
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+    }
+}
+
 
 /***********************************************
  Only the content for selected tab should be shown
@@ -119,29 +126,20 @@ nav > *:last-child.selected {
     display: none;
 }
 
-
 /***********************************************
- Placing and styling the logo
+ Mobile logo is part of navigation bar
 ************************************************/
 
-#planner .logo {
+#mobile-logo {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-#planner .logo img {
-    height: var(--logo-size);
-}
-
-
-#planner .logo {
-    background-color: var(--color-dark);
-    color: var(--color-light);
-}
-
-#planner .logo img {
+#mobile-logo img {
+    height: var(--nav-height);
+    padding: 0.5rem;
     filter: var(--filter-white);
 }
 
@@ -150,15 +148,16 @@ Opening animation
 *************************************************/
 
 main {
-    animation: openSidebar 0.2s;
-
+    animation: animation-grow 0.2s;
 }
 
-@keyframes openSidebar {
+@keyframes animation-grow {
     0% {
         transform: scale(0);
+        opacity: 0;
     }
     100% {
         transform: scale(1);
+        opacity: 100%;
     }
 }

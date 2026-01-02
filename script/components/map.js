@@ -49,14 +49,14 @@ export class MapWrapper {
     // after map has loaded, do a bunch of initialisation stuff
     this.#mapReady = new Promise((fulfilled, rejected) => {
       this.#map.on("load", async () => {
-        await this.#configureMap();
+        // otherwise on mobile map does not cover full landing page
+        this.#map.resize();
+
         await this.#setupLayers();
 
         this.#initStopEventHandlers();
         this.#initEdgeEventHandlers();
 
-        // now map is ready&interactive, show with full opacity
-        this.#map._container.style.opacity = 1.0;
         return fulfilled();
       });
     });
@@ -109,38 +109,39 @@ export class MapWrapper {
     this.#setHoverStateForAll("stops", [stopId], isHover);
   }
 
-  async #configureMap() {
-    const image = await this.#map.loadImage("/images/markers/circle.sdf.png");
-    this.#map.addImage("circle", image.data, { sdf: true });
-
-    this.#map.getCanvas().style.cursor = "default";
-
-    // add attribution control
-    // @ts-expect-error TS2304 (todo not doing module import for maplibre)
-    const attribution = new maplibregl.AttributionControl();
-    this.#map.addControl(attribution);
-
-    // show +/- zoom buttons
-    this.#map.addControl(
+  setMapInteractive() {
+    this.#mapReady.then(() => {
+      // add attribution control
       // @ts-expect-error TS2304 (todo not doing module import for maplibre)
-      new maplibregl.NavigationControl({
-        showCompass: false,
-        showZoom: true,
-      }),
-      "bottom-right",
-    );
+      const attribution = new maplibregl.AttributionControl();
+      this.#map.addControl(attribution);
 
-    this.#map.boxZoom.enable();
-    this.#map.scrollZoom.enable();
-    this.#map.dragPan.enable();
-    this.#map.keyboard.enable();
-    this.#map.doubleClickZoom.enable();
-    this.#map.touchZoomRotate.enable();
+      // show +/- zoom buttons
+      this.#map.addControl(
+        // @ts-expect-error TS2304 (todo not doing module import for maplibre)
+        new maplibregl.NavigationControl({
+          showCompass: false,
+          showZoom: true,
+        }),
+        "bottom-right",
+      );
 
-    // disable map rotation
-    // this.#map.dragRotate.enable(); // simply never enable this one
-    this.#map.touchZoomRotate.disableRotation();
-    this.#map.keyboard.disableRotation();
+      this.#map.getCanvas().style.cursor = "default";
+
+      this.#map.boxZoom.enable();
+      this.#map.scrollZoom.enable();
+      this.#map.dragPan.enable();
+      this.#map.keyboard.enable();
+      this.#map.doubleClickZoom.enable();
+      this.#map.touchZoomRotate.enable();
+
+      // disable map rotation
+      // this.#map.dragRotate.enable(); // simply never enable this one
+      this.#map.touchZoomRotate.disableRotation();
+      this.#map.keyboard.disableRotation();
+
+      this.#map._container.style.opacity = 1.0;
+    });
   }
 
   async #setupLayers() {

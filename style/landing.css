@@ -99,12 +99,6 @@
  Showcase
 ************************************************/
 
-#showcase {
-    /* this is the tallest item -> if need scrollbar, let's do it here */
-    overflow-y: auto;
-}
-
-
 #slide {
     width: 100%;
     padding: 0.75rem;
@@ -157,23 +151,25 @@
 Closing animation (only works in chrome)
 *************************************************/
 
-dialog {
-  --duration: 0.2s;
+@media only screen and (min-width: 1000px) {
+    dialog {
+        --duration: 0.2s;
 
-  transition:
-    translate var(--duration) ease-in-out,
-    scale     var(--duration) ease-in-out,
-    display   var(--duration) ease-in-out allow-discrete;
+        transition: translate var(--duration) ease-in-out,
+        scale var(--duration) ease-in-out,
+        display var(--duration) ease-in-out allow-discrete;
 
-}
+    }
 
-dialog[open] {
-    translate: 0 0;
-    scale: 1;
-}
+    dialog[open] {
+        translate: 0 0;
+        scale: 1;
+    }
 
-dialog:not([open]) {
-    translate: -90vh 0;
-    scale: 0;
+    dialog:not([open]) {
+        translate: -90vh 0;
+        scale: 0;
+    }
+
 }
 

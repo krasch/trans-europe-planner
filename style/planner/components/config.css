@@ -1,7 +1,8 @@
 #config {
-    height: 100%;
     width: 100%;
+    height: var(--content-height);
     overflow-y: auto;
+
     padding: 2rem 1rem 1rem 1rem;
 
     display: flex;
@@ -15,6 +16,8 @@
 
 #config h2 {
     font-size: 1.3rem;
+    text-wrap: nowrap;
+    text-overflow: clip;
 }
 
 #config form {

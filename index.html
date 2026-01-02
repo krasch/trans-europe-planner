@@ -125,12 +125,11 @@
 <!-- map is placed outside of <main> because also used in <dialog> -->
 <div id="map"></div>
 
-<a id="main-logo" href="/">
-    <img src="images/logo.svg" alt="logo for the trans-europe-planner">
-</a>
-
 <main class="closed">
     <nav>
+        <a id="mobile-logo" class="only-mobile" href="/">
+            <img src="images/logo.svg" alt="logo for the trans-europe-planner">
+        </a>
         <a id="nav-tab-config">
             <span lang="de">Config</span>
             <span lang="en">Search</span>
@@ -195,6 +194,12 @@
         </div>
     </div>
 </main>
+
+<!-- on desktop, logo is outside the sidebar. placing this here so that can use sibling css selector on main.closed -->
+<a id="desktop-logo" class="only-desktop" href="/">
+    <img src="images/logo.svg" alt="logo for the trans-europe-planner">
+</a>
+
 
 <!-- landing "page" (or rather landing modal) -->
 <!-- does not have open attribute -> by default closed -->

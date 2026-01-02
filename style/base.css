@@ -50,11 +50,13 @@ body {
          1. to be able to calculate exactly how much space we must take, in particular on mobile, to cover map
          2. to deal with the calendar, which behaves best when it gets an absolute height
        */
-    --main-height: calc(100vh - var(--footer-height));
+    --main-height: calc(100dvh - var(--footer-height));
 
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: var(--main-height) var(--footer-height);
+    grid-template-rows:
+       1fr /* don't set to --main-height, because this grid is also used by landing page and blog */
+       var(--footer-height);
     grid-template-areas:
        "main"
        "footer";
@@ -72,12 +74,6 @@ body {
     grid-area: footer;
 }
 
-#main-logo {
-    position: absolute;
-    top: 2rem;
-    right: 1rem;
-    z-index: 3;
-}
 
 /***********************************************
  Colors and other common stylings
@@ -115,33 +111,43 @@ button, input {
 }
 
 /***********************************************
- Main page logo
+ Desktop logo is not part of <main>
+ Mobile logo can be found in main.css
 ************************************************/
 
-#main-logo img {
+#desktop-logo {
+    position: absolute;
+    top: 2rem;
+    right: 1rem;
+    z-index: 3;
+    /*animation: animation-grow 0.2s*/;
+}
+
+#desktop-logo img {
     height: 8rem;
     filter: var(--filter-dark);
     opacity: 0.8;
 }
 
+main.closed ~ #desktop-logo {
+    display: none;
+}
+
+
 /***********************************************
  Utility stuff
 ************************************************/
 
-.hidden {
-    visibility: hidden;
-}
-
 /* some elements should only be visible on mobile layout */
 @media only screen and (min-width: 1000px) {
     .only-mobile {
-        display: none;
+        display: none !important;
     }
 }
 
 /* and some only on desktop layout */
 @media only screen and (max-width: 1000px) {
     .only-desktop {
-        display: none;
+        display: none !important;
     }
 }

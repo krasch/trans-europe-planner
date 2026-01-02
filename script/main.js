@@ -81,14 +81,14 @@ export async function main(components, travelDatabase) {
       .classList.add("selected");
 
     // load alternatives for calendar events and redraw
-    /*await travelDatabase.triggerLoadAlternatives(state.activeItinerary, date);
+    await travelDatabase.triggerLoadAlternatives(state.activeItinerary, date);
     await updateComponents(state);
 
     // already trigger this in case use selects different route
     // not awaiting here because don't need it right now
     for (let itinerary of state.otherItineraries) {
-      travelDatabase.triggerLoadAlternatives(itinerary, state.startDate);
-    }*/
+      travelDatabase.triggerLoadAlternatives(itinerary, date);
+    }
   });
 
   components.calendar.on("connectionMoved", async (newConnectionId) => {
