@@ -57,16 +57,11 @@ export function stopFromShorthand(shorthand) {
   // stop S1 with name Stop1, city C1 with name City1
   const stopId = `S${stopNumber}`;
   const stopName = `Stop${stopNumber}`;
-  const cityId = `C${stopNumber}`;
-  const cityName = `City${stopNumber}`;
 
-  return new Stop(
-    stopId,
-    stopName,
-    { id: cityId, name: cityName },
-    arrival,
-    departure,
-  );
+  const latitude = Number(stopNumber) * 10;
+  const longitude = Number(stopNumber) * 10;
+
+  return new Stop(stopId, stopName, latitude, longitude, arrival, departure);
 }
 
 /**
@@ -86,7 +81,7 @@ export function connectionFromShorthand(shorthand) {
   from.arrival = null;
   to.departure = null;
 
-  const mode = "train";
+  const mode = "REGIONAL_RAIL";
   const name = `ICE ${tripId}`;
 
   return new Connection(tripId, mode, name, from, to, intermediate);

@@ -36,7 +36,10 @@ function parseMotisStop(motisStop) {
 function parseMotisConnection(motisLeg) {
   const from = parseMotisStop(motisLeg.from);
   const to = parseMotisStop(motisLeg.to);
-  const intermediate = motisLeg.intermediateStops.map(parseMotisStop);
+
+  let intermediate = [];
+  if (motisLeg.intermediateStops)
+    intermediate = motisLeg.intermediateStops.map(parseMotisStop);
 
   return new Connection(
     motisLeg.tripId,
