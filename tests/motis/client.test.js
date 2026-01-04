@@ -50,6 +50,7 @@ test("Plan query parameters should be filled correctly when using stops", async 
   await plan(from, to, DateTime.fromISO("2025-10-10T14:00:00"));
   expect(fetch).toBeCalledTimes(1);
 
+  // @ts-ignore
   const url = URL.parse(fetch.mock.calls[0][0]);
   const params = url.searchParams;
   expect(params.get("fromPlace")).toBe("S1");
@@ -74,6 +75,7 @@ test("Plan query parameters should be filled correctly when using coordinates", 
   await plan(from, to, DateTime.fromISO("2025-10-10T14:00:00"));
   expect(fetch).toBeCalledTimes(1);
 
+  // @ts-ignore
   const url = URL.parse(fetch.mock.calls[0][0]);
   const params = url.searchParams;
   expect(params.get("fromPlace")).toBe("10.1,11.2");
