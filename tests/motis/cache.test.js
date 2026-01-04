@@ -27,8 +27,8 @@ test("cache hit", () => {
   expect(cache.get(url1)).toStrictEqual(data);
 });
 
-test("cache expires", () => {
-  const cache = new ResponseCache(0.00001);
+test("cache expired", () => {
+  const cache = new ResponseCache(0.00000001);
   cache.set(url1, data);
   expect(cache.get(url1)).toBe(null);
 });

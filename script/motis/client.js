@@ -28,10 +28,10 @@ const RAIL_MODES = [
 
 const responseCache = new ResponseCache();
 
-export class MotisError extends Error {
+export class ErrorQueryingMotis extends Error {
   constructor(message) {
     super(message);
-    this.name = "MotisError";
+    this.name = "ErrorQueryingMotis";
   }
 }
 
@@ -40,16 +40,23 @@ export class MotisError extends Error {
  * @param {object} params
  * @returns {Promise<object>}
  */
-async function query(path, params) {
+export async function query(path, params) {
   const url = new URL(path, BASE_URL);
   url.search = new URLSearchParams(params).toString();
 
   const cached = responseCache.get(url);
   if (cached) return cached;
 
-  const response = await fetch(url, { referrer: REFERRER });
+  let response = null;
+
+  try {
+    response = await fetch(url, { referrer: REFERRER });
+  } catch (error) {
+    throw new ErrorQueryingMotis(error.message);
+  }
+
   if (!response.ok)
-    throw new MotisError([response.status, response.statusText].join());
+    throw new ErrorQueryingMotis([response.status, response.statusText].join());
 
   const data = await response.json();
   responseCache.set(url, data);
