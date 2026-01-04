@@ -1,7 +1,16 @@
 // sessionStorage.clear();
+import { DateTime } from "script/types/dateTime.js";
 
 export class ResponseCache {
   #outOfSpace = false;
+  #TTL = null;
+
+  /**
+   * @param {Number} TTL in minutes
+   */
+  constructor(TTL = 60) {
+    this.#TTL = TTL;
+  }
 
   /**
    * @param {URL} url
@@ -10,7 +19,14 @@ export class ResponseCache {
   get(url) {
     const cached = localStorage.getItem(this.#key(url));
     if (!cached) return null;
-    return JSON.parse(cached);
+
+    const parsed = JSON.parse(cached);
+    if (DateTime.fromISO(parsed.expires) < DateTime.now()) {
+      localStorage.removeItem(this.#key(url));
+      return null;
+    }
+
+    return parsed.payload;
   }
 
   /**
@@ -20,8 +36,13 @@ export class ResponseCache {
   set(url, data) {
     if (this.#outOfSpace) return;
 
+    const cacheObject = JSON.stringify({
+      payload: data,
+      expires: DateTime.now().plus({ minutes: this.#TTL }).toISO(),
+    });
+
     try {
-      localStorage.setItem(this.#key(url), JSON.stringify(data));
+      localStorage.setItem(this.#key(url), cacheObject);
     } catch (error) {
       this.#outOfSpace = true;
     }
