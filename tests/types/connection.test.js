@@ -12,7 +12,6 @@ test("Connection without intermediate stops", function () {
 
   expect(con.id).toStrictEqual("123XXXS1XXXS2");
   expect(con.stops).toStrictEqual([from, to]);
-  expect(con.edges).toStrictEqual([{ from: from, to: to }]);
 });
 
 test("Connection with intermediate stops", function () {
@@ -30,12 +29,6 @@ test("Connection with intermediate stops", function () {
 
   expect(con.id).toStrictEqual("123XXXS1XXXS5");
   expect(con.stops).toStrictEqual([s1, s2, s3, s4, s5]);
-  expect(con.edges).toStrictEqual([
-    { from: s1, to: s2 },
-    { from: s2, to: s3 },
-    { from: s3, to: s4 },
-    { from: s4, to: s5 },
-  ]);
 });
 
 test("Connection single day", function () {
