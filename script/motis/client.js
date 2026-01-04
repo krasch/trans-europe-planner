@@ -3,6 +3,7 @@ import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
 import { intersection } from "script/util.js";
 
+import { ResponseCache } from "./cache.js";
 import {
   GeocodedLocation,
   parseMotisGeocodingStopResult,
@@ -25,6 +26,8 @@ const RAIL_MODES = [
   "REGIONAL_RAIL",
 ];
 
+const responseCache = new ResponseCache();
+
 export class MotisError extends Error {
   constructor(message) {
     super(message);
@@ -41,11 +44,18 @@ async function query(path, params) {
   const url = new URL(path, BASE_URL);
   url.search = new URLSearchParams(params).toString();
 
+  const cached = responseCache.get(url);
+  console.log(cached);
+  if (cached) return cached;
+
   const response = await fetch(url, { referrer: REFERRER });
   if (!response.ok)
     throw new MotisError([response.status, response.statusText].join());
 
-  return response.json();
+  const data = await response.json();
+  responseCache.set(url, data);
+
+  return data;
 }
 
 /**
@@ -66,7 +76,7 @@ export async function plan(from, to, startDate) {
     toPlace: toLocation,
     transitModes: RAIL_MODES,
     detailedTransfers: false,
-    time: startDate.toISO(),
+    time: startDate.startOf("day").toISO(),
     searchWindow: NUM_DAYS_PLAN * 24 * 60 * 60, // in seconds
   });
 
@@ -86,7 +96,7 @@ export async function direct(fromStopId, toStopId, startDate) {
     transitModes: RAIL_MODES,
     maxTransfers: 0,
     detailedTransfers: false,
-    time: startDate.toISO(),
+    time: startDate.startOf("day").toISO(),
     searchWindow: NUM_DAYS_DIRECT * 24 * 60 * 60, // in seconds
   });
 

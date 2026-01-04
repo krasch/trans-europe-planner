@@ -3,6 +3,7 @@ import { prepareDataForMap } from "script/data/components/map.js";
 import { prepareDataForPerlschnur } from "script/data/components/perlschnur.js";
 import { Planner } from "script/planner.js";
 import { State } from "script/state.js";
+import { DateTime } from "script/types/dateTime.js";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -44,22 +45,22 @@ async function updateAllComponents(components, planner, state) {
 
 /**
  * @param {Object.<string,any>} components
- * @param {Planner} travelDatabase
+ * @param {Planner} planner
  */
-export async function main(components, travelDatabase) {
+export async function main(components, planner) {
   const state = new State();
 
   // partial function for conveniently updating the components
   const updateComponents = updateAllComponents.bind(
     null, // sic
     components,
-    travelDatabase,
+    planner,
   );
 
   components.config.on("submit", async (from, to, date) => {
     components.config.lock();
 
-    const itineraries = await travelDatabase.plan(from, to, date);
+    const itineraries = await planner.plan(from, to, date);
     state.replaceItineraries(itineraries, true);
     //await sleep(1000);
 
@@ -81,18 +82,18 @@ export async function main(components, travelDatabase) {
       .classList.add("selected");
 
     // load alternatives for calendar events and redraw
-    await travelDatabase.triggerLoadAlternatives(state.activeItinerary, date);
+    await planner.triggerLoadAlternatives(state.activeItinerary, date);
     await updateComponents(state);
 
     // already trigger this in case use selects different route
     // not awaiting here because don't need it right now
     for (let itinerary of state.otherItineraries) {
-      travelDatabase.triggerLoadAlternatives(itinerary, date);
+      planner.triggerLoadAlternatives(itinerary, date);
     }
   });
 
   components.calendar.on("connectionMoved", async (newConnectionId) => {
-    const connection = travelDatabase.getCachedConnection(newConnectionId);
+    const connection = planner.getCachedConnection(newConnectionId);
     state.replaceLegInActiveItinerary(connection);
     await updateComponents(state);
   });
