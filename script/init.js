@@ -118,25 +118,6 @@ export async function init() {
   // set initial values
   components.config.date = calendarInitialDate;
 
-  const from = {
-    kind: "stop",
-    name: "Stralsund Hauptbahnhof",
-    id: "de_de:13073:10401_G",
-    latitude: 54.308626,
-    longitude: 13.077321,
-  };
-  const to = {
-    kind: "stop",
-    name: "Wismar Bahnhof",
-    id: "de_de:13074:1011",
-    latitude: 53.896072,
-    longitude: 11.468836,
-  };
-
-  const planner2 = new Planner();
-  await planner2.plan(from, to, DateTime.fromISO("2026-01-04"));
-  await planner2.plan(from, to, DateTime.fromISO("2026-01-04"));
-
   // show landing page
   // wait until user clicks the "Try it out!" button
   // this also automatically closes the landing page

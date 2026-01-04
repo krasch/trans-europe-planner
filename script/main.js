@@ -82,14 +82,14 @@ export async function main(components, planner) {
       .classList.add("selected");
 
     // load alternatives for calendar events and redraw
-    await planner.triggerLoadAlternatives(state.activeItinerary, date);
+    /*await planner.triggerLoadAlternatives(state.activeItinerary, date);
     await updateComponents(state);
 
     // already trigger this in case use selects different route
     // not awaiting here because don't need it right now
     for (let itinerary of state.otherItineraries) {
       planner.triggerLoadAlternatives(itinerary, date);
-    }
+    }*/
   });
 
   components.calendar.on("connectionMoved", async (newConnectionId) => {

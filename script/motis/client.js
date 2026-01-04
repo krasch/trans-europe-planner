@@ -45,7 +45,6 @@ async function query(path, params) {
   url.search = new URLSearchParams(params).toString();
 
   const cached = responseCache.get(url);
-  console.log(cached);
   if (cached) return cached;
 
   const response = await fetch(url, { referrer: REFERRER });
@@ -79,6 +78,8 @@ export async function plan(from, to, startDate) {
     time: startDate.startOf("day").toISO(),
     searchWindow: NUM_DAYS_PLAN * 24 * 60 * 60, // in seconds
   });
+
+  console.log(result.itineraries);
 
   return result.itineraries.map(parseMotisItinerary);
 }

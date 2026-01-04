@@ -41,7 +41,7 @@ function parseMotisConnection(motisLeg) {
   return new Connection(
     motisLeg.tripId,
     motisLeg.mode,
-    motisLeg.routeShortName,
+    motisLeg.displayName,
     from,
     to,
     intermediate,
