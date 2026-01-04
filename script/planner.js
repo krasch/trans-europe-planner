@@ -48,15 +48,12 @@ function isParetoOptimal(group, otherGroups) {
 }
 
 export class Planner {
-  // todo map first two to ConnectionId instead to save some memory?
   #cache = {
-    // maps from [from,to,date] to Itinerary[]
-    plan: new Map(),
     // maps from [from,to,date] to Connection[]
     direct: new Map(),
-    // maps from connectionId to Connection
-    connections: new Map(),
   };
+
+  #connections = new Map();
 
   /**
    * @param {GeocodedLocation} from
@@ -66,12 +63,14 @@ export class Planner {
    *   // todo toDate
    */
   async plan(from, to, fromDate) {
-    //const key = this.#hashKey(from, to, fromDate); // ouch
-
-    //if (this.#cache.plan.has(key)) return this.#cache.plan.get(key);
-
     // must await, because want to transform the itineraries
     const itineraries = await motis_plan(from, to, fromDate);
+
+    for (let itinerary of itineraries) {
+      for (let connection of itinerary.connections) {
+        this.#connections.set(connection.id, connection);
+      }
+    }
 
     // group by geographical route
     const geoRoute = (i) => i.vias.map((v) => v.stopName).join("->");
@@ -98,10 +97,6 @@ export class Planner {
       itineraryScore(i2, fromDate) - itineraryScore(i1, fromDate);
     const result = pareto.map((group) => group.sort(sortHighest)[0]);
 
-    // todo add to connection cache? not so important,
-    //  everything will show up in direct call anyway
-    //this.#cache.plan.set(key, result);
-
     return result;
   }
 
@@ -120,7 +115,7 @@ export class Planner {
 
     promise.then((connections) => {
       this.#cache.direct.set(key, connections);
-      for (let c of connections) this.#cache.connections.set(c.id, c);
+      for (let c of connections) this.#connections.set(c.id, c);
     });
 
     return promise;
@@ -143,8 +138,8 @@ export class Planner {
    * @param {String} id
    * @returns Connection
    */
-  getCachedConnection(id) {
-    return this.#cache.connections.get(id);
+  getConnectionById(id) {
+    return this.#connections.get(id);
   }
 
   /**

@@ -8,7 +8,7 @@ export class ResponseCache {
    * @returns {object | null}
    */
   get(url) {
-    const cached = sessionStorage.getItem(this.#key(url));
+    const cached = localStorage.getItem(this.#key(url));
     if (!cached) return null;
     return JSON.parse(cached);
   }
@@ -21,8 +21,8 @@ export class ResponseCache {
     if (this.#outOfSpace) return;
 
     try {
-      sessionStorage.setItem(this.#key(url), JSON.stringify(data));
-    } catch (QuotaExceededError) {
+      localStorage.setItem(this.#key(url), JSON.stringify(data));
+    } catch (error) {
       this.#outOfSpace = true;
     }
   }

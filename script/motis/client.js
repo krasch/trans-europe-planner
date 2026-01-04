@@ -79,8 +79,6 @@ export async function plan(from, to, startDate) {
     searchWindow: NUM_DAYS_PLAN * 24 * 60 * 60, // in seconds
   });
 
-  console.log(result.itineraries);
-
   return result.itineraries.map(parseMotisItinerary);
 }
 
