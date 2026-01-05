@@ -3,7 +3,7 @@ import { expect } from "vitest";
 
 import { TravelCalendar } from "script/customElements/travelCalendar/travelCalendar.js";
 
-import { COLORS } from "./data.js";
+import { TEST_COLORS } from "./data.js";
 
 customElements.define("travel-calendar", TravelCalendar);
 
@@ -20,7 +20,7 @@ export function initTestDOM() {
   document.body.innerHTML = body.innerHTML;
 
   // set test connection colors
-  COLORS.forEach((color, idx) =>
+  TEST_COLORS.forEach((color, idx) =>
     document.body.style.setProperty(`--color${idx + 1}`, color),
   );
 }

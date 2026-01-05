@@ -1,186 +1,174 @@
-/**
- * @vitest-environment jsdom
- */
-import { beforeEach, test, expect } from "vitest";
+import { test, expect, vi } from "vitest";
 
 import { prepareDataForCalendar } from "script/data/components/calendar.js";
 import { Itinerary } from "script/types/itinerary.js";
 
 import {
-  getTestColor as _color,
   connectionFromShorthand as _c,
+  TEST_COLORS,
 } from "tests/_helpers/data.js";
-import { initTestDOM } from "tests/_helpers/domUtils.js";
 
-beforeEach(async () => {
-  initTestDOM(); // needed to get connection colors from css
+vi.mock("script/data/components/_common.js", () => {
+  return {
+    getColor: (idx) => TEST_COLORS[idx],
+    getIcon: (mode) => `${mode}.svg`,
+  };
 });
 
-test("prepareDataForCalenderNotActive", function () {
-  const got = prepareDataForCalendar(null, []);
-  expect(got).toStrictEqual([]);
-});
-
-test("prepareDataForCalenderOneConnectionNoAlternatives", function () {
+test("One connection, alternatives are still loading", function () {
   const c1 = _c("T1: S1@D1T10->S2@D1T11->S3@D1T12");
   const i1 = new Itinerary([c1]);
 
-  const alternatives = [[]];
+  const alternatives = {};
   const got = prepareDataForCalendar(i1, alternatives);
 
   const exp = [
     {
-      uniqueId: c1.id,
-      leg: "C1->C3",
+      id: c1.id,
+      leg: "S1->S3",
       name: c1.name,
-      icon: expect.stringMatching("train.svg"),
-      startStation: c1.from.stopName,
-      startDateTime: c1.from.departure,
-      endStation: c1.to.stopName,
-      endDateTime: c1.to.arrival,
-      color: _color(0),
-      selected: true,
+      icon: expect.stringMatching("RAIL.svg"),
+      from: c1.from.stopName,
+      departure: c1.from.departure,
+      to: c1.to.stopName,
+      arrival: c1.to.arrival,
+      color: TEST_COLORS[0],
+      status: "active-loading",
     },
   ];
 
   expect(got).toStrictEqual(exp);
 });
 
-test("prepareDataForCalenderOneConnectionWithAlternatives", function () {
+test("One connection, alternatives are available", function () {
   const c1 = _c("T1: S1@D1T10->S2@D1T11->S3@D1T12");
   const c1_alt1 = _c("T2: S1@D2T10->S2@D2T11->S3@D2T12");
   const c1_alt2 = _c("T3: S1@D3T10->S2@D3T11->S3@D3T12");
 
   const i1 = new Itinerary([c1]);
-  const alternatives = [[c1_alt1, c1_alt2]];
+
+  const alternatives = {};
+  alternatives[c1.id] = [c1_alt1, c1_alt2];
+
   const got = prepareDataForCalendar(i1, alternatives);
 
   const exp = [
     {
-      uniqueId: c1.id,
-      leg: "C1->C3",
+      id: c1.id,
+      leg: "S1->S3",
       name: c1.name,
-      icon: expect.stringMatching("train.svg"),
-      startStation: c1.from.stopName,
-      startDateTime: c1.from.departure,
-      endStation: c1.to.stopName,
-      endDateTime: c1.to.arrival,
-      color: _color(0),
-      selected: true,
+      icon: expect.stringMatching("RAIL.svg"),
+      from: c1.from.stopName,
+      departure: c1.from.departure,
+      to: c1.to.stopName,
+      arrival: c1.to.arrival,
+      color: TEST_COLORS[0],
+      status: "active",
     },
     {
-      uniqueId: c1_alt1.id,
-      leg: "C1->C3",
+      id: c1_alt1.id,
+      leg: "S1->S3",
       name: c1_alt1.name,
-      icon: expect.stringMatching("train.svg"),
-      startStation: c1_alt1.from.stopName,
-      startDateTime: c1_alt1.from.departure,
-      endStation: c1_alt1.to.stopName,
-      endDateTime: c1_alt1.to.arrival,
-      color: _color(0),
-      selected: false,
+      icon: expect.stringMatching("RAIL.svg"),
+      from: c1_alt1.from.stopName,
+      departure: c1_alt1.from.departure,
+      to: c1_alt1.to.stopName,
+      arrival: c1_alt1.to.arrival,
+      color: TEST_COLORS[0],
+      status: "inactive",
     },
     {
-      uniqueId: c1_alt2.id,
-      leg: "C1->C3",
+      id: c1_alt2.id,
+      leg: "S1->S3",
       name: c1_alt2.name,
-      icon: expect.stringMatching("train.svg"),
-      startStation: c1_alt2.from.stopName,
-      startDateTime: c1_alt2.from.departure,
-      endStation: c1_alt2.to.stopName,
-      endDateTime: c1_alt2.to.arrival,
-      color: _color(0),
-      selected: false,
+      icon: expect.stringMatching("RAIL.svg"),
+      from: c1_alt2.from.stopName,
+      departure: c1_alt2.from.departure,
+      to: c1_alt2.to.stopName,
+      arrival: c1_alt2.to.arrival,
+      color: TEST_COLORS[0],
+      status: "inactive",
     },
   ];
+
   expect(got).toStrictEqual(exp);
 });
 
-test("prepareDataForCalenderMultipleConnectionsWithAlternatives", function () {
+test("Multiple connections, some with alternatives", function () {
   const c1 = _c("T1: S1@D1T10->S2@D1T11->S3@D1T12");
+  const c1_alt1 = _c("T4: S1@D2T10->S2@D2T11->S3@D2T12");
+  const c1_alt2 = _c("T5: S1@D3T10->S2@D3T11->S3@D3T12");
   const c2 = _c("T2: S3@D1T12->S4@D1T13");
   const c3 = _c("T3: S4@D1T14->S5@D1T15");
 
-  const c1_alt1 = _c("T4: S1@D2T10->S2@D2T11->S3@D2T12");
-  const c1_alt2 = _c("T5: S1@D3T10->S2@D3T11->S3@D3T12");
-  const c3_alt1 = _c("T6: S4@D3T14->S5@D3T15");
-
   const i1 = new Itinerary([c1, c2, c3]);
-  const alternatives = [[c1_alt1, c1_alt2], [], [c3_alt1]];
+
+  const alternatives = {};
+  alternatives[c1.id] = [c1_alt1, c1_alt2];
+  alternatives[c2.id] = null; // still loading
+  alternatives[c3.id] = []; // no alternatives
   const got = prepareDataForCalendar(i1, alternatives);
 
   const exp = [
     {
-      uniqueId: c1.id,
-      leg: "C1->C3",
+      id: c1.id,
+      leg: "S1->S3",
       name: c1.name,
-      icon: expect.stringMatching("train.svg"),
-      startStation: c1.from.stopName,
-      startDateTime: c1.from.departure,
-      endStation: c1.to.stopName,
-      endDateTime: c1.to.arrival,
-      color: _color(0),
-      selected: true,
+      icon: expect.stringMatching("RAIL.svg"),
+      from: c1.from.stopName,
+      departure: c1.from.departure,
+      to: c1.to.stopName,
+      arrival: c1.to.arrival,
+      color: TEST_COLORS[0],
+      status: "active",
     },
     {
-      uniqueId: c1_alt1.id,
-      leg: "C1->C3",
+      id: c1_alt1.id,
+      leg: "S1->S3",
       name: c1_alt1.name,
-      icon: expect.stringMatching("train.svg"),
-      startStation: c1_alt1.from.stopName,
-      startDateTime: c1_alt1.from.departure,
-      endStation: c1_alt1.to.stopName,
-      endDateTime: c1_alt1.to.arrival,
-      color: _color(0),
-      selected: false,
+      icon: expect.stringMatching("RAIL.svg"),
+      from: c1_alt1.from.stopName,
+      departure: c1_alt1.from.departure,
+      to: c1_alt1.to.stopName,
+      arrival: c1_alt1.to.arrival,
+      color: TEST_COLORS[0],
+      status: "inactive",
     },
     {
-      uniqueId: c1_alt2.id,
-      leg: "C1->C3",
+      id: c1_alt2.id,
+      leg: "S1->S3",
       name: c1_alt2.name,
-      icon: expect.stringMatching("train.svg"),
-      startStation: c1_alt2.from.stopName,
-      startDateTime: c1_alt2.from.departure,
-      endStation: c1_alt2.to.stopName,
-      endDateTime: c1_alt2.to.arrival,
-      color: _color(0),
-      selected: false,
+      icon: expect.stringMatching("RAIL.svg"),
+      from: c1_alt2.from.stopName,
+      departure: c1_alt2.from.departure,
+      to: c1_alt2.to.stopName,
+      arrival: c1_alt2.to.arrival,
+      color: TEST_COLORS[0],
+      status: "inactive",
     },
     {
-      uniqueId: c2.id,
-      leg: "C3->C4",
+      id: c2.id,
+      leg: "S3->S4",
       name: c2.name,
-      icon: expect.stringMatching("train.svg"),
-      startStation: c2.from.stopName,
-      startDateTime: c2.from.departure,
-      endStation: c2.to.stopName,
-      endDateTime: c2.to.arrival,
-      color: _color(1),
-      selected: true,
+      icon: expect.stringMatching("RAIL.svg"),
+      from: c2.from.stopName,
+      departure: c2.from.departure,
+      to: c2.to.stopName,
+      arrival: c2.to.arrival,
+      color: TEST_COLORS[1],
+      status: "active-loading",
     },
     {
-      uniqueId: c3.id,
-      leg: "C4->C5",
+      id: c3.id,
+      leg: "S4->S5",
       name: c3.name,
-      icon: expect.stringMatching("train.svg"),
-      startStation: c3.from.stopName,
-      startDateTime: c3.from.departure,
-      endStation: c3.to.stopName,
-      endDateTime: c3.to.arrival,
-      color: _color(2),
-      selected: true,
-    },
-    {
-      uniqueId: c3_alt1.id,
-      leg: "C4->C5",
-      name: c3_alt1.name,
-      icon: expect.stringMatching("train.svg"),
-      startStation: c3_alt1.from.stopName,
-      startDateTime: c3_alt1.from.departure,
-      endStation: c3_alt1.to.stopName,
-      endDateTime: c3_alt1.to.arrival,
-      color: _color(2),
-      selected: false,
+      icon: expect.stringMatching("RAIL.svg"),
+      from: c3.from.stopName,
+      departure: c3.from.departure,
+      to: c3.to.stopName,
+      arrival: c3.to.arrival,
+      color: TEST_COLORS[2],
+      status: "active",
     },
   ];
   expect(got).toStrictEqual(exp);

@@ -7,21 +7,13 @@ import { Stop } from "script/types/stop.js";
 
 export const DAY1 = DateTime.fromISO("2024-10-15");
 
-export const COLORS = [
+export const TEST_COLORS = [
   "0, 255, 0",
   "255, 0, 0",
   "0, 0, 255",
   "255, 255, 0",
   "255, 0, 255",
 ];
-
-/**
- * @param {number} idx
- * @returns string
- */
-export function getTestColor(idx) {
-  return COLORS[idx];
-}
 
 /**
  * @param {string} tsShorthand

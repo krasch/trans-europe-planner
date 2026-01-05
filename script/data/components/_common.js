@@ -29,30 +29,22 @@ export function getIcon(mode) {
   else return ICONS.OTHER;
 }
 
-export const GREY = "#aaa";
+const body = document.getElementsByTagName("body")[0];
+const style = getComputedStyle(body);
 
-// will be loaded first time we need colors
-// can not immediately read the colors here because during testing the HTML
-// document is not available at this point yet
-let COLORS = null;
+const COLORS = [
+  style.getPropertyValue("--color1"),
+  style.getPropertyValue("--color2"),
+  style.getPropertyValue("--color3"),
+  style.getPropertyValue("--color4"),
+  style.getPropertyValue("--color5"),
+];
+export const GREY = "#aaa";
 
 /**
  * @param {number} idx
  * @returns {string}
  */
 export function getColor(idx) {
-  if (COLORS === null) {
-    const body = document.getElementsByTagName("body")[0];
-    const style = getComputedStyle(body);
-
-    COLORS = [
-      style.getPropertyValue("--color1"),
-      style.getPropertyValue("--color2"),
-      style.getPropertyValue("--color3"),
-      style.getPropertyValue("--color4"),
-      style.getPropertyValue("--color5"),
-    ];
-  }
-
   return COLORS[idx % COLORS.length];
 }
