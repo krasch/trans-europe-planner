@@ -101,29 +101,3 @@ test("replaceLegNoActiveItinerary", async function () {
     StateError,
   );
 });
-
-test("replaceLegNotPartOfActiveItinerary", async function () {
-  const i1 = _i(["T1: S1@D1T10->S2@D1T11", "T2: S2@D1T11->S3@D1T12"]);
-  const replacement = _c("T3: S3@D1T10->S4@D1T11");
-
-  const state = new State("C1", DAY1);
-  state.replaceItineraries([i1], true);
-
-  expect(() => state.replaceLegInActiveItinerary(replacement)).toThrow(
-    StateError,
-  );
-});
-
-test("replaceLeg", async function () {
-  const i1 = _i(["T1: S1@D1T10->S2@D1T11", "T2: S2@D1T11->S3@D1T12"]);
-  const replacement = _c("T3: S2@D1T10->S3@D1T11");
-
-  const state = new State("C1", DAY1);
-  state.replaceItineraries([i1], true);
-  state.replaceLegInActiveItinerary(replacement);
-
-  expect(state.activeItinerary.connections).toStrictEqual([
-    i1.connections[0],
-    replacement,
-  ]);
-});

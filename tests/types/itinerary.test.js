@@ -1,9 +1,12 @@
 import { test, expect } from "vitest";
 
-import { Itinerary } from "script/types/itinerary.js";
+import { Itinerary, UnknownLegError } from "script/types/itinerary.js";
 import { Stop } from "script/types/stop.js";
 
-import { connectionFromShorthand as _c } from "tests/_helpers/data.js";
+import {
+  connectionFromShorthand as _c,
+  itineraryFromShortHand as _i,
+} from "tests/_helpers/data.js";
 
 test("Itinerary with one connection", function () {
   const c1 = _c("T1: S1@D1T10->S2@D1T11");
@@ -46,4 +49,19 @@ test("Itinerary with multiple connections", function () {
   expect(itinerary.vias).toStrictEqual([expVia1, expVia2]);
   expect(itinerary.stopIds).toStrictEqual(["S1", "S2", "S3", "S4"]);
   expect(itinerary.id).toBe("S1->S2->S3->S4");
+});
+
+test("Should throw error if replacing unknown leg", async function () {
+  const i1 = _i(["T1: S1@D1T10->S2@D1T11", "T2: S2@D1T11->S3@D1T12"]);
+  const replacement = _c("T3: S3@D1T10->S4@D1T11");
+
+  expect(() => i1.replaceLeg(replacement)).toThrow(UnknownLegError);
+});
+
+test("replaceLeg", async function () {
+  const i1 = _i(["T1: S1@D1T10->S2@D1T11", "T2: S2@D1T11->S3@D1T12"]);
+  const replacement = _c("T3: S2@D1T10->S3@D1T11");
+
+  const i2 = i1.replaceLeg(replacement);
+  expect(i2.connections).toStrictEqual([i1.connections[0], replacement]);
 });

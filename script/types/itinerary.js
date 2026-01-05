@@ -1,6 +1,17 @@
 import { Connection } from "./connection.js";
 import { Stop } from "./stop.js";
 
+export class UnknownLegError extends Error {
+  /**
+   * @param {String} fromStopId
+   * @param {String} toStopId
+   */
+  constructor(fromStopId, toStopId) {
+    super(`Leg ${fromStopId} -> ${toStopId} is not part of current itinerary`);
+    this.name = "UnknownLegError";
+  }
+}
+
 export class Itinerary {
   /**
    * @param {Connection[]} connections
@@ -29,6 +40,28 @@ export class Itinerary {
       .concat(this.vias.map((v) => v.stopId))
       .concat(this.to.stopId);
 
-    this.id = this.stopIds.join("->");
+    this.id = this.stopIds.join("->"); // todo rename to georoute
+  }
+
+  /**
+   * @param {Connection} update
+   * @returns {Itinerary}
+   */
+  replaceLeg(update) {
+    const isMatch = (connection) =>
+      update.from.stopId === connection.from.stopId &&
+      update.to.stopId === connection.to.stopId;
+
+    const matchIndices = this.connections
+      .map((c, i) => i)
+      .filter((i) => isMatch(this.connections[i]));
+
+    if (matchIndices.length === 0)
+      throw new UnknownLegError(update.from.stopId, update.to.stopId);
+
+    const copy = Array.from(this.connections);
+    copy[matchIndices[0]] = update;
+
+    return new Itinerary(copy);
   }
 }
