@@ -110,7 +110,7 @@ export function prepareDataForMap(activeItinerary, otherItineraries) {
       result.stops[stop.stopId] = defaultStopData(stop);
 
       // mark special stops
-      result.stops[stop.stopId].featureState.isHome = s === 0;
+      result.stops[stop.stopId].featureState.isStart = s === 0;
       result.stops[stop.stopId].featureState.isDestination =
         s === stops.length - 1;
       result.stops[stop.stopId].featureState.isTransfer =

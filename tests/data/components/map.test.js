@@ -1,76 +1,130 @@
-/**
- * @vitest-environment jsdom
- */
-import { beforeEach, test, expect } from "vitest";
+import { test, expect, vi } from "vitest";
 
 import { prepareDataForMap } from "script/data/components/map.js";
 import { Itinerary } from "script/types/itinerary.js";
 
-import { connectionFromShorthand as _c } from "tests/_helpers/data.js";
-import { getTestColor } from "tests/_helpers/data.js";
-import { initTestDOM } from "tests/_helpers/domUtils.js";
+import { itineraryFromShortHand as _i } from "tests/_helpers/data.js";
+import { TEST_COLORS } from "tests/_helpers/data.js";
 
-beforeEach(async () => {
-  initTestDOM(); // needed to get connection colors from css
+vi.mock("script/data/components/_common.js", () => {
+  return {
+    getColor: (idx) => TEST_COLORS[idx],
+    getIcon: (mode) => `${mode}.svg`,
+    GREY: "#aaa",
+  };
 });
 
-function _color(idx) {
-  return `rgb(${getTestColor(idx)})`;
-}
+test("One itinerary with one connection", function () {
+  const i1 = _i(["T1: S1@D1T10->S2@D1T11->S3@D1T12"]);
+  const got = prepareDataForMap(i1, []);
 
-test("prepareDataForMapEmpty", function () {
-  const got = prepareDataForMap(null, []);
-
-  expect(got).toStrictEqual({ cities: {}, edges: {}, itineraries: {} });
-});
-
-test("prepareDataForMapOneItineraryOneConnectionNotActive", function () {
-  const c1 = _c("T1: S1@D1T10->S2@D1T11->S3@D1T12");
-  const i1 = new Itinerary([c1]);
-
-  const got = prepareDataForMap(null, [i1]);
-
-  const expCities = {
-    C1: { isVisible: true, isStop: true, circleColor: null, isTransfer: false },
-    C2: { isVisible: true, isStop: true, circleColor: null, isTransfer: false },
-    C3: { isVisible: true, isStop: true, circleColor: null, isTransfer: false },
+  const expStops = {
+    S1: {
+      featureState: {
+        isActive: true,
+        isStart: true,
+        isDestination: false,
+        isTransfer: false,
+        color: `rgb(${TEST_COLORS[0]})`,
+      },
+      geoJSON: {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [10.0, 10.0],
+        },
+        properties: {
+          id: "S1",
+          name: "Stop1",
+        },
+      },
+    },
+    S2: {
+      featureState: {
+        isActive: true,
+        isStart: false,
+        isDestination: false,
+        isTransfer: false,
+        color: `rgb(${TEST_COLORS[0]})`,
+      },
+      geoJSON: {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [20.0, 20.0],
+        },
+        properties: {
+          id: "S2",
+          name: "Stop2",
+        },
+      },
+    },
+    S3: {
+      featureState: {
+        isActive: true,
+        isStart: false,
+        isDestination: true,
+        isTransfer: false,
+        color: `rgb(${TEST_COLORS[0]})`,
+      },
+      geoJSON: {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [30.0, 30.0],
+        },
+        properties: {
+          id: "S3",
+          name: "Stop3",
+        },
+      },
+    },
   };
 
   const expEdges = {
-    "C1->C2": {
-      isVisible: true,
-      legs: ["C1->C3"],
-      itineraries: ["C1->C3"],
-      isActive: false,
-      color: null,
-      activeLeg: null,
-      activeItinerary: null,
+    "S1->S2": {
+      featureState: {
+        isActive: true,
+        color: `rgb(${TEST_COLORS[0]})`,
+        connectionId: i1.connections[0].id,
+        itineraryId: i1.id,
+      },
+      geoJSON: {
+        type: "Feature",
+        geometry: {
+          type: "LineString",
+          coordinates: [
+            [10.0, 10.0],
+            [20.0, 20.0],
+          ],
+        },
+        properties: { id: "S1->S2" },
+      },
     },
-    "C2->C3": {
-      isVisible: true,
-      legs: ["C1->C3"],
-      itineraries: ["C1->C3"],
-      isActive: false,
-      color: null,
-      activeLeg: null,
-      activeItinerary: null,
-    },
-  };
-
-  const expItineraries = {
-    "C1->C3": {
-      from: "City1",
-      to: "City3",
-      via: [],
-      numTransfer: 0,
-      travelTime: 119,
+    "S2->S3": {
+      featureState: {
+        isActive: true,
+        color: `rgb(${TEST_COLORS[0]})`,
+        connectionId: i1.connections[0].id,
+        itineraryId: i1.id,
+      },
+      geoJSON: {
+        type: "Feature",
+        geometry: {
+          type: "LineString",
+          coordinates: [
+            [20.0, 20.0],
+            [30.0, 30.0],
+          ],
+        },
+        properties: { id: "S2->S3" },
+      },
     },
   };
 
   expect(got).toEqual({
-    cities: expCities,
+    stops: expStops,
     edges: expEdges,
-    itineraries: expItineraries,
   });
 });
 

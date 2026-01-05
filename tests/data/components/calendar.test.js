@@ -3,10 +3,8 @@ import { test, expect, vi } from "vitest";
 import { prepareDataForCalendar } from "script/data/components/calendar.js";
 import { Itinerary } from "script/types/itinerary.js";
 
-import {
-  connectionFromShorthand as _c,
-  TEST_COLORS,
-} from "tests/_helpers/data.js";
+import { connectionFromShorthand as _c } from "tests/_helpers/data.js";
+import { TEST_COLORS } from "tests/_helpers/data.js";
 
 vi.mock("script/data/components/_common.js", () => {
   return {
