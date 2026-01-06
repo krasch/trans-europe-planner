@@ -4,12 +4,12 @@ import { Stop } from "script/types/stop.js";
 import { GREY, getColor } from "./_common.js";
 
 /**
- * @param {string} start
- * @param {string} end
+ * @param {Stop} stop1
+ * @param {Stop} stop2
  */
-function toAlphabeticEdgeString(start, end) {
-  if (start < end) return `${start}->${end}`;
-  else return `${end}->${start}`;
+function orderByStopId(stop1, stop2) {
+  if (stop1.stopId < stop2.stopId) return [stop1, stop2];
+  else return [stop2, stop1];
 }
 
 /**
@@ -125,13 +125,18 @@ export function prepareDataForMap(activeItinerary, otherItineraries) {
       // if this is the first stop in this itinerary, there is no edge
       if (s === 0) continue;
 
-      // we must draw a line between these stops -> they form an edge
-      // todo can it be that from === to?
-      const [from, to] = [stops[s - 1], stop];
-      const edgeId = toAlphabeticEdgeString(from.stopId, to.stopId);
+      // these are two subsequent stops in this itinerary
+      // if this a transfer, then from might be to
+      const previous = stops[s - 1];
+      if (stop.stopId === previous.stopId) continue;
 
-      // init edge information
-      result.edges[edgeId] = defaultEdgeData(from, to, edgeId);
+      // don't want duplicate edges -> order by alphabet
+      let [edgeStart, edgeEnd] = orderByStopId(previous, stop);
+      if (edgeStart.stopId > edgeEnd.stopId)
+        [edgeStart, edgeEnd] = [stop, previous];
+
+      let edgeId = `${edgeStart.stopId}->${edgeEnd.stopId}`;
+      result.edges[edgeId] = defaultEdgeData(edgeStart, edgeEnd, edgeId);
 
       // need this in map event handlers
       result.edges[edgeId].featureState.connectionId = connection.id;
