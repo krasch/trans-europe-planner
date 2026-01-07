@@ -1,214 +1,152 @@
 /**
  * @vitest-environment jsdom
  */
-import { beforeEach, test, expect } from "vitest";
+import { test, expect, vi } from "vitest";
 
-import { identifiers } from "script/data/components/_common.js";
 import {
   prepareDataForPerlschnur,
   formatTimedelta,
+  formatDate,
 } from "script/data/components/perlschnur.js";
 import { DateTime } from "script/types/dateTime.js";
 import { Itinerary } from "script/types/itinerary.js";
 
-import {
-  getTestColor as _color,
-  connectionFromShorthand as _c,
-  DAY1,
-} from "tests/_helpers/data.js";
-import { initTestDOM } from "tests/_helpers/domUtils.js";
+import { itineraryFromShortHand as _i, DAY1 } from "tests/_helpers/data.js";
+import { TEST_COLORS } from "tests/_helpers/data.js";
 
-beforeEach(async () => {
-  initTestDOM(); // needed to get connection colors from css
+const DAY1_STRING = `(${formatDate(DAY1)})`;
+const DAY2_STRING = `(${formatDate(DAY1.plus({ day: 1 }))})`;
+
+vi.mock("script/data/components/_common.js", () => {
+  return {
+    getColor: (idx) => TEST_COLORS[idx],
+    getIcon: (mode) => `${mode}.svg`,
+  };
 });
 
-test("humanReadableTimedelta", function () {
+test("Human readable timedelta", function () {
   const t1 = DateTime.fromISO("20241010T10:12");
   const t2 = DateTime.fromISO("20241012T06:07");
   expect(formatTimedelta(t1, t2)).toBe("43h 55min");
 });
 
-test("prepareDataForPerlschnurEmpty", function () {
-  const got = prepareDataForPerlschnur(null);
+test("Single connection, no intermediate stops", function () {
+  const i = _i(["T1: S1@D1T10->S2@D1T11"]);
 
-  const exp = { summary: {}, connections: [], transfers: [] };
-  expect(got).toStrictEqual(exp);
-});
-
-test("prepareDataForPerlschnurSingleConnectionNoIntermediateStops", function () {
-  const c1 = _c("T1: S1@D1T10->S2@D1T11");
-  const i1 = new Itinerary([c1]);
-
-  const exp = {
-    summary: {
-      from: "Stop1",
-      to: "Stop2",
-      via: "",
-      totalTime: "59min",
+  const exp = [
+    {
+      id: i.connections[0].id,
+      color: TEST_COLORS[0],
+      icon: expect.stringMatching("RAIL.svg"),
+      name: i.connections[0].name,
+      travelTime: "59min",
+      transferTime: null,
+      stops: [
+        { date: DAY1_STRING, time: "10:01", stopId: "S1", stopName: "Stop1" },
+        { date: "", time: "11:00", stopId: "S2", stopName: "Stop2" },
+      ],
     },
-    connections: [
-      {
-        id: identifiers.connection(c1),
-        color: _color(0),
-        icon: expect.stringMatching("train.svg"),
-        name: c1.name,
-        travelTime: "59min",
-        stops: [
-          { date: null, time: "10:01", station: "Stop1" },
-          { date: null, time: "11:00", station: "Stop2" },
-        ],
-      },
-    ],
-    transfers: [],
-  };
+  ];
 
-  const got = prepareDataForPerlschnur(i1);
+  const got = prepareDataForPerlschnur(i);
   expect(got).toEqual(exp);
 });
 
-test("prepareDataForPerlschnurSingleConnectionIntermediateStops", function () {
-  const c1 = _c("T1: S1@D1T10->S2@D1T11->S3@D1T12");
-  const i1 = new Itinerary([c1]);
+test("Single connection, intermediate stops", function () {
+  const i = _i(["T1: S1@D1T10->S2@D1T11->S3@D1T12->S4@D1T15"]);
 
-  const exp = {
-    summary: {
-      from: "Stop1",
-      to: "Stop3",
-      via: "",
-      totalTime: "1h 59min",
+  const exp = [
+    {
+      id: i.connections[0].id,
+      color: TEST_COLORS[0],
+      icon: expect.stringMatching("RAIL.svg"),
+      name: i.connections[0].name,
+      travelTime: "4h 59min",
+      transferTime: null,
+      stops: [
+        { date: DAY1_STRING, time: "10:01", stopId: "S1", stopName: "Stop1" },
+        { date: "", time: "11:00", stopId: "S2", stopName: "Stop2" },
+        { date: "", time: "12:00", stopId: "S3", stopName: "Stop3" },
+        { date: "", time: "15:00", stopId: "S4", stopName: "Stop4" },
+      ],
     },
-    connections: [
-      {
-        id: identifiers.connection(c1),
-        color: _color(0),
-        icon: expect.stringMatching("train.svg"),
-        name: c1.name,
-        travelTime: "1h 59min",
-        stops: [
-          { date: null, time: "10:01", station: "Stop1" },
-          { date: null, time: "11:00", station: "Stop2" },
-          { date: null, time: "12:00", station: "Stop3" },
-        ],
-      },
-    ],
-    transfers: [],
-  };
+  ];
 
-  const got = prepareDataForPerlschnur(i1);
+  const got = prepareDataForPerlschnur(i);
   expect(got).toEqual(exp);
 });
 
-test("prepareDataForPerlschnurMultipleConnections", function () {
-  const c1 = _c("T1: S1@D1T10->S2@D1T11");
-  const c2 = _c("T2: S2@D1T12->S3@D1T14");
-  const c3 = _c("T3: S3@D1T16->S4@D1T17");
-  const i1 = new Itinerary([c1, c2, c3]);
+test("Single connection, intermediate stops, overnight", function () {
+  const i = _i(["T1: S1@D1T10->S2@D1T11->S3@D2T12->S4@D2T15"]);
 
-  const exp = {
-    summary: {
-      from: "Stop1",
-      to: "Stop4",
-      via: "via Stop2, Stop3",
-      totalTime: "6h 59min",
+  const exp = [
+    {
+      id: i.connections[0].id,
+      color: TEST_COLORS[0],
+      icon: expect.stringMatching("RAIL.svg"),
+      name: i.connections[0].name,
+      travelTime: "28h 59min",
+      transferTime: null,
+      stops: [
+        { date: DAY1_STRING, time: "10:01", stopId: "S1", stopName: "Stop1" },
+        { date: "", time: "11:00", stopId: "S2", stopName: "Stop2" },
+        { date: DAY2_STRING, time: "12:00", stopId: "S3", stopName: "Stop3" },
+        { date: "", time: "15:00", stopId: "S4", stopName: "Stop4" },
+      ],
     },
-    connections: [
-      {
-        id: identifiers.connection(c1),
-        color: _color(0),
-        icon: expect.stringMatching("train.svg"),
-        name: c1.name,
-        travelTime: "59min",
-        stops: [
-          { date: null, time: "10:01", station: "Stop1" },
-          { date: null, time: "11:00", station: "Stop2" },
-        ],
-      },
-      {
-        id: identifiers.connection(c2),
-        color: _color(1),
-        icon: expect.stringMatching("train.svg"),
-        name: c2.name,
-        travelTime: "1h 59min",
-        stops: [
-          { date: null, time: "12:01", station: "Stop2" },
-          { date: null, time: "14:00", station: "Stop3" },
-        ],
-      },
-      {
-        id: identifiers.connection(c3),
-        color: _color(2),
-        icon: expect.stringMatching("train.svg"),
-        name: c3.name,
-        travelTime: "59min",
-        stops: [
-          { date: null, time: "16:01", station: "Stop3" },
-          { date: null, time: "17:00", station: "Stop4" },
-        ],
-      },
-    ],
-    transfers: [{ time: "1h 1min" }, { time: "2h 1min" }],
-  };
+  ];
 
-  const got = prepareDataForPerlschnur(i1);
+  const got = prepareDataForPerlschnur(i);
   expect(got).toEqual(exp);
 });
 
-test("prepareDataForPerlschnurMultipleConnectionsMultiday", function () {
-  const c1 = _c("T1: S1@D1T10->S2@D2T11");
-  const c2 = _c("T2: S2@D2T12->S3@D3T08");
-  const c3 = _c("T3: S3@D4T16->S4@D4T17");
-  const i1 = new Itinerary([c1, c2, c3]);
+test("Multiple connections, overnight change", function () {
+  const i = _i([
+    "T1: S1@D1T10->S2@D1T11",
+    "T2: S2@D2T10->S3@D2T11->S4@D2T12",
+    "T3: S4@D2T15->S5@D2T17",
+  ]);
 
-  // formatted date strings
-  const D2 = `(${DAY1.plus({ days: 1 }).toFormat("d LLL")})`;
-  const D3 = `(${DAY1.plus({ days: 2 }).toFormat("d LLL")})`;
-  const D4 = `(${DAY1.plus({ days: 3 }).toFormat("d LLL")})`;
-
-  const exp = {
-    summary: {
-      from: "Stop1",
-      to: "Stop4",
-      via: "via Stop2, Stop3",
-      totalTime: "78h 59min",
+  const exp = [
+    {
+      id: i.connections[0].id,
+      color: TEST_COLORS[0],
+      icon: expect.stringMatching("RAIL.svg"),
+      name: i.connections[0].name,
+      travelTime: "59min",
+      transferTime: "23h 1min",
+      stops: [
+        { date: DAY1_STRING, time: "10:01", stopId: "S1", stopName: "Stop1" },
+        { date: "", time: "11:00", stopId: "S2", stopName: "Stop2" },
+      ],
     },
-    connections: [
-      {
-        id: identifiers.connection(c1),
-        color: _color(0),
-        icon: expect.stringMatching("train.svg"),
-        name: c1.name,
-        travelTime: "24h 59min",
-        stops: [
-          { date: null, time: "10:01", station: "Stop1" },
-          { date: D2, time: "11:00", station: "Stop2" },
-        ],
-      },
-      {
-        id: identifiers.connection(c2),
-        color: _color(1),
-        icon: expect.stringMatching("train.svg"),
-        name: c2.name,
-        travelTime: "19h 59min",
-        stops: [
-          { date: null, time: "12:01", station: "Stop2" },
-          { date: D3, time: "08:00", station: "Stop3" },
-        ],
-      },
-      {
-        id: identifiers.connection(c3),
-        color: _color(2),
-        icon: expect.stringMatching("train.svg"),
-        name: c3.name,
-        travelTime: "59min",
-        stops: [
-          { date: D4, time: "16:01", station: "Stop3" },
-          { date: null, time: "17:00", station: "Stop4" },
-        ],
-      },
-    ],
-    transfers: [{ time: "1h 1min" }, { time: "32h 1min" }],
-  };
+    {
+      id: i.connections[1].id,
+      color: TEST_COLORS[1],
+      icon: expect.stringMatching("RAIL.svg"),
+      name: i.connections[1].name,
+      travelTime: "1h 59min",
+      transferTime: "3h 1min",
+      stops: [
+        { date: DAY2_STRING, time: "10:01", stopId: "S2", stopName: "Stop2" },
+        { date: "", time: "11:00", stopId: "S3", stopName: "Stop3" },
+        { date: "", time: "12:00", stopId: "S4", stopName: "Stop4" },
+      ],
+    },
+    {
+      id: i.connections[2].id,
+      color: TEST_COLORS[2],
+      icon: expect.stringMatching("RAIL.svg"),
+      name: i.connections[2].name,
+      travelTime: "1h 59min",
+      transferTime: null,
+      stops: [
+        { date: "", time: "15:01", stopId: "S4", stopName: "Stop4" },
+        { date: "", time: "17:00", stopId: "S5", stopName: "Stop5" },
+      ],
+    },
+  ];
 
-  const got = prepareDataForPerlschnur(i1);
+  const got = prepareDataForPerlschnur(i);
   expect(got).toEqual(exp);
 });

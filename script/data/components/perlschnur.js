@@ -45,7 +45,7 @@ export function formatTimedelta(earlierTimestamp, laterTimestamp) {
  * @param {DateTime} timestamp
  * @returns {String}
  */
-function formateDate(timestamp) {
+export function formatDate(timestamp) {
   return timestamp.toLocaleString({ month: "short", day: "2-digit" });
 }
 
@@ -69,8 +69,8 @@ export function prepareDataForPerlschnur(activeItinerary) {
       // we only need to write the date if it has changed wrt to the previous stop
       // this is done ACROSS connections, i.e. the first stop in connection2 will
       // get the date set if it differs from the last stop in connection1
-      let date = formateDate(timestamp);
-      if (previousTimestamp && date === formateDate(previousTimestamp))
+      let date = formatDate(timestamp);
+      if (previousTimestamp && date === formatDate(previousTimestamp))
         date = null;
 
       // set as reference for next stop
@@ -84,6 +84,7 @@ export function prepareDataForPerlschnur(activeItinerary) {
       };
     });
 
+    // calculate time to next connection, null if this is the last connection
     let transferTime = null;
     if (connectionIdx < activeItinerary.connections.length - 1) {
       const next = activeItinerary.connections[connectionIdx + 1];
