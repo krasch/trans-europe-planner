@@ -18,11 +18,6 @@ export function initTestDOM() {
 
   // write body into the global document that is known to all tests (when using the jsdom environment)
   document.body.innerHTML = body.innerHTML;
-
-  // set test connection colors
-  TEST_COLORS.forEach((color, idx) =>
-    document.body.style.setProperty(`--color${idx + 1}`, color),
-  );
 }
 
 export function timeout(ms) {
