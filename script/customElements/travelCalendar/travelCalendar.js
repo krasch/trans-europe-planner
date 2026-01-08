@@ -15,7 +15,7 @@ const gridStyle = `<style>@import url('/script/customElements/travelCalendar/gri
  *     <div class="calendar-entry"
  *          data-departure-datetime="2025-02-01T20:00"
  *          data-arrival-datetime="2025-02-02T04:59"
- *          data-active="active"
+ *          data-status="active"
  *          data-group="Berlin->München"
  *          data-color="27, 158, 119">
  *         <div class="header">Some train from Berlin to Munich</div>
@@ -25,7 +25,7 @@ const gridStyle = `<style>@import url('/script/customElements/travelCalendar/gri
  *     <div class="calendar-entry"
  *          data-departure-datetime="2025-02-02T10:00"
  *          data-arrival-datetime="2025-02-02T14:00"
- *          data-active=""
+ *          data-status="inactive"
  *          data-group="Berlin->München"
  *          data-color="27, 158, 119">
  *         <div class="header">Some other train from Berlin to Munich</div>
@@ -39,7 +39,7 @@ const gridStyle = `<style>@import url('/script/customElements/travelCalendar/gri
  *   [2025-02-01, 2025-02-02, 2025-02-03]), adding hour labels to the left and date labels at the top.
  *   All necessary HTML elements for the grid are added to the shadow DOM of this element.
  * * Add two calendar entries. The first one being a night train, spanning two columns and the second one
- *   being a day train spanning only one column. The first one will be visible (data-active="active"), the
+ *   being a day train spanning only one column. The first one will be visible (data-status="active"), the
  *   second one will be hidden. Users can drag the first entry, which will show an indicator of the location
  *   of the second entry, where the user can drop the first entry. This switches the "active" setting from
  *   first entry to the second entry. All entries with the same "data-group" can be swapped out for one another
@@ -101,6 +101,10 @@ export class TravelCalendar extends HTMLElement {
         const entry = this.#lookup.entry(e);
         if (key === "data-color") entry.color = e.dataset.color;
         else if (key === "data-status") entry.status = e.dataset.status;
+        else {
+          this.#removeEntry(e);
+          this.#addEntry(e);
+        }
       },
       entryUpdated: (e) => {
         this.#removeEntry(e);
@@ -501,7 +505,7 @@ function enableDragAndDrop(calendar, onDropCallback) {
     for (let entry_ of entriesForGroup) entry_.dragStatus = "indicator";
 
     entryCurrentlyBeingDragged = entry;
-    entryCurrentlyBeingDragged.active = false;
+    entryCurrentlyBeingDragged.status = "inactive";
     entryCurrentlyBeingDragged.dragStatus = "preview";
   });
 
@@ -532,9 +536,9 @@ function enableDragAndDrop(calendar, onDropCallback) {
     if (!isValidDropTarget(entry)) return;
     e.preventDefault();
 
-    entryCurrentlyBeingDragged.active = entryCurrentlyBeingDragged = null;
+    entryCurrentlyBeingDragged.status = "inactive";
 
-    entry.active = true;
+    entry.status = "active";
     for (let entry_ of entriesForGroup) entry_.dragStatus = null;
 
     onDropCallback(entry);
@@ -544,7 +548,8 @@ function enableDragAndDrop(calendar, onDropCallback) {
   calendar.addEntryEventListener("dragend", (e, entry, entriesForGroup) => {
     e.preventDefault();
 
-    if (entryCurrentlyBeingDragged) entryCurrentlyBeingDragged.active = true;
+    if (entryCurrentlyBeingDragged)
+      entryCurrentlyBeingDragged.status = "active";
     for (let entry_ of entriesForGroup) entry_.dragStatus = null;
   });
 }

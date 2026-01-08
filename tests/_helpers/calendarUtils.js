@@ -10,11 +10,10 @@ export async function addEntryToCalendar(connectionShorthand, kwargs = {}) {
 
   // @ts-expect-error TS2339
   const entry = template.content.firstElementChild.cloneNode(true);
-
   entry.dataset.color = kwargs.color ?? "test-color";
-  entry.dataset.active = kwargs.active ?? "";
+  entry.dataset.status = kwargs.status ?? "inactive";
 
-  entry.dataset.group = `${connection.from.city.id}->${connection.to.city.id}`;
+  entry.dataset.group = `${connection.from.stopId}->${connection.to.stopId}`;
   entry.dataset.departureDatetime = connection.from.departure.toISO();
   entry.dataset.arrivalDatetime = connection.to.arrival.toISO();
 
@@ -22,11 +21,11 @@ export async function addEntryToCalendar(connectionShorthand, kwargs = {}) {
   entry.querySelector(".connection-number").innerHTML = connection.id;
   entry.querySelector(".start .time").innerHTML =
     connection.from.departure.toFormat("HH:mm");
-  entry.querySelector(".start .station").innerHTML = connection.from.city.name;
+  entry.querySelector(".start .station").innerHTML = connection.to.stopName;
   entry.querySelector(".destination .time").innerHTML =
     connection.to.arrival.toFormat("HH:mm");
   entry.querySelector(".destination .station").innerHTML =
-    connection.to.city.name;
+    connection.to.stopName;
 
   await TEST_DOM.calendar.appendChild(entry);
   return entry;

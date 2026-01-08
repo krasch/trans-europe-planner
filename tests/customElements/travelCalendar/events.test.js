@@ -19,10 +19,12 @@ beforeEach(async () => {
 
 // for making the testing code more condensed and readible (hopefully)
 const selectors = {
-  _active: (e) => {
+  _status: (e) => {
     switch (e.dataset.status) {
       case "active":
         return "1";
+      case "active-loading":
+        return "?";
       case "inactive":
         return "0";
       default:
@@ -52,8 +54,8 @@ const selectors = {
     return TEST_DOM.calendarEntryParts.map((e) => this._hover(e)).join(" ");
   },
 
-  get active() {
-    return TEST_DOM.calendarEntryParts.map((e) => this._active(e)).join(" ");
+  get status() {
+    return TEST_DOM.calendarEntryParts.map((e) => this._status(e)).join(" ");
   },
 
   get drag() {
@@ -95,11 +97,11 @@ test("hover on/off callback should be called when hovering over entry", async fu
 
 test("drag and drop of multi-part entries", async function () {
   // S1 (day1)-> S2 (day2)
-  await addEntryToCalendar("T1: S1@D1T10->S2@D2T11", { active: "active" });
+  await addEntryToCalendar("T1: S1@D1T10->S2@D2T11", { status: "active" });
   // S1 (day2)-> S2 (day3)
-  await addEntryToCalendar("T2: S1@D2T10->S2@D3T11", { active: "" });
+  await addEntryToCalendar("T2: S1@D2T10->S2@D3T11", { status: "inactive" });
   // S2 (day3)-> S3 (day3)
-  await addEntryToCalendar("T3: S2@D3T14->S3@D3T15", { active: "active" });
+  await addEntryToCalendar("T3: S2@D3T14->S3@D3T15", { status: "active" });
 
   // this makes it easier to send events (and understand from which calendar entry event was sent)
   const elements = {
@@ -115,58 +117,58 @@ test("drag and drop of multi-part entries", async function () {
   };
 
   // initial values
-  expect(selectors.active).toStrictEqual("1 1 0 0 1");
+  expect(selectors.status).toStrictEqual("1 1 0 0 1");
   expect(selectors.drag).toStrictEqual("? ? ? ? ?");
 
   /// when starting dragging e1, it should turn inactive and preview and e2 should be indicator
   await dispatchTestEvent(elements.e1.part1, "dragstart");
-  expect(selectors.active).toStrictEqual("0 0 0 0 1");
+  expect(selectors.status).toStrictEqual("0 0 0 0 1");
   expect(selectors.drag).toStrictEqual("prev prev ind ind ?");
 
   // when dragentering e2, it should become preview
   await dispatchTestEvent(elements.e2.part2, "dragenter");
-  expect(selectors.active).toStrictEqual("0 0 0 0 1");
+  expect(selectors.status).toStrictEqual("0 0 0 0 1");
   expect(selectors.drag).toStrictEqual("ind ind prev prev ?");
 
   // after dragleaving e2, both e1 and e2 should be indicator
   await dispatchTestEvent(elements.e2.part1, "dragleave");
-  expect(selectors.active).toStrictEqual("0 0 0 0 1");
+  expect(selectors.status).toStrictEqual("0 0 0 0 1");
   expect(selectors.drag).toStrictEqual("ind ind ind ind ?");
 
   // when dragentering e3, nothing should happen
   await dispatchTestEvent(elements.e3.part1, "dragenter");
-  expect(selectors.active).toStrictEqual("0 0 0 0 1");
+  expect(selectors.status).toStrictEqual("0 0 0 0 1");
   expect(selectors.drag).toStrictEqual("ind ind ind ind ?");
 
   // when dragleaving e3, nothing should happen either
   await dispatchTestEvent(elements.e3.part1, "dragleave");
-  expect(selectors.active).toStrictEqual("0 0 0 0 1");
+  expect(selectors.status).toStrictEqual("0 0 0 0 1");
   expect(selectors.drag).toStrictEqual("ind ind ind ind ?");
 
   // when drop is canceled, it should snap back to e1 being active
   // need to dispatch the dragend over e1, in reality this is not necessary
   await dispatchTestEvent(elements.e1.part1, "dragend");
-  expect(selectors.active).toStrictEqual("1 1 0 0 1");
+  expect(selectors.status).toStrictEqual("1 1 0 0 1");
   expect(selectors.drag).toStrictEqual("? ? ? ? ?");
 
   // dragging e1 to e2 -> e2 should become active
   await dispatchTestEvent(elements.e1.part1, "dragstart");
   await dispatchTestEvent(elements.e2.part2, "dragenter");
   await dispatchTestEvent(elements.e2.part2, "drop");
-  expect(selectors.active).toStrictEqual("0 0 1 1 1");
+  expect(selectors.status).toStrictEqual("0 0 1 1 1");
   expect(selectors.drag).toStrictEqual("? ? ? ? ?");
 
   // dragging e2 to e2 -> e1 should become active
   await dispatchTestEvent(elements.e2.part2, "dragstart");
   await dispatchTestEvent(elements.e1.part1, "dragenter");
   await dispatchTestEvent(elements.e1.part2, "drop");
-  expect(selectors.active).toStrictEqual("1 1 0 0 1");
+  expect(selectors.status).toStrictEqual("1 1 0 0 1");
   expect(selectors.drag).toStrictEqual("? ? ? ? ?");
 });
 
 test("drag and drop after changing entry group", async function () {
   // first entry is S1->S2, second is S2->S2 => they have different groups
-  const kwargs = { active: "active" };
+  const kwargs = { status: "active" };
   const e1 = await addEntryToCalendar("T1: S1@D1T10->S2@D1T11", kwargs);
   const e2 = await addEntryToCalendar("T2: S2@D2T10->S3@D2T11", kwargs);
 
@@ -194,9 +196,9 @@ test("can set group hover state from outside calendar", async function () {
   const e1 = await addEntryToCalendar("T1: S1@D1T10->S2@D1T11"); // one day S1->S2
   const e2 = await addEntryToCalendar("T2: S2@D1T11->S3@D1T12"); // one day S2->S3
 
-  TEST_DOM.calendar.setHoverGroup(e1.dataset.group);
+  TEST_DOM.calendar.setHoverEntry(e1, true);
   expect(selectors.hover).toStrictEqual("1 0");
 
-  TEST_DOM.calendar.setNoHoverGroup(e1.dataset.group);
+  TEST_DOM.calendar.setHoverEntry(e1, false);
   expect(selectors.hover).toStrictEqual("0 0");
 });

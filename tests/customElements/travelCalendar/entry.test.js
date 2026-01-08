@@ -23,7 +23,7 @@ test("one day entry should create one entry part that contains all connection in
   expect(TEST_DOM.calendarEntryParts.length).toBe(1);
   expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
     dataset: {
-      group: "C1->C2",
+      group: "S1->S2",
       status: "inactive",
     },
     style: {
@@ -59,7 +59,7 @@ test("entry that spans two columns/days", async function () {
   expect(TEST_DOM.calendarEntryParts.length).toBe(2);
   expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
     dataset: {
-      group: "C1->C2",
+      group: "S1->S2",
       status: "inactive",
     },
     style: {
@@ -76,7 +76,7 @@ test("entry that spans two columns/days", async function () {
   });
   expect(TEST_DOM.calendarEntryParts[1]).toMatchDOMObject({
     dataset: {
-      group: "C1->C2",
+      group: "S1->S2",
       status: "inactive",
     },
     style: {
@@ -99,7 +99,7 @@ test("entry that spans three columns/days", async function () {
   expect(TEST_DOM.calendarEntryParts.length).toBe(3);
   expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
     dataset: {
-      group: "C1->C2",
+      group: "S1->S2",
       status: "inactive",
     },
     style: {
@@ -116,7 +116,7 @@ test("entry that spans three columns/days", async function () {
   });
   expect(TEST_DOM.calendarEntryParts[1]).toMatchDOMObject({
     dataset: {
-      group: "C1->C2",
+      group: "S1->S2",
       status: "inactive",
     },
     style: {
@@ -133,7 +133,7 @@ test("entry that spans three columns/days", async function () {
   });
   expect(TEST_DOM.calendarEntryParts[2]).toMatchDOMObject({
     dataset: {
-      group: "C1->C2",
+      group: "S1->S2",
       status: "inactive",
     },
     style: {
@@ -238,14 +238,19 @@ test("entry parts active should be updated when external active status changes",
   const entry = await addEntryToCalendar("T1: S1@D2T14->S2@D3T15");
 
   // set active
-  entry.dataset.active = "active";
+  entry.dataset.status = "active";
+  await timeout(10); // give calendar time to update
+  expect(status()).toMatchObject(["active", "active"]);
+
+  // set active-loading
+  entry.dataset.status = "active";
   await timeout(10); // give calendar time to update
   expect(status()).toMatchObject(["active", "active"]);
 
   // set inactive
-  entry.dataset.active = "";
+  entry.dataset.status = "active-loading";
   await timeout(10); // give calendar time to update
-  expect(status()).toMatchObject(["inactive", "inactive"]);
+  expect(status()).toMatchObject(["active-loading", "active-loading"]);
 });
 
 test("entry parts color should be updated when external color changes", async function () {
