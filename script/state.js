@@ -75,4 +75,8 @@ export class State {
 
     this.setActiveItinerary(itineraries[0].id);
   }
+
+  replaceLegInActiveItinerary(newConnection) {
+    this.#activeItinerary = this.activeItinerary.replaceLeg(newConnection);
+  }
 }

@@ -81,3 +81,27 @@ export class DefaultMap extends Map {
     return super.get(key);
   }
 }
+
+/**
+ * @template T
+ * @param {T[]} oldArray
+ * @param {T[]} newArray
+ */
+export function calculateDiff(oldArray, newArray) {
+  const result = {
+    added: [],
+    removed: [],
+    same: [],
+  };
+
+  for (let e of oldArray) {
+    if (newArray.includes(e)) result.same.push(e);
+    else result.removed.push(e);
+  }
+
+  for (let e of newArray) {
+    if (!oldArray.includes(e)) result.added.push(e);
+  }
+
+  return result;
+}

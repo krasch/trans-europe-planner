@@ -160,7 +160,7 @@ export class Planner {
 
       // loading has finished; need to filter out the reference connection
       const cached = this.#cache.direct.get(key);
-      alternatives[ref.id] = cached.filter((c) => c.id !== ref.id);
+      alternatives[ref.id] = cached.filter((c) => c.id !== ref.id).slice(0, 1);
     }
     return alternatives;
   }

@@ -1,5 +1,27 @@
-import { DateTime } from "script/types/dateTime.js";
-import { createElementFromTemplate } from "script/util.js";
+import { TravelCalendar } from "script/customElements/travelCalendar/travelCalendar.js";
+import { calculateDiff, createElementFromTemplate } from "script/util.js";
+
+export function createEntryFromConnection(c) {
+  const data = {
+    ".connection-icon": { src: c.icon },
+    ".connection-number": { innerHTML: c.name },
+    ".start .time": { innerHTML: c.departure.toFormat("HH:mm") },
+    ".start .station": { innerHTML: c.from },
+    ".destination .time": { innerHTML: c.arrival.toFormat("HH:mm") },
+    ".destination .station": { innerHTML: c.to },
+  };
+
+  // try to move dataset into the above
+  const e = createElementFromTemplate("template-calendar-connection", data);
+  e.dataset.connectionId = c.id;
+  e.dataset.departureDatetime = c.departure.toISO();
+  e.dataset.arrivalDatetime = c.arrival.toISO();
+  e.dataset.color = c.color ?? "";
+  e.dataset.group = c.leg ?? "";
+  e.dataset.status = c.status;
+
+  return e;
+}
 
 export class CalendarWrapper {
   #callbacks = {
@@ -8,21 +30,27 @@ export class CalendarWrapper {
   };
 
   #travelCalendar;
+  #previousConnections = {};
 
+  // can not replace this with a selector on [data.connection-id]
+  // because the connection ids make invalid selectors
   #idToEntry = new Map();
-  #entryToId = new Map();
 
+  /**
+   * @param {TravelCalendar} travelCalendar
+   */
   constructor(travelCalendar) {
     this.#travelCalendar = travelCalendar;
 
     this.#travelCalendar.on("hoverOn", (entry) => {
-      this.#callbacks.connectionHover(this.#entryToId.get(entry), true);
+      this.#callbacks.connectionHover(entry.dataset.connectionId, true);
     });
     this.#travelCalendar.on("hoverOff", (entry) => {
-      this.#callbacks.connectionHover(this.#entryToId.get(entry), false);
+      this.#callbacks.connectionHover(entry.dataset.connectionId, false);
     });
     this.#travelCalendar.on("drop", (entry) => {
-      this.#callbacks.connectionMoved(this.#entryToId.get(entry));
+      console.log(entry.dataset.connectionId);
+      this.#callbacks.connectionMoved(entry.dataset.connectionId);
     });
   }
 
@@ -39,7 +67,7 @@ export class CalendarWrapper {
   /**
    * @typedef {import("script/data/components/calendar.js").CalendarEvent} CalendarEvent
    *
-   * @param {DateTime} startDate
+   * @param {String} startDate
    * @param {CalendarEvent[]} connections
    */
   updateView(startDate, connections) {
@@ -47,71 +75,45 @@ export class CalendarWrapper {
     if (this.#travelCalendar.getAttribute("start-date") !== startDate)
       this.#travelCalendar.setAttribute("start-date", startDate);
 
+    // turn into object - todo should data just be an object?
+    const newConnections = {};
+    for (let c of connections) newConnections[c.id] = c;
+
+    const diff = calculateDiff(
+      Object.keys(this.#previousConnections),
+      Object.keys(newConnections),
+    );
+
+    // remove entries that should no longer be displayed
+    for (let id of diff.removed) {
+      const entry = this.#idToEntry.get(id);
+      this.#travelCalendar.removeChild(entry);
+      this.#idToEntry.delete(id);
+    }
+
+    // update status for entries that are staying
+    for (let id of diff.same) {
+      if (this.#previousConnections[id].status !== newConnections[id].status) {
+        this.#idToEntry.get(id).dataset.status = newConnections[id].status;
+      }
+    }
+
     // sort such that earliest will be first child etc
     // otherwise they might overlay each other and drag&drop won't work
     // warning: this only works because we are never adding new connections to existing legs
-    // @ts-expect-error 2362 (minus not defined for our DateTime type)
-    connections.sort((c1, c2) => c1.departure - c2.departure);
+    // todo this should get moved into TravelCalendar
+    // todo then we can also update by removing and re-adding without destroying order
+    const toAddOrdered = diff.added.sort(
+      (c1, c2) => newConnections[c1].departure - newConnections[c2].departure,
+    );
 
-    // remove entries that are currently in calendar but no longer necessary
-    const ids = connections.map((c) => c.id);
-    for (let id_ of this.#idToEntry.keys()) {
-      if (ids.includes(id_)) continue; // still necessary
-
-      const entry = this.#idToEntry.get(id_);
-      this.#travelCalendar.removeChild(entry);
-
-      this.#idToEntry.delete(id_);
-      this.#entryToId.delete(entry);
+    // add entry for each new connection in the right order
+    for (let id of toAddOrdered) {
+      const entry = createEntryFromConnection(newConnections[id]);
+      this.#travelCalendar.appendChild(entry);
+      this.#idToEntry.set(id, entry);
     }
 
-    // add new entries
-    for (let c of connections) {
-      // already added before, just need to update
-      if (this.#idToEntry.has(c.id)) {
-        const entry = this.#idToEntry.get(c.id);
-        this.#updateEntry(entry, c);
-      }
-      // new connection -> new entry
-      else {
-        const entry = this.#createEntryFromConnection(c);
-        this.#travelCalendar.appendChild(entry);
-
-        this.#idToEntry.set(c.id, entry);
-        this.#entryToId.set(entry, c.id);
-      }
-    }
-  }
-
-  #createEntryFromConnection(c) {
-    const data = {
-      ".connection-icon": { src: c.icon },
-      ".connection-number": { innerHTML: c.name },
-      ".start .time": { innerHTML: c.departure.toFormat("HH:mm") },
-      ".start .station": { innerHTML: c.from },
-      ".destination .time": { innerHTML: c.arrival.toFormat("HH:mm") },
-      ".destination .station": { innerHTML: c.to },
-    };
-
-    // try to move dataset into the above
-    const e = createElementFromTemplate("template-calendar-connection", data);
-    e.dataset.departureDatetime = c.departure.toISO();
-    e.dataset.arrivalDatetime = c.arrival.toISO();
-    e.dataset.color = c.color ?? "";
-    e.dataset.group = c.leg ?? "";
-    e.dataset.status = c.status;
-
-    return e;
-  }
-
-  #updateEntry(entry, c) {
-    // travelcalendar supports also changes in startDatetime and endDatetime
-    // but right now those don't change and implementing anything here anyway might
-    // lead to a lot of date formatting overhead so let's just not do it
-    // todo then do I want to allow updating at all?
-
-    for (let key of ["color", "leg", "status"]) {
-      if (c[key] !== entry.dataset[key]) entry.dataset[key] = c[key];
-    }
+    this.#previousConnections = newConnections;
   }
 }

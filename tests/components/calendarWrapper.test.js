@@ -1,298 +1,184 @@
 /**
+ *
  * @vitest-environment jsdom
  */
-import { beforeEach, test, expect, vi } from "vitest";
-
-import { CalendarWrapper } from "script/components/calendar.js";
-import { prepareDataForCalendar } from "script/data/components/calendar.js";
-import { Itinerary } from "script/types/itinerary.js";
+// @ts-nocheck loads of ts warnings because of mocking
+import { test, expect, vi, beforeEach } from "vitest";
 
 import {
-  connectionFromShorthand as _c,
-  getTestColor as _color,
-  DAY1,
-} from "tests/_helpers/data.js";
-import {
-  dispatchTestEvent,
-  initTestDOM,
-  TEST_DOM,
-  timeout,
-} from "tests/_helpers/domUtils.js";
+  CalendarWrapper,
+  createEntryFromConnection,
+} from "script/components/calendar.js";
 
-beforeEach(async () => {
+import { DAY1 } from "tests/_helpers/data.js";
+import { initTestDOM } from "tests/_helpers/domUtils.js";
+
+beforeEach(() => {
   initTestDOM();
 });
 
-// these tests are mostly here to make sure that the data from the prepareDataForXXX methods
-// is properly used to fill in the templates
-// -> instead of directly creating the data, we are letting prepareDataForXXX prepare it
-async function updateCalendar(calendar, activeConnections, alternatives) {
-  const itinerary = new Itinerary(activeConnections);
-  const data = prepareDataForCalendar(itinerary, alternatives);
+function mockTravelCalendar() {
+  const mock = {
+    getAttribute: () => DAY1,
+    on: vi.fn(),
+    appendChild: vi.fn(),
+    removeChild: vi.fn(),
+    querySelector: vi.fn(),
+  };
 
-  calendar.updateView(DAY1, data);
-  await timeout(10);
+  mock.appendChildCalledWithDepartureTimes = () =>
+    mock.appendChild.mock.calls.map(
+      (args) => args[0].dataset.departureDatetime,
+    );
+
+  mock.removeChildCalledWithDepartureTimes = () =>
+    mock.removeChild.mock.calls.map(
+      (args) => args[0].dataset.departureDatetime,
+    );
+
+  return mock;
 }
 
-const connectionNumbers = () =>
-  TEST_DOM.calendarEntries.map(
-    (e) => e.querySelector(".connection-number").innerHTML,
-  );
+test("create entry should fill the template correctly", async function () {
+  const c = {
+    id: "123",
+    leg: `S1->S2`,
+    name: "ICE 123",
+    icon: "rail.svg",
+    from: "Stop1",
+    departure: DAY1.plus({ hours: 3, minutes: 10 }),
+    to: "Stop2",
+    arrival: DAY1.plus({ days: 1, hours: 22, minutes: 37 }),
+    color: "red",
+    status: "active",
+  };
 
-test("update view should fill in template correctly", async function () {
-  const c1 = _c("T1: S1@D1T10->S2@D1T11");
-  const c1_alt1 = _c("T2: S1@D2T10->S2@D2T11");
-  const c1_alt2 = _c("T3: S1@D3T10->S2@D3T11");
-  const c2 = _c("T4: S2@D3T14->S3@D3T15");
-
-  const active = [c1, c2];
-  const alternatives = [[c1_alt1, c1_alt2], []]; // no alternatives for c2
-
-  const calendar = new CalendarWrapper(TEST_DOM.calendar);
-  await updateCalendar(calendar, active, alternatives);
-
-  // todo how does day fit into here
-  expect(TEST_DOM.calendarEntries.length).toBe(4);
-  expect(TEST_DOM.calendarEntries[0]).toMatchDOMObject({
+  const got = createEntryFromConnection(c);
+  expect(got).toMatchDOMObject({
     dataset: {
-      group: "C1->C2",
-      active: "active",
-      color: _color(0),
-      departureDatetime: c1.from.departure.toISO(),
-      arrivalDatetime: c1.to.arrival.toISO(),
+      connectionId: "123",
+      group: "S1->S2",
+      status: "active",
+      color: "red",
+      departureDatetime: c.departure.toISO(),
+      arrivalDatetime: c.arrival.toISO(),
     },
     selectors: {
-      ".connection-icon": { src: expect.stringMatching("train.svg") },
-      ".connection-number": { innerHTML: "ICE T1" },
-      ".start .time": { innerHTML: "10:01" },
+      ".connection-icon": { src: "rail.svg" },
+      ".connection-number": { innerHTML: "ICE 123" },
+      ".start .time": { innerHTML: "03:10" },
       ".start .station": { innerHTML: "Stop1" },
-      ".destination .time": { innerHTML: "11:00" },
+      ".destination .time": { innerHTML: "22:37" },
       ".destination .station": { innerHTML: "Stop2" },
     },
   });
-  expect(TEST_DOM.calendarEntries[1]).toMatchDOMObject({
-    dataset: {
-      group: "C1->C2",
-      active: "",
-      color: _color(0),
-      departureDatetime: c1_alt1.from.departure.toISO(),
-      arrivalDatetime: c1_alt1.to.arrival.toISO(),
-    },
-    selectors: {
-      ".connection-icon": { src: expect.stringMatching("train.svg") },
-      ".connection-number": { innerHTML: "ICE T2" },
-      ".start .time": { innerHTML: "10:01" },
-      ".start .station": { innerHTML: "Stop1" },
-      ".destination .time": { innerHTML: "11:00" },
-      ".destination .station": { innerHTML: "Stop2" },
-    },
-  });
-  expect(TEST_DOM.calendarEntries[2]).toMatchDOMObject({
-    dataset: {
-      group: "C1->C2",
-      active: "",
-      color: _color(0),
-      departureDatetime: c1_alt2.from.departure.toISO(),
-      arrivalDatetime: c1_alt2.to.arrival.toISO(),
-    },
-    selectors: {
-      ".connection-icon": { src: expect.stringMatching("train.svg") },
-      ".connection-number": { innerHTML: "ICE T3" },
-      ".start .time": { innerHTML: "10:01" },
-      ".start .station": { innerHTML: "Stop1" },
-      ".destination .time": { innerHTML: "11:00" },
-      ".destination .station": { innerHTML: "Stop2" },
-    },
-  });
-  expect(TEST_DOM.calendarEntries[3]).toMatchDOMObject({
-    dataset: {
-      group: "C2->C3",
-      active: "active",
-      color: _color(1),
-      departureDatetime: c2.from.departure.toISO(),
-      arrivalDatetime: c2.to.arrival.toISO(),
-    },
-    selectors: {
-      ".connection-icon": { src: expect.stringMatching("train.svg") },
-      ".connection-number": { innerHTML: "ICE T4" },
-      ".start .time": { innerHTML: "14:01" },
-      ".start .station": { innerHTML: "Stop2" },
-      ".destination .time": { innerHTML: "15:00" },
-      ".destination .station": { innerHTML: "Stop3" },
-    },
-  });
 });
 
-test("update view should sort connections by start datetime", async function () {
-  const c1 = _c("T1: S1@D2T10->S2@D2T11");
-  const c1_alt1 = _c("T2: S1@D1T07->S2@D1T08");
-  const c1_alt2 = _c("T3: S1@D1T10->S2@D1T11");
-  const c2 = _c("T4: S2@D3T14->S3@D3T15");
+test("New connection should be added as entry to travelCalendar", async () => {
+  const c = {
+    id: "c1",
+    departure: DAY1.plus({ minutes: 1 }),
+    arrival: DAY1.plus({ minutes: 1 }),
+  };
 
-  const active = [c1, c2];
-  const alternatives = [[c1_alt1, c1_alt2], []];
+  const mock = mockTravelCalendar();
+  const calendar = new CalendarWrapper(mock);
 
-  const calendar = new CalendarWrapper(TEST_DOM.calendar);
-  await updateCalendar(calendar, active, alternatives);
+  calendar.updateView(DAY1, [c]);
 
-  expect(connectionNumbers()).toMatchObject([
-    "ICE T2",
-    "ICE T3",
-    "ICE T1",
-    "ICE T4",
+  expect(mock.appendChild).toHaveBeenCalledTimes(1);
+  expect(mock.removeChild).toHaveBeenCalledTimes(0);
+
+  expect(mock.appendChildCalledWithDepartureTimes()).toStrictEqual([
+    c.departure.toISO(),
   ]);
 });
 
-test("update view should add/delete connections as necessary", async function () {
-  const c1 = _c("T1: S1@D1T10->S2@D1T11");
-  const c1_alt1 = _c("T2: S1@D2T10->S2@D2T11");
-  const c1_alt2 = _c("T3: S1@D3T10->S2@D3T11");
-  const c2 = _c("T4: S2@D3T14->S3@D3T15");
+test("If multiple connections are added, they should be sorted by departure time", async () => {
+  const c1 = {
+    id: "c1",
+    departure: DAY1.plus({ minutes: 100 }),
+    arrival: DAY1.plus({ minutes: 100 }),
+  };
+  const c2 = {
+    id: "c2",
+    departure: DAY1.plus({ minutes: 1 }),
+    arrival: DAY1.plus({ minutes: 1 }),
+  };
 
-  const active = [c1, c2];
-  const alternatives = [[c1_alt1, c1_alt2], [c2]];
+  const mock = mockTravelCalendar();
+  const calendar = new CalendarWrapper(mock);
 
-  const calendar = new CalendarWrapper(TEST_DOM.calendar);
+  calendar.updateView(DAY1, [c1, c2]);
 
-  // all connections currently relevant
-  await updateCalendar(calendar, active, alternatives);
-  expect(connectionNumbers()).toMatchObject([
-    "ICE T1",
-    "ICE T2",
-    "ICE T3",
-    "ICE T4",
-  ]);
+  expect(mock.appendChild).toHaveBeenCalledTimes(2);
+  expect(mock.removeChild).toHaveBeenCalledTimes(0);
 
-  // they are still relevant
-  await updateCalendar(calendar, active, alternatives);
-  expect(connectionNumbers()).toMatchObject([
-    "ICE T1",
-    "ICE T2",
-    "ICE T3",
-    "ICE T4",
-  ]);
-
-  // removing the alternatives
-  await updateCalendar(calendar, active, [[], []]);
-  expect(connectionNumbers()).toMatchObject(["ICE T1", "ICE T4"]);
-
-  // now alternatives are back
-  // todo yes indeed that results in a bad time order of connections
-  // todo if it happens to be in good time order, i.e. this test fails,
-  //  then "station3" entry was identified as changed and removed and re-added
-  // which means that this will happen to all the entries which means bad performance
-  // todo but they need to be in right time order for drag and drop to work
-  await updateCalendar(calendar, active, alternatives);
-  expect(connectionNumbers()).toMatchObject([
-    "ICE T1",
-    "ICE T4",
-    "ICE T2",
-    "ICE T3",
+  expect(mock.appendChildCalledWithDepartureTimes()).toStrictEqual([
+    c2.departure.toISO(),
+    c1.departure.toISO(),
   ]);
 });
 
-test("update view should propagate connection changes to calendar entries", async function () {
-  // manually setting connection data for better control of dataset
-  const connections = [
-    {
-      uniqueId: "1",
-      name: "1",
-      icon: "1.jpg",
-      color: "purple",
-      leg: "leg1",
-      startDateTime: DAY1.plus({ days: 0, hours: 9 }),
-      startStation: "S1",
-      endDateTime: DAY1.plus({ days: 0, hours: 20 }),
-      endStation: "S2",
-      selected: false,
-    },
-    {
-      uniqueId: "2",
-      name: "2",
-      icon: "2.jpg",
-      color: "orange",
-      leg: "leg2",
-      startDateTime: DAY1.plus({ days: 1, hours: 9 }),
-      startStation: "S1",
-      endDateTime: DAY1.plus({ days: 1, hours: 20 }),
-      endStation: "S2",
-      selected: false,
-    },
-  ];
+test("If connection is removed, the respective entry should be removed from travelCalendar", async () => {
+  const c = {
+    id: "c1",
+    departure: DAY1.plus({ minutes: 1 }),
+    arrival: DAY1.plus({ minutes: 1 }),
+  };
 
-  const calendar = new CalendarWrapper(TEST_DOM.calendar);
-  calendar.updateView(DAY1, connections);
-  await timeout(10);
+  const mock = mockTravelCalendar();
+  const calendar = new CalendarWrapper(mock);
 
-  expect(TEST_DOM.calendarEntries[0]).toMatchDOMObject({
-    dataset: { group: "leg1", active: "", color: "purple" },
-  });
-  expect(TEST_DOM.calendarEntries[1]).toMatchDOMObject({
-    dataset: { group: "leg2", active: "", color: "orange" },
-  });
+  calendar.updateView(DAY1, [c]);
+  vi.resetAllMocks();
 
-  connections[0].color = "black";
-  connections[1].leg = "legZ";
-  connections[1].selected = true;
-  calendar.updateView(DAY1, connections);
-  await timeout(10);
+  calendar.updateView(DAY1, []);
 
-  expect(TEST_DOM.calendarEntries[0]).toMatchDOMObject({
-    dataset: { group: "leg1", active: "", color: "black" },
-  });
-  expect(TEST_DOM.calendarEntries[1]).toMatchDOMObject({
-    dataset: { group: "legZ", active: "active", color: "orange" },
-  });
+  expect(mock.appendChild).toHaveBeenCalledTimes(0);
+  expect(mock.removeChild).toHaveBeenCalledTimes(1);
+
+  expect(mock.removeChildCalledWithDepartureTimes()).toStrictEqual([
+    c.departure.toISO(),
+  ]);
 });
 
-test("calendar wrapper should propagate callbacks/commands from/to calendar", async function () {
-  const c1 = _c("T1: S1@D1T10->S2@D1T11");
-  const c1_alt1 = _c("T2: S1@D2T10->S2@D2T11");
-  const c1_alt2 = _c("T3: S1@D3T10->S2@D3T11");
-  const c2 = _c("T4: S2@D3T14->S3@D3T15");
+test("If connections stay the same, travelCalendar should not be called", async () => {
+  const c = {
+    id: "c1",
+    departure: DAY1.plus({ minutes: 1 }),
+    arrival: DAY1.plus({ minutes: 2 }),
+  };
 
-  const active = [c1, c2];
-  const alternatives = [[c1_alt1, c1_alt2], [c2]];
+  const mock = mockTravelCalendar();
+  const calendar = new CalendarWrapper(mock);
 
-  const calendar = new CalendarWrapper(TEST_DOM.calendar);
-  await updateCalendar(calendar, active, alternatives);
+  calendar.updateView(DAY1, [c]);
+  vi.resetAllMocks();
 
-  // setup callback mocks
-  const dropCallback = vi.fn();
-  const hoverOnCallback = vi.fn();
-  const hoverOffCallback = vi.fn();
-  calendar.on("legChanged", dropCallback);
-  calendar.on("legHoverStart", hoverOnCallback);
-  calendar.on("legHoverStop", hoverOffCallback);
+  calendar.updateView(DAY1, [c]);
 
-  // run a bunch of callbacks on the calendar entries
-  // -> these should be propagated to calendar wrapper and our callback mocks should be called
-  await dispatchTestEvent(TEST_DOM.calendarEntryParts[0], "mouseover");
-  expect(hoverOnCallback).toHaveBeenCalledWith("C1->C2");
+  expect(mock.appendChild).toHaveBeenCalledTimes(0);
+  expect(mock.removeChild).toHaveBeenCalledTimes(0);
+});
 
-  await dispatchTestEvent(TEST_DOM.calendarEntryParts[1], "mouseout");
-  expect(hoverOffCallback).toHaveBeenCalledWith("C1->C2");
+test("If connection status changes, then status should also change in respective travelCalendarEntry", async () => {
+  const c = {
+    id: "c1",
+    departure: DAY1.plus({ minutes: 1 }),
+    arrival: DAY1.plus({ minutes: 2 }),
+    status: "active-loading",
+  };
 
-  await dispatchTestEvent(TEST_DOM.calendarEntryParts[3], "mouseout");
-  expect(hoverOffCallback).toHaveBeenCalledWith("C2->C3");
+  const cUpdated = structuredClone(c);
+  cUpdated.status = "active";
 
-  await dispatchTestEvent(TEST_DOM.calendarEntryParts[0], "dragstart");
-  await dispatchTestEvent(TEST_DOM.calendarEntryParts[1], "dragenter");
-  await dispatchTestEvent(TEST_DOM.calendarEntryParts[1], "drop");
-  expect(dropCallback).toHaveBeenCalledWith(c1_alt1.id);
+  const mock = mockTravelCalendar();
+  const calendar = new CalendarWrapper(mock);
 
-  // when sending a command to calendar wrapper it should be propagated to the calendar
-  calendar.setHoverLeg("C1->C2");
-  expect(TEST_DOM.calendarEntryParts[0]).toMatchDOMObject({
-    class: expect.stringMatching("hover"),
-  });
-  expect(TEST_DOM.calendarEntryParts[1]).toMatchDOMObject({
-    class: expect.stringMatching("hover"),
-  });
-  expect(TEST_DOM.calendarEntryParts[2]).toMatchDOMObject({
-    class: expect.stringMatching("hover"),
-  });
-  expect(TEST_DOM.calendarEntryParts[3]).toMatchDOMObject({
-    class: expect.not.stringMatching("hover"),
-  });
+  calendar.updateView(DAY1, [c]);
+  const entry = mock.appendChild.mock.calls[0][0];
+
+  calendar.updateView(DAY1, [cUpdated]);
+  expect(entry.dataset.status).toBe("active");
 });

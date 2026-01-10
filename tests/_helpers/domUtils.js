@@ -37,7 +37,7 @@ export function domElementToObject(element, optionalSelectors = null) {
   };
 
   for (let s of element.attributes) {
-    if (s.name.startsWith("data") || ["style"].includes(s.name)) continue;
+    if (s.name.startsWith("dataset") || ["style"].includes(s.name)) continue;
     result[s.name] = s.value;
   }
 
@@ -50,7 +50,7 @@ export function domElementToObject(element, optionalSelectors = null) {
   return result;
 }
 
-/* custom jest matcher to be able to test DOM elements very similar to testing objects*/
+/* custom matcher to be able to test DOM elements very similar to testing objects*/
 /* this is called every time this file is imported, i.e. extending multiple times, seems not an issue */
 expect.extend({
   toMatchDOMObject(actual, expected) {

@@ -39,3 +39,14 @@ test("changeActiveItinerary", async function () {
   expect(state.activeItinerary).toBe(i2);
   expect(state.otherItineraries).toStrictEqual([i1]);
 });
+
+test("replaceLegInActiveItinerary", async function () {
+  const i1 = _i(["T1: S1@D1T10->S2@D1T11"]);
+  const i2 = _i(["T2: S1@D1T11->S2@D1T12"]);
+
+  const state = new State();
+  state.replaceItineraries([i1]);
+  state.replaceLegInActiveItinerary(i2.connections[0]);
+
+  expect(state.activeItinerary).toStrictEqual(i2);
+});

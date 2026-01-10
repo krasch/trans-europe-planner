@@ -35,7 +35,7 @@ async function updateAllComponents(components, planner, state) {
     state.activeItinerary,
     alternatives,
   );
-  components.calendar.updateView(travelDate, calendarData);
+  components.calendar.updateView(travelDate.toISODate(), calendarData);
 
   // update perlschnur
   const perlschnurData = prepareDataForPerlschnur(state.activeItinerary);
@@ -93,7 +93,7 @@ export async function main(components, planner) {
 
   components.calendar.on("connectionMoved", async (newConnectionId) => {
     const connection = planner.getConnectionById(newConnectionId);
-    state.activeItinerary.replaceLeg(connection);
+    state.replaceLegInActiveItinerary(connection);
     await updateComponents(state);
   });
 
