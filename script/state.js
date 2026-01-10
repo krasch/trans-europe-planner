@@ -1,4 +1,3 @@
-import { Connection } from "script/types/connection.js";
 import { Itinerary } from "script/types/itinerary.js";
 
 export class StateError extends Error {
@@ -59,9 +58,8 @@ export class State {
 
   /**
    * @param {Itinerary[]} itineraries
-   * @param {boolean} setFirstAsActive
    */
-  replaceItineraries(itineraries, setFirstAsActive = false) {
+  replaceItineraries(itineraries) {
     if (itineraries.length === 0)
       throw new StateError("List of itineraries is empty");
 
@@ -72,42 +70,9 @@ export class State {
       if (this.#otherItineraries[itinerary.id])
         throw new StateError(`Duplicate itineraries: ${itinerary.id}`);
 
-      // todo check if correct home?
       this.#otherItineraries[itinerary.id] = itinerary;
     }
 
-    if (setFirstAsActive) this.setActiveItinerary(itineraries[0].id);
-  }
-
-  /**
-   * @param {Connection} newConnection
-   */
-  replaceLegInActiveItinerary(newConnection) {
-    // todo move whole thing into itinerary?
-
-    if (!this.#activeItinerary)
-      throw new StateError("No itinerary is currently set to active");
-
-    // todo
-    const ref = `${newConnection.from.stopId}->${newConnection.to.stopId}`;
-
-    // make copy
-    const connections = Array.from(this.#activeItinerary.connections);
-
-    let found = false;
-    for (let i in connections) {
-      const leg = `${connections[i].from.stopId}->${connections[i].to.stopId}`; // todo
-
-      // move into itinerary: getConnectionForLeg
-      if (ref === leg) {
-        connections[i] = newConnection; // overwrite todo make more obvious
-        found = true;
-      }
-    }
-
-    if (!found)
-      throw new StateError(`Leg ${ref} is not part of current itinerary`);
-
-    this.#activeItinerary = new Itinerary(connections);
+    this.setActiveItinerary(itineraries[0].id);
   }
 }

@@ -10,7 +10,7 @@ import {
   parseMotisItinerary,
 } from "./parser.js";
 
-const BASE_URL = "http://192.168.178.36:8080";
+const BASE_URL = "http://192.168.1.54:8080";
 //const BASE_URL = "https://api.transitous.org/api";
 const REFERRER = "https://trans-europe-planner.eu";
 

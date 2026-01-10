@@ -3,7 +3,6 @@ import { prepareDataForMap } from "script/data/components/map.js";
 import { prepareDataForPerlschnur } from "script/data/components/perlschnur.js";
 import { Planner } from "script/planner.js";
 import { State } from "script/state.js";
-import { DateTime } from "script/types/dateTime.js";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -61,7 +60,7 @@ export async function main(components, planner) {
     components.config.lock();
 
     const itineraries = await planner.plan(from, to, date);
-    state.replaceItineraries(itineraries, true);
+    state.replaceItineraries(itineraries);
     //await sleep(1000);
 
     // draw first updates (calendar has no alternatives yet -> no drag&drop)
@@ -94,7 +93,7 @@ export async function main(components, planner) {
 
   components.calendar.on("connectionMoved", async (newConnectionId) => {
     const connection = planner.getConnectionById(newConnectionId);
-    state.replaceLegInActiveItinerary(connection);
+    state.activeItinerary.replaceLeg(connection);
     await updateComponents(state);
   });
 
