@@ -54,8 +54,23 @@ export function domElementToObject(element, optionalSelectors = null) {
 /* this is called every time this file is imported, i.e. extending multiple times, seems not an issue */
 expect.extend({
   toMatchDOMObject(actual, expected) {
+    const extraSelectors = expected.selectors ?? {};
+
     // extract all the necessary data from the dom element
-    actual = domElementToObject(actual, expected.selectors);
+    actual = domElementToObject(actual, extraSelectors);
+
+    // then can do normal object matching
+    expect(actual).toMatchObject(expected);
+
+    // this is only necessary to satisfy the API requirements of jest
+    return { pass: true, message: () => "" };
+  },
+
+  toMatchDOMObjectList(actual, expected) {
+    const extraSelectors = expected.selectors ?? {};
+
+    // extract all the necessary data from the dom elements
+    actual = actual.map((a) => domElementToObject(a, extraSelectors));
 
     // then can do normal object matching
     expect(actual).toMatchObject(expected);
@@ -86,6 +101,8 @@ export async function dispatchTestEvent(
     mouseout: MouseEvent,
     mousemove: MapMouseEvent,
     click: MapMouseEvent,
+    input: InputEvent,
+    submit: SubmitEvent,
     dragstart: DragEvent,
     dragend: DragEvent,
     dragenter: DragEvent,

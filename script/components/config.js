@@ -22,7 +22,10 @@ function createAutocompleteItem(data) {
  * @param {HTMLInputElement} inputElement
  * @param {HTMLUListElement} autocompleteContainer
  */
-async function setAutocompleteOptions(inputElement, autocompleteContainer) {
+export async function setAutocompleteOptions(
+  inputElement,
+  autocompleteContainer,
+) {
   const userInput = inputElement.value;
   if (userInput.length < 3) {
     autocompleteContainer.innerHTML = "";
@@ -41,8 +44,7 @@ async function setAutocompleteOptions(inputElement, autocompleteContainer) {
     stops.push(createAutocompleteItem(result.stop));
   }
 
-  // todo remove duplicates from places?
-  autocompleteContainer.replaceChildren(...places.concat(stops));
+  autocompleteContainer.replaceChildren(...stops);
 }
 
 export class Config {

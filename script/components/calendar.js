@@ -49,7 +49,6 @@ export class CalendarWrapper {
       this.#callbacks.connectionHover(entry.dataset.connectionId, false);
     });
     this.#travelCalendar.on("drop", (entry) => {
-      console.log(entry.dataset.connectionId);
       this.#callbacks.connectionMoved(entry.dataset.connectionId);
     });
   }

@@ -2,7 +2,7 @@
  *
  * @vitest-environment jsdom
  */
-// @ts-nocheck loads of ts warnings because of mocking
+// @ts-nocheck -- loads of ts warnings because of mocking
 import { test, expect, vi, beforeEach } from "vitest";
 
 import {
