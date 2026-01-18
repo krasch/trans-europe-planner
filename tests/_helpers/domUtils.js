@@ -54,10 +54,8 @@ export function domElementToObject(element, optionalSelectors = null) {
 /* this is called every time this file is imported, i.e. extending multiple times, seems not an issue */
 expect.extend({
   toMatchDOMObject(actual, expected) {
-    const extraSelectors = expected.selectors ?? {};
-
     // extract all the necessary data from the dom element
-    actual = domElementToObject(actual, extraSelectors);
+    actual = domElementToObject(actual, expected.selectors);
 
     // then can do normal object matching
     expect(actual).toMatchObject(expected);
@@ -67,10 +65,10 @@ expect.extend({
   },
 
   toMatchDOMObjectList(actual, expected) {
-    const extraSelectors = expected.selectors ?? {};
-
     // extract all the necessary data from the dom elements
-    actual = actual.map((a) => domElementToObject(a, extraSelectors));
+    actual = Array.from(actual).map((a, i) =>
+      domElementToObject(a, expected[i].selectors),
+    );
 
     // then can do normal object matching
     expect(actual).toMatchObject(expected);

@@ -17,7 +17,7 @@ import {
 } from "tests/_helpers/domUtils.js";
 
 beforeEach(async () => {
-  initTestDOM(); // needed for templates
+  initTestDOM();
 
   vi.mock("script/motis/client.js", () => {
     return { geocode: vi.fn() };
@@ -54,7 +54,7 @@ test("Autocomplete should call geocoding and fill in options", async () => {
   await setAutocompleteOptions(input, container);
   await timeout(10);
 
-  expect(Array.from(container.children)).toMatchDOMObjectList([
+  expect(container.children).toMatchDOMObjectList([
     { innerHTML: expect.stringContaining("abcd1"), dataset: { name: "abcd1" } },
     { innerHTML: expect.stringContaining("abcd2"), dataset: { name: "abcd2" } },
     { innerHTML: expect.stringContaining("abcd3"), dataset: { name: "abcd3" } },
