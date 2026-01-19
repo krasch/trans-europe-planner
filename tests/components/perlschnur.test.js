@@ -1,61 +1,28 @@
 /**
  * @vitest-environment jsdom
  */
-import { beforeEach, test, expect, vi, afterEach } from "vitest";
+import { beforeEach, test, expect } from "vitest";
 
 import { Perlschnur } from "script/components/perlschnur.js";
-import {
-  formatDate,
-  prepareDataForPerlschnur,
-} from "script/data/components/perlschnur.js";
-import { Itinerary } from "script/types/itinerary.js";
 
-import {
-  connectionFromShorthand as _c,
-  DAY1,
-  TEST_COLORS,
-} from "tests/_helpers/data.js";
 import { initTestDOM, timeout } from "tests/_helpers/domUtils.js";
-
-const DAY1_STRING = `(${formatDate(DAY1)})`;
 
 beforeEach(async () => {
   initTestDOM();
-
-  vi.mock("script/data/components/_common.js", () => {
-    return {
-      getColor: (idx) => TEST_COLORS[idx],
-      getIcon: (mode) => `${mode}.svg`,
-    };
-  });
 });
 
-afterEach(async () => {
-  vi.restoreAllMocks();
-});
-
-// these tests are mostly here to make sure that the data from the prepareDataForXXX methods
-// is properly used to fill in the templates
-// -> instead of directly creating the data, we are letting prepareDataForXXX prepare it
-async function updatePerlschnur(perlschnur, connections) {
-  const itinerary = new Itinerary(connections);
-  const data = prepareDataForPerlschnur(itinerary);
-
-  perlschnur.updateView(data);
-  await timeout(10);
-}
-
-function _stop(date, time, station) {
+function _stop(date, time, stopId, stopName) {
   return {
     selectors: {
       ".time": { innerText: time },
       ".date": { innerText: date },
-      ".station": { innerText: station },
+      ".station": { innerText: stopName },
     },
+    dataset: { stopId: stopId },
   };
 }
 
-function _connection(icon, number, travelTime, color) {
+function _connection(id, icon, number, travelTime, color) {
   return {
     selectors: {
       ".connection-icon": { src: expect.stringMatching(icon) },
@@ -63,43 +30,88 @@ function _connection(icon, number, travelTime, color) {
       ".connection-travel-time": { innerText: travelTime },
     },
     style: { "--color": color },
+    dataset: { connectionId: id },
   };
 }
 
 const domElements = {
   perlschnur: () => document.querySelector("#perlschnur"),
   connections: () => document.querySelectorAll(".perlschnur-connection"),
-  stops: () => document.querySelectorAll(".perlschnur-stop"),
+  stops: (conn) => conn.querySelector(".perlschnur-stop-list").children,
   transfers: () => document.querySelectorAll(".perlschnur-transfer"),
 };
 
-test("update view should fill in template correctly", async function () {
-  const c1 = _c("T1: S1@D1T10->S2@D1T11->S3@D1T12");
-  const c2 = _c("T2: S3@D1T13->S4@D1T14");
-  const c3 = _c("T3: S4@D1T17->S5@D2T07"); // overnight
+test("update view should fill in all templates correctly", async function () {
+  const data = [
+    {
+      id: "c1",
+      color: "red",
+      name: "ICE T1",
+      icon: "REGIONAL_RAIL.svg",
+      travelTime: "1h 59min",
+      stops: [
+        { stopId: "S1", stopName: "Stop1", time: "10:01", date: "(15 Oct)" },
+        { stopId: "S2", stopName: "Stop2", time: "11:00", date: "" },
+        { stopId: "S3", stopName: "Stop3", time: "12:00", date: "" },
+      ],
+      transferTime: "1h 1min",
+    },
+    {
+      id: "c2",
+      color: "green",
+      name: "ICE T2",
+      icon: "REGIONAL_RAIL.svg",
+      travelTime: "59min",
+      stops: [
+        { stopId: "S3", stopName: "Stop3", time: "13:01", date: "" },
+        { stopId: "S4", stopName: "Stop4", time: "14:00", date: "" },
+      ],
+      transferTime: "3h 1min",
+    },
+    {
+      id: "c3",
+      color: "blue",
+      name: "ICE T3",
+      icon: "REGIONAL_RAIL.svg",
+      travelTime: "13h 59min",
+      stops: [
+        { stopId: "S4", stopName: "Stop4", time: "17:01", date: "" },
+        { stopId: "S5", stopName: "Stop5", time: "07:00", date: "(16 Oct)" },
+      ],
+      transferTime: null,
+    },
+  ];
 
   const perlschnur = new Perlschnur(domElements.perlschnur());
-  await updatePerlschnur(perlschnur, [c1, c2, c3]);
+  perlschnur.updateView(data);
+  await timeout(10);
 
   // connections
-  expect(domElements.connections()).toMatchDOMObjectList([
-    _connection("RAIL.svg", "ICE T1", "1h 59min", TEST_COLORS[0]),
-    _connection("RAIL.svg", "ICE T2", "59min", TEST_COLORS[1]),
-    _connection("RAIL.svg", "ICE T3", "13h 59min", TEST_COLORS[2]),
+  const connections = domElements.connections();
+  expect(connections).toMatchDOMObjectList([
+    _connection("c1", "RAIL.svg", "ICE T1", "1h 59min", "red"),
+    _connection("c2", "RAIL.svg", "ICE T2", "59min", "green"),
+    _connection("c3", "RAIL.svg", "ICE T3", "13h 59min", "blue"),
   ]);
 
-  // stops
-  expect(domElements.stops()).toMatchDOMObjectList([
-    // connection 1
-    _stop(DAY1_STRING, "10:01", "Stop1"),
-    _stop("", "11:00", "Stop2"),
-    _stop("", "12:00", "Stop3"),
-    // connection 2
-    _stop("", "13:01", "Stop3"),
-    _stop("", "14:00", "Stop4"),
-    // connection 3
-    _stop("", "17:01", "Stop4"),
-    _stop("(16 Oct)", "07:00", "Stop5"),
+  // stops for connection 1
+  expect(domElements.stops(connections[0])).toMatchDOMObjectList([
+    _stop("(15 Oct)", "10:01", "S1", "Stop1"),
+    { selectors: { ".count": { innerText: 1 } } }, // collapse
+    _stop("", "11:00", "S2", "Stop2"),
+    _stop("", "12:00", "S3", "Stop3"),
+  ]);
+
+  // stops for connection 2
+  expect(domElements.stops(connections[1])).toMatchDOMObjectList([
+    _stop("", "13:01", "S3", "Stop3"),
+    _stop("", "14:00", "S4", "Stop4"),
+  ]);
+
+  // stops for connection 3
+  expect(domElements.stops(connections[2])).toMatchDOMObjectList([
+    _stop("", "17:01", "S4", "Stop4"),
+    _stop("(16 Oct)", "07:00", "S5", "Stop5"),
   ]);
 
   // transfers
@@ -112,26 +124,56 @@ test("update view should fill in template correctly", async function () {
 });
 
 test("update view should update with new connection data", async function () {
-  const c1 = _c("T1: S1@D1T10->S2@D1T11->S3@D1T12");
-  const c2 = _c("T2: S3@D1T13->S4@D1T14");
-  const c3 = _c("T3: S4@D1T17->S5@D2T07"); // overnight
+  const data1 = [
+    {
+      id: "c1",
+      color: "red",
+      name: "ICE T1",
+      icon: "REGIONAL_RAIL.svg",
+      travelTime: "1h 59min",
+      stops: [
+        { stopId: "S1", stopName: "Stop1", time: "10:01", date: "(15 Oct)" },
+        { stopId: "S2", stopName: "Stop2", time: "11:00", date: "" },
+        { stopId: "S3", stopName: "Stop3", time: "12:00", date: "" },
+      ],
+      transferTime: null,
+    },
+  ];
+
+  const data2 = [
+    {
+      id: "c2",
+      color: "green",
+      name: "ICE T2",
+      icon: "REGIONAL_RAIL.svg",
+      travelTime: "59min",
+      stops: [
+        { stopId: "S3", stopName: "Stop3", time: "13:01", date: "(15 Oct)" },
+        { stopId: "S4", stopName: "Stop4", time: "14:00", date: "" },
+      ],
+      transferTime: null,
+    },
+  ];
 
   // initial update
   const perlschnur = new Perlschnur(domElements.perlschnur());
-  await updatePerlschnur(perlschnur, [c1, c2, c3]);
+  perlschnur.updateView(data1);
+  await timeout(10);
 
   // new data
-  await updatePerlschnur(perlschnur, [c2]);
+  perlschnur.updateView(data2);
+  await timeout(10);
 
   // connections
-  expect(domElements.connections()).toMatchDOMObjectList([
-    _connection("RAIL.svg", "ICE T2", "59min", TEST_COLORS[0]),
+  const connections = domElements.connections();
+  expect(connections).toMatchDOMObjectList([
+    _connection("c2", "RAIL.svg", "ICE T2", "59min", "green"),
   ]);
 
   // stops
-  expect(domElements.stops()).toMatchDOMObjectList([
-    _stop(DAY1_STRING, "13:01", "Stop3"),
-    _stop("", "14:00", "Stop4"),
+  expect(domElements.stops(connections[0])).toMatchDOMObjectList([
+    _stop("(15 Oct)", "13:01", "S3", "Stop3"),
+    _stop("", "14:00", "S4", "Stop4"),
   ]);
 
   // transfers

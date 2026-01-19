@@ -24,12 +24,11 @@ function createConnectionElement(connection) {
  * @param {PerlschnurStopData} stop
  * @returns {HTMLElement}
  */
-function createStopElement(stop) {
+export function createStopElement(stop) {
   const li = createElementFromTemplate("template-perlschnur-stop", {
     ".time": { innerText: stop.time },
     ".date": { innerText: stop.date ?? "" },
     ".station": { innerText: stop.stopName },
-    "data-stop-id": stop.stopId,
   });
   li.dataset.stopId = stop.stopId;
   return li;
@@ -121,6 +120,7 @@ export class Perlschnur {
       // if too many stops, insert special "collapse" element after first stop
       // todo make it collapse for > 4, must change first/last child css logic
       const stops = connection.stops.map(createStopElement);
+      const el = createCollapseElement(stops.length - 2);
       if (stops.length > 2)
         stops.splice(1, 0, createCollapseElement(stops.length - 2));
 
