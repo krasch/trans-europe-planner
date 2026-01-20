@@ -1,7 +1,12 @@
 import { mapLayers } from "style/planner/components/map/layers.js";
 
+import "external/maplibre-gl@5.15.0/maplibre-gl.js";
+
 import { groupBy } from "script/util.js";
 
+/**
+ * @param {any[]} features
+ */
 function asGeojsonFeatureCollection(features) {
   return {
     type: "FeatureCollection",
@@ -31,7 +36,7 @@ export class MapWrapper {
    * @param {number} zoom
    */
   constructor(containerId, center, zoom) {
-    // @ts-expect-error TS2304 (todo not doing module import for maplibre)
+    // @ts-expect-error TS2686
     this.#map = new maplibregl.Map({
       container: containerId,
       style: "style/planner/components/map/outdoors-modified.json",
@@ -44,7 +49,7 @@ export class MapWrapper {
     });
 
     // visual indication that map is non-interactive
-    this.#map._container.style.opacity = 0.4;
+    this.#map._container.style.opacity = "0.4";
 
     // after map has loaded, do a bunch of initialisation stuff
     this.#mapReady = new Promise((fulfilled, rejected) => {
@@ -112,13 +117,13 @@ export class MapWrapper {
   setMapInteractive() {
     this.#mapReady.then(() => {
       // add attribution control
-      // @ts-expect-error TS2304 (todo not doing module import for maplibre)
+      // @ts-expect-error TS2686
       const attribution = new maplibregl.AttributionControl();
       this.#map.addControl(attribution);
 
       // show +/- zoom buttons
       this.#map.addControl(
-        // @ts-expect-error TS2304 (todo not doing module import for maplibre)
+        // @ts-expect-error TS2686
         new maplibregl.NavigationControl({
           showCompass: false,
           showZoom: true,
@@ -140,13 +145,13 @@ export class MapWrapper {
       this.#map.touchZoomRotate.disableRotation();
       this.#map.keyboard.disableRotation();
 
-      this.#map._container.style.opacity = 1.0;
+      this.#map._container.style.opacity = "1.0";
     });
   }
 
   async #setupLayers() {
     // empty stops source
-    await this.#map.addSource("stops", {
+    this.#map.addSource("stops", {
       type: "geojson",
       data: asGeojsonFeatureCollection([]),
       // we are using {"features": {"id": }} as id field
@@ -155,14 +160,14 @@ export class MapWrapper {
     });
 
     // empty edges source
-    await this.#map.addSource("edges", {
+    this.#map.addSource("edges", {
       type: "geojson",
       data: asGeojsonFeatureCollection([]),
       // see above
       promoteId: "id",
     });
 
-    for (let layer of mapLayers) await this.#map.addLayer(layer);
+    for (let layer of mapLayers) this.#map.addLayer(layer);
   }
 
   #initStopEventHandlers() {
