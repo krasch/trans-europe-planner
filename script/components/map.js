@@ -1,7 +1,6 @@
 import { mapLayers } from "style/planner/components/map/layers.js";
 
-import "external/maplibre-gl@5.15.0/maplibre-gl.js";
-
+import { maplibre } from "script/components/mapImport.js";
 import { groupBy } from "script/util.js";
 
 /**
@@ -36,8 +35,7 @@ export class MapWrapper {
    * @param {number} zoom
    */
   constructor(containerId, center, zoom) {
-    // @ts-expect-error TS2686
-    this.#map = new maplibregl.Map({
+    this.#map = new maplibre.Map({
       container: containerId,
       style: "style/planner/components/map/outdoors-modified.json",
       center: center,
@@ -93,8 +91,9 @@ export class MapWrapper {
    * @param {boolean} isHover
    */
   setConnectionHover(connectionId, isHover) {
-    const edges = this.#lookup.connectionIdToEdges[connectionId];
-    this.#setHoverStateForAll("edges", edges, isHover);
+    if (!this.#lookup.connectionIdToEdges[connectionId]) return;
+    const edgeIds = this.#lookup.connectionIdToEdges[connectionId];
+    this.#setHoverStateForAll("edges", edgeIds, isHover);
   }
 
   /**
@@ -102,8 +101,9 @@ export class MapWrapper {
    * @param {boolean} isHover
    */
   setItineraryHover(itineraryId, isHover) {
-    const edges = this.#lookup.itineraryIdToEdges[itineraryId];
-    this.#setHoverStateForAll("edges", edges, isHover);
+    if (!this.#lookup.itineraryIdToEdges[itineraryId]) return;
+    const edgeIds = this.#lookup.itineraryIdToEdges[itineraryId];
+    this.#setHoverStateForAll("edges", edgeIds, isHover);
   }
 
   /**
@@ -117,14 +117,12 @@ export class MapWrapper {
   setMapInteractive() {
     this.#mapReady.then(() => {
       // add attribution control
-      // @ts-expect-error TS2686
-      const attribution = new maplibregl.AttributionControl();
+      const attribution = new maplibre.AttributionControl();
       this.#map.addControl(attribution);
 
       // show +/- zoom buttons
       this.#map.addControl(
-        // @ts-expect-error TS2686
-        new maplibregl.NavigationControl({
+        new maplibre.NavigationControl({
           showCompass: false,
           showZoom: true,
         }),
@@ -302,7 +300,9 @@ export class MapWrapper {
    */
   #setHoverStateForAll(sourceName, ids, isHover) {
     for (let id of ids) {
-      const featureState = this.#previousData[sourceName][id];
+      if (!this.#previousData[sourceName][id]) continue;
+
+      const featureState = this.#previousData[sourceName][id].featureState;
       featureState.isHover = isHover;
       this.#map.setFeatureState({ source: sourceName, id: id }, featureState);
     }
