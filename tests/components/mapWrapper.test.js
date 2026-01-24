@@ -58,6 +58,7 @@ function stop(id) {
   };
 }
 
+// feature state update
 function fs(id, source, state) {
   return [{ id: id, source: source }, state];
 }
@@ -100,15 +101,13 @@ test("second update also sets all data", async ({ mapWrapper }) => {
   await mapWrapper.updateView(data);
 
   vi.resetAllMocks();
-  await mapWrapper.updateView(data);
+  const data2 = JSON.parse(JSON.stringify(data));
+  delete data2.stops.s3;
+  await mapWrapper.updateView(data2);
 
   expect(mockSources.stops.setData).toHaveBeenCalledWith({
     type: "FeatureCollection",
-    features: [
-      data.stops.s1.geoJSON,
-      data.stops.s2.geoJSON,
-      data.stops.s3.geoJSON,
-    ],
+    features: [data.stops.s1.geoJSON, data.stops.s2.geoJSON],
   });
 
   expect(mockSources.edges.setData).toHaveBeenCalledWith({
@@ -119,7 +118,6 @@ test("second update also sets all data", async ({ mapWrapper }) => {
   expect(mockMap.setFeatureState.mock.calls).toStrictEqual([
     fs("s1", "stops", data.stops.s1.featureState),
     fs("s2", "stops", data.stops.s2.featureState),
-    fs("s3", "stops", data.stops.s3.featureState),
     fs("e1", "edges", data.edges.e1.featureState),
     fs("e2", "edges", data.edges.e2.featureState),
   ]);
