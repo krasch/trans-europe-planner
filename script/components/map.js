@@ -3,7 +3,7 @@ import { mapLayers } from "style/planner/components/map/layers.js";
 // @ts-nocheck
 import "external/maplibre-gl@5.15.0/maplibre-gl.js";
 
-import { groupBy } from "script/util.js";
+import { calculateDiff, groupBy } from "script/util.js";
 
 const STYLE = "style/planner/components/map/outdoors-modified.json";
 
@@ -84,13 +84,11 @@ export class MapWrapper {
   async updateView(data) {
     await this.mapReady;
 
-    await this.#updateSourceData("stops", data.stops);
-    await this.#updateSourceData("edges", data.edges);
+    await this.#updateSourceDataAndFeatureState("stops", data.stops);
+    await this.#updateSourceDataAndFeatureState("edges", data.edges);
 
-    this.#updateFeatureState("stops", data.stops);
-    this.#updateFeatureState("edges", data.edges);
-
-    this.#updateLookup(data);
+    // update mapping from connection id and itinerary id to edges
+    this.#updateLookup(data.edges);
 
     this.#previousData = data;
   }
@@ -264,42 +262,52 @@ export class MapWrapper {
 
   /**
    * @param {string} sourceName
-   * @param {object} data todo
+   * @param {object} data
    */
-  async #updateSourceData(sourceName, data) {
-    // completely replace the source, todo instead just update
-    const geo = asGeojsonFeatureCollection(
-      Object.values(data).map((s) => s.geoJSON),
+  async #updateSourceDataAndFeatureState(sourceName, data) {
+    const diff = calculateDiff(
+      Object.keys(this.#previousData[sourceName]),
+      Object.keys(data),
     );
-    await this.map.getSource(sourceName).setData(geo);
-  }
 
-  /**
-   * @param {string} sourceName
-   * @param {object} data todo
-   */
-  #updateFeatureState(sourceName, data) {
-    // completely replace the feature state, todo instead just update
-    // todo should be async?
-    for (let id in data) {
-      this.map.setFeatureState(
-        { source: sourceName, id: id },
-        data[id].featureState,
+    // geo-items were added or remove -> let's update the whole source data
+    if (diff.added || diff.removed) {
+      const geo = asGeojsonFeatureCollection(
+        Object.values(data).map((s) => s.geoJSON),
       );
+      await this.map.getSource(sourceName).setData(geo);
+    }
+
+    // for new geo-items we can just take the full feature state dict
+    for (let id of diff.added) {
+      this.#setFeatureState(sourceName, id, data[id].featureState);
+    }
+
+    // for removed geo-items, we want to clear the current feature state
+    for (let id of diff.removed) {
+      this.#removeFeatureState(sourceName, id);
+    }
+
+    // for geo-items that were there previously, some feature values might have
+    // changed/been removed -> to be safe, let's remove the full state and
+    // then set it to the new values
+    for (let id of diff.same) {
+      this.#removeFeatureState(sourceName, id);
+      this.#setFeatureState(sourceName, id, data[id].featureState);
     }
   }
 
   /**
-   * @param {object} data todo
+   * @param {object} data
    */
   #updateLookup(data) {
     this.#lookup.connectionIdToEdges = groupBy(
-      Object.keys(data.edges),
-      (edgeId) => data.edges[edgeId].featureState.connectionId,
+      Object.keys(data),
+      (edgeId) => data[edgeId].featureState.connectionId,
     );
     this.#lookup.itineraryIdToEdges = groupBy(
-      Object.keys(data.edges),
-      (edgeId) => data.edges[edgeId].featureState.itineraryId,
+      Object.keys(data),
+      (edgeId) => data[edgeId].featureState.itineraryId,
     );
   }
 
@@ -316,5 +324,22 @@ export class MapWrapper {
       featureState.isHover = isHover;
       this.map.setFeatureState({ source: sourceName, id: id }, featureState);
     }
+  }
+
+  /**
+   * @param {string} sourceName
+   * @param {string} id
+   * @param {object} stateDict
+   */
+  #setFeatureState(sourceName, id, stateDict) {
+    this.map.setFeatureState({ source: sourceName, id: id }, stateDict);
+  }
+
+  /**
+   * @param {string} sourceName
+   * @param {string} id
+   */
+  #removeFeatureState(sourceName, id) {
+    this.map.removeFeatureState({ source: sourceName, id: id });
   }
 }

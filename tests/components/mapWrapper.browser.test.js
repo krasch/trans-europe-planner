@@ -85,7 +85,9 @@ test("first update sets all data", async ({ mapWrapper }) => {
   ]);
 });
 
-test("Removing items removes them from source data", async ({ mapWrapper }) => {
+test("Removing items removes them from source and feature state", async ({
+  mapWrapper,
+}) => {
   const data = {
     stops: { s1: stop("s1"), s2: stop("s2"), s3: stop("s3") },
     edges: { e1: edge("e1"), e2: edge("e2") },
@@ -111,12 +113,12 @@ test("Removing items removes them from source data", async ({ mapWrapper }) => {
 
   expect(mapWrapper.featureState("stops", ["s1", "s2", "s3"])).toStrictEqual([
     newData.stops.s1.featureState,
-    data.stops.s2.featureState, // todo sic still exists
+    {},
     newData.stops.s3.featureState,
   ]);
 
   expect(mapWrapper.featureState("edges", ["e1", "e2"])).toStrictEqual([
-    data.edges.e1.featureState, // todo sic still exists
+    {},
     newData.edges.e2.featureState,
   ]);
 });
