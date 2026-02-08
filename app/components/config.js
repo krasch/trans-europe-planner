@@ -1,7 +1,7 @@
-import { geocode } from "script/motis/client.js";
-import { GeocodedLocation } from "script/motis/parser.js";
-import { DateTime } from "script/types/dateTime.js";
-import { createElementFromTemplate } from "script/util.js";
+import { geocode } from "app/motis/client.js";
+import { GeocodedLocation } from "app/motis/parser.js";
+import { DateTime } from "app/types/dateTime.js";
+import { createElementFromTemplate } from "app/util.js";
 
 /**
  * @param {GeocodedLocation} data

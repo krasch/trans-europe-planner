@@ -3,7 +3,7 @@
  */
 import { test, expect, beforeEach } from "vitest";
 
-import { ResponseCache } from "script/motis/cache.js";
+import { ResponseCache } from "app/motis/cache.js";
 
 const data = { key: "value", key2: 1234 };
 const url1 = new URL("http://localhost:8080");

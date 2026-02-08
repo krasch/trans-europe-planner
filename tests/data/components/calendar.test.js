@@ -1,12 +1,12 @@
 import { test, expect, vi } from "vitest";
 
-import { prepareDataForCalendar } from "script/data/components/calendar.js";
-import { Itinerary } from "script/types/itinerary.js";
+import { prepareDataForCalendar } from "app/data/components/calendar.js";
+import { Itinerary } from "app/types/itinerary.js";
 
 import { connectionFromShorthand as _c } from "tests/_helpers/data.js";
 import { TEST_COLORS } from "tests/_helpers/data.js";
 
-vi.mock("script/data/components/_common.js", () => {
+vi.mock("app/data/components/_common.js", () => {
   return {
     getColor: (idx) => TEST_COLORS[idx],
     getIcon: (mode) => `${mode}.svg`,

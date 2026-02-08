@@ -1,7 +1,7 @@
-import { Connection } from "script/types/connection.js";
-import { DateTime } from "script/types/dateTime.js";
-import { Itinerary } from "script/types/itinerary.js";
-import { Stop } from "script/types/stop.js";
+import { Connection } from "app/types/connection.js";
+import { DateTime } from "app/types/dateTime.js";
+import { Itinerary } from "app/types/itinerary.js";
+import { Stop } from "app/types/stop.js";
 
 /**
  * @param {Object} motisStop

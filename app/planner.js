@@ -1,14 +1,16 @@
-import { Connection } from "script/types/connection.js";
+import {
+  plan as motis_plan,
+  direct as motis_direct,
+} from "app/motis/client.js";
+import { GeocodedLocation } from "app/motis/parser.js";
+import { Connection } from "app/types/connection.js";
 import {
   DateTime,
   diffDays,
   minutesSinceMidnight,
-} from "script/types/dateTime.js";
-import { Itinerary } from "script/types/itinerary.js";
-import { groupBy } from "script/util.js";
-
-import { plan as motis_plan, direct as motis_direct } from "./motis/client.js";
-import { GeocodedLocation } from "./motis/parser.js";
+} from "app/types/dateTime.js";
+import { Itinerary } from "app/types/itinerary.js";
+import { groupBy } from "app/util.js";
 
 /**
  * @param {Itinerary} itinerary

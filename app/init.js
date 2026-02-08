@@ -1,10 +1,10 @@
-import { CalendarWrapper } from "script/components/calendar.js";
-import { Config } from "script/components/config.js";
-import { MapWrapper } from "script/components/map.js";
-import { Perlschnur } from "script/components/perlschnur.js";
-import { main } from "script/main.js";
-import { Planner } from "script/planner.js";
-import { DateTime } from "script/types/dateTime.js";
+import { CalendarWrapper } from "app/components/calendar.js";
+import { Config } from "app/components/config.js";
+import { MapWrapper } from "app/components/map.js";
+import { Perlschnur } from "app/components/perlschnur.js";
+import { main } from "app/main.js";
+import { Planner } from "app/planner.js";
+import { DateTime } from "app/types/dateTime.js";
 
 /**
  * for all elements, set exactly the ones in selectedNames to ".selected"

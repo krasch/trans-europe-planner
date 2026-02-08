@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { test as baseTest, expect } from "vitest";
 
-import { MapWrapper } from "script/components/map.js";
+import { MapWrapper } from "app/components/map.js";
 
 import { timeout } from "tests/_helpers/domUtils.js";
 

@@ -6,24 +6,13 @@
     "allowJs": true,
     "checkJs": true,
     "noEmit": true,
-    "lib": [
-      "es2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["es2022", "DOM", "DOM.Iterable"],
     "paths": {
-      "data/inputDataFormats.js": ["./data/inputDataFormats.js"],
-      "script/*": ["./script/*"],
+      "app/*": ["./app/*"],
       "tests/*": ["./tests/*"],
       "style/*": ["./style/*"]
     }
   },
-  "include": [
-    "script/**/*.js",
-    "tests/**/*.js",
-    "tests/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["app/**/*.js", "tests/**/*.js", "tests/**/*.ts"],
+  "exclude": ["node_modules"]
 }

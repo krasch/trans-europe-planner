@@ -4,7 +4,7 @@ import { defineConfig } from "vitest/config";
 
 const aliases = {
   external: path.resolve(__dirname, "./external"),
-  script: path.resolve(__dirname, "./script"),
+  app: path.resolve(__dirname, "./app"),
   tests: path.resolve(__dirname, "./tests"),
   "style/planner/components/map/layers.js": path.resolve(
     __dirname,
@@ -18,6 +18,7 @@ export default defineConfig({
   test: {
     // globalSetup: ["./tests/setup.js"],
     projects: [
+      // unit tests
       {
         resolve: { alias: aliases },
         test: {
@@ -27,6 +28,7 @@ export default defineConfig({
           exclude: browserTests,
         },
       },
+      // browser tests
       {
         resolve: { alias: aliases },
         test: {

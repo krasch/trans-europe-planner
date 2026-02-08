@@ -3,9 +3,9 @@
  */
 import { afterEach, beforeEach, test, expect, vi } from "vitest";
 
-import { query, plan, ErrorQueryingMotis } from "script/motis/client.js";
-import { GeocodedLocation } from "script/motis/parser.js";
-import { DateTime } from "script/types/dateTime.js";
+import { query, plan, ErrorQueryingMotis } from "app/motis/client.js";
+import { GeocodedLocation } from "app/motis/parser.js";
+import { DateTime } from "app/types/dateTime.js";
 
 beforeEach(() => {
   sessionStorage.clear();

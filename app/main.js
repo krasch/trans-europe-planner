@@ -1,8 +1,8 @@
-import { prepareDataForCalendar } from "script/data/components/calendar.js";
-import { prepareDataForMap } from "script/data/components/map.js";
-import { prepareDataForPerlschnur } from "script/data/components/perlschnur.js";
-import { Planner } from "script/planner.js";
-import { State } from "script/state.js";
+import { prepareDataForCalendar } from "app/data/components/calendar.js";
+import { prepareDataForMap } from "app/data/components/map.js";
+import { prepareDataForPerlschnur } from "app/data/components/perlschnur.js";
+import { Planner } from "app/planner.js";
+import { State } from "app/state.js";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 

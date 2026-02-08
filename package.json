@@ -7,8 +7,8 @@
   "scripts": {
     "start": "serve -p 8000",
     "test": "vitest run tests",
-    "check-pretty": "npx prettier script/ style/planner/components/map/layers.js --check",
-    "make-pretty": "npx prettier script/ style/planner/components/map/layers.js --write",
+    "check-pretty": "npx prettier app/ style/planner/components/map/layers.js --check",
+    "make-pretty": "npx prettier app/ style/planner/components/map/layers.js --write",
     "check-types": "npx tsc",
     "check": "npm run check-pretty && npm run check-types && npm run test"
   },
@@ -28,7 +28,7 @@
     ],
     "importOrder": [
       "^external/(.*)$",
-      "^script/(.*)$",
+      "^app/(.*)$",
       "^tests/(.*)$",
       "^[./]"
     ],

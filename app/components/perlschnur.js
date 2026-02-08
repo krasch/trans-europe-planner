@@ -1,8 +1,8 @@
-import { createElementFromTemplate } from "script/util.js";
+import { createElementFromTemplate } from "app/util.js";
 
 /**
- * @typedef {import("script/data/components/perlschnur.js").PerlschnurStopData} PerlschnurStopData
- * @typedef {import("script/data/components/perlschnur.js").PerlschnurConnectionData} PerlschnurConnectionData
+ * @typedef {import("../data/components/perlschnur.js").PerlschnurStopData} PerlschnurStopData
+ * @typedef {import("../data/components/perlschnur.js").PerlschnurConnectionData} PerlschnurConnectionData
  **/
 
 /**

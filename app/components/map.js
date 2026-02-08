@@ -3,7 +3,7 @@ import { mapLayers } from "style/planner/components/map/layers.js";
 // @ts-nocheck
 import "external/maplibre-gl@5.15.0/maplibre-gl.js";
 
-import { calculateDiff, groupBy } from "script/util.js";
+import { calculateDiff, groupBy } from "../util.js";
 
 const STYLE = "style/planner/components/map/outdoors-modified.json";
 

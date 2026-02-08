@@ -8,7 +8,7 @@ import { test, expect, vi, beforeEach } from "vitest";
 import {
   CalendarWrapper,
   createEntryFromConnection,
-} from "script/components/calendar.js";
+} from "app/components/calendar.js";
 
 import { DAY1 } from "tests/_helpers/data.js";
 import { initTestDOM } from "tests/_helpers/domUtils.js";

@@ -7,9 +7,9 @@ import {
   prepareDataForPerlschnur,
   formatTimedelta,
   formatDate,
-} from "script/data/components/perlschnur.js";
-import { DateTime } from "script/types/dateTime.js";
-import { Itinerary } from "script/types/itinerary.js";
+} from "app/data/components/perlschnur.js";
+import { DateTime } from "app/types/dateTime.js";
+import { Itinerary } from "app/types/itinerary.js";
 
 import { itineraryFromShortHand as _i, DAY1 } from "tests/_helpers/data.js";
 import { TEST_COLORS } from "tests/_helpers/data.js";
@@ -17,7 +17,7 @@ import { TEST_COLORS } from "tests/_helpers/data.js";
 const DAY1_STRING = `(${formatDate(DAY1)})`;
 const DAY2_STRING = `(${formatDate(DAY1.plus({ day: 1 }))})`;
 
-vi.mock("script/data/components/_common.js", () => {
+vi.mock("app/data/components/_common.js", () => {
   return {
     getColor: (idx) => TEST_COLORS[idx],
     getIcon: (mode) => `${mode}.svg`,

@@ -1,5 +1,5 @@
-import { DateTime } from "script/types/dateTime.js";
-import { Itinerary } from "script/types/itinerary.js";
+import { DateTime } from "app/types/dateTime.js";
+import { Itinerary } from "app/types/itinerary.js";
 
 import { getIcon, getColor } from "./_common.js";
 

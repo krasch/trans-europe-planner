@@ -1,12 +1,12 @@
-import { DateTime } from "script/types/dateTime.js";
+import { DateTime } from "app/types/dateTime.js";
 
 const LOCALE = new Intl.NumberFormat().resolvedOptions().locale;
 
 const NUM_DAYS = 3;
 const RESOLUTION = 4; // "slices" per hour todo is also set in grid.css
 
-const entryStyle = `<style>@import url('/script/customElements/travelCalendar/entry.css')</style>`;
-const gridStyle = `<style>@import url('/script/customElements/travelCalendar/grid.css')</style>`;
+const entryStyle = `<style>@import url('/app/customElements/travelCalendar/entry.css')</style>`;
+const gridStyle = `<style>@import url('/app/customElements/travelCalendar/grid.css')</style>`;
 
 /** This custom element provides a calendar for travel events.
  *

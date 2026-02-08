@@ -1,9 +1,7 @@
 import fs from "fs";
 import { expect } from "vitest";
 
-import { TravelCalendar } from "script/customElements/travelCalendar/travelCalendar.js";
-
-import { TEST_COLORS } from "./data.js";
+import { TravelCalendar } from "app/customElements/travelCalendar/travelCalendar.js";
 
 customElements.define("travel-calendar", TravelCalendar);
 

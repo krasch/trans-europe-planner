@@ -1,6 +1,6 @@
 import { test, expect } from "vitest";
 
-import { DefaultMap, groupBy } from "script/util.js";
+import { DefaultMap, groupBy } from "app/util.js";
 
 test("groupBy", function () {
   const items = [

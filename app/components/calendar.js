@@ -1,5 +1,4 @@
-import { TravelCalendar } from "script/customElements/travelCalendar/travelCalendar.js";
-import { calculateDiff, createElementFromTemplate } from "script/util.js";
+import { calculateDiff, createElementFromTemplate } from "app/util.js";
 
 export function createEntryFromConnection(c) {
   const data = {
@@ -61,7 +60,7 @@ export class CalendarWrapper {
   }
 
   /**
-   * @typedef {import("script/data/components/calendar.js").CalendarEvent} CalendarEvent
+   * @typedef {import("../data/components/calendar.js").CalendarEvent} CalendarEvent
    *
    * @param {String} startDate
    * @param {CalendarEvent[]} connections

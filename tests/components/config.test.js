@@ -4,10 +4,10 @@
 // @ts-nocheck
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 
-import { Config, setAutocompleteOptions } from "script/components/config.js";
-import { geocode } from "script/motis/client.js";
-import { GeocodedLocation } from "script/motis/parser.js";
-import { DateTime } from "script/types/dateTime.js";
+import { Config, setAutocompleteOptions } from "app/components/config.js";
+import { geocode } from "app/motis/client.js";
+import { GeocodedLocation } from "app/motis/parser.js";
+import { DateTime } from "app/types/dateTime.js";
 
 import { DAY1 } from "tests/_helpers/data.js";
 import {
@@ -19,7 +19,7 @@ import {
 beforeEach(async () => {
   initTestDOM();
 
-  vi.mock("script/motis/client.js", () => {
+  vi.mock("app/motis/client.js", () => {
     return { geocode: vi.fn() };
   });
 });

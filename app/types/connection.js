@@ -1,6 +1,4 @@
-import { Stop } from "script/types/stop.js";
-
-// todo check times work and stops work
+import { Stop } from "./stop.js";
 
 export class Connection {
   /**

@@ -1,7 +1,7 @@
 import { test, expect } from "vitest";
 
-import { Itinerary, UnknownLegError } from "script/types/itinerary.js";
-import { Stop } from "script/types/stop.js";
+import { Itinerary, UnknownLegError } from "app/types/itinerary.js";
+import { Stop } from "app/types/stop.js";
 
 import {
   connectionFromShorthand as _c,

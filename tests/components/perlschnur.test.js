@@ -3,7 +3,7 @@
  */
 import { beforeEach, test, expect, vi } from "vitest";
 
-import { Perlschnur } from "script/components/perlschnur.js";
+import { Perlschnur } from "app/components/perlschnur.js";
 
 import {
   dispatchTestEvent,

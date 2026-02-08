@@ -1,6 +1,7 @@
 import { test, expect } from "vitest";
 
-import { State, StateError } from "../script/state.js";
+import { State, StateError } from "app/state.js";
+
 import { itineraryFromShortHand as _i } from "./_helpers/data.js";
 
 test("replaceItinerariesDuplicate", async function () {

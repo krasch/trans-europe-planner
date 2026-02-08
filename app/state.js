@@ -1,4 +1,4 @@
-import { Itinerary } from "script/types/itinerary.js";
+import { Itinerary } from "app/types/itinerary.js";
 
 export class StateError extends Error {
   /**

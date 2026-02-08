@@ -1,6 +1,6 @@
 import { test, expect } from "vitest";
 
-import { Connection } from "script/types/connection.js";
+import { Connection } from "app/types/connection.js";
 
 import { stopFromShorthand as _s } from "tests/_helpers/data.js";
 

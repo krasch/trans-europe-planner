@@ -12,7 +12,7 @@
         {
           "imports": {
             "external/": "./external/",
-            "script/": "./script/",
+            "app/": "./app/",
             "style/planner/components/map/layers.js": "./style/planner/components/map/layers.js"
           }
         }
@@ -35,7 +35,7 @@
 
     <script type="module">
         // register TravelCalendar (must be placed before <body>)
-        import {TravelCalendar} from "./script/customElements/travelCalendar/travelCalendar.js"
+        import {TravelCalendar} from "./app/customElements/travelCalendar/travelCalendar.js"
 
         customElements.define("travel-calendar", TravelCalendar);
     </script>
@@ -261,7 +261,7 @@
 </footer>
 
 <script type="module">
-    import {init} from "./script/init.js";
+    import {init} from "./app/init.js";
 
     onload = async (event) => {
         try {

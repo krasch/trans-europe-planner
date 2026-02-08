@@ -1,5 +1,5 @@
 // sessionStorage.clear();
-import { DateTime } from "script/types/dateTime.js";
+import { DateTime } from "app/types/dateTime.js";
 
 export class ResponseCache {
   #outOfSpace = false;
