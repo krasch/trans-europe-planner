@@ -36,9 +36,6 @@ export class CalendarWrapper {
   // because the connection ids make invalid selectors
   #idToEntry = new Map();
 
-  /**
-   * @param {TravelCalendar} travelCalendar
-   */
   constructor(travelCalendar) {
     this.#travelCalendar = travelCalendar;
 
