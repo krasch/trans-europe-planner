@@ -2,6 +2,14 @@ import { calculateDiff, createElementFromTemplate } from "app/util.js";
 
 export function createEntryFromConnection(c) {
   const data = {
+    ".": {
+      "data-connection-id": c.id,
+      "data-departure-datetime": c.departure.toISO(),
+      "data-arrival-datetime": c.arrival.toISO(),
+      "data-color": c.color ?? "",
+      "data-group": c.leg ?? "",
+      "data-status": c.status,
+    },
     ".connection-icon": { src: c.icon },
     ".connection-number": { innerHTML: c.name },
     ".start .time": { innerHTML: c.departure.toFormat("HH:mm") },
@@ -10,16 +18,7 @@ export function createEntryFromConnection(c) {
     ".destination .station": { innerHTML: c.to },
   };
 
-  // try to move dataset into the above
-  const e = createElementFromTemplate("template-calendar-connection", data);
-  e.dataset.connectionId = c.id;
-  e.dataset.departureDatetime = c.departure.toISO();
-  e.dataset.arrivalDatetime = c.arrival.toISO();
-  e.dataset.color = c.color ?? "";
-  e.dataset.group = c.leg ?? "";
-  e.dataset.status = c.status;
-
-  return e;
+  return createElementFromTemplate("template-calendar-connection", data);
 }
 
 export class CalendarWrapper {

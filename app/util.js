@@ -1,6 +1,6 @@
 /**
  * @param {string} templateId
- * @param {Object} templateData
+ * @param {Object<string, object>} templateData
  */
 export function createElementFromTemplate(templateId, templateData) {
   const template = document.getElementById(templateId);
@@ -15,29 +15,35 @@ export function createElementFromTemplate(templateId, templateData) {
   return element;
 }
 
-// todo clean up, test, add typehints
+/**
+ *
+ * @param {Element} container
+ * @param {Object<string, object>} data
+ */
 export function updateElement(container, data) {
   for (let selector in data) {
-    const matches =
-      selector === "$root$"
-        ? [container]
-        : container.querySelectorAll(selector);
+    let matches = null;
 
-    // todo what about dataset, what does key data mean?
-    for (let element of matches) {
-      for (let key in data[selector]) {
-        if (key.startsWith("data"))
-          element.setAttribute(key, data[selector][key]);
-        else element[key] = data[selector][key];
-      }
+    // we are changing the root element (the container itself)
+    if (selector === ".") matches = [container];
+    // we are changing children of the container
+    else matches = container.querySelectorAll(selector);
+
+    for (let [key, value] of Object.entries(data[selector])) {
+      // updating dataset, should be "data-key:value"
+      if (key.startsWith("data"))
+        matches.forEach((e) => e.setAttribute(key, value));
+      // updating everything else
+      else matches.forEach((e) => (e[key] = value));
     }
   }
 }
 
 /**
- * @param {any[]} array
+ * @template T
+ * @param {T[]} array
  * @param {function} keyFn - the function by which to group
- * @returns {object}
+ * @returns {Object.<any,T[]>}
  */
 export function groupBy(array, keyFn) {
   const grouped = {};
@@ -52,17 +58,8 @@ export function groupBy(array, keyFn) {
   return grouped;
 }
 
-export function intersection(array1, array2) {
-  const result = [];
-  for (let item of array1) {
-    if (array2.includes(item)) result.push(item);
-  }
-  return result;
-}
-
 /** @template K,V */
 export class DefaultMap extends Map {
-  // todo tests
   constructor(defaultFn) {
     super();
     this.defaultFn = defaultFn;
@@ -103,5 +100,19 @@ export function calculateDiff(oldArray, newArray) {
     if (!oldArray.includes(e)) result.added.push(e);
   }
 
+  return result;
+}
+
+/**
+ * @template T
+ * @param {T[]} array1
+ * @param {T[]} array2
+ * @return {T[]}
+ */
+export function intersection(array1, array2) {
+  const result = [];
+  for (let item of array1) {
+    if (array2.includes(item)) result.push(item);
+  }
   return result;
 }

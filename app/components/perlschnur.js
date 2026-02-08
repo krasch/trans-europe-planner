@@ -11,12 +11,12 @@ import { createElementFromTemplate } from "app/util.js";
  */
 function createConnectionElement(connection) {
   const element = createElementFromTemplate("template-perlschnur-connection", {
+    ".": { "data-connection-id": connection.id },
     ".connection-icon": { src: connection.icon },
     ".connection-number": { innerText: connection.name },
     ".connection-travel-time": { innerText: connection.travelTime },
   });
   element.style.setProperty("--color", connection.color);
-  element.dataset.connectionId = connection.id;
   return element;
 }
 
@@ -25,13 +25,12 @@ function createConnectionElement(connection) {
  * @returns {HTMLElement}
  */
 export function createStopElement(stop) {
-  const li = createElementFromTemplate("template-perlschnur-stop", {
+  return createElementFromTemplate("template-perlschnur-stop", {
+    ".": { "data-stop-id": stop.stopId },
     ".time": { innerText: stop.time },
     ".date": { innerText: stop.date ?? "" },
     ".station": { innerText: stop.stopName },
   });
-  li.dataset.stopId = stop.stopId;
-  return li;
 }
 
 /**

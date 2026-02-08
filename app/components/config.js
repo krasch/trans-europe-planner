@@ -10,12 +10,12 @@ import { createElementFromTemplate } from "app/util.js";
 function createAutocompleteItem(data) {
   const template = `template-config-autocomplete-${data.kind}`;
 
-  const element = createElementFromTemplate(template, {
+  const templateData = {
+    ".": { "data-name": data.name, "data-data": JSON.stringify(data) },
     span: { innerHTML: data.name },
-  });
-  element.dataset.name = data.name;
-  element.dataset.data = JSON.stringify(data);
-  return element;
+  };
+
+  return createElementFromTemplate(template, templateData);
 }
 
 /**
