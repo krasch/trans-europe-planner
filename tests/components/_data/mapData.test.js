@@ -1,11 +1,11 @@
 import { test, expect, vi } from "vitest";
 
-import { prepareDataForMap } from "app/data/components/map.js";
+import { prepareDataForMap } from "app/components/_data/map.js";
 
 import { itineraryFromShortHand as _i } from "tests/_helpers/data.js";
 import { TEST_COLORS } from "tests/_helpers/data.js";
 
-vi.mock("app/data/components/_common.js", () => {
+vi.mock("app/assets.js", () => {
   return {
     getColor: (idx) => TEST_COLORS[idx],
     getIcon: (mode) => `${mode}.svg`,

@@ -1,7 +1,6 @@
+import { getIcon, getColor } from "app/assets.js";
 import { DateTime } from "app/types/dateTime.js";
 import { Itinerary } from "app/types/itinerary.js";
-
-import { getIcon, getColor } from "./_common.js";
 
 /**
  * @typedef {Object} PerlschnurStopData

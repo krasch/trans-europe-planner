@@ -1,6 +1,6 @@
-import { prepareDataForCalendar } from "app/data/components/calendar.js";
-import { prepareDataForMap } from "app/data/components/map.js";
-import { prepareDataForPerlschnur } from "app/data/components/perlschnur.js";
+import { prepareDataForCalendar } from "app/components/_data/calendar.js";
+import { prepareDataForMap } from "app/components/_data/map.js";
+import { prepareDataForPerlschnur } from "app/components/_data/perlschnur.js";
 import { Planner } from "app/planner.js";
 import { State } from "app/state.js";
 

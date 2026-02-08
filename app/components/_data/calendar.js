@@ -1,4 +1,4 @@
-import { getIcon, getColor } from "app/data/components/_common.js";
+import { getIcon, getColor } from "app/assets.js";
 import { Connection } from "app/types/connection.js";
 import { DateTime } from "app/types/dateTime.js";
 import { Itinerary } from "app/types/itinerary.js";

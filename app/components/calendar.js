@@ -60,7 +60,7 @@ export class CalendarWrapper {
   }
 
   /**
-   * @typedef {import("../data/components/calendar.js").CalendarEvent} CalendarEvent
+   * @typedef {import("app/components/_data/calendar.js").CalendarEvent} CalendarEvent
    *
    * @param {String} startDate
    * @param {CalendarEvent[]} connections
