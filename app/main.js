@@ -3,11 +3,7 @@ import { prepareDataForMap } from "app/components/_data/map.js";
 import { prepareDataForPerlschnur } from "app/components/_data/perlschnur.js";
 import { CalendarWrapper } from "app/components/calendar.js";
 import { Config } from "app/components/config.js";
-import {
-  initNavigation,
-  showLandingPage,
-  showSidebar,
-} from "app/components/nav.js";
+import { Navigation } from "app/components/nav.js";
 import { Perlschnur } from "app/components/perlschnur.js";
 import { Planner } from "app/planner.js";
 import { State } from "app/state.js";
@@ -59,8 +55,8 @@ export async function main() {
   const state = new State(params);
 
   // initialise components
+  const navigation = new Navigation();
   const components = {
-    // mainContainer: document.querySelector("main")
     map: new MapWrapper("map", state.center, state.zoom), // triggers map load
     config: new Config(document.querySelector("#config")),
     calendar: new CalendarWrapper(document.querySelector("travel-calendar")),
@@ -70,11 +66,10 @@ export async function main() {
   // show landing page
   // wait until user clicks the "Try it out!" button
   // this also automatically closes the landing page
-  if (params.size === 0) await showLandingPage();
+  if (params.size === 0) await navigation.showLandingPage();
 
   // landing page has been closed -> show main view
-  initNavigation();
-  showSidebar();
+  navigation.showSidebar();
   components.map.setMapInteractive();
 
   const planner = new Planner();
@@ -93,30 +88,16 @@ export async function main() {
     console.log(window.location.search);
   });
 
-  state.on("updated", () => {
-    updateComponents(state);
+  state.on("updated", async () => {
+    await updateComponents(state);
   });
 
   components.config.on("submit", async (from, to, date) => {
     components.config.lock();
     const itineraries = await planner.plan(from, to, date);
-    state.replaceItineraries(itineraries);
+    state.replaceItineraries(itineraries); // triggers redraw
+    navigation.focusComponent("calendar");
     components.config.unlock();
-
-    /*
-    // todo move into nav
-    components.mainContainer
-      .querySelector("#nav-tab-config")
-      .classList.remove("selected");
-    components.mainContainer
-      .querySelector("#config")
-      .classList.remove("selected");
-    components.mainContainer
-      .querySelector("#nav-tab-calendar")
-      .classList.add("selected");
-    components.mainContainer
-      .querySelector("#calendar")
-      .classList.add("selected");*/
 
     // load alternatives for calendar events and redraw
     await planner.triggerLoadAlternatives(state.activeItinerary, date);
