@@ -1,3 +1,4 @@
+import { DateTime } from "app/types/dateTime.js";
 import { Itinerary } from "app/types/itinerary.js";
 
 export class StateError extends Error {
@@ -17,9 +18,47 @@ export class State {
   /** @type {Object.<string,Itinerary>} */
   #otherItineraries;
 
-  constructor() {
+  /**
+   * @param {URLSearchParams} [params]
+   */
+  constructor(params) {
+    const today = DateTime.now().startOf("day");
+    const isMobile = window.matchMedia("(max-width: 1000px)");
+
+    // default config form settings
+    this.from = null;
+    this.to = null;
+    this.date = today.plus({ days: 30 });
+
+    // default map settings
+    this.zoom = 7.3;
+    if (isMobile.matches) this.zoom = 5.3;
+    this.center = [11.75685, 54.0443];
+
     this.#activeItinerary = null;
     this.#otherItineraries = {};
+
+    this.updateFromURLParams(params);
+  }
+
+  /**
+   * @return {URLSearchParams}
+   */
+  toURLParams() {
+    const params = new URLSearchParams();
+    if (this.from) params.set("from", this.from);
+    if (this.to) params.set("to", this.to);
+    if (this.date) params.set("date", this.date);
+    return params;
+  }
+
+  /**
+   * @param {URLSearchParams} urlParams
+   */
+  updateFromURLParams(urlParams) {
+    if (urlParams.get("from")) this.from = urlParams.get("from");
+    if (urlParams.get("to")) this.to = urlParams.get("to");
+    if (urlParams.get("date")) this.date = urlParams.get("date");
   }
 
   /**

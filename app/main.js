@@ -10,9 +10,7 @@ import {
 } from "app/components/nav.js";
 import { Perlschnur } from "app/components/perlschnur.js";
 import { Planner } from "app/planner.js";
-import { State2 } from "app/state2.js";
 import { State } from "app/state.js";
-import { DateTime } from "app/types/dateTime.js";
 
 import { MapWrapper } from "./components/map.js";
 
@@ -24,15 +22,15 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
  * @param {State} state
  */
 async function updateAllComponents(components, planner, state) {
-  if (!state.activeItinerary) return;
+  // update config
+  components.config.updateView(state.from, state.to, state.date);
 
-  // todo move back into state? what if empty?
-  const travelDate = components.config.date;
+  if (!state.activeItinerary) return;
 
   // alternatives for all the connections in current active itinerary - needed for calendar
   const alternatives = planner.getCachedAlternatives(
     state.activeItinerary,
-    travelDate,
+    state.date,
   );
 
   // update map
@@ -47,31 +45,22 @@ async function updateAllComponents(components, planner, state) {
     state.activeItinerary,
     alternatives,
   );
-  components.calendar.updateView(travelDate.toISODate(), calendarData);
+  components.calendar.updateView(state.date.toISODate(), calendarData);
 
   // update perlschnur
   const perlschnurData = prepareDataForPerlschnur(state.activeItinerary);
   components.perlschnur.updateView(perlschnurData);
-
-  // update config
-  components.config.updateView(
-    "Berlin",
-    "London",
-    DateTime.fromISO("2026-02-15"),
-  );
 }
 
 export async function main() {
-  const state = new State();
-
   // initialise state from URL
   const params = new URLSearchParams(window.location.search);
-  const state2 = new State2(params);
+  const state = new State(params);
 
   // initialise components
   const components = {
     // mainContainer: document.querySelector("main")
-    map: new MapWrapper("map", state2.center, state2.zoom), // triggers map load
+    map: new MapWrapper("map", state.center, state.zoom), // triggers map load
     config: new Config(document.querySelector("#config")),
     calendar: new CalendarWrapper(document.querySelector("travel-calendar")),
     perlschnur: new Perlschnur(document.querySelector("#perlschnur")),
@@ -95,6 +84,8 @@ export async function main() {
     components,
     planner,
   );
+
+  updateComponents(state);
 
   new MutationObserver(() => {
     console.log(window.location.search);

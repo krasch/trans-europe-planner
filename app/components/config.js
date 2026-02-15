@@ -139,9 +139,10 @@ export class Config {
    */
   updateView(from, to, date) {
     // todo only update when changed
-    this.#elements.date.value = date.toISODate();
-    this.#elements.from.value = from;
-    this.#elements.to.value = to;
+    // todo unset
+    if (date) this.#elements.date.setAttribute("value", date.toISODate());
+    if (from) this.#elements.from.setAttribute("value", from);
+    if (to) this.#elements.to.setAttribute("value", to);
   }
 
   lock() {
