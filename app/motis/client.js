@@ -1,14 +1,13 @@
-import { Connection } from "app/types/connection.js";
-import { DateTime } from "app/types/dateTime.js";
-import { Itinerary } from "app/types/itinerary.js";
-import { intersection } from "app/util.js";
-
-import { ResponseCache } from "./cache.js";
+import { ResponseCache } from "app/motis/cache.js";
 import {
   GeocodedLocation,
   parseMotisGeocodingStopResult,
   parseMotisItinerary,
-} from "./parser.js";
+} from "app/motis/parser.js";
+import { Connection } from "app/types/connection.js";
+import { DateTime } from "app/types/dateTime.js";
+import { Itinerary } from "app/types/itinerary.js";
+import { intersection } from "app/util.js";
 
 const BASE_URL = "http://192.168.178.36:8080";
 //const BASE_URL = "https://api.transitous.org/api";

@@ -1,18 +1,22 @@
 import { prepareDataForCalendar } from "app/components/_data/calendar.js";
 import { prepareDataForMap } from "app/components/_data/map.js";
 import { prepareDataForPerlschnur } from "app/components/_data/perlschnur.js";
+import { CalendarWrapper } from "app/components/calendar.js";
+import { Config } from "app/components/config.js";
+import {
+  initNavigation,
+  showLandingPage,
+  showSidebar,
+} from "app/components/nav.js";
+import { Perlschnur } from "app/components/perlschnur.js";
 import { Planner } from "app/planner.js";
 import { State2 } from "app/state2.js";
 import { State } from "app/state.js";
 import { DateTime } from "app/types/dateTime.js";
 
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+import { MapWrapper } from "./components/map.js";
 
-function parseURLParams() {
-  const params = new URLSearchParams(window.location.search);
-  const start = params.get("start");
-  return start;
-}
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /**
  * @param {Object.<string,any>} components
@@ -57,15 +61,33 @@ async function updateAllComponents(components, planner, state) {
   );
 }
 
-/**
- * @param {Object.<string,any>} components
- * @param {Planner} planner
- */
-export async function main(components, planner) {
-  const start = parseURLParams();
-
+export async function main() {
   const state = new State();
-  const state2 = new State2();
+
+  // initialise state from URL
+  const params = new URLSearchParams(window.location.search);
+  const state2 = new State2(params);
+
+  // initialise components
+  const components = {
+    // mainContainer: document.querySelector("main")
+    map: new MapWrapper("map", state2.center, state2.zoom), // triggers map load
+    config: new Config(document.querySelector("#config")),
+    calendar: new CalendarWrapper(document.querySelector("travel-calendar")),
+    perlschnur: new Perlschnur(document.querySelector("#perlschnur")),
+  };
+
+  // show landing page
+  // wait until user clicks the "Try it out!" button
+  // this also automatically closes the landing page
+  if (params.size === 0) await showLandingPage();
+
+  // landing page has been closed -> show main view
+  initNavigation();
+  showSidebar();
+  components.map.setMapInteractive();
+
+  const planner = new Planner();
 
   // partial function for conveniently updating the components
   const updateComponents = updateAllComponents.bind(
@@ -74,11 +96,12 @@ export async function main(components, planner) {
     planner,
   );
 
+  new MutationObserver(() => {
+    console.log(window.location.search);
+  }).observe(document, { subtree: true, childList: true });
+
   components.config.on("submit", async (from, to, date) => {
     components.config.lock();
-    state2.start = from;
-    state2.destination = to;
-    state2.date = date;
 
     const itineraries = await planner.plan(from, to, date);
     state.replaceItineraries(itineraries);
@@ -88,6 +111,8 @@ export async function main(components, planner) {
     await updateComponents(state);
     components.config.unlock();
 
+    /*
+    // todo move into nav
     components.mainContainer
       .querySelector("#nav-tab-config")
       .classList.remove("selected");
@@ -99,7 +124,7 @@ export async function main(components, planner) {
       .classList.add("selected");
     components.mainContainer
       .querySelector("#calendar")
-      .classList.add("selected");
+      .classList.add("selected");*/
 
     // load alternatives for calendar events and redraw
     await planner.triggerLoadAlternatives(state.activeItinerary, date);

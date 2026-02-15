@@ -261,11 +261,11 @@
 </footer>
 
 <script type="module">
-    import {init} from "./app/init.js";
+    import {main} from "./app/main.js";
 
     onload = async (event) => {
         try {
-            await init();
+            await main();
         } catch (error) {
             console.error(error);
         }
