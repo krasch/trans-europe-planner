@@ -7,6 +7,7 @@
   "scripts": {
     "start": "serve -p 8000",
     "test": "vitest run tests",
+    "test-e2e": "npx wdio run wdio.config.js",
     "check-pretty": "npx prettier app/ style/planner/components/map/layers.js --check",
     "make-pretty": "npx prettier app/ style/planner/components/map/layers.js --write",
     "check-types": "npx tsc",
@@ -16,6 +17,9 @@
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/node": "^25.0.3",
     "@vitest/browser-webdriverio": "^4.0.18",
+    "@wdio/cli": "^9.24.0",
+    "@wdio/local-runner": "^9.24.0",
+    "@wdio/mocha-framework": "^9.24.0",
     "jsdom": "^27.4.0",
     "prettier": "3.3.3",
     "serve": "^14.2.4",

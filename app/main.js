@@ -2,9 +2,16 @@ import { prepareDataForCalendar } from "app/components/_data/calendar.js";
 import { prepareDataForMap } from "app/components/_data/map.js";
 import { prepareDataForPerlschnur } from "app/components/_data/perlschnur.js";
 import { Planner } from "app/planner.js";
+import { State2 } from "app/state2.js";
 import { State } from "app/state.js";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+function parseURLParams() {
+  const params = new URLSearchParams(window.location.search);
+  const start = params.get("start");
+  return start;
+}
 
 /**
  * @param {Object.<string,any>} components
@@ -47,7 +54,14 @@ async function updateAllComponents(components, planner, state) {
  * @param {Planner} planner
  */
 export async function main(components, planner) {
+  const start = parseURLParams();
+  if (start) {
+    document.querySelector("#config-from").setAttribute("value", start);
+    document.querySelector("dialog").close();
+  }
+
   const state = new State();
+  const state2 = new State2();
 
   // partial function for conveniently updating the components
   const updateComponents = updateAllComponents.bind(
@@ -58,6 +72,9 @@ export async function main(components, planner) {
 
   components.config.on("submit", async (from, to, date) => {
     components.config.lock();
+    state2.start = from;
+    state2.destination = to;
+    state2.date = date;
 
     const itineraries = await planner.plan(from, to, date);
     state.replaceItineraries(itineraries);
