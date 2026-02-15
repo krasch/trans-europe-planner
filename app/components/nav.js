@@ -21,6 +21,9 @@ export class Navigation {
       sidebar: document.querySelector("main"),
     };
 
+    // initial focus
+    this.focusComponent("config");
+
     this.#elements.tabs.config.addEventListener("click", (e) => {
       this.focusComponent("config");
     });
