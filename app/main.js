@@ -11,6 +11,7 @@ import {
 import { Perlschnur } from "app/components/perlschnur.js";
 import { Planner } from "app/planner.js";
 import { State } from "app/state.js";
+import { LocationObserver } from "app/util.js";
 
 import { MapWrapper } from "./components/map.js";
 
@@ -87,19 +88,19 @@ export async function main() {
 
   updateComponents(state);
 
-  new MutationObserver(() => {
+  // url location has changed
+  new LocationObserver().on("updated", () => {
     console.log(window.location.search);
-  }).observe(document, { subtree: true, childList: true });
+  });
+
+  state.on("updated", () => {
+    updateComponents(state);
+  });
 
   components.config.on("submit", async (from, to, date) => {
     components.config.lock();
-
     const itineraries = await planner.plan(from, to, date);
     state.replaceItineraries(itineraries);
-    //await sleep(1000);
-
-    // draw first updates (calendar has no alternatives yet -> no drag&drop)
-    await updateComponents(state);
     components.config.unlock();
 
     /*
@@ -128,38 +129,34 @@ export async function main() {
     }
   });
 
-  components.calendar.on("connectionMoved", async (newConnectionId) => {
+  components.calendar.on("connectionMoved", (newConnectionId) => {
     const connection = planner.getConnectionById(newConnectionId);
     state.replaceLegInActiveItinerary(connection);
-    await updateComponents(state);
   });
 
-  components.map.on("itineraryClicked", async (itineraryId) => {
-    if (state.activeItinerary.id !== itineraryId) {
-      state.setActiveItinerary(itineraryId);
-      await updateComponents(state);
-    }
+  components.map.on("itineraryClicked", (itineraryId) => {
+    state.setActiveItinerary(itineraryId);
   });
 
-  components.calendar.on("connectionHover", async (connectionId, isHover) => {
+  components.calendar.on("connectionHover", (connectionId, isHover) => {
     components.map.setConnectionHover(connectionId, isHover);
   });
 
-  components.map.on("connectionHover", async (connectionId, isHover) => {
+  components.map.on("connectionHover", (connectionId, isHover) => {
     components.calendar.setConnectionHover(connectionId, isHover);
     components.perlschnur.setConnectionHover(connectionId, isHover);
   });
 
-  components.perlschnur.on("connectionHover", async (connectionId, isHover) => {
+  components.perlschnur.on("connectionHover", (connectionId, isHover) => {
     components.calendar.setConnectionHover(connectionId, isHover);
     components.map.setConnectionHover(connectionId, isHover);
   });
 
-  components.map.on("stopHover", async (stopId, isHover) => {
+  components.map.on("stopHover", (stopId, isHover) => {
     components.perlschnur.setStopHover(stopId, isHover);
   });
 
-  components.perlschnur.on("stopHover", async (stopId, isHover) => {
+  components.perlschnur.on("stopHover", (stopId, isHover) => {
     components.map.setStopHover(stopId, isHover);
   });
 }

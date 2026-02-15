@@ -18,6 +18,10 @@ export class State {
   /** @type {Object.<string,Itinerary>} */
   #otherItineraries;
 
+  #callbacks = {
+    updated: () => {},
+  };
+
   /**
    * @param {URLSearchParams} [params]
    */
@@ -39,6 +43,10 @@ export class State {
     this.#otherItineraries = {};
 
     this.updateFromURLParams(params);
+  }
+
+  on(eventName, callback) {
+    this.#callbacks[eventName] = callback;
   }
 
   /**
@@ -93,6 +101,8 @@ export class State {
     // and the newly active one goes from other to active
     this.#activeItinerary = this.#otherItineraries[itineraryId];
     delete this.#otherItineraries[itineraryId];
+
+    this.#callbacks.updated();
   }
 
   /**
@@ -113,9 +123,11 @@ export class State {
     }
 
     this.setActiveItinerary(itineraries[0].id);
+    this.#callbacks.updated();
   }
 
   replaceLegInActiveItinerary(newConnection) {
     this.#activeItinerary = this.activeItinerary.replaceLeg(newConnection);
+    this.#callbacks.updated();
   }
 }

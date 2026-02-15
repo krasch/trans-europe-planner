@@ -116,3 +116,19 @@ export function intersection(array1, array2) {
   }
   return result;
 }
+
+export class LocationObserver {
+  #callbacks = {
+    updated: () => {}, // todo perhaps pass params directly into callback
+  };
+
+  constructor() {
+    new MutationObserver(() => {
+      this.#callbacks.updated();
+    }).observe(document, { subtree: true, childList: true });
+  }
+
+  on(eventName, callback) {
+    this.#callbacks[eventName] = callback;
+  }
+}
