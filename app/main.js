@@ -4,6 +4,7 @@ import { prepareDataForPerlschnur } from "app/components/_data/perlschnur.js";
 import { Planner } from "app/planner.js";
 import { State2 } from "app/state2.js";
 import { State } from "app/state.js";
+import { DateTime } from "app/types/dateTime.js";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -47,6 +48,13 @@ async function updateAllComponents(components, planner, state) {
   // update perlschnur
   const perlschnurData = prepareDataForPerlschnur(state.activeItinerary);
   components.perlschnur.updateView(perlschnurData);
+
+  // update config
+  components.config.updateView(
+    "Berlin",
+    "London",
+    DateTime.fromISO("2026-02-15"),
+  );
 }
 
 /**
@@ -55,10 +63,6 @@ async function updateAllComponents(components, planner, state) {
  */
 export async function main(components, planner) {
   const start = parseURLParams();
-  if (start) {
-    document.querySelector("#config-from").setAttribute("value", start);
-    document.querySelector("dialog").close();
-  }
 
   const state = new State();
   const state2 = new State2();

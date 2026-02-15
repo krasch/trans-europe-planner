@@ -56,10 +56,12 @@ export class Config {
 
   /**
    * @param {Element} container
-   * @param {DateTime} calendarMin
-   * @param {DateTime} calendarMax
    */
-  constructor(container, calendarMin, calendarMax) {
+  constructor(container) {
+    const today = DateTime.now().startOf("day");
+    const calendarMin = today;
+    const calendarMax = today.plus({ days: 3 * 30 });
+
     this.#elements = {
       from: container.querySelector("#config-from"),
       fromAutocomplete: container.querySelector("#config-from-values"),
@@ -131,19 +133,15 @@ export class Config {
   }
 
   /**
-   * @returns date
-   */
-  get date() {
-    const val = this.#elements.date.value;
-    if (val) return DateTime.fromISO(val);
-    else return null;
-  }
-
-  /**
+   * @param {String} from
+   * @param {String} to
    * @param {DateTime} date
    */
-  set date(date) {
+  updateView(from, to, date) {
+    // todo only update when changed
     this.#elements.date.value = date.toISODate();
+    this.#elements.from.value = from;
+    this.#elements.to.value = to;
   }
 
   lock() {
