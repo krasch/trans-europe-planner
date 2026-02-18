@@ -1,3 +1,4 @@
+import { GeocodedLocation } from "app/motis/parser.js";
 import { DateTime } from "app/types/dateTime.js";
 import { Itinerary } from "app/types/itinerary.js";
 
@@ -19,7 +20,8 @@ export class State {
   #otherItineraries;
 
   #callbacks = {
-    updated: () => {},
+    itineraryUpdated: () => {},
+    configUpdated: () => {},
   };
 
   /**
@@ -54,8 +56,8 @@ export class State {
    */
   toURLParams() {
     const params = new URLSearchParams();
-    if (this.from) params.set("from", this.from);
-    if (this.to) params.set("to", this.to);
+    //if (this.from) params.set("from", this.from);
+    //if (this.to) params.set("to", this.to);
     if (this.date) params.set("date", this.date);
     return params;
   }
@@ -64,8 +66,9 @@ export class State {
    * @param {URLSearchParams} urlParams
    */
   updateFromURLParams(urlParams) {
-    if (urlParams.get("from")) this.from = urlParams.get("from");
-    if (urlParams.get("to")) this.to = urlParams.get("to");
+    // todo must lookup / convert to GeocodedLocation
+    //if (urlParams.get("from")) this.from = urlParams.get("from");
+    //if (urlParams.get("to")) this.to = urlParams.get("to");
     if (urlParams.get("date")) this.date = urlParams.get("date");
   }
 
@@ -81,6 +84,18 @@ export class State {
    */
   get otherItineraries() {
     return Object.values(this.#otherItineraries);
+  }
+
+  /**
+   * @param {GeocodedLocation} from
+   * @param {GeocodedLocation} to
+   * @param {DateTime} date
+   */
+  setConfigFormValues(from, to, date) {
+    this.from = from;
+    this.to = to;
+    this.date = date;
+    this.#callbacks.configUpdated();
   }
 
   /**
@@ -102,7 +117,7 @@ export class State {
     this.#activeItinerary = this.#otherItineraries[itineraryId];
     delete this.#otherItineraries[itineraryId];
 
-    this.#callbacks.updated();
+    this.#callbacks.itineraryUpdated();
   }
 
   /**
@@ -123,11 +138,11 @@ export class State {
     }
 
     this.setActiveItinerary(itineraries[0].id);
-    this.#callbacks.updated();
+    this.#callbacks.itineraryUpdated();
   }
 
   replaceLegInActiveItinerary(newConnection) {
     this.#activeItinerary = this.activeItinerary.replaceLeg(newConnection);
-    this.#callbacks.updated();
+    this.#callbacks.itineraryUpdated();
   }
 }

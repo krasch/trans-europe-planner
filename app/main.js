@@ -88,26 +88,30 @@ export async function main() {
     console.log(window.location.search);
   });
 
-  state.on("updated", async () => {
+  state.on("itineraryUpdated", async () => {
     await updateComponents(state);
   });
 
-  components.config.on("submit", async (from, to, date) => {
+  state.on("configUpdated", async () => {
     components.config.lock();
-    const itineraries = await planner.plan(from, to, date);
+    const itineraries = await planner.plan(state.from, state.to, state.date);
     state.replaceItineraries(itineraries); // triggers redraw
     navigation.focusComponent("calendar");
     components.config.unlock();
 
     // load alternatives for calendar events and redraw
-    await planner.triggerLoadAlternatives(state.activeItinerary, date);
+    await planner.triggerLoadAlternatives(state.activeItinerary, state.date);
     await updateComponents(state);
 
     // already trigger this in case use selects different route
     // not awaiting here because don't need it right now
     for (let itinerary of state.otherItineraries) {
-      planner.triggerLoadAlternatives(itinerary, date);
+      planner.triggerLoadAlternatives(itinerary, state.date);
     }
+  });
+
+  components.config.on("submit", async (from, to, date) => {
+    state.setConfigFormValues(from, to, date);
   });
 
   components.calendar.on("connectionMoved", (newConnectionId) => {
@@ -118,6 +122,10 @@ export async function main() {
   components.map.on("itineraryClicked", (itineraryId) => {
     state.setActiveItinerary(itineraryId);
   });
+
+  /*********************************
+   hover interactions below
+  **********************************/
 
   components.calendar.on("connectionHover", (connectionId, isHover) => {
     components.map.setConnectionHover(connectionId, isHover);
