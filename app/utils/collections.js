@@ -18,6 +18,18 @@ export function groupBy(array, keyFn) {
 }
 
 /**
+ * @param {any[]} array
+ * @param {function} filterFn - should return boolean
+ * @returns {number | null}
+ */
+export function findFirstPosition(array, filterFn) {
+  for (let i in array) {
+    if (filterFn(array[i])) return Number(i);
+  }
+  return null;
+}
+
+/**
  * @template T
  * @param {T[]} array1
  * @param {T[]} array2

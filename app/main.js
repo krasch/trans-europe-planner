@@ -7,6 +7,7 @@ import { Planner } from "app/data/planner/planner.js";
 import { render } from "app/render.js";
 import { ConnectionId } from "app/types/connection.js";
 import { getURLState, setURLState, URLObserver } from "app/url.js";
+import { findFirstPosition } from "app/utils/collections.js";
 
 /**
  * @returns {Promise<Object.<string,any>>} components
@@ -55,13 +56,14 @@ export async function main(components) {
     const newConnectionId = ConnectionId.fromString(newConnectionIdString);
     const urlState = getURLState();
 
-    // todo utils find position
-    const matches = urlState.connectionIds
-      .map((c, i) => i)
-      .filter((i) => newConnectionId.isSameLeg(urlState.connectionIds[i]));
+    // at what position in the itinerary is this connection
+    const position = findFirstPosition(urlState.connectionIds, (id) =>
+      newConnectionId.isSameLeg(id),
+    );
 
-    // todo what if none found
-    urlState.connectionIds[matches[0]] = newConnectionId;
+    // update itinerary todo what if position null?
+    urlState.connectionIds[position] = newConnectionId;
+
     setURLState(
       urlState.from,
       urlState.to,
