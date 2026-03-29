@@ -261,11 +261,12 @@
 </footer>
 
 <script type="module">
-    import {main} from "./app/main.js";
+    import {init, main} from "./app/main.js";
 
     onload = async (event) => {
         try {
-            await main();
+            const components = await init(); // also shows landing page
+            await main(components);
         } catch (error) {
             console.error(error);
         }

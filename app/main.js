@@ -82,29 +82,40 @@ export async function render(components, planner, urlState) {
   components.config.unlock();
 }
 
-export async function main() {
+/**
+ * @returns {Promise<Object.<string,any>>} components
+ */
+export async function init() {
   const urlState = getURLState();
-  const urlObserver = new URLObserver();
-  const planner = new Planner();
 
   // initialise components, already do it now to trigger map loading asap
-  const navigation = new Navigation();
   const components = {
     map: new MapWrapper("map", urlState.center, urlState.zoom),
     config: new Config(document.querySelector("#config")),
     calendar: new CalendarWrapper(document.querySelector("travel-calendar")),
     perlschnur: new Perlschnur(document.querySelector("#perlschnur")),
+    navigation: new Navigation(),
   };
 
   // nothing in form is filled out -> show landing page
   // wait until user clicks the "Try it out!" button
   // this also automatically closes the landing page
   if (!urlState.from && !urlState.to && !urlState.date)
-    await navigation.showLandingPage();
+    await components.navigation.showLandingPage();
 
   // landing page has been closed -> show main view
-  navigation.showSidebar();
+  components.navigation.showSidebar();
   components.map.setMapInteractive();
+
+  return components;
+}
+
+/**
+ * @param {Object.<string,any>} components
+ */
+export async function main(components) {
+  const urlObserver = new URLObserver();
+  const planner = new Planner();
 
   urlObserver.on("urlChanged", async () => {
     await render(components, planner, getURLState());
