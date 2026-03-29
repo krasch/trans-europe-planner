@@ -16,6 +16,15 @@ export class ConnectionId {
   }
 
   /**
+   * @param {ConnectionId} other
+   */
+  isSameLeg(other) {
+    return (
+      this.fromStopId === other.fromStopId && this.toStopId === other.toStopId
+    );
+  }
+
+  /**
    * @returns {String}
    */
   toString() {

@@ -84,7 +84,7 @@ test("Create url without connection", async () => {
 
 test("Create url with one connection", async () => {
   const active = _i(["T1: S1@D1T10->S2@D1T11"]);
-  const searchParams = fillURLParams("S1", "S2", DAY1, active);
+  const searchParams = fillURLParams("S1", "S2", DAY1, active.connectionIds);
 
   const c1 = "trip-id=T1&trip-from=S1&trip-to=S2&trip-date=2024-10-15";
   const exp = "from=S1&to=S2&date=2024-10-15&" + c1;
@@ -97,7 +97,7 @@ test("Create url with multiple connections", async () => {
     "T2: S2@D1T10->S3@D2T11",
     "T3: S3@D2T13->S4@D2T17",
   ]);
-  const searchParams = fillURLParams("S1", "S4", DAY1, active);
+  const searchParams = fillURLParams("S1", "S4", DAY1, active.connectionIds);
 
   const c1 = "trip-id=T1&trip-from=S1&trip-to=S2&trip-date=2024-10-15";
   const c2 = "trip-id=T2&trip-from=S2&trip-to=S3&trip-date=2024-10-15";

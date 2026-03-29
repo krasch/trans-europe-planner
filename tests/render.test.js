@@ -6,7 +6,7 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import * as motis from "app/data/motis/client.js";
 import { GeocodedLocation } from "app/data/motis/parser.js";
 import { Planner } from "app/data/planner/planner.js";
-import { render } from "app/main.js";
+import { render } from "app/render.js";
 import { Itinerary } from "app/types/itinerary.js";
 import { setURLState } from "app/url.js";
 
@@ -95,7 +95,7 @@ test("If from/to/date are all set but no itinerary is given, then planning shoul
   await render(components, new Planner(), urlData);
 
   // no components except config are updated in this round
-  expect(setURLState).toHaveBeenCalledWith("S1", "S4", DAY1, i1);
+  expect(setURLState).toHaveBeenCalledWith("S1", "S4", DAY1, i1.connectionIds);
   expect(components.config.updateView).toHaveBeenCalledWith("S1", "S4", DAY1);
   expect(components.map.updateView).not.toHaveBeenCalled();
   expect(components.calendar.updateView).not.toHaveBeenCalled();

@@ -64,7 +64,7 @@ export function getURLState() {
  * @param {String} [from]
  * @param {String} [to]
  * @param {DateTime} [date]
- * @param {Itinerary} [activeItinerary]
+ * @param {ConnectionId[]} [activeItinerary]
  */
 export function fillURLParams(from, to, date, activeItinerary) {
   const searchParams = new URLSearchParams();
@@ -74,11 +74,11 @@ export function fillURLParams(from, to, date, activeItinerary) {
   if (date) searchParams.set("date", date.toISODate());
 
   if (activeItinerary) {
-    for (let connection of activeItinerary.connections) {
-      searchParams.append("trip-id", connection.tripId);
-      searchParams.append("trip-from", connection.from.stopId);
-      searchParams.append("trip-to", connection.to.stopId);
-      searchParams.append("trip-date", connection.from.departure.toISODate());
+    for (let connectionId of activeItinerary) {
+      searchParams.append("trip-id", connectionId.tripId);
+      searchParams.append("trip-from", connectionId.fromStopId);
+      searchParams.append("trip-to", connectionId.toStopId);
+      searchParams.append("trip-date", connectionId.date.toISODate());
     }
   }
 
@@ -89,7 +89,7 @@ export function fillURLParams(from, to, date, activeItinerary) {
  * @param {String} from
  * @param {String} to
  * @param {DateTime} date
- * @param {Itinerary} activeItinerary
+ * @param {ConnectionId[]} [activeItinerary]
  */
 export function setURLState(from, to, date, activeItinerary) {
   const url = new URL(window.location.href);

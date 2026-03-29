@@ -12,6 +12,8 @@ test("Itinerary with one connection", function () {
   const c1 = _c("T1: S1@D1T10->S2@D1T11");
   const itinerary = new Itinerary([c1]);
 
+  expect(itinerary.connections).toStrictEqual([c1]);
+  expect(itinerary.connectionIds).toStrictEqual([c1.id]);
   expect(itinerary.from).toStrictEqual(c1.from);
   expect(itinerary.to).toStrictEqual(c1.to);
   expect(itinerary.vias).toStrictEqual([]);
@@ -43,23 +45,10 @@ test("Itinerary with multiple connections", function () {
     c3.from.departure,
   );
 
+  expect(itinerary.connections).toStrictEqual([c1, c2, c3]);
+  expect(itinerary.connectionIds).toStrictEqual([c1.id, c2.id, c3.id]);
   expect(itinerary.from).toStrictEqual(c1.from);
   expect(itinerary.to).toStrictEqual(c3.to);
   expect(itinerary.vias).toStrictEqual([expVia1, expVia2]);
   expect(itinerary.geoRoute).toBe("S1->S2->S3->S4");
-});
-
-test("Should throw error if replacing unknown leg", async function () {
-  const i1 = _i(["T1: S1@D1T10->S2@D1T11", "T2: S2@D1T11->S3@D1T12"]);
-  const replacement = _c("T3: S3@D1T10->S4@D1T11");
-
-  expect(() => i1.replaceLeg(replacement)).toThrow(UnknownLegError);
-});
-
-test("replaceLeg", async function () {
-  const i1 = _i(["T1: S1@D1T10->S2@D1T11", "T2: S2@D1T11->S3@D1T12"]);
-  const replacement = _c("T3: S2@D1T10->S3@D1T11");
-
-  const i2 = i1.replaceLeg(replacement);
-  expect(i2.connections).toStrictEqual([i1.connections[0], replacement]);
 });
