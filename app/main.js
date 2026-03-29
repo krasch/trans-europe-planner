@@ -3,124 +3,125 @@ import { prepareDataForMap } from "app/components/_data/map.js";
 import { prepareDataForPerlschnur } from "app/components/_data/perlschnur.js";
 import { CalendarWrapper } from "app/components/calendar.js";
 import { Config } from "app/components/config.js";
+import { MapWrapper } from "app/components/map.js";
 import { Navigation } from "app/components/nav.js";
 import { Perlschnur } from "app/components/perlschnur.js";
-import { Planner } from "app/planner.js";
-import { State } from "app/state.js";
-import { LocationObserver } from "app/util.js";
+// todo should all come from planner
+import { getStopInfo } from "app/data/motis/client.js";
+import { Planner } from "app/data/planner/planner.js";
+import { ConnectionId } from "app/types/connection.js";
+import { parseURLParams, updateURL, URLObserver } from "app/url.js";
 
-import { MapWrapper } from "./components/map.js";
-
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+/**
+ * @typedef {import("app/url.js").ParsedURLData} ParsedURLData
+ */
 
 /**
  * @param {Object.<string,any>} components
  * @param {Planner} planner
- * @param {State} state
+ * @param {ParsedURLData} urlData
  */
-async function updateAllComponents(components, planner, state) {
-  // update config
-  components.config.updateView(state.from, state.to, state.date);
+export async function render(components, planner, urlData) {
+  let from = null;
+  if (urlData.from) from = await getStopInfo(urlData.from);
 
-  if (!state.activeItinerary) return;
+  let to = null;
+  if (urlData.to) to = await getStopInfo(urlData.to);
+
+  // update config form
+  components.config.updateView(from?.name, to?.name, urlData.date);
+
+  // form is not fully filled out -> nothing else to render
+  if (!from || !to || !urlData.date) return;
+
+  // currently no active itinerary
+  // -> run planning and pick an itinerary from the results
+  if (urlData.connectionIds.length === 0) {
+    const itineraries = await planner.plan(from.id, to.id, urlData.date);
+    const active = itineraries[0];
+
+    // this will trigger an event which will trigger another round of render()
+    // during that render we will gather all that other data we need
+    updateURL(urlData.from, urlData.to, urlData.date, active);
+    return;
+  }
+
+  // we have trip ids in the url -> need to gather the data to build itinerary
+  components.config.lock();
+  const active = await planner.itineraryForIds(
+    urlData.connectionIds,
+    urlData.date,
+  );
 
   // alternatives for all the connections in current active itinerary - needed for calendar
-  const alternatives = planner.getCachedAlternatives(
-    state.activeItinerary,
-    state.date,
+  const alternatives = await planner.allAlternativeConnections(
+    active,
+    urlData.date,
   );
 
+  // now all the alternative georoutes - needed for map
+  const other = await planner.alternativeRouteItineraries(active, urlData.date);
+
+  // todo trigger loading alternative connections for alternative routes
+
   // update map
-  const mapData = prepareDataForMap(
-    state.activeItinerary,
-    state.otherItineraries,
-  );
+  const mapData = prepareDataForMap(active, other);
   components.map.updateView(mapData);
 
   // update calendar
-  const calendarData = prepareDataForCalendar(
-    state.activeItinerary,
-    alternatives,
-  );
-  components.calendar.updateView(state.date.toISODate(), calendarData);
+  const calendarData = prepareDataForCalendar(active, alternatives);
+  components.calendar.updateView(urlData.date.toISODate(), calendarData);
 
   // update perlschnur
-  const perlschnurData = prepareDataForPerlschnur(state.activeItinerary);
+  const perlschnurData = prepareDataForPerlschnur(active);
   components.perlschnur.updateView(perlschnurData);
+
+  // todo can probably unlock earlier
+  components.config.unlock();
 }
 
 export async function main() {
-  // initialise state from URL
-  const params = new URLSearchParams(window.location.search);
-  const state = new State(params);
+  const urlParams = parseURLParams(window.location.search);
+  const urlObserver = new URLObserver();
+  const planner = new Planner();
 
-  // initialise components
+  // initialise components, already do it now to trigger map loading asap
   const navigation = new Navigation();
   const components = {
-    map: new MapWrapper("map", state.center, state.zoom), // triggers map load
+    map: new MapWrapper("map", urlParams.center, urlParams.zoom),
     config: new Config(document.querySelector("#config")),
     calendar: new CalendarWrapper(document.querySelector("travel-calendar")),
     perlschnur: new Perlschnur(document.querySelector("#perlschnur")),
   };
 
-  // show landing page
+  // nothing in form is filled out -> show landing page
   // wait until user clicks the "Try it out!" button
   // this also automatically closes the landing page
-  if (params.size === 0) await navigation.showLandingPage();
+  if (!urlParams.from && !urlParams.to && !urlParams.date)
+    await navigation.showLandingPage();
 
   // landing page has been closed -> show main view
   navigation.showSidebar();
   components.map.setMapInteractive();
 
-  const planner = new Planner();
-
-  // partial function for conveniently updating the components
-  const updateComponents = updateAllComponents.bind(
-    null, // sic
-    components,
-    planner,
-  );
-
-  updateComponents(state);
-
-  // url location has changed
-  new LocationObserver().on("updated", () => {
-    console.log(window.location.search);
-  });
-
-  state.on("itineraryUpdated", async () => {
-    await updateComponents(state);
-  });
-
-  state.on("configUpdated", async () => {
-    components.config.lock();
-    const itineraries = await planner.plan(state.from, state.to, state.date);
-    state.replaceItineraries(itineraries); // triggers redraw
-    navigation.focusComponent("calendar");
-    components.config.unlock();
-
-    // load alternatives for calendar events and redraw
-    await planner.triggerLoadAlternatives(state.activeItinerary, state.date);
-    await updateComponents(state);
-
-    // already trigger this in case use selects different route
-    // not awaiting here because don't need it right now
-    for (let itinerary of state.otherItineraries) {
-      planner.triggerLoadAlternatives(itinerary, state.date);
-    }
+  urlObserver.on("urlChanged", async () => {
+    await render(components, planner, parseURLParams(window.location.search));
   });
 
   components.config.on("submit", async (from, to, date) => {
-    state.setConfigFormValues(from, to, date);
+    updateURL(from.id, to.id, date, null); // triggers re-render
   });
 
-  components.calendar.on("connectionMoved", (newConnectionId) => {
-    const connection = planner.getConnectionById(newConnectionId);
-    state.replaceLegInActiveItinerary(connection);
+  components.calendar.on("connectionMoved", (newConnectionIdString) => {
+    //const connectionId = ConnectionId.fromString(newConnectionIdString);
+    //const connection = planner.connectionForId(connectionId);
+    //const active =
+    //state.replaceLegInActiveItinerary(connection);
   });
 
   components.map.on("itineraryClicked", (itineraryId) => {
-    state.setActiveItinerary(itineraryId);
+    //const stops = itineraryId.split("->");
+    //state.setActiveItinerary(itineraryId);
   });
 
   /*********************************
@@ -148,4 +149,7 @@ export async function main() {
   components.perlschnur.on("stopHover", (stopId, isHover) => {
     components.map.setStopHover(stopId, isHover);
   });
+
+  // initial render
+  await render(components, planner, parseURLParams(window.location.search));
 }

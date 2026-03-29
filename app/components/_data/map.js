@@ -138,7 +138,7 @@ export function prepareDataForMap(activeItinerary, otherItineraries) {
       result.edges[edgeId] = defaultEdgeData(edgeStart, edgeEnd, edgeId);
 
       // need this in map event handlers
-      result.edges[edgeId].featureState.connectionId = connection.id;
+      result.edges[edgeId].featureState.connectionId = connection.id.toString();
       result.edges[edgeId].featureState.itineraryId = itinerary.id;
 
       // additional info for edges in active itinerary

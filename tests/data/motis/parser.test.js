@@ -1,6 +1,6 @@
 import { test, expect } from "vitest";
 
-import { parseMotisItinerary } from "app/motis/parser.js";
+import { parseMotisItinerary } from "app/data/motis/parser.js";
 
 import { DAY1 } from "tests/_helpers/data.js";
 import { itineraryFromShortHand as _i } from "tests/_helpers/data.js";

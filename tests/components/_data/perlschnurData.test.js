@@ -34,7 +34,7 @@ test("Single connection, no intermediate stops", function () {
 
   const exp = [
     {
-      id: i.connections[0].id,
+      id: i.connections[0].id.toString(),
       color: TEST_COLORS[0],
       icon: expect.stringMatching("RAIL.svg"),
       name: i.connections[0].name,
@@ -56,7 +56,7 @@ test("Single connection, intermediate stops", function () {
 
   const exp = [
     {
-      id: i.connections[0].id,
+      id: i.connections[0].id.toString(),
       color: TEST_COLORS[0],
       icon: expect.stringMatching("RAIL.svg"),
       name: i.connections[0].name,
@@ -80,7 +80,7 @@ test("Single connection, intermediate stops, overnight", function () {
 
   const exp = [
     {
-      id: i.connections[0].id,
+      id: i.connections[0].id.toString(),
       color: TEST_COLORS[0],
       icon: expect.stringMatching("RAIL.svg"),
       name: i.connections[0].name,
@@ -108,7 +108,7 @@ test("Multiple connections, overnight change", function () {
 
   const exp = [
     {
-      id: i.connections[0].id,
+      id: i.connections[0].id.toString(),
       color: TEST_COLORS[0],
       icon: expect.stringMatching("RAIL.svg"),
       name: i.connections[0].name,
@@ -120,7 +120,7 @@ test("Multiple connections, overnight change", function () {
       ],
     },
     {
-      id: i.connections[1].id,
+      id: i.connections[1].id.toString(),
       color: TEST_COLORS[1],
       icon: expect.stringMatching("RAIL.svg"),
       name: i.connections[1].name,
@@ -133,7 +133,7 @@ test("Multiple connections, overnight change", function () {
       ],
     },
     {
-      id: i.connections[2].id,
+      id: i.connections[2].id.toString(),
       color: TEST_COLORS[2],
       icon: expect.stringMatching("RAIL.svg"),
       name: i.connections[2].name,

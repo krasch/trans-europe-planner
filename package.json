@@ -20,6 +20,7 @@
     "@wdio/cli": "^9.24.0",
     "@wdio/local-runner": "^9.24.0",
     "@wdio/mocha-framework": "^9.24.0",
+    "@wdio/spec-reporter": "^9.26.1",
     "jsdom": "^27.4.0",
     "prettier": "3.3.3",
     "serve": "^14.2.4",

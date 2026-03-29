@@ -17,12 +17,12 @@ test("One connection, alternatives are still loading", function () {
   const c1 = _c("T1: S1@D1T10->S2@D1T11->S3@D1T12");
   const i1 = new Itinerary([c1]);
 
-  const alternatives = {};
+  const alternatives = [null];
   const got = prepareDataForCalendar(i1, alternatives);
 
   const exp = [
     {
-      id: c1.id,
+      id: c1.id.toString().toString(),
       leg: "S1->S3",
       name: c1.name,
       icon: expect.stringMatching("RAIL.svg"),
@@ -45,14 +45,13 @@ test("One connection, alternatives are available", function () {
 
   const i1 = new Itinerary([c1]);
 
-  const alternatives = {};
-  alternatives[c1.id] = [c1_alt1, c1_alt2];
+  const alternatives = [[c1_alt1, c1_alt2]];
 
   const got = prepareDataForCalendar(i1, alternatives);
 
   const exp = [
     {
-      id: c1.id,
+      id: c1.id.toString(),
       leg: "S1->S3",
       name: c1.name,
       icon: expect.stringMatching("RAIL.svg"),
@@ -64,7 +63,7 @@ test("One connection, alternatives are available", function () {
       status: "active",
     },
     {
-      id: c1_alt1.id,
+      id: c1_alt1.id.toString(),
       leg: "S1->S3",
       name: c1_alt1.name,
       icon: expect.stringMatching("RAIL.svg"),
@@ -76,7 +75,7 @@ test("One connection, alternatives are available", function () {
       status: "inactive",
     },
     {
-      id: c1_alt2.id,
+      id: c1_alt2.id.toString(),
       leg: "S1->S3",
       name: c1_alt2.name,
       icon: expect.stringMatching("RAIL.svg"),
@@ -101,15 +100,16 @@ test("Multiple connections, some with alternatives", function () {
 
   const i1 = new Itinerary([c1, c2, c3]);
 
-  const alternatives = {};
-  alternatives[c1.id] = [c1_alt1, c1_alt2];
-  alternatives[c2.id] = null; // still loading
-  alternatives[c3.id] = []; // no alternatives
+  const alternatives = [
+    [c1_alt1, c1_alt2],
+    null, // still loading
+    [], // no alternatives
+  ];
   const got = prepareDataForCalendar(i1, alternatives);
 
   const exp = [
     {
-      id: c1.id,
+      id: c1.id.toString(),
       leg: "S1->S3",
       name: c1.name,
       icon: expect.stringMatching("RAIL.svg"),
@@ -121,7 +121,7 @@ test("Multiple connections, some with alternatives", function () {
       status: "active",
     },
     {
-      id: c1_alt1.id,
+      id: c1_alt1.id.toString(),
       leg: "S1->S3",
       name: c1_alt1.name,
       icon: expect.stringMatching("RAIL.svg"),
@@ -133,7 +133,7 @@ test("Multiple connections, some with alternatives", function () {
       status: "inactive",
     },
     {
-      id: c1_alt2.id,
+      id: c1_alt2.id.toString(),
       leg: "S1->S3",
       name: c1_alt2.name,
       icon: expect.stringMatching("RAIL.svg"),
@@ -145,7 +145,7 @@ test("Multiple connections, some with alternatives", function () {
       status: "inactive",
     },
     {
-      id: c2.id,
+      id: c2.id.toString(),
       leg: "S3->S4",
       name: c2.name,
       icon: expect.stringMatching("RAIL.svg"),
@@ -157,7 +157,7 @@ test("Multiple connections, some with alternatives", function () {
       status: "active-loading",
     },
     {
-      id: c3.id,
+      id: c3.id.toString(),
       leg: "S4->S5",
       name: c3.name,
       icon: expect.stringMatching("RAIL.svg"),

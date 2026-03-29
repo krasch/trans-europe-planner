@@ -5,8 +5,8 @@
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 
 import { Config, setAutocompleteOptions } from "app/components/config.js";
-import { geocode } from "app/motis/client.js";
-import { GeocodedLocation } from "app/motis/parser.js";
+import { geocode } from "app/data/motis/client.js";
+import { GeocodedLocation } from "app/data/motis/parser.js";
 import { DateTime } from "app/types/dateTime.js";
 
 import { DAY1 } from "tests/_helpers/data.js";
@@ -19,7 +19,7 @@ import {
 beforeEach(async () => {
   initTestDOM();
 
-  vi.mock("app/motis/client.js", () => {
+  vi.mock("app/data/motis/client.js", () => {
     return { geocode: vi.fn() };
   });
 });

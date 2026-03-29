@@ -1,8 +1,16 @@
 import { test, expect } from "vitest";
 
-import { Connection } from "app/types/connection.js";
+import { Connection, ConnectionId } from "app/types/connection.js";
 
-import { stopFromShorthand as _s } from "tests/_helpers/data.js";
+import { DAY1, stopFromShorthand as _s } from "tests/_helpers/data.js";
+
+test("Connection id", function () {
+  const id = new ConnectionId("123", "S1", "S2", DAY1);
+  const idString = "123XXXS1XXXS2XXX2024-10-15";
+
+  expect(id.toString()).toBe(idString);
+  expect(ConnectionId.fromString(idString)).toStrictEqual(id);
+});
 
 test("Connection without intermediate stops", function () {
   const from = _s("S1@D1T10");
@@ -10,7 +18,7 @@ test("Connection without intermediate stops", function () {
 
   const con = new Connection("123", "rail", "RE1", from, to, []);
 
-  expect(con.id).toStrictEqual("123XXXS1XXXS2");
+  expect(con.id).toStrictEqual(new ConnectionId("123", "S1", "S2", DAY1));
   expect(con.stops).toStrictEqual([from, to]);
 });
 
@@ -27,7 +35,7 @@ test("Connection with intermediate stops", function () {
 
   const con = new Connection("123", "rail", "RE1", from, to, intermediate);
 
-  expect(con.id).toStrictEqual("123XXXS1XXXS5");
+  expect(con.id).toStrictEqual(new ConnectionId("123", "S1", "S5", DAY1));
   expect(con.stops).toStrictEqual([s1, s2, s3, s4, s5]);
 });
 

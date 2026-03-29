@@ -18,7 +18,8 @@ export async function addEntryToCalendar(connectionShorthand, kwargs = {}) {
   entry.dataset.arrivalDatetime = connection.to.arrival.toISO();
 
   entry.querySelector(".connection-icon").src = "train.svg";
-  entry.querySelector(".connection-number").innerHTML = connection.id;
+  entry.querySelector(".connection-number").innerHTML =
+    connection.id.toString();
   entry.querySelector(".start .time").innerHTML =
     connection.from.departure.toFormat("HH:mm");
   entry.querySelector(".start .station").innerHTML = connection.to.stopName;

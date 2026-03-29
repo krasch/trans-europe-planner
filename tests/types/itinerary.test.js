@@ -15,8 +15,7 @@ test("Itinerary with one connection", function () {
   expect(itinerary.from).toStrictEqual(c1.from);
   expect(itinerary.to).toStrictEqual(c1.to);
   expect(itinerary.vias).toStrictEqual([]);
-  expect(itinerary.stopIds).toStrictEqual(["S1", "S2"]);
-  expect(itinerary.id).toBe("S1->S2");
+  expect(itinerary.geoRoute).toBe("S1->S2");
 });
 
 test("Itinerary with multiple connections", function () {
@@ -47,8 +46,7 @@ test("Itinerary with multiple connections", function () {
   expect(itinerary.from).toStrictEqual(c1.from);
   expect(itinerary.to).toStrictEqual(c3.to);
   expect(itinerary.vias).toStrictEqual([expVia1, expVia2]);
-  expect(itinerary.stopIds).toStrictEqual(["S1", "S2", "S3", "S4"]);
-  expect(itinerary.id).toBe("S1->S2->S3->S4");
+  expect(itinerary.geoRoute).toBe("S1->S2->S3->S4");
 });
 
 test("Should throw error if replacing unknown leg", async function () {

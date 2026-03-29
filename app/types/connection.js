@@ -1,4 +1,48 @@
+import { DateTime } from "./dateTime.js";
 import { Stop } from "./stop.js";
+
+export class ConnectionId {
+  /**
+   * @param {String} tripId
+   * @param {String} fromStopId
+   * @param {String} toStopId
+   * @param {DateTime} date
+   */
+  constructor(tripId, fromStopId, toStopId, date) {
+    this.tripId = tripId;
+    this.fromStopId = fromStopId;
+    this.toStopId = toStopId;
+    this.date = date; // todo not needed because already in motis?
+  }
+
+  /**
+   * @returns {String}
+   */
+  toString() {
+    return (
+      this.tripId +
+      "XXX" +
+      this.fromStopId +
+      "XXX" +
+      this.toStopId +
+      "XXX" +
+      this.date.toISODate()
+    );
+  }
+
+  /**
+   * @param {string} connectionIdString
+   */
+  static fromString(connectionIdString) {
+    const split = connectionIdString.split("XXX");
+    return new ConnectionId(
+      split[0],
+      split[1],
+      split[2],
+      DateTime.fromISO(split[3]),
+    );
+  }
+}
 
 export class Connection {
   /**
@@ -13,14 +57,18 @@ export class Connection {
     this.tripId = tripId;
     this.mode = mode;
     this.name = name;
+
     this.from = from;
     this.to = to;
     this.intermediateStops = intermediateStops;
-
-    // todo unique id that includes date
-    this.id = tripId + "XXX" + this.from.stopId + "XXX" + this.to.stopId;
-
     this.stops = [this.from].concat(this.intermediateStops).concat(this.to);
+
+    this.id = new ConnectionId(
+      tripId,
+      this.from.stopId,
+      this.to.stopId,
+      this.from.departure.startOf("day"),
+    );
   }
 
   get isMultiday() {

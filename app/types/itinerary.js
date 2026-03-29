@@ -36,11 +36,13 @@ export class Itinerary {
       );
     }
 
-    this.stopIds = [this.from.stopId]
+    const stopIds = [this.from.stopId]
       .concat(this.vias.map((v) => v.stopId))
       .concat(this.to.stopId);
 
-    this.id = this.stopIds.join("->"); // todo rename to georoute
+    // todo delete in favor of georoute todo why are tests not failing when I delete this?
+    this.id = stopIds.join("->");
+    this.geoRoute = stopIds.join("->");
   }
 
   /**

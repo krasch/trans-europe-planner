@@ -95,7 +95,7 @@ export function prepareDataForPerlschnur(activeItinerary) {
 
     // combine with all the rest of the connection info
     result.push({
-      id: connection.id,
+      id: connection.id.toString(),
       color: getColor(connectionIdx),
       name: connection.name,
       icon: getIcon(connection.mode),

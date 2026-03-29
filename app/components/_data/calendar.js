@@ -25,7 +25,7 @@ import { Itinerary } from "app/types/itinerary.js";
  */
 function dataForConnection(connection, color, status) {
   return {
-    id: connection.id,
+    id: connection.id.toString(),
     leg: `${connection.from.stopId}->${connection.to.stopId}`,
     name: connection.name,
     icon: getIcon(connection.mode),
@@ -48,7 +48,7 @@ export function prepareDataForCalendar(activeItinerary, alternatives) {
 
   activeItinerary.connections.forEach((connection, i) => {
     // alternatives already available for this connection?
-    const isLoaded = alternatives[connection.id]; // not null or undefined
+    const isLoaded = alternatives[i] !== null;
     const status = isLoaded ? "active" : "active-loading";
 
     // this will add an event for the currently selected connection to the calendar
@@ -58,7 +58,7 @@ export function prepareDataForCalendar(activeItinerary, alternatives) {
     if (!isLoaded) return;
 
     // add one event for each alternative to this connection
-    for (let alt of alternatives[connection.id]) {
+    for (let alt of alternatives[i]) {
       data.push(dataForConnection(alt, getColor(i), "inactive"));
     }
   });
