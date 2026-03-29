@@ -54,6 +54,13 @@ export function parseURLParams(searchParamString) {
 }
 
 /**
+ * @returns {ParsedURLData}
+ */
+export function getURLState() {
+  return parseURLParams(window.location.search);
+}
+
+/**
  * @param {String} [from]
  * @param {String} [to]
  * @param {DateTime} [date]
@@ -84,7 +91,7 @@ export function fillURLParams(from, to, date, activeItinerary) {
  * @param {DateTime} date
  * @param {Itinerary} activeItinerary
  */
-export function updateURL(from, to, date, activeItinerary) {
+export function setURLState(from, to, date, activeItinerary) {
   const url = new URL(window.location.href);
   url.search = fillURLParams(from, to, date, activeItinerary).toString();
 

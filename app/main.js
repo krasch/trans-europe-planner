@@ -9,8 +9,7 @@ import { Perlschnur } from "app/components/perlschnur.js";
 // todo should all come from planner
 import { getStopInfo } from "app/data/motis/client.js";
 import { Planner } from "app/data/planner/planner.js";
-import { ConnectionId } from "app/types/connection.js";
-import { parseURLParams, updateURL, URLObserver } from "app/url.js";
+import { getURLState, setURLState, URLObserver } from "app/url.js";
 
 /**
  * @typedef {import("app/url.js").ParsedURLData} ParsedURLData
@@ -19,48 +18,51 @@ import { parseURLParams, updateURL, URLObserver } from "app/url.js";
 /**
  * @param {Object.<string,any>} components
  * @param {Planner} planner
- * @param {ParsedURLData} urlData
+ * @param {ParsedURLData} urlState
  */
-export async function render(components, planner, urlData) {
+export async function render(components, planner, urlState) {
   let from = null;
-  if (urlData.from) from = await getStopInfo(urlData.from);
+  if (urlState.from) from = await getStopInfo(urlState.from);
 
   let to = null;
-  if (urlData.to) to = await getStopInfo(urlData.to);
+  if (urlState.to) to = await getStopInfo(urlState.to);
 
   // update config form
-  components.config.updateView(from?.name, to?.name, urlData.date);
+  components.config.updateView(from?.name, to?.name, urlState.date);
 
   // form is not fully filled out -> nothing else to render
-  if (!from || !to || !urlData.date) return;
+  if (!from || !to || !urlState.date) return;
 
   // currently no active itinerary
   // -> run planning and pick an itinerary from the results
-  if (urlData.connectionIds.length === 0) {
-    const itineraries = await planner.plan(from.id, to.id, urlData.date);
+  if (urlState.connectionIds.length === 0) {
+    const itineraries = await planner.plan(from.id, to.id, urlState.date);
     const active = itineraries[0];
 
     // this will trigger an event which will trigger another round of render()
     // during that render we will gather all that other data we need
-    updateURL(urlData.from, urlData.to, urlData.date, active);
+    setURLState(urlState.from, urlState.to, urlState.date, active);
     return;
   }
 
   // we have trip ids in the url -> need to gather the data to build itinerary
   components.config.lock();
   const active = await planner.itineraryForIds(
-    urlData.connectionIds,
-    urlData.date,
+    urlState.connectionIds,
+    urlState.date,
   );
 
   // alternatives for all the connections in current active itinerary - needed for calendar
   const alternatives = await planner.allAlternativeConnections(
     active,
-    urlData.date,
+    urlState.date,
   );
 
   // now all the alternative georoutes - needed for map
-  const other = await planner.alternativeRouteItineraries(active, urlData.date);
+  const other = await planner.alternativeRouteItineraries(
+    active,
+    urlState.date,
+  );
 
   // todo trigger loading alternative connections for alternative routes
 
@@ -70,7 +72,7 @@ export async function render(components, planner, urlData) {
 
   // update calendar
   const calendarData = prepareDataForCalendar(active, alternatives);
-  components.calendar.updateView(urlData.date.toISODate(), calendarData);
+  components.calendar.updateView(urlState.date.toISODate(), calendarData);
 
   // update perlschnur
   const perlschnurData = prepareDataForPerlschnur(active);
@@ -81,14 +83,14 @@ export async function render(components, planner, urlData) {
 }
 
 export async function main() {
-  const urlParams = parseURLParams(window.location.search);
+  const urlState = getURLState();
   const urlObserver = new URLObserver();
   const planner = new Planner();
 
   // initialise components, already do it now to trigger map loading asap
   const navigation = new Navigation();
   const components = {
-    map: new MapWrapper("map", urlParams.center, urlParams.zoom),
+    map: new MapWrapper("map", urlState.center, urlState.zoom),
     config: new Config(document.querySelector("#config")),
     calendar: new CalendarWrapper(document.querySelector("travel-calendar")),
     perlschnur: new Perlschnur(document.querySelector("#perlschnur")),
@@ -97,7 +99,7 @@ export async function main() {
   // nothing in form is filled out -> show landing page
   // wait until user clicks the "Try it out!" button
   // this also automatically closes the landing page
-  if (!urlParams.from && !urlParams.to && !urlParams.date)
+  if (!urlState.from && !urlState.to && !urlState.date)
     await navigation.showLandingPage();
 
   // landing page has been closed -> show main view
@@ -105,11 +107,11 @@ export async function main() {
   components.map.setMapInteractive();
 
   urlObserver.on("urlChanged", async () => {
-    await render(components, planner, parseURLParams(window.location.search));
+    await render(components, planner, getURLState());
   });
 
   components.config.on("submit", async (from, to, date) => {
-    updateURL(from.id, to.id, date, null); // triggers re-render
+    setURLState(from.id, to.id, date, null); // triggers re-render
   });
 
   components.calendar.on("connectionMoved", (newConnectionIdString) => {
@@ -151,5 +153,5 @@ export async function main() {
   });
 
   // initial render
-  await render(components, planner, parseURLParams(window.location.search));
+  await render(components, planner, getURLState());
 }

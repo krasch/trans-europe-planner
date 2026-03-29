@@ -8,7 +8,7 @@ import { GeocodedLocation } from "app/data/motis/parser.js";
 import { Planner } from "app/data/planner/planner.js";
 import { render } from "app/main.js";
 import { Itinerary } from "app/types/itinerary.js";
-import { updateURL } from "app/url.js";
+import { setURLState } from "app/url.js";
 
 import {
   DAY1,
@@ -40,7 +40,7 @@ beforeEach(async () => {
   });
 
   vi.mock("app/url.js", () => {
-    return { updateURL: vi.fn() };
+    return { setURLState: vi.fn() };
   });
 });
 
@@ -76,7 +76,7 @@ test("If not all of from/to/date are set, stopIds should get resolved but nothin
   await render(components, new Planner(), urlData);
 
   // no components except config are updated in this round
-  expect(updateURL).not.toHaveBeenCalled();
+  expect(setURLState).not.toHaveBeenCalled();
   expect(components.config.updateView).toHaveBeenCalledWith("S1", "S2", null);
   expect(components.map.updateView).not.toHaveBeenCalled();
   expect(components.calendar.updateView).not.toHaveBeenCalled();
@@ -104,7 +104,7 @@ test("If from/to/date are all set but no itinerary is given, then planning shoul
   await render(components, new Planner(), urlData);
 
   // no components except config are updated in this round
-  expect(updateURL).toHaveBeenCalledWith("S1", "S4", DAY1, i1);
+  expect(setURLState).toHaveBeenCalledWith("S1", "S4", DAY1, i1);
   expect(components.config.updateView).toHaveBeenCalledWith("S1", "S4", DAY1);
   expect(components.map.updateView).not.toHaveBeenCalled();
   expect(components.calendar.updateView).not.toHaveBeenCalled();
@@ -144,7 +144,7 @@ test("If an itinerary is set in url, it should get resolved, alternatives loaded
   await render(components, new Planner(), urlData);
 
   // all components are updated in this round
-  expect(updateURL).not.toHaveBeenCalled();
+  expect(setURLState).not.toHaveBeenCalled();
   expect(components.config.updateView).toHaveBeenCalledWith("S1", "S4", DAY1);
   expect(components.perlschnur.updateView).toHaveBeenCalledWith([
     expect.objectContaining({ id: i1.connections[0].id.toString() }),
