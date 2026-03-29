@@ -58,15 +58,6 @@ function mockComponents() {
   };
 }
 
-function mockPlanner() {
-  return {
-    plan: vi.fn(),
-    getItineraryForTrips: vi.fn(),
-    getAlternativeConnections: vi.fn(),
-    getAlternativeRouteItineraries: vi.fn(),
-  };
-}
-
 test("If not all of from/to/date are set, stopIds should get resolved but nothing else should happen", async () => {
   const urlData = { from: "S1", to: "S2", date: null, trips: [] };
 
