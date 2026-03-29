@@ -7,7 +7,7 @@ import {
 import { Connection } from "app/types/connection.js";
 import { DateTime } from "app/types/dateTime.js";
 import { Itinerary } from "app/types/itinerary.js";
-import { intersection } from "app/util.js";
+import { intersection } from "app/utils/collections.js";
 
 const REFERRER = "https://trans-europe-planner.eu";
 

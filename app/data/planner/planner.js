@@ -2,7 +2,7 @@ import * as motis from "app/data/motis/client.js";
 import { Connection, ConnectionId } from "app/types/connection.js";
 import { DateTime } from "app/types/dateTime.js";
 import { Itinerary } from "app/types/itinerary.js";
-import { groupBy } from "app/util.js";
+import { groupBy } from "app/utils/collections.js";
 
 import { PlannerCache } from "./cache.js";
 import { isParetoOptimal, itineraryScore } from "./scoring.js";

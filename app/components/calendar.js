@@ -1,4 +1,5 @@
-import { calculateDiff, createElementFromTemplate } from "app/util.js";
+import { calculateDiff } from "app/utils/collections.js";
+import { createElementFromTemplate } from "app/utils/templates.js";
 
 export function createEntryFromConnection(c) {
   const data = {
