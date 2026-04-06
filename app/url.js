@@ -1,7 +1,16 @@
+import { ConnectionId } from "app/types/connection.js";
 import { DateTime } from "app/types/dateTime.js";
-import { Itinerary } from "app/types/itinerary.js";
 
-import { ConnectionId } from "./types/connection.js";
+/**
+ * @typedef {Object} ParsedURLData
+ * @property {string} [from]
+ * @property {string} [to]
+ * @property {DateTime} [date]
+ * @property {ConnectionId[]} [active]
+ * @property {ConnectionId[][]} [alternatives]
+ * @property {Number} [zoom]
+ * @property {Number[]} [center]
+ */
 
 export const DEFAULTS = {
   zoom: 7.3,
@@ -9,36 +18,56 @@ export const DEFAULTS = {
 };
 
 /**
- * @typedef {Object} ParsedURLData
- * @property {string} [from]
- * @property {string} [to]
- * @property {DateTime} [date]
- * @property {ConnectionId[]} [connectionIds]
- * @property {Number} [zoom]
- * @property {Number[]} [center]
+ * @param {URLSearchParams} searchParams
+ * @param {ConnectionId[]} connectionIds
+ * @param {String} [prefix]
  */
+function itineraryToParams(searchParams, connectionIds, prefix) {
+  if (!prefix) prefix = "";
+
+  connectionIds.forEach((connectionId) => {
+    searchParams.append(`${prefix}trip-id`, connectionId.tripId);
+    searchParams.append(`${prefix}trip-from`, connectionId.fromStopId);
+    searchParams.append(`${prefix}trip-to`, connectionId.toStopId);
+    searchParams.append(`${prefix}trip-date`, connectionId.date.toISODate());
+  });
+}
+
+/**
+ * @param {URLSearchParams} searchParams
+ * @param {String} [prefix]
+ * @returns {ConnectionId[]}
+ */
+function paramsToItinerary(searchParams, prefix) {
+  if (!prefix) prefix = "";
+
+  return searchParams
+    .getAll(`${prefix}trip-id`)
+    .map(
+      (tripId, i) =>
+        new ConnectionId(
+          tripId,
+          searchParams.getAll(`${prefix}trip-from`)[i],
+          searchParams.getAll(`${prefix}trip-to`)[i],
+          DateTime.fromISO(searchParams.getAll(`${prefix}trip-date`)[i]),
+        ),
+    );
+}
 
 /**
  * @param {String} searchParamString
  * @returns {ParsedURLData}
  */
 export function parseURLParams(searchParamString) {
-  //const searchParams = new URLSearchParams(window.location.search);
   const searchParams = new URLSearchParams(searchParamString);
 
-  const connectionIds = [];
+  const active = paramsToItinerary(searchParams);
 
-  // todo deal with malformed trip info
-  searchParams.getAll("trip-id").forEach((id, i) => {
-    connectionIds.push(
-      new ConnectionId(
-        id,
-        searchParams.getAll("trip-from")[i],
-        searchParams.getAll("trip-to")[i],
-        DateTime.fromISO(searchParams.getAll("trip-date")[i]),
-      ),
-    );
-  });
+  // todo find saner URL schema
+  const prefixes = ["alt1-", "alt2-", "alt3-", "alt4-", "alt5-"];
+  const alternatives = prefixes
+    .map((prefix) => paramsToItinerary(searchParams, prefix))
+    .filter((alt) => alt.length > 0);
 
   let date = DateTime.fromISO(searchParams.get("date"));
   if (!date.isValid) date = null;
@@ -47,7 +76,8 @@ export function parseURLParams(searchParamString) {
     from: searchParams.get("from"),
     to: searchParams.get("to"),
     date: date,
-    connectionIds: connectionIds,
+    active: active,
+    alternatives: alternatives,
     zoom: DEFAULTS.zoom,
     center: DEFAULTS.center,
   };
@@ -65,21 +95,27 @@ export function getURLState() {
  * @param {String} [to]
  * @param {DateTime} [date]
  * @param {ConnectionId[]} [activeItinerary]
+ * @param {ConnectionId[][]} [alternativeItineraries]
  */
-export function fillURLParams(from, to, date, activeItinerary) {
+export function fillURLParams(
+  from,
+  to,
+  date,
+  activeItinerary,
+  alternativeItineraries,
+) {
   const searchParams = new URLSearchParams();
 
   if (from) searchParams.set("from", from);
   if (to) searchParams.set("to", to);
   if (date) searchParams.set("date", date.toISODate());
 
-  if (activeItinerary) {
-    for (let connectionId of activeItinerary) {
-      searchParams.append("trip-id", connectionId.tripId);
-      searchParams.append("trip-from", connectionId.fromStopId);
-      searchParams.append("trip-to", connectionId.toStopId);
-      searchParams.append("trip-date", connectionId.date.toISODate());
-    }
+  if (activeItinerary) itineraryToParams(searchParams, activeItinerary);
+
+  if (alternativeItineraries) {
+    alternativeItineraries.forEach((alternative, i) =>
+      itineraryToParams(searchParams, alternative, `alt${i + 1}-`),
+    );
   }
 
   return searchParams;
