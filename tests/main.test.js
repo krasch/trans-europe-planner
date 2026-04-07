@@ -9,22 +9,20 @@ import { getURLState, setURLState } from "app/url.js";
 
 import { DAY1 } from "tests/_helpers/data.js";
 
-beforeEach(async () => {
-  vi.mock("app/render.js", () => {
-    return { render: vi.fn() };
-  });
+vi.mock("app/render.js", () => {
+  return { render: vi.fn() };
+});
 
-  vi.mock("app/url.js", () => {
-    return {
-      URLObserver: vi.fn(
-        class {
-          on = vi.fn;
-        },
-      ),
-      getURLState: vi.fn(),
-      setURLState: vi.fn(),
-    };
-  });
+vi.mock("app/url.js", () => {
+  return {
+    URLObserver: vi.fn(
+      class {
+        on = vi.fn;
+      },
+    ),
+    getURLState: vi.fn(),
+    setURLState: vi.fn(),
+  };
 });
 
 afterEach(async () => {

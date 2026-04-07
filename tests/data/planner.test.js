@@ -16,12 +16,12 @@ import {
 } from "tests/_helpers/data.js";
 import { initTestDOM } from "tests/_helpers/domUtils.js";
 
+vi.mock("app/data/motis/client.js", () => {
+  return { direct: vi.fn(), plan: vi.fn() };
+});
+
 beforeEach(async () => {
   initTestDOM();
-
-  vi.mock("app/data/motis/client.js", () => {
-    return { direct: vi.fn(), plan: vi.fn() };
-  });
 });
 
 afterEach(async () => {

@@ -27,21 +27,17 @@ const CONNECTIONS = {
   "S1->S4": [_c("T4: S1@D1T10->S4@D3T11")],
 };
 
-beforeEach(async () => {
-  vi.mock("app/data/motis/client.js", () => {
-    return {
-      getStopInfo: vi.fn(
-        async (s) => new GeocodedLocation("stop", s, s, 10, 10),
-      ),
-      direct: vi.fn(async (from, to) => CONNECTIONS[`${from}->${to}`]),
-      // this will be test-specific
-      plan: vi.fn(),
-    };
-  });
+vi.mock("app/data/motis/client.js", () => {
+  return {
+    getStopInfo: vi.fn(async (s) => new GeocodedLocation("stop", s, s, 10, 10)),
+    direct: vi.fn(async (from, to) => CONNECTIONS[`${from}->${to}`]),
+    // this will be test-specific
+    plan: vi.fn(),
+  };
+});
 
-  vi.mock("app/url.js", () => {
-    return { setURLState: vi.fn() };
-  });
+vi.mock("app/url.js", () => {
+  return { setURLState: vi.fn() };
 });
 
 afterEach(async () => {

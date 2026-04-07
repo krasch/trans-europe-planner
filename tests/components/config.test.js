@@ -16,12 +16,12 @@ import {
   timeout,
 } from "tests/_helpers/domUtils.js";
 
+vi.mock("app/data/motis/client.js", () => {
+  return { geocode: vi.fn() };
+});
+
 beforeEach(async () => {
   initTestDOM();
-
-  vi.mock("app/data/motis/client.js", () => {
-    return { geocode: vi.fn() };
-  });
 });
 
 afterEach(async () => {
