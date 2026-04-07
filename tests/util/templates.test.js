@@ -3,7 +3,7 @@
  */
 import { expect, test } from "vitest";
 
-import { updateElement } from "app/util.js";
+import { updateElement } from "app/utils/templates.js";
 
 import { timeout } from "tests/_helpers/domUtils.js";
 

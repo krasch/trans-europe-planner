@@ -1,6 +1,6 @@
 import { test, expect } from "vitest";
 
-import { Itinerary, UnknownLegError } from "app/types/itinerary.js";
+import { Itinerary } from "app/types/itinerary.js";
 import { Stop } from "app/types/stop.js";
 
 import {
