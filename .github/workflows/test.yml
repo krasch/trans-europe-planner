@@ -8,6 +8,14 @@ jobs:
 
       - uses: actions/checkout@v3
 
+      - name: Install packages (for running maplibre tests)
+        run: |
+          sudo apt-get -yqq update
+          sudo apt-get -yqq install memcached libvips-dev xvfb mesa-utils libgl1-mesa-dri
+
+      - name: Enable virtual display (for running maplibre tests)
+        run: Xvfb :99 -screen 0 1024x768x24 &
+
       - name: Install javascript modules
         run: npm install
 
@@ -19,4 +27,6 @@ jobs:
 
       - name: Run tests
         run: npm test
+        env:
+          DISPLAY: ":99"
         
