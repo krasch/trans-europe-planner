@@ -54,11 +54,11 @@ function mockComponents() {
   };
 }
 
-test("If not all of from/to/date are set, stopIds should get resolved but nothing else should happen", async () => {
+test("If not all of from/to/calendarStartDate are set, stopIds should get resolved but nothing else should happen", async () => {
   const urlData = {
     from: "S1",
     to: "S2",
-    date: null,
+    calendarStartDate: null,
     active: [],
     alternatives: [],
   };
@@ -76,7 +76,7 @@ test("If not all of from/to/date are set, stopIds should get resolved but nothin
   expect(components.perlschnur.updateView).not.toHaveBeenCalled();
 });
 
-test("If from/to/date are all set but no itinerary is given, then planning should happen and URL updated", async () => {
+test("If from/to/calendarStartDate are all set but no itinerary is given, then planning should happen and URL updated", async () => {
   // will return this one first from planning -> should become active itinerary
   const i1 = new Itinerary([
     CONNECTIONS["S1->S2"][0],
@@ -93,7 +93,7 @@ test("If from/to/date are all set but no itinerary is given, then planning shoul
   const urlData = {
     from: "S1",
     to: "S4",
-    date: DAY1,
+    calendarStartDate: DAY1,
     active: [],
     alternatives: [],
   };
@@ -132,7 +132,7 @@ test("If an itinerary is set in url, it should get resolved, alternatives loaded
   const urlData = {
     from: "S1",
     to: "S4",
-    date: DAY1,
+    calendarStartDate: DAY1,
     active: i1.connectionIds,
     alternatives: [i2.connectionIds, i3.connectionIds],
   };

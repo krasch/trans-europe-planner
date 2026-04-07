@@ -7,7 +7,6 @@ import { URL_DEFAULTS } from "app/config.js";
 import { Planner } from "app/data/planner/planner.js";
 import { render } from "app/render.js";
 import { ConnectionId } from "app/types/connection.js";
-import { DateTime } from "app/types/dateTime.js";
 import { getURLState, setURLState, URLObserver } from "app/url.js";
 import { findFirstPosition } from "app/utils/collections.js";
 
@@ -29,14 +28,14 @@ export async function init() {
   // nothing in form is filled out -> show landing page
   // wait until user clicks the "Try it out!" button
   // this also automatically closes the landing page
-  if (!urlState.from && !urlState.to && !urlState.date)
+  if (!urlState.from && !urlState.to && !urlState.calendarStartDate)
     await components.navigation.showLandingPage();
 
   // landing page has been closed -> show main view
   components.navigation.showSidebar();
   components.map.setMapInteractive();
 
-  if (!urlState.date)
+  if (!urlState.calendarStartDate)
     setURLState(
       urlState.from,
       urlState.to,
@@ -59,8 +58,8 @@ export async function main(components) {
     await render(components, planner, getURLState());
   });
 
-  components.config.on("submit", async (from, to, date) => {
-    setURLState(from.id, to.id, date, null); // triggers re-render
+  components.config.on("submit", async (from, to, calenderStartDate) => {
+    setURLState(from.id, to.id, calenderStartDate, null); // triggers re-render
   });
 
   components.calendar.on("connectionMoved", (newConnectionIdString) => {
@@ -86,7 +85,7 @@ export async function main(components) {
     setURLState(
       urlState.from,
       urlState.to,
-      urlState.date,
+      urlState.calendarStartDate,
       urlState.active, // has been updated
       urlState.alternatives,
     );
@@ -121,7 +120,7 @@ export async function main(components) {
     setURLState(
       urlState.from,
       urlState.to,
-      urlState.date,
+      urlState.calendarStartDate,
       active, // has been updated
       urlState.alternatives, // has been updated
     );

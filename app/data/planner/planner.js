@@ -32,19 +32,19 @@ export class Planner {
 
   /**
    * @param {ConnectionId} id
-   * @param {DateTime} date
+   * @param {DateTime} calendarStartDate
    * @returns {Promise<Connection>}
    */
-  async connectionForId(id, date) {
+  async connectionForId(id, calendarStartDate) {
     const cached = this.#cache.getConnectionById(id);
     if (cached) return asPromise(cached);
 
     // this method fills our trips/connections cache -> don't need to fill cache here
-    // uses "date" not id.date to get data for multiple days!
+    // uses "calendarStartDate" not id.calendarStartDate to get data for multiple days!
     const connections = await this.#getAllDirect(
       id.fromStopId,
       id.toStopId,
-      date,
+      calendarStartDate,
     );
 
     // find the right trip from all the direct options
@@ -58,12 +58,14 @@ export class Planner {
 
   /**
    * @param {ConnectionId[]} connectionIds
-   * @param {DateTime} date
+   * @param {DateTime} calendarStartDate
    * @returns {Promise<Itinerary>}
    */
-  async itineraryForIds(connectionIds, date) {
+  async itineraryForIds(connectionIds, calendarStartDate) {
     // todo handle errors
-    const promises = connectionIds.map((id) => this.connectionForId(id, date));
+    const promises = connectionIds.map((id) =>
+      this.connectionForId(id, calendarStartDate),
+    );
     return Promise.all(promises).then(
       (connections) => new Itinerary(connections),
     );
@@ -72,16 +74,20 @@ export class Planner {
   /**
    * @param {String} fromStopId
    * @param {String} toStopId
-   * @param {DateTime} date
+   * @param {DateTime} calendarStartDate
    * @returns {Promise<Itinerary[]>} one itinerary per geoRoute, best route first
    */
-  async plan(fromStopId, toStopId, date) {
-    const cached = this.#cache.getPlan(fromStopId, toStopId, date);
+  async plan(fromStopId, toStopId, calendarStartDate) {
+    const cached = this.#cache.getPlan(fromStopId, toStopId, calendarStartDate);
     if (cached) return asPromise(cached);
 
     // must await, because want to transform the itineraries
     // todo put into then?
-    const itineraries = await motis.plan(fromStopId, toStopId, date);
+    const itineraries = await motis.plan(
+      fromStopId,
+      toStopId,
+      calendarStartDate,
+    );
 
     // bunch of connections in here, put them all into cache
     itineraries.forEach((i) =>
@@ -103,34 +109,35 @@ export class Planner {
 
     // keep highest-scoring itinerary per route
     const sortHighest = (i1, i2) =>
-      itineraryScore(i2, date) - itineraryScore(i1, date);
+      itineraryScore(i2, calendarStartDate) -
+      itineraryScore(i1, calendarStartDate);
     const result = pareto.map((group) => group.sort(sortHighest)[0]);
 
-    this.#cache.putPlan(fromStopId, toStopId, date, result);
+    this.#cache.putPlan(fromStopId, toStopId, calendarStartDate, result);
     return result;
   }
 
   /**
    * @param {Connection} connection
-   * @param {DateTime} date
+   * @param {DateTime} calendarStartDate
    * @returns {Promise<Connection[]>}
    */
-  async alternativeConnections(connection, date) {
+  async alternativeConnections(connection, calendarStartDate) {
     return this.#getAllDirect(
       connection.from.stopId,
       connection.to.stopId,
-      date,
+      calendarStartDate,
     ).then((options) => options.filter((o) => !o.id.equals(connection.id)));
   }
 
   /**
    * @param {Itinerary} itinerary
-   * @param {DateTime} date
+   * @param {DateTime} calendarStartDate
    * @returns {Promise<Connection[][]>}
    */
-  async allAlternativeConnections(itinerary, date) {
+  async allAlternativeConnections(itinerary, calendarStartDate) {
     const promises = itinerary.connections.map((c) =>
-      this.alternativeConnections(c, date),
+      this.alternativeConnections(c, calendarStartDate),
     );
     return Promise.all(promises);
   }
@@ -138,18 +145,27 @@ export class Planner {
   /**
    * @param {string} fromStopId
    * @param {string} toStopId
-   * @param {DateTime} date
+   * @param {DateTime} calendarStartDate
    * @returns {Promise<Connection[]>}
    */
-  async #getAllDirect(fromStopId, toStopId, date) {
-    const cached = this.#cache.getAllDirect(fromStopId, toStopId, date);
+  async #getAllDirect(fromStopId, toStopId, calendarStartDate) {
+    const cached = this.#cache.getAllDirect(
+      fromStopId,
+      toStopId,
+      calendarStartDate,
+    );
     if (cached) return asPromise(cached);
 
-    const resultPromise = motis.direct(fromStopId, toStopId, date);
+    const resultPromise = motis.direct(fromStopId, toStopId, calendarStartDate);
 
     // fill cache, both for the full direct query and the individual connections
     resultPromise.then((connections) => {
-      this.#cache.putAllDirect(fromStopId, toStopId, date, connections);
+      this.#cache.putAllDirect(
+        fromStopId,
+        toStopId,
+        calendarStartDate,
+        connections,
+      );
       connections.forEach((c) => this.#cache.putConnection(c));
     });
 

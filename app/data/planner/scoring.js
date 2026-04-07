@@ -24,11 +24,11 @@ function diffDays(earlier, later) {
 
 /**
  * @param {Itinerary} itinerary
- * @param {DateTime} fromDate
+ * @param {DateTime} calendarStartDate
  * @returns {Number}
  */
-export function itineraryScore(itinerary, fromDate) {
-  const days = diffDays(fromDate, itinerary.to.arrival);
+export function itineraryScore(itinerary, calendarStartDate) {
+  const days = diffDays(calendarStartDate, itinerary.to.arrival);
 
   const departureMinutes = itinerary.connections.map((c) =>
     minutesSinceMidnight(c.from.departure),

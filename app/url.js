@@ -6,7 +6,7 @@ import { DateTime } from "app/types/dateTime.js";
  * @typedef {Object} ParsedURLData
  * @property {string} [from]
  * @property {string} [to]
- * @property {DateTime} [date]
+ * @property {DateTime} [calendarStartDate]
  * @property {ConnectionId[]} [active]
  * @property {ConnectionId[][]} [alternatives]
  * @property {Number} [zoom]
@@ -65,13 +65,13 @@ export function parseURLParams(searchParamString) {
     .map((prefix) => paramsToItinerary(searchParams, prefix))
     .filter((alt) => alt.length > 0);
 
-  let date = DateTime.fromISO(searchParams.get("date"));
-  if (!date.isValid) date = null;
+  let calStart = DateTime.fromISO(searchParams.get("calStart"));
+  if (!calStart.isValid) calStart = null;
 
   return {
     from: searchParams.get("from"),
     to: searchParams.get("to"),
-    date: date,
+    calendarStartDate: calStart,
     active: active,
     alternatives: alternatives,
     zoom: URL_DEFAULTS.mapZoom,
@@ -89,14 +89,14 @@ export function getURLState() {
 /**
  * @param {String} [from]
  * @param {String} [to]
- * @param {DateTime} [date]
+ * @param {DateTime} [calendarStartDate]
  * @param {ConnectionId[]} [activeItinerary]
  * @param {ConnectionId[][]} [alternativeItineraries]
  */
 export function fillURLParams(
   from,
   to,
-  date,
+  calendarStartDate,
   activeItinerary,
   alternativeItineraries,
 ) {
@@ -104,7 +104,8 @@ export function fillURLParams(
 
   if (from) searchParams.set("from", from);
   if (to) searchParams.set("to", to);
-  if (date) searchParams.set("date", date.toISODate());
+  if (calendarStartDate)
+    searchParams.set("calStart", calendarStartDate.toISODate());
 
   if (activeItinerary) itineraryToParams(searchParams, activeItinerary);
 
@@ -120,14 +121,14 @@ export function fillURLParams(
 /**
  * @param {String} from
  * @param {String} to
- * @param {DateTime} date
+ * @param {DateTime} calendarStartDate
  * @param {ConnectionId[]} [activeItinerary]
  * @param {ConnectionId[][]} [alternativeItineraries]
  */
 export function setURLState(
   from,
   to,
-  date,
+  calendarStartDate,
   activeItinerary,
   alternativeItineraries,
 ) {
@@ -135,7 +136,7 @@ export function setURLState(
   url.search = fillURLParams(
     from,
     to,
-    date,
+    calendarStartDate,
     activeItinerary,
     alternativeItineraries,
   ).toString();

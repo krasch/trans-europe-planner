@@ -23,15 +23,23 @@ export async function render(components, planner, urlState) {
   if (urlState.to) to = await getStopInfo(urlState.to);
 
   // update config form
-  components.config.updateView(from?.name, to?.name, urlState.date);
+  components.config.updateView(
+    from?.name,
+    to?.name,
+    urlState.calendarStartDate,
+  );
 
   // form is not fully filled out -> nothing else to render
-  if (!from || !to || !urlState.date) return;
+  if (!from || !to || !urlState.calendarStartDate) return;
 
   // currently no active itinerary
   // -> run planning and pick an itinerary from the results
   if (urlState.active.length === 0) {
-    const itineraries = await planner.plan(from.id, to.id, urlState.date);
+    const itineraries = await planner.plan(
+      from.id,
+      to.id,
+      urlState.calendarStartDate,
+    );
     const active = itineraries[0];
     const alternatives = itineraries.slice(1);
 
@@ -40,7 +48,7 @@ export async function render(components, planner, urlState) {
     setURLState(
       urlState.from,
       urlState.to,
-      urlState.date,
+      urlState.calendarStartDate,
       active.connectionIds,
       alternatives.map((a) => a.connectionIds),
     );
@@ -50,18 +58,21 @@ export async function render(components, planner, urlState) {
   // we have trip ids in the url -> need to gather the data to build itinerary
   components.config.lock();
 
-  const active = await planner.itineraryForIds(urlState.active, urlState.date);
+  const active = await planner.itineraryForIds(
+    urlState.active,
+    urlState.calendarStartDate,
+  );
 
   // alternatives for all the connections in current active itinerary - needed for calendar
   const activeAlternatives = await planner.allAlternativeConnections(
     active,
-    urlState.date,
+    urlState.calendarStartDate,
   );
 
   // all alternative georoutes - needed for map
   const alternativeItineraries = await Promise.all(
     urlState.alternatives.map((alt) =>
-      planner.itineraryForIds(alt, urlState.date),
+      planner.itineraryForIds(alt, urlState.calendarStartDate),
     ),
   );
 
@@ -73,7 +84,10 @@ export async function render(components, planner, urlState) {
 
   // update calendar
   const calendarData = prepareDataForCalendar(active, activeAlternatives);
-  components.calendar.updateView(urlState.date.toISODate(), calendarData);
+  components.calendar.updateView(
+    urlState.calendarStartDate.toISODate(),
+    calendarData,
+  );
 
   // update perlschnur
   const perlschnurData = prepareDataForPerlschnur(active);

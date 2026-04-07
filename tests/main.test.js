@@ -75,7 +75,7 @@ test("Moving a calendar event should update the URL", async () => {
   getURLState.mockImplementation(() => ({
     from: "S1",
     to: "S4",
-    date: DAY1,
+    calendarStartDate: DAY1,
     active: [c1, c2, c3],
     alternatives: [],
   }));
@@ -102,7 +102,7 @@ test("Moving a calendar event for a non-existing leg should do nothing", async (
   getURLState.mockImplementation(() => ({
     from: "S1",
     to: "S4",
-    date: DAY1,
+    calendarStartDate: DAY1,
     active: [c1, c3],
     alternatives: [],
   }));
@@ -123,7 +123,7 @@ test("Moving a calendar event to the same position should do nothing", async () 
   getURLState.mockImplementation(() => ({
     from: "S1",
     to: "S4",
-    date: DAY1,
+    calendarStartDate: DAY1,
     active: [c1, c2, c3],
     alternatives: [],
   }));
@@ -151,7 +151,7 @@ test("Clicking on the currently active route on the map should do nothing", asyn
   getURLState.mockImplementation(() => ({
     from: "S1",
     to: "S4",
-    date: DAY1,
+    calendarStartDate: DAY1,
     active: active,
     alternatives: [alternative1, alternative2],
   }));
@@ -179,7 +179,7 @@ test("Clicking on a different route on the map should update the URL", async () 
   getURLState.mockImplementation(() => ({
     from: "S1",
     to: "S4",
-    date: DAY1,
+    calendarStartDate: DAY1,
     active: active,
     alternatives: [alternative1, alternative2],
   }));
@@ -204,7 +204,7 @@ test("Clicking on a non-existing route on the map should do nothing", async () =
   getURLState.mockImplementation(() => ({
     from: "S1",
     to: "S4",
-    date: DAY1,
+    calendarStartDate: DAY1,
     active: active,
     alternatives: [],
   }));
