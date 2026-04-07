@@ -5,11 +5,19 @@ import { Connection, ConnectionId } from "app/types/connection.js";
 import { DAY1, stopFromShorthand as _s } from "tests/_helpers/data.js";
 
 test("Connection id", function () {
-  const id = new ConnectionId("123", "S1", "S2", DAY1);
-  const idString = "123XXXS1XXXS2XXX2024-10-15";
+  const id1 = new ConnectionId("123", "S1", "S2", DAY1);
+  const id2 = new ConnectionId("456", "S1", "S2", DAY1);
+  const id3 = new ConnectionId("456", "S1", "S3", DAY1);
 
-  expect(id.toString()).toBe(idString);
-  expect(ConnectionId.fromString(idString)).toStrictEqual(id);
+  const id1String = "123XXXS1XXXS2XXX2024-10-15";
+  expect(id1.toString()).toBe(id1String);
+  expect(ConnectionId.fromString(id1String)).toStrictEqual(id1);
+
+  expect(id1.equals(id1)).toBe(true);
+  expect(id1.equals(id2)).toBe(false);
+
+  expect(id1.isSameLeg(id2)).toBe(true);
+  expect(id1.isSameLeg(id3)).toBe(false);
 });
 
 test("Connection without intermediate stops", function () {

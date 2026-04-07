@@ -30,9 +30,10 @@ export async function render(components, planner, urlState) {
 
   // currently no active itinerary
   // -> run planning and pick an itinerary from the results
-  if (urlState.connectionIds.length === 0) {
+  if (urlState.active.length === 0) {
     const itineraries = await planner.plan(from.id, to.id, urlState.date);
     const active = itineraries[0];
+    const alternatives = itineraries.slice(1);
 
     // this will trigger an event which will trigger another round of render()
     // during that render we will gather all that other data we need
@@ -41,37 +42,37 @@ export async function render(components, planner, urlState) {
       urlState.to,
       urlState.date,
       active.connectionIds,
+      alternatives.map((a) => a.connectionIds),
     );
     return;
   }
 
   // we have trip ids in the url -> need to gather the data to build itinerary
   components.config.lock();
-  const active = await planner.itineraryForIds(
-    urlState.connectionIds,
-    urlState.date,
-  );
+
+  const active = await planner.itineraryForIds(urlState.active, urlState.date);
 
   // alternatives for all the connections in current active itinerary - needed for calendar
-  const alternatives = await planner.allAlternativeConnections(
+  const activeAlternatives = await planner.allAlternativeConnections(
     active,
     urlState.date,
   );
 
-  // now all the alternative georoutes - needed for map
-  const other = await planner.alternativeRouteItineraries(
-    active,
-    urlState.date,
+  // all alternative georoutes - needed for map
+  const alternativeItineraries = await Promise.all(
+    urlState.alternatives.map((alt) =>
+      planner.itineraryForIds(alt, urlState.date),
+    ),
   );
 
   // todo trigger loading alternative connections for alternative routes
 
   // update map
-  const mapData = prepareDataForMap(active, other);
+  const mapData = prepareDataForMap(active, alternativeItineraries);
   components.map.updateView(mapData);
 
   // update calendar
-  const calendarData = prepareDataForCalendar(active, alternatives);
+  const calendarData = prepareDataForCalendar(active, activeAlternatives);
   components.calendar.updateView(urlState.date.toISODate(), calendarData);
 
   // update perlschnur

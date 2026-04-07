@@ -59,7 +59,13 @@ function mockComponents() {
 }
 
 test("If not all of from/to/date are set, stopIds should get resolved but nothing else should happen", async () => {
-  const urlData = { from: "S1", to: "S2", date: null, trips: [] };
+  const urlData = {
+    from: "S1",
+    to: "S2",
+    date: null,
+    active: [],
+    alternatives: [],
+  };
 
   const components = mockComponents();
 
@@ -81,21 +87,29 @@ test("If from/to/date are all set but no itinerary is given, then planning shoul
     CONNECTIONS["S2->S3"][0],
     CONNECTIONS["S3->S4"][1],
   ]);
-  // this one will be returned second from planning -> irrelevant for now
+  // this one will be returned second from planning -> alternative
   const i2 = new Itinerary([CONNECTIONS["S1->S4"][0]]);
 
   // @ts-ignore
   motis.plan.mockImplementation(() => [i1, i2]);
 
   // here are our inputs
-  const urlData = { from: "S1", to: "S4", date: DAY1, connectionIds: [] };
+  const urlData = {
+    from: "S1",
+    to: "S4",
+    date: DAY1,
+    active: [],
+    alternatives: [],
+  };
 
   // @ts-ignore
   const components = mockComponents();
   await render(components, new Planner(), urlData);
 
   // no components except config are updated in this round
-  expect(setURLState).toHaveBeenCalledWith("S1", "S4", DAY1, i1.connectionIds);
+  expect(setURLState).toHaveBeenCalledWith("S1", "S4", DAY1, i1.connectionIds, [
+    i2.connectionIds,
+  ]);
   expect(components.config.updateView).toHaveBeenCalledWith("S1", "S4", DAY1);
   expect(components.map.updateView).not.toHaveBeenCalled();
   expect(components.calendar.updateView).not.toHaveBeenCalled();
@@ -118,16 +132,13 @@ test("If an itinerary is set in url, it should get resolved, alternatives loaded
   // this uses a different geoRoute
   const i3 = new Itinerary([CONNECTIONS["S1->S4"][0]]);
 
-  // plan will be called when asking for alternative routes
-  // @ts-ignore
-  motis.plan.mockImplementation(() => [i1, i2, i3]);
-
-  // here are our inputs
+  // here are our inputs todo should have alternatives
   const urlData = {
     from: "S1",
     to: "S4",
     date: DAY1,
-    connectionIds: i1.connections.map((c) => c.id),
+    active: i1.connectionIds,
+    alternatives: [i2.connectionIds, i3.connectionIds],
   };
 
   // @ts-ignore

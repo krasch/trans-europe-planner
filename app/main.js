@@ -56,25 +56,64 @@ export async function main(components) {
     const newConnectionId = ConnectionId.fromString(newConnectionIdString);
     const urlState = getURLState();
 
-    // at what position in the itinerary is this connection
-    const position = findFirstPosition(urlState.connectionIds, (id) =>
+    if (!urlState.active) return;
+
+    // at what position in the itinerary is this connection?
+    const position = findFirstPosition(urlState.active, (id) =>
       newConnectionId.isSameLeg(id),
     );
 
-    // update itinerary todo what if position null?
-    urlState.connectionIds[position] = newConnectionId;
+    // the connection is not in the current itinerary todo error logging
+    if (position === null) return;
 
+    // the connection has not actually changed
+    if (urlState.active[position].equals(newConnectionId)) return;
+
+    urlState.active[position] = newConnectionId;
+
+    // triggers re-render
     setURLState(
       urlState.from,
       urlState.to,
       urlState.date,
-      urlState.connectionIds,
+      urlState.active, // has been updated
+      urlState.alternatives,
     );
   });
 
-  components.map.on("itineraryClicked", (itineraryId) => {
-    //const stops = itineraryId.split("->");
-    //state.setActiveItinerary(itineraryId);
+  components.map.on("itineraryClicked", (geoRouteString) => {
+    const urlState = getURLState();
+
+    const calcGeoRoute = (connectionIds) => {
+      let ids = connectionIds.map((c) => c.fromStopId);
+      ids.push(connectionIds.at(-1).toStopId);
+      return ids.join("->");
+    };
+
+    // clicked on the currently active itinerary, nothing to do
+    if (urlState.active && calcGeoRoute(urlState.active) === geoRouteString)
+      return;
+
+    // which alternative itinerary did user click on?
+    const position = findFirstPosition(
+      urlState.alternatives,
+      (r) => calcGeoRoute(r) === geoRouteString,
+    );
+
+    // there is no itinerary with this geoRoute todo error logging
+    if (position === null) return;
+
+    const active = urlState.alternatives[position];
+    urlState.alternatives[position] = urlState.active;
+
+    // triggers re-render
+    setURLState(
+      urlState.from,
+      urlState.to,
+      urlState.date,
+      active, // has been updated
+      urlState.alternatives, // has been updated
+    );
   });
 
   /*********************************

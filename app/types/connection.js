@@ -17,6 +17,19 @@ export class ConnectionId {
 
   /**
    * @param {ConnectionId} other
+   * @returns {boolean}
+   */
+  equals(other) {
+    return (
+      other.tripId === this.tripId &&
+      other.fromStopId === this.fromStopId &&
+      other.toStopId === this.toStopId &&
+      other.date.toISODate() === this.date.toISODate()
+    );
+  }
+
+  /**
+   * @param {ConnectionId} other
    */
   isSameLeg(other) {
     return (

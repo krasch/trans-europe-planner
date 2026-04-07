@@ -48,9 +48,7 @@ export class Planner {
     );
 
     // find the right trip from all the direct options
-    const matches = connections.filter(
-      (c) => c.id.toString() === id.toString(),
-    );
+    const matches = connections.filter((c) => c.id.equals(id));
 
     if (matches.length === 0)
       throw new PlannerError(`Unknown connection with id ${id}`);
@@ -122,9 +120,7 @@ export class Planner {
       connection.from.stopId,
       connection.to.stopId,
       date,
-    ).then((options) =>
-      options.filter((o) => o.id.toString() !== connection.id.toString()),
-    );
+    ).then((options) => options.filter((o) => !o.id.equals(connection.id)));
   }
 
   /**
@@ -137,17 +133,6 @@ export class Planner {
       this.alternativeConnections(c, date),
     );
     return Promise.all(promises);
-  }
-
-  /**
-   * @param {Itinerary} itinerary
-   * @param {DateTime} date
-   * @returns {Promise<Itinerary[]>}
-   */
-  async alternativeRouteItineraries(itinerary, date) {
-    return this.plan(itinerary.from.stopId, itinerary.to.stopId, date).then(
-      (options) => options.filter((o) => o.geoRoute !== itinerary.geoRoute),
-    );
   }
 
   /**

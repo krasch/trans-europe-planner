@@ -126,10 +126,23 @@ export function fillURLParams(
  * @param {String} to
  * @param {DateTime} date
  * @param {ConnectionId[]} [activeItinerary]
+ * @param {ConnectionId[][]} [alternativeItineraries]
  */
-export function setURLState(from, to, date, activeItinerary) {
+export function setURLState(
+  from,
+  to,
+  date,
+  activeItinerary,
+  alternativeItineraries,
+) {
   const url = new URL(window.location.href);
-  url.search = fillURLParams(from, to, date, activeItinerary).toString();
+  url.search = fillURLParams(
+    from,
+    to,
+    date,
+    activeItinerary,
+    alternativeItineraries,
+  ).toString();
 
   window.history.pushState(null, "", url.toString());
   window.dispatchEvent(new Event("pushstate"));
