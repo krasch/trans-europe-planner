@@ -1,4 +1,4 @@
-import { GREY, getColor } from "app/assets.js";
+import { GREY, getColor } from "app/components/assets.js";
 import { Itinerary } from "app/types/itinerary.js";
 import { Stop } from "app/types/stop.js";
 

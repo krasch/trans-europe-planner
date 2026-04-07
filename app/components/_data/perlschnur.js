@@ -1,4 +1,4 @@
-import { getIcon, getColor } from "app/assets.js";
+import { getIcon, getColor } from "app/components/assets.js";
 import { DateTime } from "app/types/dateTime.js";
 import { Itinerary } from "app/types/itinerary.js";
 
