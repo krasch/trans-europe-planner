@@ -1,3 +1,4 @@
+import { URL_DEFAULTS } from "app/config.js";
 import { ConnectionId } from "app/types/connection.js";
 import { DateTime } from "app/types/dateTime.js";
 
@@ -11,11 +12,6 @@ import { DateTime } from "app/types/dateTime.js";
  * @property {Number} [zoom]
  * @property {Number[]} [center]
  */
-
-export const DEFAULTS = {
-  zoom: 7.3,
-  center: [11.75685, 54.0443],
-};
 
 /**
  * @param {URLSearchParams} searchParams
@@ -78,8 +74,8 @@ export function parseURLParams(searchParamString) {
     date: date,
     active: active,
     alternatives: alternatives,
-    zoom: DEFAULTS.zoom,
-    center: DEFAULTS.center,
+    zoom: URL_DEFAULTS.mapZoom,
+    center: URL_DEFAULTS.mapCenter,
   };
 }
 

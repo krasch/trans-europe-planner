@@ -5,7 +5,7 @@ import { prepareDataForMap } from "app/components/_data/map.js";
 import { itineraryFromShortHand as _i } from "tests/_helpers/data.js";
 import { TEST_COLORS } from "tests/_helpers/data.js";
 
-vi.mock("app/assets.js", () => {
+vi.mock("app/components/assets.js", () => {
   return {
     getColor: (idx) => TEST_COLORS[idx],
     getIcon: (mode) => `${mode}.svg`,

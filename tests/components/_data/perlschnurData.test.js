@@ -16,7 +16,7 @@ import { TEST_COLORS } from "tests/_helpers/data.js";
 const DAY1_STRING = `(${formatDate(DAY1)})`;
 const DAY2_STRING = `(${formatDate(DAY1.plus({ day: 1 }))})`;
 
-vi.mock("app/assets.js", () => {
+vi.mock("app/components/assets.js", () => {
   return {
     getColor: (idx) => TEST_COLORS[idx],
     getIcon: (mode) => `${mode}.svg`,

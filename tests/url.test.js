@@ -1,8 +1,9 @@
 import { expect, test } from "vitest";
 
+import { URL_DEFAULTS } from "app/config.js";
 import { ConnectionId } from "app/types/connection.js";
 import { DateTime } from "app/types/dateTime.js";
-import { DEFAULTS, fillURLParams, parseURLParams } from "app/url.js";
+import { fillURLParams, parseURLParams } from "app/url.js";
 
 import { DAY1 } from "tests/_helpers/data.js";
 
@@ -16,8 +17,8 @@ test("Parse empty url", async () => {
     date: null,
     active: [],
     alternatives: [],
-    zoom: DEFAULTS.zoom,
-    center: DEFAULTS.center,
+    zoom: URL_DEFAULTS.mapZoom,
+    center: URL_DEFAULTS.mapCenter,
   });
 });
 
@@ -31,8 +32,8 @@ test("Parse URL where from+to+date are set", async () => {
     date: DateTime.fromISO("2024-10-01"),
     active: [],
     alternatives: [],
-    zoom: DEFAULTS.zoom,
-    center: DEFAULTS.center,
+    zoom: URL_DEFAULTS.mapZoom,
+    center: URL_DEFAULTS.mapCenter,
   });
 });
 
@@ -47,8 +48,8 @@ test("Parse URL with active with one connection", async () => {
     date: DAY1,
     active: [new ConnectionId("T1", "S1", "S2", DAY1)],
     alternatives: [],
-    zoom: DEFAULTS.zoom,
-    center: DEFAULTS.center,
+    zoom: URL_DEFAULTS.mapZoom,
+    center: URL_DEFAULTS.mapCenter,
   });
 });
 
@@ -71,8 +72,8 @@ test("Parse URL with active with multiple connections", async () => {
       new ConnectionId("T3", "S3", "S4", DAY1.plus({ days: 1 })),
     ],
     alternatives: [],
-    zoom: DEFAULTS.zoom,
-    center: DEFAULTS.center,
+    zoom: URL_DEFAULTS.mapZoom,
+    center: URL_DEFAULTS.mapCenter,
   });
 });
 
@@ -103,8 +104,8 @@ test("Parse URL with active and alternatives", async () => {
         new ConnectionId("T7", "S3", "S2", DAY1.plus({ days: 1 })),
       ],
     ],
-    zoom: DEFAULTS.zoom,
-    center: DEFAULTS.center,
+    zoom: URL_DEFAULTS.mapZoom,
+    center: URL_DEFAULTS.mapCenter,
   });
 });
 

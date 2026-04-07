@@ -6,7 +6,7 @@ import { Itinerary } from "app/types/itinerary.js";
 import { connectionFromShorthand as _c } from "tests/_helpers/data.js";
 import { TEST_COLORS } from "tests/_helpers/data.js";
 
-vi.mock("app/assets.js", () => {
+vi.mock("app/components/assets.js", () => {
   return {
     getColor: (idx) => TEST_COLORS[idx],
     getIcon: (mode) => `${mode}.svg`,

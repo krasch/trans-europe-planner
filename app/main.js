@@ -3,9 +3,11 @@ import { Config } from "app/components/config.js";
 import { MapWrapper } from "app/components/map.js";
 import { Navigation } from "app/components/nav.js";
 import { Perlschnur } from "app/components/perlschnur.js";
+import { URL_DEFAULTS } from "app/config.js";
 import { Planner } from "app/data/planner/planner.js";
 import { render } from "app/render.js";
 import { ConnectionId } from "app/types/connection.js";
+import { DateTime } from "app/types/dateTime.js";
 import { getURLState, setURLState, URLObserver } from "app/url.js";
 import { findFirstPosition } from "app/utils/collections.js";
 
@@ -33,6 +35,15 @@ export async function init() {
   // landing page has been closed -> show main view
   components.navigation.showSidebar();
   components.map.setMapInteractive();
+
+  if (!urlState.date)
+    setURLState(
+      urlState.from,
+      urlState.to,
+      URL_DEFAULTS.calDate,
+      urlState.active,
+      urlState.alternatives,
+    );
 
   return components;
 }
