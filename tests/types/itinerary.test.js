@@ -1,7 +1,7 @@
 import { test, expect } from "vitest";
 
 import { Itinerary } from "app/types/itinerary.js";
-import { Stop } from "app/types/stop.js";
+import { StopTime } from "app/types/stop.js";
 
 import {
   connectionFromShorthand as _c,
@@ -27,23 +27,8 @@ test("Itinerary with multiple connections", function () {
 
   const itinerary = new Itinerary([c1, c2, c3]);
 
-  const expVia1 = new Stop(
-    c1.to.stopId,
-    c1.to.stopName,
-    c1.to.latitude,
-    c1.to.longitude,
-    c1.to.arrival,
-    c2.from.departure,
-  );
-
-  const expVia2 = new Stop(
-    c2.to.stopId,
-    c2.to.stopName,
-    c2.to.latitude,
-    c2.to.longitude,
-    c2.to.arrival,
-    c3.from.departure,
-  );
+  const expVia1 = new StopTime(c1.to.stop, c1.to.arrival, c2.from.departure);
+  const expVia2 = new StopTime(c2.to.stop, c2.to.arrival, c3.from.departure);
 
   expect(itinerary.connections).toStrictEqual([c1, c2, c3]);
   expect(itinerary.connectionIds).toStrictEqual([c1.id, c2.id, c3.id]);

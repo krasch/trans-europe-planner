@@ -1,5 +1,5 @@
 import { Connection } from "./connection.js";
-import { Stop } from "./stop.js";
+import { StopTime } from "./stop.js";
 
 export class Itinerary {
   /**
@@ -15,20 +15,17 @@ export class Itinerary {
     this.vias = [];
     for (let i = 1; i < connections.length; i++) {
       this.vias.push(
-        new Stop(
-          connections[i].from.stopId,
-          connections[i].from.stopName,
-          connections[i].from.latitude,
-          connections[i].from.longitude,
+        new StopTime(
+          connections[i].from.stop,
           connections[i - 1].to.arrival,
           connections[i].from.departure,
         ),
       );
     }
 
-    const stopIds = [this.from.stopId]
-      .concat(this.vias.map((v) => v.stopId))
-      .concat(this.to.stopId);
+    const stopIds = [this.from.stop.id]
+      .concat(this.vias.map((v) => v.stop.id))
+      .concat(this.to.stop.id);
 
     // todo delete in favor of georoute todo why are tests not failing when I delete this?
     this.id = stopIds.join("->");

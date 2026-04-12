@@ -1,21 +1,21 @@
 import { GREY, getColor } from "app/components/assets.js";
 import { Itinerary } from "app/types/itinerary.js";
-import { Stop } from "app/types/stop.js";
+import { StopTime } from "app/types/stop.js";
 
 /**
- * @param {Stop} stop1
- * @param {Stop} stop2
+ * @param {StopTime} stopTime1
+ * @param {StopTime} stopTime2
  */
-function orderByStopId(stop1, stop2) {
-  if (stop1.stopId < stop2.stopId) return [stop1, stop2];
-  else return [stop2, stop1];
+function orderByStopId(stopTime1, stopTime2) {
+  if (stopTime1.stop.id < stopTime2.stop.id) return [stopTime1, stopTime2];
+  else return [stopTime2, stopTime1];
 }
 
 /**
- * @param {Stop} stop
+ * @param {StopTime} stopTime
  * @returns {object}
  */
-function defaultStopData(stop) {
+function defaultStopData(stopTime) {
   return {
     featureState: {
       isActive: false,
@@ -28,19 +28,19 @@ function defaultStopData(stop) {
       type: "Feature",
       geometry: {
         type: "Point",
-        coordinates: [stop.longitude, stop.latitude],
+        coordinates: stopTime.stop.lnglat,
       },
       properties: {
-        id: stop.stopId,
-        name: stop.stopName,
+        id: stopTime.stop.id,
+        name: stopTime.stop.name,
       },
     },
   };
 }
 
 /**
- * @param {Stop} from
- * @param {Stop} to
+ * @param {StopTime} from
+ * @param {StopTime} to
  * @param {String} edgeId
  * @returns {object}
  */
@@ -57,7 +57,7 @@ function defaultEdgeData(from, to, edgeId) {
       type: "Feature",
       geometry: {
         type: "LineString",
-        coordinates: [from.lnglat, to.lnglat],
+        coordinates: [from.stop.lnglat, to.stop.lnglat],
       },
       properties: { id: edgeId },
     },
@@ -66,7 +66,7 @@ function defaultEdgeData(from, to, edgeId) {
 
 /**
  * @param {Itinerary} itinerary
- * @returns {[Stop[], Number[]]}  // the second item maps {stopIdx: connectionIdx}
+ * @returns {[StopTime[], Number[]]}  // the second item maps {stopIdx: connectionIdx}
  */
 function flatStopList(itinerary) {
   const flatStopList = [];
@@ -106,19 +106,19 @@ export function prepareDataForMap(activeItinerary, otherItineraries) {
       const connection = itinerary.connections[stopToConnection[s]];
 
       // init stop information
-      result.stops[stop.stopId] = defaultStopData(stop);
+      result.stops[stop.stop.id] = defaultStopData(stop);
 
       // mark special stops
-      result.stops[stop.stopId].featureState.isStart = s === 0;
-      result.stops[stop.stopId].featureState.isDestination =
+      result.stops[stop.stop.id].featureState.isStart = s === 0;
+      result.stops[stop.stop.id].featureState.isDestination =
         s === stops.length - 1;
-      result.stops[stop.stopId].featureState.isTransfer =
+      result.stops[stop.stop.id].featureState.isTransfer =
         s > 0 && stopToConnection[s] !== stopToConnection[s - 1];
 
       // additional info for stops in active itinerary
       if (itinerary === activeItinerary) {
-        result.stops[stop.stopId].featureState.isActive = true;
-        result.stops[stop.stopId].featureState.color = `rgb(${color})`;
+        result.stops[stop.stop.id].featureState.isActive = true;
+        result.stops[stop.stop.id].featureState.color = `rgb(${color})`;
       }
 
       // if this is the first stop in this itinerary, there is no edge
@@ -127,14 +127,14 @@ export function prepareDataForMap(activeItinerary, otherItineraries) {
       // these are two subsequent stops in this itinerary
       // if this a transfer, then from might be to
       const previous = stops[s - 1];
-      if (stop.stopId === previous.stopId) continue;
+      if (stop.stop.id === previous.stop.id) continue;
 
       // don't want duplicate edges -> order by alphabet
       let [edgeStart, edgeEnd] = orderByStopId(previous, stop);
-      if (edgeStart.stopId > edgeEnd.stopId)
+      if (edgeStart.stop.id > edgeEnd.stop.id)
         [edgeStart, edgeEnd] = [stop, previous];
 
-      let edgeId = `${edgeStart.stopId}->${edgeEnd.stopId}`;
+      let edgeId = `${edgeStart.stop.id}->${edgeEnd.stop.id}`;
       result.edges[edgeId] = defaultEdgeData(edgeStart, edgeEnd, edgeId);
 
       // need this in map event handlers

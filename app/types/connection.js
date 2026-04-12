@@ -1,5 +1,5 @@
 import { DateTime } from "./dateTime.js";
-import { Stop } from "./stop.js";
+import { StopTime } from "./stop.js";
 
 export class ConnectionId {
   /**
@@ -71,9 +71,9 @@ export class Connection {
    * @param {string} tripId
    * @param {string} mode
    * @param {string} name
-   * @param {Stop} from
-   * @param {Stop} to
-   * @param {Stop[]} intermediateStops
+   * @param {StopTime} from
+   * @param {StopTime} to
+   * @param {StopTime[]} intermediateStops
    */
   constructor(tripId, mode, name, from, to, intermediateStops) {
     this.tripId = tripId;
@@ -87,8 +87,8 @@ export class Connection {
 
     this.id = new ConnectionId(
       tripId,
-      this.from.stopId,
-      this.to.stopId,
+      this.from.stop.id,
+      this.to.stop.id,
       this.from.departure.startOf("day"),
     );
   }

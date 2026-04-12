@@ -87,7 +87,7 @@ export class PlannerCache {
    * @param {Stop} stop
    */
   putStop(stop) {
-    const key = `stop__${stop.stopId}`;
+    const key = `stop__${stop.id}`;
     this.#set(key, stop);
   }
 

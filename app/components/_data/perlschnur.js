@@ -61,9 +61,9 @@ export function prepareDataForPerlschnur(activeItinerary) {
 
   activeItinerary.connections.forEach((connection, connectionIdx) => {
     // figure out all the info for the stops in this connection
-    const stops = connection.stops.map((stop, stopIdx) => {
+    const stops = connection.stops.map((stopTime, stopIdx) => {
       // first stop in connections uses departure, all others use arrival
-      const timestamp = stopIdx === 0 ? stop.departure : stop.arrival;
+      const timestamp = stopIdx === 0 ? stopTime.departure : stopTime.arrival;
 
       // we only need to write the date if it has changed wrt to the previous stop
       // this is done ACROSS connections, i.e. the first stop in connection2 will
@@ -76,8 +76,8 @@ export function prepareDataForPerlschnur(activeItinerary) {
       previousTimestamp = timestamp;
 
       return {
-        stopId: stop.stopId,
-        stopName: stop.stopName,
+        stopId: stopTime.stop.id,
+        stopName: stopTime.stop.name,
         time: timestamp.toFormat("HH:mm"),
         date: date ? `(${date})` : "",
       };

@@ -124,8 +124,8 @@ export class Planner {
    */
   async alternativeConnections(connection, calendarStartDate) {
     return this.#getAllDirect(
-      connection.from.stopId,
-      connection.to.stopId,
+      connection.from.stop.id,
+      connection.to.stop.id,
       calendarStartDate,
     ).then((options) => options.filter((o) => !o.id.equals(connection.id)));
   }

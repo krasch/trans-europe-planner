@@ -26,12 +26,12 @@ import { Itinerary } from "app/types/itinerary.js";
 function dataForConnection(connection, color, status) {
   return {
     id: connection.id.toString(),
-    leg: `${connection.from.stopId}->${connection.to.stopId}`,
+    leg: `${connection.from.stop.id}->${connection.to.stop.id}`,
     name: connection.name,
     icon: getIcon(connection.mode),
-    from: connection.from.stopName,
+    from: connection.from.stop.name,
     departure: connection.from.departure,
-    to: connection.to.stopName,
+    to: connection.to.stop.name,
     arrival: connection.to.arrival,
     color: color,
     status: status,

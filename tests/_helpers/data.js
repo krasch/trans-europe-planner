@@ -3,7 +3,7 @@ import assert from "assert";
 import { Connection } from "app/types/connection.js";
 import { DateTime } from "app/types/dateTime.js";
 import { Itinerary } from "app/types/itinerary.js";
-import { Stop } from "app/types/stop.js";
+import { Stop, StopTime } from "app/types/stop.js";
 
 export const DAY1 = DateTime.fromISO("2024-10-15");
 
@@ -32,7 +32,7 @@ export function timestampFromShorthand(tsShorthand) {
 
 /**
  * @param {string} shorthand
- * @returns Stop
+ * @returns StopTime
  */
 export function stopFromShorthand(shorthand) {
   // S1@D1T10
@@ -53,7 +53,11 @@ export function stopFromShorthand(shorthand) {
   const latitude = Number(stopNumber) * 10;
   const longitude = Number(stopNumber) * 10;
 
-  return new Stop(stopId, stopName, latitude, longitude, arrival, departure);
+  return new StopTime(
+    new Stop(stopId, stopName, latitude, longitude),
+    arrival,
+    departure,
+  );
 }
 
 /**

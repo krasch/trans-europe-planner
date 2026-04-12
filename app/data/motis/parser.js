@@ -1,11 +1,11 @@
 import { Connection } from "app/types/connection.js";
 import { DateTime } from "app/types/dateTime.js";
 import { Itinerary } from "app/types/itinerary.js";
-import { Stop } from "app/types/stop.js";
+import { Stop, StopTime } from "app/types/stop.js";
 
 /**
  * @param {Object} motisStop
- * @returns {Stop}
+ * @returns {StopTime}
  */
 function parseMotisStop(motisStop) {
   let stopId = motisStop.stopId;
@@ -19,11 +19,8 @@ function parseMotisStop(motisStop) {
   if (motisStop.scheduledDeparture)
     departure = DateTime.fromISO(motisStop.scheduledDeparture);
 
-  return new Stop(
-    stopId,
-    motisStop.name,
-    motisStop.lat,
-    motisStop.lon,
+  return new StopTime(
+    new Stop(stopId, motisStop.name, motisStop.lat, motisStop.lon),
     arrival,
     departure,
   );

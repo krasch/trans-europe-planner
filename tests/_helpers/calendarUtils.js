@@ -13,7 +13,7 @@ export async function addEntryToCalendar(connectionShorthand, kwargs = {}) {
   entry.dataset.color = kwargs.color ?? "test-color";
   entry.dataset.status = kwargs.status ?? "inactive";
 
-  entry.dataset.group = `${connection.from.stopId}->${connection.to.stopId}`;
+  entry.dataset.group = `${connection.from.stop.id}->${connection.to.stop.id}`;
   entry.dataset.departureDatetime = connection.from.departure.toISO();
   entry.dataset.arrivalDatetime = connection.to.arrival.toISO();
 
@@ -22,11 +22,11 @@ export async function addEntryToCalendar(connectionShorthand, kwargs = {}) {
     connection.id.toString();
   entry.querySelector(".start .time").innerHTML =
     connection.from.departure.toFormat("HH:mm");
-  entry.querySelector(".start .station").innerHTML = connection.to.stopName;
+  entry.querySelector(".start .station").innerHTML = connection.to.stop.name;
   entry.querySelector(".destination .time").innerHTML =
     connection.to.arrival.toFormat("HH:mm");
   entry.querySelector(".destination .station").innerHTML =
-    connection.to.stopName;
+    connection.to.stop.name;
 
   await TEST_DOM.calendar.appendChild(entry);
   return entry;
