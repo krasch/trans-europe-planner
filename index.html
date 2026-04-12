@@ -106,7 +106,7 @@
 </template>
 
 <template id="template-config-autocomplete-stop">
-    <li class="autocomplete-option" data-name="" data-data="">
+    <li class="autocomplete-option" data-id="">
         <img src="images/icons/transport/rail.svg" alt="Icon for a train"/>
         <span></span>
     </li>
@@ -147,7 +147,7 @@
                     <span lang="de">Von</span>
                     <span lang="en">From</span>
                 </label>
-                <input type="text" id="config-from" data-location=""/>
+                <input type="text" id="config-from" data-id=""/>
                 <!-- switch to datalist as soon as it becomes available in firefox android -->
                 <ul id="config-from-values"></ul>
 
@@ -155,7 +155,7 @@
                     <span lang="de">Nach</span>
                     <span lang="en">To</span>
                 </label>
-                <input type="text" id="config-to" data-location=""/>
+                <input type="text" id="config-to" data-id=""/>
                 <ul id="config-to-values"></ul>
 
                 <label for="config-date">

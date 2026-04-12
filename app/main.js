@@ -58,8 +58,8 @@ export async function main(components) {
     await render(components, planner, getURLState());
   });
 
-  components.config.on("submit", async (from, to, calenderStartDate) => {
-    setURLState(from.id, to.id, calenderStartDate, null); // triggers re-render
+  components.config.on("submit", async (fromId, toId, calenderStartDate) => {
+    setURLState(fromId, toId, calenderStartDate, null, []); // triggers re-render
   });
 
   components.calendar.on("connectionMoved", (newConnectionIdString) => {

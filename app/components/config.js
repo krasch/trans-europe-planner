@@ -1,4 +1,4 @@
-import { geocode } from "app/data/motis/client.js";
+import { geocode, getStopInfo } from "app/data/motis/client.js";
 import { DateTime } from "app/types/dateTime.js";
 import { Stop } from "app/types/stop.js";
 import { createElementFromTemplate } from "app/utils/templates.js";
@@ -11,31 +11,11 @@ function createAutocompleteItem(stop) {
   const template = `template-config-autocomplete-stop`;
 
   const templateData = {
-    ".": { "data-name": stop.name, "data-data": JSON.stringify(stop) },
+    ".": { "data-id": stop.id },
     span: { innerHTML: stop.name },
   };
 
   return createElementFromTemplate(template, templateData);
-}
-
-/**
- * @param {HTMLInputElement} inputElement
- * @param {HTMLUListElement} autocompleteContainer
- */
-export async function setAutocompleteOptions(
-  inputElement,
-  autocompleteContainer,
-) {
-  const userInput = inputElement.value;
-  if (userInput.length < 3) {
-    autocompleteContainer.innerHTML = "";
-    return;
-  }
-
-  const geocoded = await geocode(userInput);
-  const stops = geocoded.map(createAutocompleteItem);
-
-  autocompleteContainer.replaceChildren(...stops);
 }
 
 export class Config {
@@ -69,40 +49,52 @@ export class Config {
     this.#checkSubmitPossible();
 
     this.#elements.from.addEventListener("input", async (e) => {
-      await setAutocompleteOptions(
-        this.#elements.from,
-        this.#elements.fromAutocomplete,
-      );
+      const userInput = this.#elements.from.value;
+      if (userInput.length < 3) {
+        this.#elements.fromAutocomplete.innerHTML = "";
+        return;
+      }
+
+      const geocoded = await geocode(userInput);
+      const stops = geocoded.map(createAutocompleteItem);
+      this.#elements.fromAutocomplete.replaceChildren(...stops);
     });
 
     this.#elements.to.addEventListener("input", async (e) => {
-      await setAutocompleteOptions(
-        this.#elements.to,
-        this.#elements.toAutocomplete,
-      );
+      const userInput = this.#elements.to.value;
+      if (userInput.length < 3) {
+        this.#elements.toAutocomplete.innerHTML = "";
+        return;
+      }
+
+      const geocoded = await geocode(userInput);
+      const stops = geocoded.map(createAutocompleteItem);
+      this.#elements.toAutocomplete.replaceChildren(...stops);
     });
 
     this.#elements.date.addEventListener("input", async (e) => {
       this.#checkSubmitPossible();
     });
 
-    this.#elements.fromAutocomplete.addEventListener("click", (e) => {
+    this.#elements.fromAutocomplete.addEventListener("click", async (e) => {
       const li = e.target.closest("li");
       if (!li) return;
 
-      this.#elements.from.value = li.dataset.name;
-      this.#elements.from.dataset.data = li.dataset.data;
+      const stop = await getStopInfo(li.dataset.id);
+      this.#elements.from.value = stop.name;
+      this.#elements.from.dataset.id = stop.id;
       this.#elements.fromAutocomplete.innerHTML = "";
 
       this.#checkSubmitPossible();
     });
 
-    this.#elements.toAutocomplete.addEventListener("click", (e) => {
+    this.#elements.toAutocomplete.addEventListener("click", async (e) => {
       const li = e.target.closest("li");
       if (!li) return;
 
-      this.#elements.to.value = li.dataset.name;
-      this.#elements.to.dataset.data = li.dataset.data;
+      const stop = await getStopInfo(li.dataset.id);
+      this.#elements.to.value = stop.name;
+      this.#elements.to.dataset.id = stop.id;
       this.#elements.toAutocomplete.innerHTML = "";
 
       this.#checkSubmitPossible();
@@ -112,8 +104,8 @@ export class Config {
       e.preventDefault();
 
       this.#callbacks.submit(
-        JSON.parse(this.#elements.from.dataset.data),
-        JSON.parse(this.#elements.to.dataset.data),
+        this.#elements.from.dataset.id,
+        this.#elements.to.dataset.id,
         DateTime.fromISO(this.#elements.date.value),
       );
     });
@@ -147,8 +139,8 @@ export class Config {
   }
 
   #checkSubmitPossible() {
-    const hasFrom = this.#elements.from.dataset.data;
-    const hasTo = this.#elements.to.dataset.data;
+    const hasFrom = this.#elements.from.dataset.id;
+    const hasTo = this.#elements.to.dataset.id;
     const hasDate = this.#elements.date.value;
     this.#elements.submit.disabled = !hasFrom || !hasTo || !hasDate;
   }

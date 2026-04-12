@@ -62,6 +62,29 @@ function mockComponents() {
   return [components, callbacks];
 }
 
+test("Clicking the submit button should update the URL", async () => {
+  const [components, callbacks] = mockComponents();
+  await main(components);
+
+  // @ts-ignore
+  getURLState.mockImplementation(() => ({
+    from: null,
+    to: null,
+    calendarStartDate: DAY1,
+    active: null,
+    alternatives: [],
+  }));
+
+  callbacks.config.submit("S1", "S2", DAY1.plus({ days: 1 }));
+  expect(setURLState).toHaveBeenCalledWith(
+    "S1",
+    "S2",
+    DAY1.plus({ days: 1 }),
+    null,
+    [],
+  );
+});
+
 test("Moving a calendar event should update the URL", async () => {
   const [components, callbacks] = mockComponents();
   await main(components);
