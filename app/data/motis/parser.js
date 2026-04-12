@@ -61,48 +61,15 @@ export function parseMotisItinerary(motisItinerary) {
   return new Itinerary(legs.map(parseMotisConnection));
 }
 
-export class GeocodedLocation {
-  /**
-   * @param {'stop' | 'place'} kind
-   * @param {String} name
-   * @param {String | null} id
-   * @param {Number} latitude
-   * @param {Number} longitude
-   */
-  constructor(kind, name, id = null, latitude, longitude) {
-    this.kind = kind;
-    this.name = name;
-    this.id = id;
-    this.latitude = latitude;
-    this.longitude = longitude;
-  }
-}
-
 /**
  * @param {object} motisGeocodingStopResult
- * @returns {{stop: GeocodedLocation, place: GeocodedLocation | null}}
+ * @returns {Stop}
  */
 export function parseMotisGeocodingStopResult(motisGeocodingStopResult) {
-  const areas = motisGeocodingStopResult.areas.filter((a) => a.default);
-
-  let place = null;
-  if (areas.length > 0)
-    place = new GeocodedLocation(
-      "place",
-      areas[0].name,
-      null, // id
-      // todo areas here does not give its own lat/lon, bad to use stops?
-      motisGeocodingStopResult.lat,
-      motisGeocodingStopResult.lon,
-    );
-
-  const stop = new GeocodedLocation(
-    "stop",
-    motisGeocodingStopResult.name,
+  return new Stop(
     motisGeocodingStopResult.id,
+    motisGeocodingStopResult.name,
     motisGeocodingStopResult.lat,
     motisGeocodingStopResult.lon,
   );
-
-  return { stop: stop, place: place };
 }

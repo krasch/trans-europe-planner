@@ -1,12 +1,12 @@
 import { MOTIS_URL } from "app/config.js";
 import {
-  GeocodedLocation,
   parseMotisGeocodingStopResult,
   parseMotisItinerary,
 } from "app/data/motis/parser.js";
 import { Connection } from "app/types/connection.js";
 import { DateTime } from "app/types/dateTime.js";
 import { Itinerary } from "app/types/itinerary.js";
+import { Stop } from "app/types/stop.js";
 import { intersection } from "app/utils/collections.js";
 
 const REFERRER = "https://trans-europe-planner.eu";
@@ -97,13 +97,13 @@ export async function direct(fromStopId, toStopId, startDate) {
 
 /**
  * @param {string} userInput
- * @returns {Promise<{stop: GeocodedLocation, place: GeocodedLocation | null}[]>}
+ * @returns {Promise<Stop[]>}
  */
 export async function geocode(userInput) {
   const results = await query("/api/v1/geocode", {
     text: userInput,
     language: "en",
-    type: "STOP",
+    type: "STOP", // for now only allowing stops, not places
     mode: RAIL_MODES,
   });
 
@@ -114,36 +114,21 @@ export async function geocode(userInput) {
 }
 
 /**
- * @param {Number} latitude
- * @param {Number} longitude
- * @returns {Promise<String[]>} stopIds
- */
-export async function reverseGeocode(latitude, longitude) {
-  const results = await query("/api/v1/reverse-geocode", {
-    place: `${latitude},${longitude}`,
-    type: "STOP",
-  });
-
-  return results
-    .filter((r) => intersection(r.modes, RAIL_MODES).length > 0)
-    .map((r) => r.id);
-}
-
-/**
  * // todo unittest
  * @param {String} stopId
- * @returns GeocodedLocation
+ * @returns Stop
  */
 export async function getStopInfo(stopId) {
+  // workaround
   const results = await query("/api/v5/stoptimes", {
     stopId: stopId,
     n: 1,
   });
 
-  return new GeocodedLocation(
-    "stop",
-    results.place.name,
+  // todo why is this using place?
+  return new Stop(
     stopId,
+    results.place.name,
     results.place.lat,
     results.place.lon,
   );

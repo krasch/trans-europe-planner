@@ -1,18 +1,18 @@
 import { geocode } from "app/data/motis/client.js";
-import { GeocodedLocation } from "app/data/motis/parser.js";
 import { DateTime } from "app/types/dateTime.js";
+import { Stop } from "app/types/stop.js";
 import { createElementFromTemplate } from "app/utils/templates.js";
 
 /**
- * @param {GeocodedLocation} data
+ * @param {Stop} stop
  * @returns {HTMLElement}
  */
-function createAutocompleteItem(data) {
-  const template = `template-config-autocomplete-${data.kind}`;
+function createAutocompleteItem(stop) {
+  const template = `template-config-autocomplete-stop`;
 
   const templateData = {
-    ".": { "data-name": data.name, "data-data": JSON.stringify(data) },
-    span: { innerHTML: data.name },
+    ".": { "data-name": stop.name, "data-data": JSON.stringify(stop) },
+    span: { innerHTML: stop.name },
   };
 
   return createElementFromTemplate(template, templateData);
@@ -33,16 +33,7 @@ export async function setAutocompleteOptions(
   }
 
   const geocoded = await geocode(userInput);
-
-  const places = [];
-  const stops = [];
-
-  for (let result of geocoded) {
-    // todo currently working with places does not really work revisit
-    //if (result.place) places.push(createAutocompleteItem(result.place));
-    //else stops.push(createAutocompleteItem(result.stop));
-    stops.push(createAutocompleteItem(result.stop));
-  }
+  const stops = geocoded.map(createAutocompleteItem);
 
   autocompleteContainer.replaceChildren(...stops);
 }

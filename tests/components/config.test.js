@@ -6,8 +6,8 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 
 import { Config, setAutocompleteOptions } from "app/components/config.js";
 import { geocode } from "app/data/motis/client.js";
-import { GeocodedLocation } from "app/data/motis/parser.js";
 import { DateTime } from "app/types/dateTime.js";
+import { Stop } from "app/types/stop.js";
 
 import { DAY1 } from "tests/_helpers/data.js";
 import {
@@ -45,9 +45,9 @@ test("Autocomplete should call geocoding and fill in options", async () => {
 
   // @ts-ignore
   geocode.mockImplementation(() => [
-    { stop: new GeocodedLocation("stop", "abcd1", "abcd1", 10, 10) },
-    { stop: new GeocodedLocation("stop", "abcd2", "abcd2", 20, 20) },
-    { stop: new GeocodedLocation("stop", "abcd3", "abcd3", 30, 30) },
+    new Stop("id1", "abcd1", 10, 10),
+    new Stop("id2", "abcd2", 20, 20),
+    new Stop("id3", "abcd3", 30, 30),
   ]);
 
   input.value = "abcd";
@@ -70,9 +70,7 @@ test.each(["from", "to"])(
     const input = container.querySelector(`#config-${formSection}`);
     const options = container.querySelector(`#config-${formSection}-values`);
 
-    geocode.mockImplementation(() => [
-      { stop: new GeocodedLocation("stop", "abcd1", "abcd1", 10, 10) },
-    ]);
+    geocode.mockImplementation(() => [new Stop("id1", "abcd1", 10, 10)]);
 
     // filled in text
     input.value = "abcd"; // must be at least 3 chars
@@ -92,8 +90,8 @@ test("Clicking submit should execute the callback", async () => {
   const callback = vi.fn();
   config.on("submit", callback);
 
-  const from = new GeocodedLocation("stop", "Berlin", "B", 10, 10);
-  const to = new GeocodedLocation("stop", "Hamburg", "H", 20, 20);
+  const from = new Stop("B", "Berlin", 10, 10);
+  const to = new Stop("H", "Hamburg", 20, 20);
 
   container.querySelector(`#config-from`).dataset.data = JSON.stringify(from);
   container.querySelector(`#config-to`).dataset.data = JSON.stringify(to);

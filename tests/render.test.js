@@ -1,20 +1,16 @@
 /**
  * @vitest-environment jsdom
  */
-import { afterEach, beforeEach, expect, test, vi } from "vitest";
+import { afterEach, expect, test, vi } from "vitest";
 
 import * as motis from "app/data/motis/client.js";
-import { GeocodedLocation } from "app/data/motis/parser.js";
 import { Planner } from "app/data/planner/planner.js";
 import { render } from "app/render.js";
 import { Itinerary } from "app/types/itinerary.js";
+import { Stop } from "app/types/stop.js";
 import { setURLState } from "app/url.js";
 
-import {
-  DAY1,
-  itineraryFromShortHand as _i,
-  connectionFromShorthand as _c,
-} from "tests/_helpers/data.js";
+import { DAY1, connectionFromShorthand as _c } from "tests/_helpers/data.js";
 
 const CONNECTIONS = {
   "S1->S2": [
@@ -29,7 +25,7 @@ const CONNECTIONS = {
 
 vi.mock("app/data/motis/client.js", () => {
   return {
-    getStopInfo: vi.fn(async (s) => new GeocodedLocation("stop", s, s, 10, 10)),
+    getStopInfo: vi.fn(async (s) => new Stop(s, s, 10, 10)),
     direct: vi.fn(async (from, to) => CONNECTIONS[`${from}->${to}`]),
     // this will be test-specific
     plan: vi.fn(),
