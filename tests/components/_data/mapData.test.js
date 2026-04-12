@@ -86,7 +86,7 @@ test("One itinerary with one connection", function () {
         isActive: true,
         color: `rgb(${TEST_COLORS[0]})`,
         connectionId: i1.connections[0].id.toString(),
-        itineraryId: i1.id,
+        itineraryId: "S1->S3",
       },
       geoJSON: {
         type: "Feature",
@@ -105,7 +105,7 @@ test("One itinerary with one connection", function () {
         isActive: true,
         color: `rgb(${TEST_COLORS[0]})`,
         connectionId: i1.connections[0].id.toString(),
-        itineraryId: i1.id,
+        itineraryId: "S1->S3",
       },
       geoJSON: {
         type: "Feature",
@@ -200,7 +200,7 @@ test("One itinerary with multiple connections", function () {
         isActive: true,
         color: `rgb(${TEST_COLORS[0]})`,
         connectionId: i1.connections[0].id.toString(),
-        itineraryId: i1.id,
+        itineraryId: "S1->S2->S3",
       },
       geoJSON: {
         type: "Feature",
@@ -219,7 +219,7 @@ test("One itinerary with multiple connections", function () {
         isActive: true,
         color: `rgb(${TEST_COLORS[1]})`,
         connectionId: i1.connections[1].id.toString(),
-        itineraryId: i1.id,
+        itineraryId: "S1->S2->S3",
       },
       geoJSON: {
         type: "Feature",
@@ -367,7 +367,7 @@ test("Multiple itineraries with multiple connections", function () {
         isActive: true,
         color: `rgb(${TEST_COLORS[0]})`,
         connectionId: i1.connections[0].id.toString(),
-        itineraryId: i1.id,
+        itineraryId: "S1->S2->S3->S4",
       },
       geoJSON: {
         type: "Feature",
@@ -386,7 +386,7 @@ test("Multiple itineraries with multiple connections", function () {
         isActive: true,
         color: `rgb(${TEST_COLORS[1]})`,
         connectionId: i1.connections[1].id.toString(),
-        itineraryId: i1.id,
+        itineraryId: "S1->S2->S3->S4",
       },
       geoJSON: {
         type: "Feature",
@@ -405,7 +405,7 @@ test("Multiple itineraries with multiple connections", function () {
         isActive: true,
         color: `rgb(${TEST_COLORS[2]})`,
         connectionId: i1.connections[2].id.toString(),
-        itineraryId: i1.id,
+        itineraryId: "S1->S2->S3->S4",
       },
       geoJSON: {
         type: "Feature",
@@ -424,7 +424,7 @@ test("Multiple itineraries with multiple connections", function () {
         isActive: false,
         color: "#aaa",
         connectionId: i2.connections[0].id.toString(),
-        itineraryId: i2.id,
+        itineraryId: "S1->S4",
       },
       geoJSON: {
         type: "Feature",
@@ -443,7 +443,7 @@ test("Multiple itineraries with multiple connections", function () {
         isActive: false,
         color: "#aaa",
         connectionId: i3.connections[1].id.toString(),
-        itineraryId: i3.id,
+        itineraryId: "S1->S2->S5->S4",
       },
       geoJSON: {
         type: "Feature",
@@ -462,7 +462,7 @@ test("Multiple itineraries with multiple connections", function () {
         isActive: false,
         color: "#aaa",
         connectionId: i3.connections[2].id.toString(),
-        itineraryId: i3.id,
+        itineraryId: "S1->S2->S5->S4",
       },
       geoJSON: {
         type: "Feature",

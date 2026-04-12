@@ -91,7 +91,7 @@ export async function main(components) {
     );
   });
 
-  components.map.on("itineraryClicked", (geoRouteString) => {
+  components.map.on("itineraryClicked", (geoRoute) => {
     const urlState = getURLState();
 
     const calcGeoRoute = (connectionIds) => {
@@ -101,13 +101,12 @@ export async function main(components) {
     };
 
     // clicked on the currently active itinerary, nothing to do
-    if (urlState.active && calcGeoRoute(urlState.active) === geoRouteString)
-      return;
+    if (urlState.active && calcGeoRoute(urlState.active) === geoRoute) return;
 
     // which alternative itinerary did user click on?
     const position = findFirstPosition(
       urlState.alternatives,
-      (r) => calcGeoRoute(r) === geoRouteString,
+      (r) => calcGeoRoute(r) === geoRoute,
     );
 
     // there is no itinerary with this geoRoute todo error logging

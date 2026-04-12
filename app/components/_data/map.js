@@ -139,7 +139,7 @@ export function prepareDataForMap(activeItinerary, otherItineraries) {
 
       // need this in map event handlers
       result.edges[edgeId].featureState.connectionId = connection.id.toString();
-      result.edges[edgeId].featureState.itineraryId = itinerary.id;
+      result.edges[edgeId].featureState.itineraryId = itinerary.geoRoute; // todo rename to route
 
       // additional info for edges in active itinerary
       if (itinerary === activeItinerary) {
