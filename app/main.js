@@ -10,6 +10,8 @@ import { ConnectionId } from "app/types/connection.js";
 import { getURLState, setURLState, URLObserver } from "app/url.js";
 import { findFirstPosition } from "app/utils/collections.js";
 
+import { geoRoute } from "./types/itinerary.js";
+
 /**
  * @returns {Promise<Object.<string,any>>} components
  */
@@ -91,22 +93,16 @@ export async function main(components) {
     );
   });
 
-  components.map.on("itineraryClicked", (geoRoute) => {
+  components.map.on("itineraryClicked", (geoRouteString) => {
     const urlState = getURLState();
 
-    const calcGeoRoute = (connectionIds) => {
-      let ids = connectionIds.map((c) => c.fromStopId);
-      ids.push(connectionIds.at(-1).toStopId);
-      return ids.join("->");
-    };
-
     // clicked on the currently active itinerary, nothing to do
-    if (urlState.active && calcGeoRoute(urlState.active) === geoRoute) return;
+    if (urlState.active && geoRoute(urlState.active) === geoRouteString) return;
 
     // which alternative itinerary did user click on?
     const position = findFirstPosition(
       urlState.alternatives,
-      (r) => calcGeoRoute(r) === geoRoute,
+      (r) => geoRoute(r) === geoRouteString,
     );
 
     // there is no itinerary with this geoRoute todo error logging
