@@ -147,44 +147,6 @@ test("Alternative connections should not include the current connection", async 
   expect(result).toStrictEqual([c1, c2, c3, c5]);
 });
 
-test("Should get alternative connections for all connections in itinerary", async () => {
-  const connections = {
-    "S1->S2": [
-      _c("T1: S1@D1T10->S2@D1T11"), // this is the current one
-      _c("T11: S1@D1T11->S2@D1T12"), // this is an alternative
-      _c("T1: S1@D2T10->S2@D2T11"), // this is an alternative
-    ],
-    "S2->S3": [
-      _c("T2: S2@D1T13->S3@D1T14"), // this is the current one
-    ],
-    "S3->S4": [
-      _c("T3: S3@D1T10->S4@D1T11"), // this is an alternative
-      _c("T3: S3@D2T11->S4@D2T12"), // this is the current one
-    ],
-  };
-
-  // @ts-ignore
-  motis.direct.mockImplementation(
-    async (from, to) => connections[`${from}->${to}`],
-  );
-
-  const planner = new Planner();
-
-  const itinerary = new Itinerary([
-    connections["S1->S2"][0],
-    connections["S2->S3"][0],
-    connections["S3->S4"][1],
-  ]);
-  const result = await planner.allAlternativeConnections(itinerary, DAY1);
-
-  const exp = [
-    [connections["S1->S2"][1], connections["S1->S2"][2]],
-    [],
-    [connections["S3->S4"][0]],
-  ];
-  expect(result).toStrictEqual(exp);
-});
-
 test("Plan should return one itinerary per geoRoute", async () => {
   // neither of these is pareto-optimal
   // todo test without all the scoring logic?

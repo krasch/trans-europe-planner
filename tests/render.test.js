@@ -11,6 +11,7 @@ import { Stop } from "app/types/stop.js";
 import { setURLState } from "app/url.js";
 
 import { DAY1, connectionFromShorthand as _c } from "tests/_helpers/data.js";
+import { timeout } from "tests/_helpers/domUtils.js";
 
 const CONNECTIONS = {
   "S1->S2": [
@@ -47,6 +48,7 @@ function mockComponents() {
     map: { updateView: vi.fn() },
     calendar: { updateView: vi.fn() },
     perlschnur: { updateView: vi.fn() },
+    navigation: { focusComponent: vi.fn() },
   };
 }
 
@@ -63,6 +65,7 @@ test("If not all of from/to/calendarStartDate are set, stopIds should get resolv
 
   // @ts-ignore
   await render(components, new Planner(), urlData);
+  await timeout(10); // because rendering is not actually awaitable :-(
 
   // no components except config are updated in this round
   expect(setURLState).not.toHaveBeenCalled();
@@ -97,6 +100,7 @@ test("If from/to/calendarStartDate are all set but no itinerary is given, then p
   // @ts-ignore
   const components = mockComponents();
   await render(components, new Planner(), urlData);
+  await timeout(10); // because rendering is not actually awaitable :-(
 
   // no components except config are updated in this round
   expect(setURLState).toHaveBeenCalledWith("S1", "S4", DAY1, i1.connectionIds, [
@@ -136,6 +140,7 @@ test("If an itinerary is set in url, it should get resolved, alternatives loaded
   // @ts-ignore
   const components = mockComponents();
   await render(components, new Planner(), urlData);
+  await timeout(10); // because rendering is not actually awaitable :-(
 
   // all components are updated in this round
   expect(setURLState).not.toHaveBeenCalled();
@@ -145,7 +150,8 @@ test("If an itinerary is set in url, it should get resolved, alternatives loaded
     expect.objectContaining({ id: i1.connections[1].id.toString() }),
     expect.objectContaining({ id: i1.connections[2].id.toString() }),
   ]);
-  expect(components.calendar.updateView).toHaveBeenCalledWith(
+  expect(components.calendar.updateView).toHaveBeenCalledTimes(4);
+  expect(components.calendar.updateView).toHaveBeenLastCalledWith(
     DAY1.toISODate(),
     [
       expect.objectContaining({

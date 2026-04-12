@@ -55,44 +55,58 @@ export async function render(components, planner, urlState) {
     return;
   }
 
-  // we have trip ids in the url -> need to gather the data to build itinerary
+  // this turns on the loading circle in submit button
   components.config.lock();
 
+  // gather all the data for the active itinerary - need to await because everybody needs this
   const active = await planner.itineraryForIds(
     urlState.active,
     urlState.calendarStartDate,
   );
 
-  // alternatives for all the connections in current active itinerary - needed for calendar
-  const activeAlternatives = await planner.allAlternativeConnections(
-    active,
-    urlState.calendarStartDate,
+  // we also need to gather all the data for the alternative itineraries
+  // but since only the map needs it, we don't await
+  const alternativesPromises = urlState.alternatives.map((alt) =>
+    planner.itineraryForIds(alt, urlState.calendarStartDate),
   );
 
-  // all alternative georoutes - needed for map
-  const alternativeItineraries = await Promise.all(
-    urlState.alternatives.map((alt) =>
-      planner.itineraryForIds(alt, urlState.calendarStartDate),
-    ),
-  );
+  // as soon as all the alternative itineraries are ready, we can draw the map
+  Promise.all(alternativesPromises).then((alternatives) => {
+    const mapData = prepareDataForMap(active, alternatives);
+    components.map.updateView(mapData);
 
-  // todo trigger loading alternative connections for alternative routes
+    // we can now also turn of the loading circle
+    // (the calendar events have their own loading circle so don't need the big one while loading them)
+    components.config.unlock();
+  });
 
-  // update map
-  const mapData = prepareDataForMap(active, alternativeItineraries);
-  components.map.updateView(mapData);
-
-  // update calendar
-  const calendarData = prepareDataForCalendar(active, activeAlternatives);
-  components.calendar.updateView(
-    urlState.calendarStartDate.toISODate(),
-    calendarData,
-  );
-
-  // update perlschnur
+  // draw the perlschnur
   const perlschnurData = prepareDataForPerlschnur(active);
   components.perlschnur.updateView(perlschnurData);
 
-  // todo can probably unlock earlier
-  components.config.unlock();
+  // for calendar, we prepare a list [null, null, ...] with length = num connections in active itinerary
+  // null = no alternatives available yet for this connection = show this connection in calendar with spinny wheel
+  const activeAlternatives = active.connections.map(() => null);
+  const renderCalendar = () => {
+    const calendarData = prepareDataForCalendar(active, activeAlternatives);
+    components.calendar.updateView(
+      urlState.calendarStartDate.toISODate(),
+      calendarData,
+    );
+  };
+
+  // we start by rendering the calendar with all connections having a spinny wheel
+  // then we load all the alternative and as soon as any are ready, we redraw the calendar, now with fewer spinny wheels
+  renderCalendar();
+  components.navigation.focusComponent("calendar");
+  active.connections.forEach((connection, i) => {
+    planner
+      .alternativeConnections(connection, urlState.calendarStartDate)
+      .then((alternativesForConnection) => {
+        activeAlternatives[i] = alternativesForConnection;
+        renderCalendar();
+      });
+  });
+
+  // todo this function is not actually awaitable :-(
 }

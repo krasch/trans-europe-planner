@@ -40,7 +40,7 @@ function dataForConnection(connection, color, status) {
 
 /**
  * @param {Itinerary} activeItinerary
- * @param {Object.<String,Connection[] | null>} alternatives
+ * @param {Connection[][]} alternatives - same length as connections in active itinerary
  * @returns {CalendarEvent[]}
  */
 export function prepareDataForCalendar(activeItinerary, alternatives) {
