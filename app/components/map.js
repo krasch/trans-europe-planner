@@ -24,15 +24,15 @@ export class MapWrapper {
   mapReady;
 
   #previousData = { stops: {}, edges: {} };
-  #lookup = { connectionIdToEdges: {}, itineraryIdToEdges: {} };
+  #lookup = { connectionIdToEdges: {}, itineraryRouteToEdges: {} };
 
   #callbacks = {
     stopHover: (stopId, isHover) => {},
     stopClicked: (stopId) => {},
     connectionHover: (connectionId, isHover) => {},
     connectionClicked: (connectionId) => {},
-    itineraryHover: (itineraryId, isHover) => {},
-    itineraryClicked: (itineraryId) => {},
+    itineraryHover: (itineraryGeoRoute, isHover) => {},
+    itineraryClicked: (itineraryGeoRoute) => {},
   };
 
   /**
@@ -87,7 +87,7 @@ export class MapWrapper {
     await this.#updateSourceDataAndFeatureState("stops", data.stops);
     await this.#updateSourceDataAndFeatureState("edges", data.edges);
 
-    // update mapping from connection id and itinerary id to edges
+    // update mapping from connection id and itinerary route to edges
     this.#updateLookup(data.edges);
 
     this.#previousData = data;
@@ -104,12 +104,12 @@ export class MapWrapper {
   }
 
   /**
-   * @param {string} itineraryId
+   * @param {string} itineraryGeoRoute
    * @param {boolean} isHover
    */
-  setItineraryHover(itineraryId, isHover) {
-    if (!this.#lookup.itineraryIdToEdges[itineraryId]) return;
-    const edgeIds = this.#lookup.itineraryIdToEdges[itineraryId];
+  setItineraryHover(itineraryGeoRoute, isHover) {
+    if (!this.#lookup.itineraryRouteToEdges[itineraryGeoRoute]) return;
+    const edgeIds = this.#lookup.itineraryRouteToEdges[itineraryGeoRoute];
     this.#setHoverStateForAll("edges", edgeIds, isHover);
   }
 
@@ -229,15 +229,18 @@ export class MapWrapper {
 
       // see explanation in stop mousemove event handler
       if (previousEdge) {
-        this.setItineraryHover(previousEdge.state.itineraryId, false);
+        this.setItineraryHover(previousEdge.state.itineraryGeoRoute, false);
         this.#callbacks.connectionHover(previousEdge.state.connectionId, false);
-        this.#callbacks.itineraryHover(previousEdge.state.itineraryId, false);
+        this.#callbacks.itineraryHover(
+          previousEdge.state.itineraryGeoRoute,
+          false,
+        );
       }
 
       // have just started hovering over this edge
-      this.setItineraryHover(edge.state.itineraryId, true);
+      this.setItineraryHover(edge.state.itineraryGeoRoute, true);
       this.#callbacks.connectionHover(edge.state.connectionId, true);
-      this.#callbacks.itineraryHover(edge.state.itineraryId, true);
+      this.#callbacks.itineraryHover(edge.state.itineraryGeoRoute, true);
 
       previousEdge = edge;
     });
@@ -246,9 +249,12 @@ export class MapWrapper {
       if (!previousEdge) return;
 
       // no longer hovering over previous edge
-      this.setItineraryHover(previousEdge.state.itineraryId, false);
+      this.setItineraryHover(previousEdge.state.itineraryGeoRoute, false);
       this.#callbacks.connectionHover(previousEdge.state.connectionId, false);
-      this.#callbacks.itineraryHover(previousEdge.state.itineraryId, false);
+      this.#callbacks.itineraryHover(
+        previousEdge.state.itineraryGeoRoute,
+        false,
+      );
 
       previousEdge = null;
     });
@@ -256,7 +262,7 @@ export class MapWrapper {
     this.map.on("click", "edges-interact", (e) => {
       const edge = e.features[0];
       this.#callbacks.connectionClicked(edge.state.connectionId);
-      this.#callbacks.itineraryClicked(edge.state.itineraryId);
+      this.#callbacks.itineraryClicked(edge.state.itineraryGeoRoute);
     });
   }
 
@@ -305,9 +311,9 @@ export class MapWrapper {
       Object.keys(data),
       (edgeId) => data[edgeId].featureState.connectionId,
     );
-    this.#lookup.itineraryIdToEdges = groupBy(
+    this.#lookup.itineraryRouteToEdges = groupBy(
       Object.keys(data),
-      (edgeId) => data[edgeId].featureState.itineraryId,
+      (edgeId) => data[edgeId].featureState.itineraryGeoRoute,
     );
   }
 

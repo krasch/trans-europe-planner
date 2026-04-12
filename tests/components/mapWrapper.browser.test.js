@@ -47,7 +47,7 @@ function edge(id, connectionId = "c1", itineraryId = "i1") {
     geoJSON: { type: "Feature", properties: { id: id } },
     featureState: {
       connectionId: connectionId,
-      itineraryId: itineraryId,
+      itineraryGeoRoute: itineraryId,
       key3: `value3${id}`,
       key4: `value4${id}`,
     },

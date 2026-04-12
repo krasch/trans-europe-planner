@@ -51,7 +51,7 @@ function defaultEdgeData(from, to, edgeId) {
       color: GREY,
       // this is in here because it gives us easy access to this info in event handler
       connectionId: null,
-      itineraryId: null,
+      itineraryGeoRoute: null,
     },
     geoJSON: {
       type: "Feature",
@@ -139,7 +139,7 @@ export function prepareDataForMap(activeItinerary, otherItineraries) {
 
       // need this in map event handlers
       result.edges[edgeId].featureState.connectionId = connection.id.toString();
-      result.edges[edgeId].featureState.itineraryId = itinerary.geoRoute; // todo rename to route
+      result.edges[edgeId].featureState.itineraryGeoRoute = itinerary.geoRoute;
 
       // additional info for edges in active itinerary
       if (itinerary === activeItinerary) {
