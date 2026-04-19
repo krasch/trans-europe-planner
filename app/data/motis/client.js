@@ -40,7 +40,6 @@ export async function query(path, params) {
   url.search = new URLSearchParams(params).toString();
 
   let response = null;
-
   try {
     response = await fetch(url, { referrer: REFERRER });
   } catch (error) {
@@ -125,7 +124,6 @@ export async function getStopInfo(stopId) {
     n: 1,
   });
 
-  // todo why is this using place?
   return new Stop(
     stopId,
     results.place.name,
