@@ -5,7 +5,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "start": "serve -p 8000",
+    "start": "serve -p 3000",
     "test": "vitest run tests",
     "test-e2e": "npx playwright test",
     "check-pretty": "npx prettier app/ style/planner/components/map/layers.js --check",
