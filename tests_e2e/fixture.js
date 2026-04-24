@@ -6,20 +6,6 @@ function configurePrintLogs(page) {
   });
 }
 
-async function configureAbortStadiamaps(page) {
-  await page.route(
-    (url) => url.href.includes("stadiamaps"),
-    (route) =>
-      route.fulfill({
-        status: 400,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-        },
-      }),
-  );
-}
-
 async function configureMockMotis(page) {
   await page.route("**stoptimes?stopId=de-VBB_710008010381&n=1", (route) =>
     route.fulfill({
@@ -28,13 +14,44 @@ async function configureMockMotis(page) {
   );
 }
 
+async function configureAbortNetworkRequests(page) {
+  // fallback, registered first -> used last
+  await page.route(
+    (url) => {
+      const notLocalhost = !url.href.includes("localhost");
+      if (notLocalhost) console.error("Unexpected network access: ", url.href);
+      return notLocalhost;
+    },
+    (route) => route.fulfill({ status: 400 }),
+  );
+
+  await page.route(
+    (url) => url.href.includes("plausible.io"),
+    (route) => route.fulfill({ body: "" }),
+  );
+
+  await page.route(
+    (url) => url.href.includes("openmaptiles.json"),
+    (route) => route.fulfill({ json: { tiles: ["t/{z}/{x}/{y}.pbf"] } }),
+  );
+
+  await page.route(
+    (url) => url.href.includes("sprite.json"),
+    (route) => route.fulfill({ json: {} }),
+  );
+
+  await page.route(
+    (url) => url.href.includes("sprite.png"),
+    (route) => route.fulfill({ body: "" }),
+  );
+}
+
 export const test = base.extend({
   page: async ({ page }, use) => {
-    // todo these are run before every test, bad?
+    // these are run before every test
     configurePrintLogs(page);
-    await configureAbortStadiamaps(page);
+    await configureAbortNetworkRequests(page); // must be run first
     await configureMockMotis(page);
-    // todo abort all other network requests?
 
     await use(page); //runs test here
   },
