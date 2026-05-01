@@ -1,0 +1,6 @@
+main,
+footer,
+#desktop-logo,
+.maplibregl-control-container {
+    display: none;
+}
